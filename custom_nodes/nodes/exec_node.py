@@ -23,4 +23,4 @@ class ExecNode(AutoBaseNode):
         self.add_input('in_exe')
         self.create_property('in_exe', None)
     def execute(self):
-        self._graph.start_signal_function()
+        self.execute_children()

@@ -17,7 +17,7 @@ class TensorPreviewLayout(QtWidgets.QWidget):
         layout = QtWidgets.QVBoxLayout(self)
 
         layout.setContentsMargins(0,0,0,0)
-        layout.addWidget(self.image_label)
+        #layout.addWidget(self.image_label)
         layout.addWidget(self.image)
 
         self.latent_rgb_factors = torch.tensor([
@@ -35,6 +35,9 @@ class TensorPreviewLayout(QtWidgets.QWidget):
         #latent = copy.deepcopy(input_latent)
         qImage = self.tensor_to_qimage(input_latent)
         self.image.setPixmap(QtGui.QPixmap().fromImage(QtGui.QImage(qImage)))
+        self.image.setMinimumWidth(256)
+        self.image.setMinimumHeight(256)
+        self.image.setScaledContents(True)
 
     def execute(self, input_latent):
         self.set_image_signal(input_latent)

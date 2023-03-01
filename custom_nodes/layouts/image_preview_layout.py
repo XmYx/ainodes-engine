@@ -14,14 +14,16 @@ class ImagePreviewLayout(QtWidgets.QWidget):
         layout = QtWidgets.QVBoxLayout(self)
 
         layout.setContentsMargins(0,0,0,0)
-        layout.addWidget(self.image_label)
+        #layout.addWidget(self.image_label)
         layout.addWidget(self.image)
     def set_value(self, value):
         self.set_image_signal.emit(value)
     @QtCore.Slot(object)
     def set_image(self, image):
-        #print(type(image))
-        img = copy.deepcopy(image)
-        qImage = ImageQt(img)
-        self.image.setPixmap(QtGui.QPixmap().fromImage(QtGui.QImage(qImage)))
-        #self.image.setScaledContents(True)
+        # create a copy of the image data
+        image_data_copy = copy.deepcopy(image)
+
+        # convert the image data to a QPixmap and display it
+        qimage = ImageQt(image_data_copy)
+        pixmap = QtGui.QPixmap().fromImage(qimage)
+        self.image.setPixmap(pixmap)

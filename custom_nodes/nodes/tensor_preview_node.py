@@ -14,7 +14,7 @@ class TensorPreviewNode(AutoBaseNode):
     __identifier__ = 'nodes.widget'
 
     # initial default node name.
-    NODE_NAME = 'image_preview'
+    NODE_NAME = 'tensor_preview'
 
     def __init__(self, parent=None):
         super(TensorPreviewNode, self).__init__()
@@ -32,11 +32,14 @@ class TensorPreviewNode(AutoBaseNode):
 
     def execute(self):
         try:
+
             image = self.get_property('in_exe')
+            print(image)
             img = copy.deepcopy(image)
             #print("YAY, You have found an image", image)
-            self.set_property('out', img, push_undo=None)
+
             self.custom.image.set_value(img)
+            self.set_property('out', img, push_undo=False)
         except:
             image = None
         super().execute()

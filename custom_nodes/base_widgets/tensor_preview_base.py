@@ -10,8 +10,8 @@ class TensorPreviewBaseWidget(NodeBaseWidget):
         self.set_label("Image Widget")
         self.image = TensorPreviewLayout()
         self.set_custom_widget(self.image)
-        self.setMinimumHeight(256)
-        self.setMinimumWidth(256)
+        self.setMinimumHeight(280)
+        self.setMinimumWidth(280)
     def wire_signals(self):
         pass
         #widget = self.get_custom_widget()

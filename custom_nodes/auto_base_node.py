@@ -723,3 +723,17 @@ class AutoBaseNode(BaseNode):
             except Exception as e:
                 print("We have caught an error during processing, your event loop will now stop because:", e)
 
+    def set_children_ports(self):
+        output_nodes = self.connected_output_nodes()  # assuming connected_output_nodes() returns the OrderedDict
+        for output_port, node_list in output_nodes.items():
+            try:
+                output_ports = output_port.connected_ports()
+                for port in output_ports:
+                    name = port.name()
+                    own_name = output_port.name()
+                    #print("setting output property", own_name, "to input:", name)
+                    node = port.node()
+                    value = self.get_property(own_name)
+                    node.set_property(name, value)
+            except Exception as e:
+                print("We have caught an error during processing, your event loop will now stop because:", e)

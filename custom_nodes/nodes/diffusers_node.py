@@ -34,6 +34,8 @@ class DiffusersNode(AutoBaseNode):
         self.create_property("unet", None)
         self.add_output("vae")
         self.create_property("vae", None)
+        self.add_output("pipe_out")
+        self.create_property("pipe_out", None)
         # create QLineEdit text input widget.
         self.custom = DiffusersBaseWidget(self.view, self)
         self.add_custom_widget(self.custom, tab='Custom')
@@ -47,9 +49,11 @@ class DiffusersNode(AutoBaseNode):
         self.set_property("clip", self.pipe.text_encoder)
         self.set_property("unet", self.pipe.unet)
         self.set_property("vae", self.pipe.vae)
+        self.set_property("pipe_out", self.pipe)
+        self.set_children_ports()
     def execute(self):
         try:
-            image = self.pipe(prompt=self.custom.custom.prompt.toPlainText(), num_inference_steps=self.custom.custom.steps.value(), callback=self.set_tensor_output_signal, callback_steps=1).images[0]
+            image = self.pipe(prompt=self.custom.custom.prompt.toPlainText(), num_inference_steps=self.custom.custom.steps.value(), callback=self.set_tensor_output_signal, callback_steps=1, prompt_embeds=None).images[0]
             #image = Image.open('test.png')
             img = copy.deepcopy(image)
             self.set_property('out_image', img)
@@ -60,7 +64,7 @@ class DiffusersNode(AutoBaseNode):
     @QtCore.Slot(object)
     def set_tensor_output(self, latent):
         returnlatent = latent.cpu()
-        print(returnlatent)
+        #print(returnlatent)
         self.set_property("out_tensor", returnlatent, push_undo=False)
         output_nodes = self.connected_output_nodes()
         for output_port, node_list in output_nodes.items():
