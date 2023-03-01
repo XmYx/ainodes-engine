@@ -5,7 +5,7 @@ from custom_nodes.base_widgets.diffusers_base import DiffusersBaseWidget
 from NodeGraphQt import BaseNode
 import torch
 from diffusers import StableDiffusionPipeline
-
+from Qt import QtCore
 
 class DiffusersNode(AutoBaseNode):
     """
@@ -22,26 +22,68 @@ class DiffusersNode(AutoBaseNode):
         super(DiffusersNode, self).__init__()
 
         # create input & output ports
-        self.add_input('in')
-        self.create_property('in', None)
-        self.add_output("out")
-        self.create_property("out", None)
+        self.add_input('in_exe')
+        self.create_property('in_exe', None)
+        self.add_output("out_image")
+        self.create_property("out_image", None)
+        self.add_output("out_tensor")
+        self.create_property("out_tensor", None)
+        self.add_output("clip")
+        self.create_property("clip", None)
+        self.add_output("unet")
+        self.create_property("unet", None)
+        self.add_output("vae")
+        self.create_property("vae", None)
         # create QLineEdit text input widget.
         self.custom = DiffusersBaseWidget(self.view, self)
         self.add_custom_widget(self.custom, tab='Custom')
+        self.custom.custom.set_image_signal.connect(self.set_tensor_output)
+
     def load_diffusers(self):
         repo_id = "runwayml/stable-diffusion-v1-5"
         self.pipe = StableDiffusionPipeline.from_pretrained(pretrained_model_name_or_path=repo_id, torch_dtype=torch.float16, safety_checker=None).to("cuda")
         self.pipe.enable_xformers_memory_efficient_attention()
         print("Diffusers model loaded")
+        self.set_property("clip", self.pipe.text_encoder)
+        self.set_property("unet", self.pipe.unet)
+        self.set_property("vae", self.pipe.vae)
     def execute(self):
         try:
-            image = self.pipe(prompt=self.custom.custom.prompt.toPlainText(), num_inference_steps=self.custom.custom.steps.value()).images[0]
+            image = self.pipe(prompt=self.custom.custom.prompt.toPlainText(), num_inference_steps=self.custom.custom.steps.value(), callback=self.set_tensor_output_signal, callback_steps=1).images[0]
             #image = Image.open('test.png')
             img = copy.deepcopy(image)
-            self.set_property('out', img)
+            self.set_property('out_image', img)
         except:
             pass
-        self.execute_children()
+        #self.execute_children()
+        super().execute()
+    @QtCore.Slot(object)
+    def set_tensor_output(self, latent):
+        returnlatent = latent.cpu()
+        print(returnlatent)
+        self.set_property("out_tensor", returnlatent, push_undo=False)
+        output_nodes = self.connected_output_nodes()
+        for output_port, node_list in output_nodes.items():
+            try:
+                output_ports = output_port.connected_ports()
+                for port in output_ports:
+                    name = port.name()
+                    own_name = output_port.name()
+                    #print("setting output property", own_name, "to input:", name)
+                    if "tensor" in own_name:
+                        node = port.node()
+                        node.set_property(name, returnlatent)
+                        if "exe" in name:
+                            node.execute()
+                        #for node in node_list:
+                        #    node.execute()
+            except Exception as e:
+                print("We have caught an error during processing, your event loop will now stop because:", e)
+
+
+    def set_tensor_output_signal(self, int1, int2, latent):
+
+        self.custom.custom.set_image_signal.emit(latent)
+
     def emit_run_signal(self):
         self._graph.startsignal.emit()

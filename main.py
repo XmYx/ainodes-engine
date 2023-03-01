@@ -13,7 +13,7 @@ from NodeGraphQt import (
     NodesPaletteWidget,
 )
 
-from custom_nodes.nodes import diffusers_node, loop_node, image_preview_node
+from custom_nodes.nodes import diffusers_node, loop_node, image_preview_node, exec_node, tensor_preview_node
 
 
 class NodeWindow():
@@ -30,6 +30,8 @@ class NodeWindow():
             image_preview_node.ImagePreviewNode,
             loop_node.LoopNode,
             diffusers_node.DiffusersNode,
+            exec_node.ExecNode,
+            tensor_preview_node.TensorPreviewNode
         ]
         # registered example nodes.
         graph.register_nodes(nodes)

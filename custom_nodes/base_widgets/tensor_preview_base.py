@@ -1,17 +1,17 @@
-from custom_nodes.layouts.image_preview_layout import ImagePreviewLayout
+from custom_nodes.layouts.tensor_preview_layout import TensorPreviewLayout
 from NodeGraphQt import NodeBaseWidget
 
 
-class ImagePreviewBaseWidget(NodeBaseWidget):
+class TensorPreviewBaseWidget(NodeBaseWidget):
     def __init__(self, parent=None):
-        super(ImagePreviewBaseWidget, self).__init__(parent)
+        super(TensorPreviewBaseWidget, self).__init__(parent)
 
         self.set_name("image_widget")
         self.set_label("Image Widget")
-        self.image = ImagePreviewLayout()
+        self.image = TensorPreviewLayout()
         self.set_custom_widget(self.image)
-        self.setMinimumHeight(540)
-        self.setMinimumWidth(540)
+        self.setMinimumHeight(256)
+        self.setMinimumWidth(256)
     def wire_signals(self):
         pass
         #widget = self.get_custom_widget()

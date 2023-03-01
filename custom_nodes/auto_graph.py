@@ -1,8 +1,10 @@
+from NodeGraphQt.base.commands import NodeRemovedCmd
 from Qt import QtCore
 import os, json
 
-from NodeGraphQt import NodeGraph
+from NodeGraphQt import NodeGraph, GroupNode
 
+from custom_nodes.auto_base_node import BaseNode
 from worker.worker import Worker
 
 
@@ -62,3 +64,43 @@ class AutoGraph(NodeGraph):
     def loop_signal_function(self):
         self.loopsignal.emit()
 
+    def delete_node(self, node, push_undo=True):
+        """
+        Remove the node from the node graph.
+
+        Args:
+            node (NodeGraphQt.BaseNode): node object.
+            push_undo (bool): register the command to the undo stack. (default: True)
+        """
+        #print(node.name())
+        #assert isinstance(node, NodeObject), \
+        #    'node must be a instance of a NodeObject.'
+        node_id = node.id
+        if push_undo:
+            self._undo_stack.beginMacro('delete node: "{}"'.format(node.name()))
+
+        if isinstance(node, BaseNode):
+            for p in node.input_ports():
+                if p.locked():
+                    p.set_locked(False,
+                                 connected_ports=False,
+                                 push_undo=push_undo)
+                p.clear_connections(push_undo=push_undo)
+            for p in node.output_ports():
+                if p.locked():
+                    p.set_locked(False,
+                                 connected_ports=False,
+                                 push_undo=push_undo)
+                p.clear_connections(push_undo=push_undo)
+
+        # collapse group node before removing.
+        if isinstance(node, GroupNode) and node.is_expanded:
+            node.collapse()
+
+        if push_undo:
+            self._undo_stack.push(NodeRemovedCmd(self, node))
+            self._undo_stack.endMacro()
+        else:
+            NodeRemovedCmd(self, node).redo()
+
+        self.nodes_deleted.emit([node_id])

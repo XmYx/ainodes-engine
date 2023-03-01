@@ -9,8 +9,8 @@ class DiffusersBaseWidget(NodeBaseWidget):
         self.set_label("Diffusers Widget")
         self.custom = DiffusersLayout(realparent=self)
         self.set_custom_widget(self.custom)
-        self.setMinimumHeight(640)
-        self.setMinimumWidth(640)
+        self.setMinimumHeight(320)
+        self.setMinimumWidth(320)
         self.parent.pipe = None
 
     def wire_signals(self):

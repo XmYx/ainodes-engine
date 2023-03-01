@@ -24,9 +24,11 @@ class DiffusersLayout(QtWidgets.QWidget):
         layout.addWidget(self.button)
         layout.addWidget(self.infer_button)
     def set_value(self, value):
+        return
         self.set_image_signal.emit(value)
     @QtCore.Slot(object)
     def set_image(self, image):
+        return
         print(type(image))
         qImage = ImageQt(image)
         self.image.setPixmap(QtGui.QPixmap().fromImage(QtGui.QImage(qImage)))

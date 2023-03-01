@@ -1,11 +1,11 @@
 import copy
 
 from custom_nodes.auto_base_node import AutoBaseNode
-from custom_nodes.base_widgets.image_preview_base import ImagePreviewBaseWidget
+from custom_nodes.base_widgets.tensor_preview_base import TensorPreviewBaseWidget
 from NodeGraphQt import BaseNode
 
 
-class ImagePreviewNode(AutoBaseNode):
+class TensorPreviewNode(AutoBaseNode):
     """
     An example of a node with a embedded QLineEdit.
     """
@@ -17,7 +17,7 @@ class ImagePreviewNode(AutoBaseNode):
     NODE_NAME = 'image_preview'
 
     def __init__(self, parent=None):
-        super(ImagePreviewNode, self).__init__()
+        super(TensorPreviewNode, self).__init__()
 
         # create input & output ports
         self.add_input('in_exe')
@@ -27,7 +27,7 @@ class ImagePreviewNode(AutoBaseNode):
 
         #self.height = 512
         # create QLineEdit text input widget.
-        self.custom = ImagePreviewBaseWidget(self.view)
+        self.custom = TensorPreviewBaseWidget(self.view)
         self.add_custom_widget(self.custom, tab='Custom')
 
     def execute(self):
@@ -35,12 +35,12 @@ class ImagePreviewNode(AutoBaseNode):
             image = self.get_property('in_exe')
             img = copy.deepcopy(image)
             #print("YAY, You have found an image", image)
-            self.set_property('out', img)
-            self.custom.image.set_image_signal.emit(img)
+            self.set_property('out', img, push_undo=None)
+            self.custom.image.set_value(img)
         except:
             image = None
         super().execute()
     def set_value(self, value):
-        image = copy.deepcopy(value)
+        #image = copy.deepcopy(value)
         return
         #self.custom.image.set_image_signal.emit(image)

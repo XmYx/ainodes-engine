@@ -700,8 +700,8 @@ class AutoBaseNode(BaseNode):
 
     NODE_NAME = 'Node'
 
-    def __init__(self):
-        super(AutoBaseNode, self).__init__()
+    #def __init__(self):
+    #    super(AutoBaseNode, self).__init__()
     def execute(self):
         self.execute_children()
     def execute_children(self):
@@ -716,8 +716,10 @@ class AutoBaseNode(BaseNode):
                     node = port.node()
                     value = self.get_property(own_name)
                     node.set_property(name, value)
-                for node in node_list:
-                    node.execute()
+                    if "exe" in name:
+                        node.execute()
+                    #for node in node_list:
+                    #    node.execute()
             except Exception as e:
                 print("We have caught an error during processing, your event loop will now stop because:", e)
 
