@@ -1,4 +1,5 @@
 from Qt import QtCore
+import os, json
 
 from NodeGraphQt import NodeGraph
 

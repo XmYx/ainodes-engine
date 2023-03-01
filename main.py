@@ -23,7 +23,9 @@ class NodeWindow():
         # create graph controller.
         graph = AutoGraph()
         # set up context menu for the node graph.
-        graph.set_context_menu_from_file('../examples/hotkeys/hotkeys.json')
+        path = os.path.join(os.getcwd(), 'hotkeys', 'hotkeys.json')
+
+        graph.set_context_menu_from_file(path)
         nodes = [
             image_preview_node.ImagePreviewNode,
             loop_node.LoopNode,
