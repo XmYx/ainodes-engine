@@ -1,0 +1,8 @@
+Qt.py>=1.3.0
+pyside2
+transformers
+diffusers
+https://github.com/jchanvfx/NodeGraphQt/archive/refs/tags/v0.5.2.zip
+--extra-index-url https://download.pytorch.org/whl/cu117
+torch
+torchvision
