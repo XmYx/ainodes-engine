@@ -6,6 +6,10 @@ from NodeGraphQt import BaseNode
 import torch
 from diffusers import StableDiffusionPipeline
 from Qt import QtCore
+import singleton
+
+gs = singleton.Singleton()
+
 
 class DiffusersNode(AutoBaseNode):
     """
@@ -43,24 +47,26 @@ class DiffusersNode(AutoBaseNode):
 
     def load_diffusers(self):
         repo_id = "runwayml/stable-diffusion-v1-5"
-        self.pipe = StableDiffusionPipeline.from_pretrained(pretrained_model_name_or_path=repo_id, torch_dtype=torch.float16, safety_checker=None).to("cuda")
-        self.pipe.enable_xformers_memory_efficient_attention()
+        gs.obj["pipe"] = StableDiffusionPipeline.from_pretrained(pretrained_model_name_or_path=repo_id, torch_dtype=torch.float16, safety_checker=None).to("cuda")
+        gs.obj["pipe"].enable_xformers_memory_efficient_attention()
         print("Diffusers model loaded")
-        self.set_property("clip", self.pipe.text_encoder)
-        self.set_property("unet", self.pipe.unet)
-        self.set_property("vae", self.pipe.vae)
-        self.set_property("pipe_out", self.pipe)
+        #self.set_property("clip", pipe.text_encoder, push_undo=False)
+        #self.set_property("unet", pipe.unet, push_undo=False)
+        #self.set_property("vae", pipe.vae, push_undo=False)
+        self.set_property("pipe_out", "pipe", push_undo=False)
         self.set_children_ports()
-    def execute(self):
+    def execute(self,progress_callback=None):
         try:
-            image = self.pipe(prompt=self.custom.custom.prompt.toPlainText(), num_inference_steps=self.custom.custom.steps.value(), callback=self.set_tensor_output_signal, callback_steps=1, prompt_embeds=None).images[0]
+            #pipe = self.get_property('pipe_out')
+            image = gs.obj["pipe"](prompt=self.custom.custom.prompt.toPlainText(), num_inference_steps=self.custom.custom.steps.value(), callback=self.set_tensor_output_signal, callback_steps=1, prompt_embeds=None).images[0]
             #image = Image.open('test.png')
             img = copy.deepcopy(image)
             self.set_property('out_image', img)
+            #del pipe
         except:
             pass
-        #self.execute_children()
-        super().execute()
+        self.execute_children()
+        #super().execute()
     @QtCore.Slot(object)
     def set_tensor_output(self, latent):
         returnlatent = latent.cpu()
@@ -90,4 +96,5 @@ class DiffusersNode(AutoBaseNode):
         self.custom.custom.set_image_signal.emit(latent)
 
     def emit_run_signal(self):
-        self._graph.startsignal.emit()
+        id = self.id
+        self._graph.run_node_by_id(id)

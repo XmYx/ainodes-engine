@@ -1,0 +1,83 @@
+{
+    "id": 139835498634112,
+    "scene_width": 64000,
+    "scene_height": 64000,
+    "nodes": [
+        {
+            "id": 139834755148432,
+            "title": "Diffusers",
+            "pos_x": -421.1875,
+            "pos_y": -340.6875,
+            "inputs": [],
+            "outputs": [
+                {
+                    "id": 139834755148816,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 5,
+                    "socket_type": 3
+                }
+            ],
+            "content": {},
+            "op_code": 3
+        },
+        {
+            "id": 139832056605568,
+            "title": "Diffusers Sampling",
+            "pos_x": -78.75,
+            "pos_y": -388.75,
+            "inputs": [
+                {
+                    "id": 139832072501520,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 2,
+                    "socket_type": 3
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 139832072500272,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 5,
+                    "socket_type": 3
+                }
+            ],
+            "content": {},
+            "op_code": 4
+        },
+        {
+            "id": 139832056620032,
+            "title": "Output",
+            "pos_x": 190.0,
+            "pos_y": -352.5,
+            "inputs": [
+                {
+                    "id": 139832056674144,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 2,
+                    "socket_type": 1
+                }
+            ],
+            "outputs": [],
+            "content": {},
+            "op_code": 2
+        }
+    ],
+    "edges": [
+        {
+            "id": 139832072501280,
+            "edge_type": 2,
+            "start": 139834755148816,
+            "end": 139832072501520
+        },
+        {
+            "id": 139832056674288,
+            "edge_type": 2,
+            "start": 139832072500272,
+            "end": 139832056674144
+        }
+    ]
+}

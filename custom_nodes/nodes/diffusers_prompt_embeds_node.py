@@ -4,7 +4,9 @@ from Qt import QtCore
 from custom_nodes.auto_base_node import AutoBaseNode
 from custom_nodes.base_widgets.prompt_embed_base import PromptEmbedBaseWidget
 
+import singleton
 
+gs = singleton.Singleton()
 class PromptEmbedNode(AutoBaseNode):
     """
     An example of a node with a embedded QLineEdit.
@@ -34,7 +36,8 @@ class PromptEmbedNode(AutoBaseNode):
             prompt = self.get_property("prompt_exe")
         print(self.get_property('pipe'))
         pipe = self.get_property('pipe')
-        prompt_embeds = pipe._encode_prompt(prompt=prompt, device='cuda', num_images_per_prompt=1, do_classifier_free_guidance=True)
-        self.set_property('prompt_embeds', prompt_embeds)
-        #self.execute_children()
-        super().execute()
+        prompt_embeds = gs.obj[pipe]._encode_prompt(prompt=prompt, device='cuda', num_images_per_prompt=1, do_classifier_free_guidance=True)
+        del pipe
+        self.set_property('prompt_embeds', prompt_embeds, push_undo=False)
+        self.execute_children()
+        #super().execute()

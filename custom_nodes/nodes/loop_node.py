@@ -21,11 +21,4 @@ class LoopNode(AutoBaseNode):
         self.add_input('in_exe')
         self.create_property('in_exe', None)
     def execute(self):
-        #print("Loop node reached", self._graph)
-        #self._graph.startsignal.emit()
         self._graph.start_signal_function()
-        #self.runsignal.emit()
-    @QtCore.Slot()
-    def emit_run_signal(self):
-        return
-        self._graph.process_nodes_thread()

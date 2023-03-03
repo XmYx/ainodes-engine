@@ -2,6 +2,7 @@
 from NodeGraphQt.base.commands import PropertyChangedCmd
 from NodeGraphQt.base.model import NodeModel
 from NodeGraphQt.constants import NodePropWidgetEnum
+from NodeGraphQt.qgraphics.node_backdrop import BackdropSizer
 from Qt import QtCore
 class _ClassProperty(object):
 
@@ -51,6 +52,7 @@ class NodeObject(object):
         self._model = NodeModel()
         self._model.type_ = self.type_
         self._model.name = self.NODE_NAME
+
 
         _NodeItem = qgraphics_item
         if _NodeItem is None:
@@ -487,3 +489,20 @@ class NodeObject(object):
         """
         self.model.layout_direction = value
         self.view.layout_direction = value
+    @property
+    def minimum_size(self):
+        return self._min_size
+
+    @minimum_size.setter
+    def minimum_size(self, size=(50, 50)):
+        self._min_size = size
+
+    @property
+    def backdrop_text(self):
+        return self._properties['backdrop_text']
+
+    @backdrop_text.setter
+    def backdrop_text(self, text):
+        self._properties['backdrop_text'] = text
+        self.update(self.boundingRect())
+

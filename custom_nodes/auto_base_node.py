@@ -165,11 +165,11 @@ class BaseNode(NodeObject):
                              widget.get_value(),
                              widget_type=widget_type,
                              tab=tab)
-        widget.value_changed.connect(lambda k, v: self.set_property(k, v))
+        #widget.value_changed.connect(lambda k, v: self.set_property(k, v))
         widget._node = self
         self.view.add_widget(widget)
         #: redraw node to address calls outside the "__init__" func.
-        self.view.draw_node()
+        #self.view.draw_node()
 
     def add_combo_menu(self, name, label='', items=None, tab=None):
         """
@@ -712,11 +712,24 @@ class AutoBaseNode(BaseNode):
                 for port in output_ports:
                     name = port.name()
                     own_name = output_port.name()
-                    #print("setting output property", own_name, "to input:", name)
+                    print("setting output property", own_name, "to input:", name)
                     node = port.node()
-                    value = self.get_property(own_name)
-                    node.set_property(name, value)
+                    #value = self.get_property(own_name)
+                    node.set_property(name, self.get_property(own_name), push_undo=False)
+                    #for node in node_list:
+                    #    node.execute()
+            except Exception as e:
+                print("We have caught an error during processing, your event loop will now stop because:", e)
+        for output_port, node_list in output_nodes.items():
+            try:
+                output_ports = output_port.connected_ports()
+                for port in output_ports:
+                    name = port.name()
+                    own_name = output_port.name()
+                    print("setting output property", own_name, "to input:", name)
+                    node = port.node()
                     if "exe" in name:
+                        print(id(node))
                         node.execute()
                     #for node in node_list:
                     #    node.execute()
@@ -734,6 +747,6 @@ class AutoBaseNode(BaseNode):
                     #print("setting output property", own_name, "to input:", name)
                     node = port.node()
                     value = self.get_property(own_name)
-                    node.set_property(name, value)
+                    node.set_property(name, value, push_undo=False)
             except Exception as e:
                 print("We have caught an error during processing, your event loop will now stop because:", e)

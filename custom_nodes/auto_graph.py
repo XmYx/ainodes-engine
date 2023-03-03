@@ -104,3 +104,8 @@ class AutoGraph(NodeGraph):
             NodeRemovedCmd(self, node).redo()
 
         self.nodes_deleted.emit([node_id])
+
+    def run_node_by_id(self, node_id):
+        node = self._model.nodes.get(node_id, None)
+        worker = Worker(node.execute)
+        self.threadpool.start(worker)
