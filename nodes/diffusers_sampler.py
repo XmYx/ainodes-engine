@@ -3,7 +3,7 @@ from PIL import Image
 from PIL.ImageQt import ImageQt
 from diffusers import StableDiffusionPipeline
 #from qtpy.QtWidgets import QLineEdit, QLabel, QPushButton, QFileDialog, QVBoxLayout
-from qtpy import QtWidgets
+from qtpy import QtWidgets, QtCore
 from qtpy.QtCore import Qt
 from qtpy.QtGui import QPixmap
 from nodes.base.calc_conf import register_node, OP_NODE_DIFFUSERS_SAMPLER
@@ -11,6 +11,7 @@ from nodes.base.calc_node_base import CalcNode, CalcGraphicsNode
 from nodeeditor.node_content_widget import QDMNodeContentWidget
 from nodeeditor.utils import dumpException
 from singleton import Singleton
+from worker.worker import Worker
 
 gs = Singleton()
 class DiffusersWidget(QDMNodeContentWidget):
@@ -36,6 +37,7 @@ class DiffusersWidget(QDMNodeContentWidget):
 
         self.setLayout(layout)
 
+
     def serialize(self):
         res = super().serialize()
         #res['value'] = self.edit.text()
@@ -60,37 +62,53 @@ class DiffusersNode(CalcNode):
     content_label_objname = "diffusers_sampling_node"
 
     def __init__(self, scene):
-        super().__init__(scene, inputs=[3], outputs=[3])
+        super().__init__(scene, inputs=[3,3], outputs=[3])
         self.eval()
-
+        self.content.eval_signal.connect(self.eval)
+        # Create a worker object
     def initInnerClasses(self):
-        #self.content = DiffusersWidget(self)
+        self.content = DiffusersWidget(self)
         self.grNode = CalcGraphicsNode(self)
+
+        self.grNode.height = 480
+        self.grNode.width = 256
+        self.content.setMinimumHeight(400)
+        self.content.setMinimumWidth(256)
+
         #self.content.image.changeEvent.connect(self.onInputChanged)
 
-    def evalImplementation(self):
+    def evalImplementation(self, index=0):
 
         if self.value is None:
-            self.markInvalid()
-            self.markDescendantsDirty()
-            self.value = self.infer_diffusers()
-            self.evalChildren()
-            return self.value
+            # Start the worker thread
+            self.worker = Worker(self.infer_diffusers)
+            # Connect the worker's finished signal to a slot that updates the node value
+            self.worker.signals.result.connect(self.onWorkerFinished)
+            self.scene.threadpool.start(self.worker)
+            #self.worker.run()
+            # Return None as a placeholder value
+            return None
         else:
             self.markDirty(False)
             self.markInvalid(False)
-            self.grNode.setToolTip("")
             self.markDescendantsDirty()
             self.evalChildren()
             return self.value
 
     def onMarkedDirty(self):
         self.value = None
-    def infer_diffusers(self):
-        pipe = self.getInput(0).eval()
-        image = gs.obj[pipe](prompt="test", num_inference_steps=10).images[0]
-
+    def infer_diffusers(self, progress_callback=None):
+        node, index = self.getInput(0)
+        pipe = node.eval(index)
+        image = gs.obj[pipe](prompt=self.content.prompt.toPlainText(), num_inference_steps=self.content.steps.value()).images[0]
         qimage = ImageQt(image)
         pixmap = QPixmap().fromImage(qimage)
-
         return pixmap
+    @QtCore.Slot(object)
+    def onWorkerFinished(self, result):
+        # Update the node value and mark it as dirty
+        self.value = result
+        self.markDirty(False)
+        self.markInvalid(False)
+        #self.markDescendantsDirty()
+        self.evalChildren()

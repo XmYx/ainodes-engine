@@ -13,26 +13,11 @@ from nodeeditor.utils import dumpException
 from singleton import Singleton
 
 gs = Singleton()
-class DiffusersWidget(QDMNodeContentWidget):
+class DiffusersLoaderWidget(QDMNodeContentWidget):
     def initUI(self):
         # Create a label to display the image
-        self.text_label = QtWidgets.QLabel("Diffusers:")
-        self.prompt = QtWidgets.QTextEdit()
-        self.steps = QtWidgets.QSpinBox()
-        self.steps.setMinimum(1)
-        self.steps.setMaximum(1000)
-        self.steps.setValue(25)
-        self.button = QtWidgets.QPushButton("Load diffusers")
-        #self.button.clicked.connect(self.parent.parent.load_diffusers)
-        self.infer_button = QtWidgets.QPushButton("Infer Diffusers")
-        #self.infer_button.clicked.connect(self.parent.parent.emit_run_signal)
         layout = QtWidgets.QVBoxLayout(self)
         layout.setContentsMargins(0,0,0,0)
-        layout.addWidget(self.text_label)
-        layout.addWidget(self.prompt)
-        layout.addWidget(self.steps)
-        layout.addWidget(self.button)
-        layout.addWidget(self.infer_button)
 
         self.setLayout(layout)
 
@@ -45,7 +30,7 @@ class DiffusersWidget(QDMNodeContentWidget):
         res = super().deserialize(data, hashmap)
         try:
             value = data['value']
-            self.image.setPixmap(value)
+            #self.image.setPixmap(value)
             return True & res
         except Exception as e:
             dumpException(e)
@@ -62,14 +47,15 @@ class DiffusersNode(CalcNode):
     def __init__(self, scene):
         super().__init__(scene, inputs=[], outputs=[3])
         self.eval()
+        self.content.eval_signal.connect(self.eval)
 
     def initInnerClasses(self):
-        #self.content = DiffusersWidget(self)
+        self.content = DiffusersLoaderWidget(self)
         self.grNode = CalcGraphicsNode(self)
 
         #self.content.image.changeEvent.connect(self.onInputChanged)
 
-    def evalImplementation(self):
+    def evalImplementation(self, index=0):
 
         if self.value is None:
             self.markInvalid()
@@ -81,8 +67,8 @@ class DiffusersNode(CalcNode):
             self.markInvalid(False)
             self.grNode.setToolTip("")
 
-            self.markDescendantsDirty()
-            self.evalChildren()
+            #self.markDescendantsDirty()
+            #self.evalChildren()
 
             return self.value
 

@@ -433,7 +433,7 @@ class Node(Serializable):
             if len(input_socket.edges) == 0: return None
             connecting_edge = input_socket.edges[0]
             other_socket = connecting_edge.getOtherSocket(self.inputs[index])
-            return other_socket.node
+            return other_socket.node, other_socket.index
         except Exception as e:
             dumpException(e)
             return None

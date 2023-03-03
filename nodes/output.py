@@ -40,8 +40,9 @@ class ImageInputNode(CalcNode):
     content_label_objname = "image_output_node"
 
     def __init__(self, scene):
-        super().__init__(scene, inputs=[1], outputs=[])
+        super().__init__(scene, inputs=[1], outputs=[1])
         self.eval()
+        self.content.eval_signal.connect(self.eval)
 
     def initInnerClasses(self):
         self.content = ImageOutputWidget(self)
@@ -49,35 +50,41 @@ class ImageInputNode(CalcNode):
 
         #self.content.image.changeEvent.connect(self.onInputChanged)
 
-    def evalImplementation(self):
-        input_node = self.getInput(0)
-        if not input_node:
-            self.grNode.setToolTip("Input is not connected")
-            self.markInvalid()
-            return
+    def evalImplementation(self, index=0):
+        if self.getInput(0) != None:
+            input_node, other_index = self.getInput(0)
+            if not input_node:
+                self.grNode.setToolTip("Input is not connected")
+                self.markInvalid()
+                return
 
-        val = input_node.eval()
+            val = input_node.eval()
 
-        if val is None:
-            self.grNode.setToolTip("Input is NaN")
-            self.markInvalid()
-            return
+            if val is None:
+                self.grNode.setToolTip("Input is NaN")
+                self.markInvalid()
+                return
 
-        self.content.image.setPixmap(val)
-        self.markInvalid(False)
-        self.markDirty(False)
-        self.grNode.setToolTip("")
+            self.content.image.setPixmap(val)
+            self.markInvalid(False)
+            self.markDirty(False)
+            self.grNode.setToolTip("")
 
-        self.grNode.height = self.content.image.pixmap().size().height() + 32
-        self.grNode.width = self.content.image.pixmap().size().width() + 32
-        self.content.image.setMinimumHeight(self.content.image.pixmap().size().height())
-        self.content.image.setMinimumWidth(self.content.image.pixmap().size().width())
-        self.content.setMinimumHeight(self.content.image.pixmap().size().height())
-        self.content.setMinimumWidth(self.content.image.pixmap().size().width())
+            self.grNode.height = self.content.image.pixmap().size().height() + 32
+            self.grNode.width = self.content.image.pixmap().size().width() + 32
+            self.content.image.setMinimumHeight(self.content.image.pixmap().size().height())
+            self.content.image.setMinimumWidth(self.content.image.pixmap().size().width())
+            self.content.setMinimumHeight(self.content.image.pixmap().size().height())
+            self.content.setMinimumWidth(self.content.image.pixmap().size().width())
 
-        self.content.update()
-        self.grNode.update()
+            self.content.update()
+            self.grNode.update()
 
-        self.markChildrenDirty(True)
+            self.markChildrenDirty(True)
 
-        return val
+            return val
+        else:
+            self.markChildrenDirty(True)
+            self.evalChildren()
+            return self.value
+

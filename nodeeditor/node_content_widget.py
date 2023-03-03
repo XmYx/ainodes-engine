@@ -4,9 +4,12 @@ an overridden Text Widget, which can pass a notification to it's parent about be
 from collections import OrderedDict
 from nodeeditor.node_serializable import Serializable
 from qtpy.QtWidgets import QWidget, QLabel, QVBoxLayout, QTextEdit
+from qtpy import QtCore
 
 
 class QDMNodeContentWidget(QWidget, Serializable):
+    eval_signal = QtCore.Signal(int)
+
     """Base class for representation of the Node's graphics content. This class also provides layout
     for other widgets inside of a :py:class:`~nodeeditor.node_node.Node`"""
     def __init__(self, node:'Node', parent:QWidget=None):

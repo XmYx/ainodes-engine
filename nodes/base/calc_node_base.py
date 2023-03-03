@@ -1,5 +1,5 @@
 from qtpy.QtGui import QImage
-from qtpy.QtCore import QRectF
+from qtpy.QtCore import QRectF, Signal
 from qtpy.QtWidgets import QLabel
 
 from nodeeditor.node_node import Node
@@ -21,6 +21,7 @@ class CalcGraphicsNode(QDMGraphicsNode):
         self.title_horizontal_padding = 8
         self.title_vertical_padding = 10
 
+
     def initAssets(self):
         super().initAssets()
         self.icons = QImage("icons/status_icons.png")
@@ -40,6 +41,8 @@ class CalcGraphicsNode(QDMGraphicsNode):
 
 
 class CalcContent(QDMNodeContentWidget):
+    eval_signal = Signal()
+
     def initUI(self):
         lbl = QLabel(self.node.content_label, self)
         lbl.setObjectName(self.node.content_label_objname)
@@ -68,7 +71,7 @@ class CalcNode(Node):
     def setOutput(self, index, value):
         object_name = self.getID(index)
         gs.values[object_name] = value
-    def getOutput(self, index, value):
+    def getOutput(self, index):
         object_name = self.getID(index)
         value = gs.values[object_name]
         return value
@@ -80,7 +83,7 @@ class CalcNode(Node):
     def evalOperation(self, input1, input2):
         return 123
 
-    def evalImplementation(self):
+    def evalImplementation(self, index=0):
         i1 = self.getInput(0)
         i2 = self.getInput(1)
 
@@ -102,14 +105,13 @@ class CalcNode(Node):
 
             return val
 
-    def eval(self):
+    def eval(self, index=0):
         if not self.isDirty() and not self.isInvalid():
             print(" _> returning cached %s value:" % self.__class__.__name__, self.value)
             return self.value
 
         try:
-
-            val = self.evalImplementation()
+            val = self.evalImplementation(index)
             return val
         except ValueError as e:
             self.markInvalid()

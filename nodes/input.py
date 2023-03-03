@@ -71,6 +71,8 @@ class ImageInputNode(CalcNode):
     def __init__(self, scene):
         super().__init__(scene, inputs=[], outputs=[3])
         self.eval()
+        self.content.eval_signal.connect(self.eval)
+
 
     def initInnerClasses(self):
         self.content = ImageInputWidget(self)
@@ -82,7 +84,7 @@ class ImageInputNode(CalcNode):
 
         #self.content.image.changeEvent.connect(self.onInputChanged)
 
-    def evalImplementation(self):
+    def evalImplementation(self, index=0):
         u_value = self.content.image.pixmap()
         s_value = u_value
         self.value = s_value
@@ -96,4 +98,4 @@ class ImageInputNode(CalcNode):
 
         self.evalChildren()
 
-        return self.value
+        return self.content.image.pixmap()

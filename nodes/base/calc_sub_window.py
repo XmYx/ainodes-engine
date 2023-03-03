@@ -1,5 +1,5 @@
 from qtpy.QtGui import QIcon, QPixmap
-from qtpy.QtCore import QDataStream, QIODevice, Qt
+from qtpy.QtCore import QDataStream, QIODevice, Qt, QThreadPool
 from qtpy.QtWidgets import QAction, QGraphicsProxyWidget, QMenu
 
 from nodeeditor.node_node import Node
@@ -21,7 +21,7 @@ class CalculatorSubWindow(NodeEditorWidget):
         self.setTitle()
 
         self.initNewNodeActions()
-
+        self.scene.threadpool = QThreadPool()
         self.scene.addHasBeenModifiedListener(self.setTitle)
         self.scene.history.addHistoryRestoredListener(self.onHistoryRestored)
         self.scene.addDragEnterListener(self.onDragEnter)
@@ -207,17 +207,19 @@ class CalculatorSubWindow(NodeEditorWidget):
         action = context_menu.exec_(self.mapToGlobal(event.pos()))
 
         if action is not None:
-            new_calc_node = get_class_from_opcode(action.data())(self.scene)
-            scene_pos = self.scene.getView().mapToScene(event.pos())
-            new_calc_node.setPos(scene_pos.x(), scene_pos.y())
-            if DEBUG_CONTEXT: print("Selected node:", new_calc_node)
 
-            if self.scene.getView().mode == MODE_EDGE_DRAG:
-                # if we were dragging an edge...
-                target_socket = self.determine_target_socket_of_node(self.scene.getView().dragging.drag_start_socket.is_output, new_calc_node)
-                if target_socket is not None:
-                    self.scene.getView().dragging.edgeDragEnd(target_socket.grSocket)
-                    self.finish_new_node_state(new_calc_node)
+            if action.text() != "Run All":
+                new_calc_node = get_class_from_opcode(action.data())(self.scene)
+                scene_pos = self.scene.getView().mapToScene(event.pos())
+                new_calc_node.setPos(scene_pos.x(), scene_pos.y())
+                if DEBUG_CONTEXT: print("Selected node:", new_calc_node)
 
-            else:
-                self.scene.history.storeHistory("Created %s" % new_calc_node.__class__.__name__)
+                if self.scene.getView().mode == MODE_EDGE_DRAG:
+                    # if we were dragging an edge...
+                    target_socket = self.determine_target_socket_of_node(self.scene.getView().dragging.drag_start_socket.is_output, new_calc_node)
+                    if target_socket is not None:
+                        self.scene.getView().dragging.edgeDragEnd(target_socket.grSocket)
+                        self.finish_new_node_state(new_calc_node)
+
+                else:
+                    self.scene.history.storeHistory("Created %s" % new_calc_node.__class__.__name__)
