@@ -49,12 +49,14 @@ class LoopNode(CalcNode):
         self.grNode = CalcGraphicsNode(self)
 
     def evalImplementation(self, index=0):
-        node, index = self.getInput(0)
-        node.markDirty()
-        self.markChildrenDirty()
-        for node in self.getChildrenNodes():
-            node.markDirty()
-            node.content.eval_signal.emit(0)
+        #node, index = self.getInput(0)
+        #node.markDirty()
+        #self.markChildrenDirty()
+        for node in self.scene.nodes:
+            node.markDirty(True)
+        node = self.getOutputs(0)[0]
+        node.eval()
+            #node.content.eval_signal.emit(0)
 
     def onInputChanged(self, socket: 'Socket'):
         """Event handling when Node's input Edge has changed. We auto-mark this `Node` to be `Dirty` with all it's
@@ -64,8 +66,8 @@ class LoopNode(CalcNode):
         :type socket: :class:`~nodeeditor.node_socket.Socket`
         """
         self.eval()
-        socket.node.markDirty()
-        self.evalChildren()
+        #socket.node.markDirty()
+        #self.evalChildren()
         #self.markDirty()
         #self.markDescendantsDirty()
         #for socket in self.outputs:

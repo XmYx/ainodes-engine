@@ -66,6 +66,7 @@ class ImageInputNode(CalcNode):
                 return
 
             self.content.image.setPixmap(val)
+            self.setOutput(0, val)
             self.markInvalid(False)
             self.markDirty(False)
             self.grNode.setToolTip("")
@@ -81,7 +82,8 @@ class ImageInputNode(CalcNode):
             self.grNode.update()
 
             self.markChildrenDirty(True)
-
+            node = self.getOutputs(0)[0]
+            node.content.eval_signal.emit(0)
             return val
         else:
             self.markChildrenDirty(True)

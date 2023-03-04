@@ -83,14 +83,15 @@ class ImageOpNode(CalcNode):
         if self.isDirty() == True:
             if self.getInput(index) != None:
                 #self.markInvalid()
-                self.markDescendantsDirty()
+                #self.markDescendantsDirty()
                 node, index = self.getInput(index)
 
                 print("RETURN", node, index)
 
-                pixmap = node.eval(index)
+                pixmap = node.getOutput(index)
                 method = self.content.dropdown.currentText()
                 self.value = self.image_op(pixmap, method)
+                self.setOutput(0, self.value)
                 self.markDirty(False)
                 self.markInvalid(False)
                 self.evalChildren()
