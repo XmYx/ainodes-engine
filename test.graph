@@ -1,0 +1,59 @@
+{
+    "id": 140444372243024,
+    "scene_width": 64000,
+    "scene_height": 64000,
+    "nodes": [
+        {
+            "id": 140443749807872,
+            "title": "Diffusers Sampling",
+            "pos_x": 61.0,
+            "pos_y": -270.0,
+            "inputs": [
+                {
+                    "id": 140448236511184,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 2,
+                    "socket_type": 3
+                },
+                {
+                    "id": 140448236510992,
+                    "index": 1,
+                    "multi_edges": false,
+                    "position": 2,
+                    "socket_type": 3
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 140443749845024,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 5,
+                    "socket_type": 3
+                }
+            ],
+            "content": {},
+            "op_code": 4
+        },
+        {
+            "id": 140448245331904,
+            "title": "Diffusers",
+            "pos_x": -400.0,
+            "pos_y": -249.0,
+            "inputs": [],
+            "outputs": [
+                {
+                    "id": 140443749844112,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 5,
+                    "socket_type": 3
+                }
+            ],
+            "content": {},
+            "op_code": 3
+        }
+    ],
+    "edges": []
+}

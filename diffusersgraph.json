@@ -6,8 +6,8 @@
         {
             "id": 139883139007632,
             "title": "Diffusers",
-            "pos_x": -417.92187499999994,
-            "pos_y": -249.20312500000006,
+            "pos_x": -594.4062499999999,
+            "pos_y": -1154.573120117187,
             "inputs": [],
             "outputs": [
                 {
@@ -24,8 +24,8 @@
         {
             "id": 139878502430608,
             "title": "Diffusers Sampling",
-            "pos_x": -158.796875,
-            "pos_y": -446.10937499999994,
+            "pos_x": -502.17822265624994,
+            "pos_y": -668.1021728515624,
             "inputs": [
                 {
                     "id": 139878502430848,
@@ -57,8 +57,8 @@
         {
             "id": 139878502129328,
             "title": "Output",
-            "pos_x": 254.25,
-            "pos_y": -10.500000000000028,
+            "pos_x": -84.19757080078111,
+            "pos_y": -1067.769287109375,
             "inputs": [
                 {
                     "id": 139880049368272,
@@ -83,8 +83,8 @@
         {
             "id": 139882620557488,
             "title": "Loop",
-            "pos_x": 888.6718749999998,
-            "pos_y": -11.718750000000014,
+            "pos_x": 594.3533325195308,
+            "pos_y": 215.25329589843744,
             "inputs": [
                 {
                     "id": 139883775251216,
@@ -105,6 +105,188 @@
             ],
             "content": {},
             "op_code": 8
+        },
+        {
+            "id": 140615487034944,
+            "title": "Image Operators",
+            "pos_x": 541.1026000976561,
+            "pos_y": -1072.6730346679683,
+            "inputs": [
+                {
+                    "id": 140615487035328,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 2,
+                    "socket_type": 3
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 140615487035376,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 5,
+                    "socket_type": 3
+                }
+            ],
+            "content": {},
+            "op_code": 7
+        },
+        {
+            "id": 140615487035184,
+            "title": "Output",
+            "pos_x": 791.7404174804684,
+            "pos_y": -1056.0226440429683,
+            "inputs": [
+                {
+                    "id": 140615487033744,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 2,
+                    "socket_type": 1
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 140615487033408,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 5,
+                    "socket_type": 1
+                }
+            ],
+            "content": {},
+            "op_code": 2
+        },
+        {
+            "id": 140614214726944,
+            "title": "Image Operators",
+            "pos_x": 1382.102966308593,
+            "pos_y": -1040.7028198242183,
+            "inputs": [
+                {
+                    "id": 140614214726656,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 2,
+                    "socket_type": 3
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 140614214727040,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 5,
+                    "socket_type": 3
+                }
+            ],
+            "content": {},
+            "op_code": 7
+        },
+        {
+            "id": 140614214726512,
+            "title": "Output",
+            "pos_x": 376.39617919921943,
+            "pos_y": -2104.1870117187486,
+            "inputs": [
+                {
+                    "id": 140614214726128,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 2,
+                    "socket_type": 1
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 140614214726224,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 5,
+                    "socket_type": 1
+                }
+            ],
+            "content": {},
+            "op_code": 2
+        },
+        {
+            "id": 140615487033296,
+            "title": "Output",
+            "pos_x": 1655.2734374999993,
+            "pos_y": -1040.0390624999995,
+            "inputs": [
+                {
+                    "id": 140614214720864,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 2,
+                    "socket_type": 1
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 140614214721392,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 5,
+                    "socket_type": 1
+                }
+            ],
+            "content": {},
+            "op_code": 2
+        },
+        {
+            "id": 140614214728144,
+            "title": "Image Operators",
+            "pos_x": 1073.4374999999993,
+            "pos_y": -1940.6249999999986,
+            "inputs": [
+                {
+                    "id": 140614214726704,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 2,
+                    "socket_type": 3
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 140614214726848,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 5,
+                    "socket_type": 3
+                }
+            ],
+            "content": {},
+            "op_code": 7
+        },
+        {
+            "id": 140614214727712,
+            "title": "Output",
+            "pos_x": 1371.874999999999,
+            "pos_y": -1967.1874999999986,
+            "inputs": [
+                {
+                    "id": 140614214727952,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 2,
+                    "socket_type": 1
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 140614214727328,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 5,
+                    "socket_type": 1
+                }
+            ],
+            "content": {},
+            "op_code": 2
         }
     ],
     "edges": [
@@ -121,16 +303,52 @@
             "end": 139880049368272
         },
         {
-            "id": 139878427748576,
-            "edge_type": 2,
-            "start": 139880049366784,
-            "end": 139883775251216
-        },
-        {
             "id": 139878402388656,
             "edge_type": 2,
             "start": 139878427746704,
             "end": 139878502430752
+        },
+        {
+            "id": 140615486991616,
+            "edge_type": 2,
+            "start": 140615487035376,
+            "end": 140615487033744
+        },
+        {
+            "id": 140615761797664,
+            "edge_type": 2,
+            "start": 139880049366784,
+            "end": 140615487035328
+        },
+        {
+            "id": 140614214713056,
+            "edge_type": 2,
+            "start": 140615487033408,
+            "end": 140614214726656
+        },
+        {
+            "id": 140614214728336,
+            "edge_type": 2,
+            "start": 140614214727040,
+            "end": 140614214720864
+        },
+        {
+            "id": 140614214726752,
+            "edge_type": 2,
+            "start": 140614214721392,
+            "end": 139883775251216
+        },
+        {
+            "id": 140614214726800,
+            "edge_type": 2,
+            "start": 140614214726224,
+            "end": 140614214726704
+        },
+        {
+            "id": 140614214727808,
+            "edge_type": 2,
+            "start": 140614214726848,
+            "end": 140614214727952
         }
     ]
 }
