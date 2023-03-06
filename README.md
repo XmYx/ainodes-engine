@@ -9,6 +9,8 @@ https://github.com/comfyanonymous/ComfyUI
 
 Installation / Running the app:
 
+In any case, it is advised to use "git clone https://github.com/XmYx/ainodes-engine" to allow the app to self update at launch.
+
   Windows:
     Run run.bat
     
