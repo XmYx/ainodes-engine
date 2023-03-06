@@ -12,12 +12,8 @@ import os
 from omegaconf import OmegaConf
 
 from ldm.util import instantiate_from_config
-from backend import singleton
+from backend import singleton as gs
 
-gs = singleton
-gs.ckpt = {}
-gs.ckpt["loaded"] = "Empty"
-gs.models = {}
 
 import torch
 from torch import nn
@@ -34,10 +30,12 @@ class ModelLoader(torch.nn.Module):
         self.device = "cuda"
         print("PyTorch model loader")
 
+
     def load_model(self, file=None, config=None, verbose=False):
         print(file)
-        print(gs.ckpt["loaded"])
-        if gs.ckpt["loaded"] != file:
+        print(gs.loaded_models["loaded"])
+        if gs.loaded_models["loaded"] != file:
+            gs.loaded_models["loaded"] = file
             ckpt = f"models/checkpoints/{file}"
             gs.force_inpaint = False
             ckpt_print = ckpt.replace('\\', '/')
@@ -49,7 +47,7 @@ class ModelLoader(torch.nn.Module):
             config = os.path.join('models/configs', config)
 
 
-            gs.ckpt = ckpt
+
             self.prev_seamless = False
             if verbose:
                 print(f"Loading model from {ckpt} with config {config}")
@@ -111,6 +109,7 @@ class ModelLoader(torch.nn.Module):
 
             # todo make this 'cuda' a parameter
             gs.models["sd"].to(self.device)
+
         return ckpt
     def return_model_version(self, model):
         print('calculating sha to estimate the model version')

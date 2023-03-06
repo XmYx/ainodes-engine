@@ -9,7 +9,7 @@ import torch
 from PIL import Image
 from PIL.ImageQt import ImageQt
 #from qtpy.QtWidgets import QLineEdit, QLabel, QPushButton, QFileDialog, QVBoxLayout
-from qtpy import QtWidgets, QtCore
+from qtpy import QtWidgets, QtCore, QtGui
 from qtpy.QtGui import QPixmap
 from nodes.base.node_config import register_node, OP_NODE_K_SAMPLER
 from nodes.base.ai_node_base import CalcNode, CalcGraphicsNode
@@ -33,11 +33,29 @@ class KSamplerWidget(QDMNodeContentWidget):
         self.sampler.addItems(SAMPLERS)
 
         self.seed = QtWidgets.QLineEdit()
-        self.steps = QtWidgets.QSpinBox()
 
+        self.steps = QtWidgets.QSpinBox()
         self.steps.setMinimum(1)
         self.steps.setMaximum(1000)
         self.steps.setValue(10)
+
+        self.start_step = QtWidgets.QSpinBox()
+        self.start_step.setMinimum(1)
+        self.start_step.setMaximum(1000)
+        self.start_step.setValue(10)
+
+        self.last_step = QtWidgets.QSpinBox()
+        self.last_step.setMinimum(1)
+        self.last_step.setMaximum(1000)
+        self.last_step.setValue(10)
+
+        self.stop_early = QtWidgets.QCheckBox("Stop sampling early")
+
+        palette = QtGui.QPalette()
+        palette.setColor(QtGui.QPalette.WindowText, QtGui.QColor("white"))
+        palette.setColor(QtGui.QPalette.Disabled, QtGui.QPalette.WindowText, QtGui.QColor("black"))
+
+        self.stop_early.setPalette(palette)
 
         self.guidance_scale = QtWidgets.QDoubleSpinBox()
         self.guidance_scale.setMinimum(1.01)
@@ -53,6 +71,11 @@ class KSamplerWidget(QDMNodeContentWidget):
         layout.addWidget(self.sampler)
         layout.addWidget(self.seed)
         layout.addWidget(self.steps)
+        layout.addWidget(self.start_step)
+        layout.addWidget(self.last_step)
+        layout.addWidget(self.stop_early)
+        layout.addWidget(self.steps)
+
         layout.addWidget(self.guidance_scale)
         layout.addWidget(self.button)
         self.setLayout(layout)
@@ -100,7 +123,7 @@ class KSamplerNode(CalcNode):
     def initInnerClasses(self):
         self.content = KSamplerWidget(self)
         self.grNode = CalcGraphicsNode(self)
-        self.grNode.height = 340
+        self.grNode.height = 420
         self.grNode.width = 256
         self.content.setMinimumWidth(256)
         self.content.setMinimumHeight(256)
@@ -157,8 +180,18 @@ class KSamplerNode(CalcNode):
             seed = int(seed)
         except:
             seed = secrets.randbelow(99999999)
-
-        sample = common_ksampler("cuda", seed, self.content.steps.value(), self.content.guidance_scale.value(), self.content.sampler.currentText(), self.content.schedulers.currentText(), cond, n_cond, latent)
+        last_step = self.content.steps.value() if self.content.stop_early.isChecked == False else self.content.last_step.value()
+        sample = common_ksampler(device="cuda",
+                                 seed=seed,
+                                 steps=self.content.steps.value(),
+                                 start_step=self.content.start_step.value(),
+                                 last_step=last_step,
+                                 cfg=self.content.guidance_scale.value(),
+                                 sampler_name=self.content.sampler.currentText(),
+                                 scheduler=self.content.schedulers.currentText(),
+                                 positive=cond,
+                                 negative=n_cond,
+                                 latent=latent)
 
         return_sample = sample.cpu().half()
 

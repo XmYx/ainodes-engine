@@ -54,6 +54,9 @@ class CalcNode(Node):
     content_label = ""
     content_label_objname = "calc_node_bg"
     category = "default"
+    input_socket_name = ["EXEC"]
+    output_socket_name = ["EXEC"]
+
     GraphicsNode_class = CalcGraphicsNode
     NodeContent_class = CalcContent
 

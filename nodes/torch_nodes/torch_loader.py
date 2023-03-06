@@ -14,9 +14,8 @@ from node_engine.utils import dumpException
 
 #gs = Singleton()
 
-from backend import singleton
+from backend import singleton as gs
 
-gs = singleton
 class TorchLoaderWidget(QDMNodeContentWidget):
     def initUI(self):
         # Create a label to display the image
@@ -72,8 +71,10 @@ class TorchLoaderNode(CalcNode):
     op_title = "Torch Loader"
     content_label_objname = "torch_loader_node"
     category = "model"
+    input_socket_name = ["EXEC"]
+    output_socket_name = ["EXEC"]
     def __init__(self, scene):
-        super().__init__(scene, inputs=[], outputs=[])
+        super().__init__(scene, inputs=[1], outputs=[1])
 
         self.content.eval_signal.connect(self.eval)
         self.loader = ModelLoader()
@@ -82,42 +83,36 @@ class TorchLoaderNode(CalcNode):
         self.content = TorchLoaderWidget(self)
         self.grNode = CalcGraphicsNode(self)
         self.grNode.width = 300
-        self.grNode.height = 110
+        self.grNode.height = 160
 
     def evalImplementation(self, index=0):
+
         model_name = self.content.dropdown.currentText()
         config_name = self.content.config_dropdown.currentText()
-        if self.value != model_name:
-            self.markInvalid()
+        print("Loaded Model currently:", gs.loaded_models["loaded"])
+        if gs.loaded_models["loaded"] != model_name:
+
             if model_name != "":
                 self.value = model_name
                 self.setOutput(0, model_name)
+                
                 self.loader.load_model(model_name, config_name)
                 self.markDirty(False)
                 self.markInvalid(False)
-                return self.value
-            else:
-                return self.value
         else:
             self.markDirty(False)
             self.markInvalid(False)
             self.grNode.setToolTip("")
-            return self.value
 
+        if len(self.getOutputs(0)) > 0:
+            self.executeChild(output_index=0)
 
-    def load_diffusers(self, model_name):
-        if not "pipe" in gs.obj:
-            repo_id = model_name
-            gs.obj["pipe"] = StableDiffusionPipeline.from_pretrained(pretrained_model_name_or_path=repo_id,
-                                                                     torch_dtype=torch.float16,
-                                                                     safety_checker=None,
-                                                                     use_auth_token=self.content.token.text()).to("cuda")
-            gs.obj["pipe"].enable_xformers_memory_efficient_attention()
-            print("Diffusers model:", model_name, "loaded")
-        else:
-            print("No reload needed")
-        return "pipe"
-
+        return self.value
+    def eval(self, index=0):
+        self.markDirty(True)
+        self.evalImplementation(0)
+    def onInputChanged(self, socket=None):
+        pass
 
 
 
