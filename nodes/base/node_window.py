@@ -38,8 +38,8 @@ class CalculatorWindow(NodeEditorWindow):
         self.name_company = 'aiNodes'
         self.name_product = 'AI Node Editos'
         gs.loaded_models["loaded"] = "Empty"
-        print(gs.loaded_models)
-        print(gs.loaded_models["loaded"])
+        #print(gs.loaded_models)
+        #print(gs.loaded_models["loaded"])
 
         self.stylesheet_filename = os.path.join(os.path.dirname(__file__), "qss/node_engine-dark.qss")
         loadStylesheets(

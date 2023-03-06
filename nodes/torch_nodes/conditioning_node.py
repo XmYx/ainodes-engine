@@ -9,6 +9,7 @@ from node_engine.utils import dumpException
 #gs = Singleton()
 
 from backend import singleton as gs
+from nodes.torch_nodes.torch_loader import TorchLoaderNode
 
 
 class ConditioningWidget(QDMNodeContentWidget):
@@ -103,6 +104,13 @@ class ConditioningNode(CalcNode):
     def get_conditioning(self, progress_callback=None):
         #print("Getting Conditioning on ", id(self))
         prompt = self.content.prompt.toPlainText()
+
+        if gs.loaded_models["loaded"] == "Empty":
+            for node in self.scene.nodes:
+                if isinstance(node, TorchLoaderNode):
+                    node.evalImplementation()
+                    #print("Node found")
+
         c = gs.models["sd"].cond_stage_model.encode([prompt])
         uc = {}
         return [[c, uc]]

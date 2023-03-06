@@ -29,8 +29,9 @@ class TorchLoaderWidget(QDMNodeContentWidget):
         self.dropdown.addItems(checkpoint_files)
         config_folder = "models/configs"
         config_files = [f for f in os.listdir(config_folder) if f.endswith((".yaml"))]
+        config_files = sorted(config_files, key=str.lower)
         self.config_dropdown.addItems(config_files)
-
+        self.config_dropdown.setCurrentText("v1-inference_fp16.yaml")
         # Add the dropdown widget to the layout
         layout = QtWidgets.QVBoxLayout()
         layout.addWidget(self.dropdown)
