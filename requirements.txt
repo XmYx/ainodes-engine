@@ -1,5 +1,5 @@
-qtpy
 pyside6
+qtpy
 transformers
 diffusers
 einops
@@ -14,4 +14,9 @@ accelerate
 --extra-index-url https://download.pytorch.org/whl/cu117
 torch
 torchvision
-
+xformers
+scipy
+torchdiffeq
+torchsde
+opencv-contrib-python
+triton==2.0.0
