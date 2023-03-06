@@ -1,5 +1,7 @@
 from inspect import isfunction
 import math
+
+import psutil
 import torch
 import torch.nn.functional as F
 from torch import nn, einsum
@@ -9,7 +11,7 @@ from typing import Optional, Any
 from ldm.modules.diffusionmodules.util import checkpoint
 from .sub_quadratic_attention import efficient_dot_product_attention
 
-from comfy import model_management
+#from comfy import model_management
 
 try:
     import xformers
@@ -191,7 +193,7 @@ class CrossAttentionBirchSan(nn.Module):
         _, _, k_tokens = key_t.shape
         qk_matmul_size_bytes = batch_x_heads * bytes_per_token * q_tokens * k_tokens
 
-        mem_free_total, mem_free_torch = model_management.get_free_memory(query.device, True)
+        mem_free_total, mem_free_torch = get_free_memory(query.device, True)
 
         chunk_threshold_bytes = mem_free_torch * 0.5 #Using only this seems to work better on AMD
 
@@ -274,7 +276,7 @@ class CrossAttentionDoggettx(nn.Module):
 
         r1 = torch.zeros(q.shape[0], q.shape[1], v.shape[2], device=q.device)
 
-        mem_free_total = model_management.get_free_memory(q.device)
+        mem_free_total = get_free_memory(q.device)
 
         gb = 1024 ** 3
         tensor_size = q.shape[0] * q.shape[1] * k.shape[1] * q.element_size()
@@ -586,3 +588,22 @@ class SpatialTransformer(nn.Module):
             x = self.proj_out(x)
         return x + x_in
 
+def get_free_memory(dev=None, torch_free_too=False):
+    if dev is None:
+        dev = torch.cuda.current_device()
+
+    if hasattr(dev, 'type') and dev.type == 'cpu':
+        mem_free_total = psutil.virtual_memory().available
+        mem_free_torch = mem_free_total
+    else:
+        stats = torch.cuda.memory_stats(dev)
+        mem_active = stats['active_bytes.all.current']
+        mem_reserved = stats['reserved_bytes.all.current']
+        mem_free_cuda, _ = torch.cuda.mem_get_info(dev)
+        mem_free_torch = mem_reserved - mem_active
+        mem_free_total = mem_free_cuda + mem_free_torch
+
+    if torch_free_too:
+        return (mem_free_total, mem_free_torch)
+    else:
+        return mem_free_total
