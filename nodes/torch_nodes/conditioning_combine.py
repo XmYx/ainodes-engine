@@ -10,6 +10,68 @@ import backend.singleton as gs
 #from singleton import Singleton
 #gs = Singleton()
 
+class ConditioningSetAreaWidget(QDMNodeContentWidget):
+    def initUI(self):
+        # Create a label to display the image
+        #self.text_label = QtWidgets.QLabel("Diffusers:")
+        self.prompt = QtWidgets.QTextEdit()
+
+        self.width = QtWidgets.QSpinBox()
+        self.width.setMinimum(64)
+        self.width.setMaximum(4096)
+        self.width.setValue(64)
+        self.width.setSingleStep(64)
+
+        self.height = QtWidgets.QSpinBox()
+        self.height.setMinimum(64)
+        self.height.setMaximum(4096)
+        self.height.setValue(64)
+        self.height.setSingleStep(64)
+
+        self.x_spinbox = QtWidgets.QSpinBox()
+        self.x_spinbox.setMinimum(0)
+        self.x_spinbox.setMaximum(4096)
+        self.x_spinbox.setValue(0)
+        self.x_spinbox.setSingleStep(64)
+
+        self.y_spinbox = QtWidgets.QSpinBox()
+        self.y_spinbox.setMinimum(0)
+        self.y_spinbox.setMaximum(4096)
+        self.y_spinbox.setValue(0)
+        self.y_spinbox.setSingleStep(64)
+
+        self.strength = QtWidgets.QDoubleSpinBox()
+        self.strength.setMinimum(0.01)
+        self.strength.setMaximum(10.00)
+        self.strength.setValue(1.00)
+        self.strength.setSingleStep(0.01)
+
+        layout = QtWidgets.QVBoxLayout(self)
+        layout.setContentsMargins(15,15,15,20)
+        layout.setSpacing(10)
+        layout.addWidget(self.width)
+        layout.addWidget(self.height)
+        layout.addWidget(self.x_spinbox)
+        layout.addWidget(self.y_spinbox)
+        layout.addWidget(self.strength)
+        self.setLayout(layout)
+
+    def serialize(self):
+        res = super().serialize()
+        #res['value'] = self.edit.text()
+        return res
+
+    def deserialize(self, data, hashmap={}):
+        res = super().deserialize(data, hashmap)
+        try:
+            value = data['value']
+            #self.image.setPixmap(value)
+            return True & res
+        except Exception as e:
+            dumpException(e)
+        return res
+
+
 class ConditioningCombineWidget(QDMNodeContentWidget):
     def initUI(self):
         # Create a label to display the image
@@ -38,7 +100,7 @@ class ConditioningCombineWidget(QDMNodeContentWidget):
 
 
 @register_node(OP_NODE_CONDITIONING_COMBINE)
-class ConditioningNode(CalcNode):
+class ConditioningCombineNode(CalcNode):
     icon = "icons/in.png"
     op_code = OP_NODE_CONDITIONING_COMBINE
     op_title = "Combine Conditioning"
@@ -47,7 +109,7 @@ class ConditioningNode(CalcNode):
 
 
     def __init__(self, scene):
-        super().__init__(scene, inputs=[3,3,3], outputs=[3,3])
+        super().__init__(scene, inputs=[3,3,1], outputs=[3,1])
         self.eval()
         self.content.eval_signal.connect(self.evalImplementation)
         # Create a worker object
@@ -121,12 +183,12 @@ class ConditioningAreaNode(CalcNode):
     category = "conditioning"
 
     def __init__(self, scene):
-        super().__init__(scene, inputs=[3,3], outputs=[3,3])
+        super().__init__(scene, inputs=[3,1], outputs=[3,1])
         self.eval()
         self.content.eval_signal.connect(self.evalImplementation)
         # Create a worker object
     def initInnerClasses(self):
-        self.content = ConditioningCombineWidget(self)
+        self.content = ConditioningSetAreaWidget(self)
         self.grNode = CalcGraphicsNode(self)
         self.grNode.height = 256
         self.grNode.width = 320

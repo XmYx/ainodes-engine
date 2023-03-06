@@ -89,7 +89,7 @@ class KSamplerNode(CalcNode):
     content_label_objname = "K_sampling_node"
     category = "sampling"
     def __init__(self, scene):
-        super().__init__(scene, inputs=[1,1,1,1], outputs=[3,3,3])
+        super().__init__(scene, inputs=[2,3,3,1], outputs=[5,2,1])
 
 
         self.eval()

@@ -29,7 +29,7 @@ class ConditioningWidget(QDMNodeContentWidget):
         layout.setSpacing(10)
         #layout.addWidget(self.text_label)
         layout.addWidget(self.prompt)
-        layout.addWidget(self.steps)
+        #layout.addWidget(self.steps)
         layout.addWidget(self.button)
         #layout.addWidget(self.infer_button)
         self.setLayout(layout)
@@ -61,7 +61,7 @@ class ConditioningNode(CalcNode):
 
 
     def __init__(self, scene):
-        super().__init__(scene, inputs=[3], outputs=[4,4])
+        super().__init__(scene, inputs=[1], outputs=[3,1])
         self.eval()
         self.content.eval_signal.connect(self.evalImplementation)
         # Create a worker object
