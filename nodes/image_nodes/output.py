@@ -80,7 +80,7 @@ class ImagePreviewWidget(CalcNode):
             self.markInvalid(False)
             self.markDirty(False)
             self.grNode.setToolTip("")
-            self.grNode.height = val.height() + 64
+            self.grNode.height = val.height() + 96
             self.grNode.width = val.width() + 32
             self.content.image.setMinimumHeight(self.content.image.pixmap().size().height())
             self.content.image.setMinimumWidth(self.content.image.pixmap().size().width())

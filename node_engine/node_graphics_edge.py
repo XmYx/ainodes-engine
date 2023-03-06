@@ -139,7 +139,7 @@ class QDMGraphicsEdge(QGraphicsPathItem):
         :param y: y position
         :type y: ``float``
         """
-        self.posSource = [x, y]
+        self.posSource = [x + 10, y]
 
     def setDestination(self, x:float, y:float):
         """ Set destination point
@@ -149,7 +149,7 @@ class QDMGraphicsEdge(QGraphicsPathItem):
         :param y: y position
         :type y: ``float``
         """
-        self.posDestination = [x, y]
+        self.posDestination = [x - 10, y]
 
     def boundingRect(self) -> QRectF:
         """Defining Qt' bounding rectangle"""

@@ -169,13 +169,14 @@ class KSamplerNode(CalcNode):
         qimage = ImageQt(image)
         pixmap = QPixmap().fromImage(qimage)
         self.value = pixmap
-        return [pixmap, latent]
+        return [pixmap, return_sample]
     @QtCore.Slot(object)
     def onWorkerFinished(self, result):
         # Update the node value and mark it as dirty
         #self.value = result[0]
         self.markDirty(False)
         self.markInvalid(False)
+        print(result)
         self.setOutput(0, result[0])
         self.setOutput(1, result[1])
         self.busy = False

@@ -41,8 +41,6 @@ class CalcGraphicsNode(QDMGraphicsNode):
 
 
 class CalcContent(QDMNodeContentWidget):
-    eval_signal = Signal()
-    mark_dirty_signal = Signal()
 
     def initUI(self):
         lbl = QLabel(self.node.content_label, self)

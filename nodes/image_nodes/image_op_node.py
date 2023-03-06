@@ -1,4 +1,6 @@
-from PIL import ImageOps
+import cv2
+import numpy as np
+from PIL import ImageOps, Image
 #from qtpy.QtWidgets import QLineEdit, QLabel, QPushButton, QFileDialog, QVBoxLayout
 from qtpy import QtWidgets, QtCore
 from nodes.base.node_config import register_node, OP_NODE_IMAGE_OPS
@@ -11,6 +13,7 @@ import backend.singleton as gs
 
 image_ops_methods = [
     "resize",
+    "canny",
     "autocontrast",
     "colorize",
     "contrast",
@@ -53,11 +56,27 @@ class ImageOpsWidget(QDMNodeContentWidget):
         self.height_value.setMaximum(4096)
         self.height_value.setValue(512)
 
+        self.canny_low = QtWidgets.QSpinBox()
+        self.canny_low.setMinimum(0)
+        self.canny_low.setSingleStep(1)
+        self.canny_low.setMaximum(255)
+        self.canny_low.setValue(100)
+        self.canny_low.setVisible(False)
+
+        self.canny_high = QtWidgets.QSpinBox()
+        self.canny_high.setMinimum(0)
+        self.canny_high.setSingleStep(1)
+        self.canny_high.setMaximum(255)
+        self.canny_high.setValue(100)
+        self.canny_high.setVisible(False)
+
         layout = QtWidgets.QVBoxLayout(self)
         layout.setContentsMargins(0,0,0,0)
         layout.addWidget(self.dropdown)
         layout.addWidget(self.width_value)
         layout.addWidget(self.height_value)
+        layout.addWidget(self.canny_low)
+        layout.addWidget(self.canny_high)
         self.setLayout(layout)
 
     def dropdownChanged(self, event):
@@ -65,9 +84,19 @@ class ImageOpsWidget(QDMNodeContentWidget):
         if value == 'resize':
             self.width_value.setVisible(True)
             self.height_value.setVisible(True)
+            self.canny_high.setVisible(False)
+            self.canny_low.setVisible(False)
+
+        elif value == 'canny':
+            self.width_value.setVisible(False)
+            self.height_value.setVisible(False)
+            self.canny_high.setVisible(True)
+            self.canny_low.setVisible(True)
         else:
             self.width_value.setVisible(False)
             self.height_value.setVisible(False)
+            self.canny_high.setVisible(False)
+            self.canny_low.setVisible(False)
     def serialize(self):
         res = super().serialize()
         #res['value'] = self.edit.text()
@@ -113,8 +142,8 @@ class ImageOpNode(CalcNode):
         #self.content.image.changeEvent.connect(self.onInputChanged)
     @QtCore.Slot(int)
     def evalImplementation(self, index=0):
-
-        if self.isDirty() == True:
+        self.value = None
+        if self.value == None:
             if self.getInput(index) != None:
                 #self.markInvalid()
                 #self.markDescendantsDirty()
@@ -140,7 +169,9 @@ class ImageOpNode(CalcNode):
 
     def onMarkedDirty(self):
         self.value = None
-
+    def eval(self):
+        self.markDirty(True)
+        self.evalImplementation()
     def image_op(self, pixmap, method):
         # Convert the QPixmap object to a PIL Image object
         image = pixmap_to_pil_image(pixmap)
@@ -157,9 +188,33 @@ class ImageOpNode(CalcNode):
         elif method == 'resize':
             width = self.content.width_value.value()
             height = self.content.height_value.value()
-            image = image.resize()
+            image = image.resize((width, height), resample=Image.LANCZOS)
+        elif method == 'canny':
+
+            image = np.array(image)
+            image = cv2.Canny(image, self.content.canny_low.value(), self.content.canny_high.value(), L2gradient=True)
+            image = HWC3(image)
+            image = Image.fromarray(image)
+
         # Convert the PIL Image object to a QPixmap object
         pixmap = pil_image_to_pixmap(image)
 
         return pixmap
 
+def HWC3(x):
+    assert x.dtype == np.uint8
+    if x.ndim == 2:
+        x = x[:, :, None]
+    assert x.ndim == 3
+    H, W, C = x.shape
+    assert C == 1 or C == 3 or C == 4
+    if C == 3:
+        return x
+    if C == 1:
+        return np.concatenate([x, x, x], axis=2)
+    if C == 4:
+        color = x[:, :, 0:3].astype(np.float32)
+        alpha = x[:, :, 3:4].astype(np.float32) / 255.0
+        y = color * alpha + 255.0 * (1.0 - alpha)
+        y = y.clip(0, 255).astype(np.uint8)
+        return y

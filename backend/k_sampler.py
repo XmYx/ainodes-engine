@@ -2,6 +2,7 @@ import torch
 
 #from comfy import model_management, samplers
 from backend import samplers, singleton as gs
+from backend.torch_gc import torch_gc
 
 
 def common_ksampler(device, seed, steps, cfg, sampler_name, scheduler, positive, negative, latent, denoise=1.0, disable_noise=False, start_step=None, last_step=None, force_full_denoise=False):
@@ -62,6 +63,11 @@ def common_ksampler(device, seed, steps, cfg, sampler_name, scheduler, positive,
     #samples = samples.cpu()
     for c in control_nets:
         c.cleanup()
+    del sampler.model_k
+    del sampler.model_wrap.inner_model
+    del sampler.model_wrap
+    del sampler.model_denoise
     del sampler
+    torch_gc()
 
     return samples
