@@ -24,8 +24,10 @@ class CalculatorSubWindow(NodeEditorWidget):
         self.setTitle()
 
         self.initNewNodeActions()
-        self.scene.queue = QueueSystem()
-        self.scene.queue.task_finished.connect(self.handle_task_finished)
+
+        #self.scene.queue = QueueSystem()
+        #self.scene.queue.task_finished.connect(self.handle_task_finished)
+        self.scene.threadpool = QThreadPool()
         self.scene.addHasBeenModifiedListener(self.setTitle)
         self.scene.history.addHistoryRestoredListener(self.onHistoryRestored)
         self.scene.addDragEnterListener(self.onDragEnter)

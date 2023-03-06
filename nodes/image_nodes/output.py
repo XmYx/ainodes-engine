@@ -48,7 +48,7 @@ class ImagePreviewWidget(CalcNode):
     def __init__(self, scene):
         super().__init__(scene, inputs=[5,1], outputs=[5,1])
         self.eval()
-        self.content.eval_signal.connect(self.evalImplementation)
+        #self.content.eval_signal.connect(self.evalImplementation)
 
     def initInnerClasses(self):
         self.content = ImageOutputWidget(self)
@@ -60,7 +60,7 @@ class ImagePreviewWidget(CalcNode):
         #self.content.image.changeEvent.connect(self.onInputChanged)
 
     def evalImplementation(self, index=0):
-
+        #self.markDirty(True)
         if self.getInput(0) is not None:
             input_node, other_index = self.getInput(0)
             if not input_node:
@@ -96,7 +96,7 @@ class ImagePreviewWidget(CalcNode):
         return val
 
     def onInputChanged(self, socket=None):
-        super().onInputChanged(socket=socket)
+        #super().onInputChanged(socket=socket)
         self.markDirty(True)
         self.markInvalid(True)
         self.eval()

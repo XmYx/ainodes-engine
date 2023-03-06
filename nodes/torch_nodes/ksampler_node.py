@@ -16,6 +16,7 @@ from nodes.base.ai_node_base import CalcNode, CalcGraphicsNode
 from node_engine.node_content_widget import QDMNodeContentWidget
 from node_engine.utils import dumpException
 from backend import singleton as gs
+from worker.worker import Worker
 
 SCHEDULERS = ["karras", "normal", "simple", "ddim_uniform"]
 SAMPLERS = ["euler", "euler_ancestral", "heun", "dpm_2", "dpm_2_ancestral",
@@ -140,13 +141,14 @@ class KSamplerNode(CalcNode):
         self.busy = False
         if self.value is None:
             # Start the worker thread
-            #self.worker = Worker(self.k_sampling)
-            # Connect the worker's finished signal to a slot that updates the node value
-            #self.worker.signals.result.connect(self.onWorkerFinished)
-            self.scene.queue.add_task(self.k_sampling)
-            self.scene.queue.task_finished.connect(self.onWorkerFinished)
-            self.busy = True
-            #self.scene.threadpool.start(self.worker)
+            if self.busy == False:
+                self.worker = Worker(self.k_sampling)
+                # Connect the worker's finished signal to a slot that updates the node value
+                self.worker.signals.result.connect(self.onWorkerFinished)
+                #self.scene.queue.add_task(self.k_sampling)
+                #self.scene.queue.task_finished.connect(self.onWorkerFinished)
+                self.busy = True
+                self.scene.threadpool.start(self.worker)
             return None
         else:
             self.markDirty(False)
@@ -212,7 +214,8 @@ class KSamplerNode(CalcNode):
         self.setOutput(0, result[0])
         self.setOutput(1, result[1])
         self.busy = False
-        self.scene.queue.task_finished.disconnect(self.onWorkerFinished)
+        #self.worker.autoDelete()
+        #self.scene.queue.task_finished.disconnect(self.onWorkerFinished)
         if len(self.getOutputs(2)) > 0:
             self.executeChild(output_index=2)
         return

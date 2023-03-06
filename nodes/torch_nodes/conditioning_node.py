@@ -10,6 +10,7 @@ from node_engine.utils import dumpException
 
 from backend import singleton as gs
 from nodes.torch_nodes.torch_loader import TorchLoaderNode
+from worker.worker import Worker
 
 
 class ConditioningWidget(QDMNodeContentWidget):
@@ -82,21 +83,19 @@ class ConditioningNode(CalcNode):
 
     def evalImplementation(self, index=0):
         if self.value is None:
-            # Start the worker thread
-            #self.worker = Worker(self.get_conditioning)
-            # Connect the worker's finished signal to a slot that updates the node value
-            #self.worker.signals.result.connect(self.onWorkerFinished)
-            self.scene.queue.add_task(self.get_conditioning)
-            self.scene.queue.task_finished.connect(self.onWorkerFinished)
-            self.busy = True
-            #self.scene.threadpool.start(self.worker)
+            if self.busy == False:
+                # Start the worker thread
+                self.worker = Worker(self.get_conditioning)
+                # Connect the worker's finished signal to a slot that updates the node value
+                self.worker.signals.result.connect(self.onWorkerFinished)
+                #self.scene.queue.add_task(self.get_conditioning)
+                #self.scene.queue.task_finished.connect(self.onWorkerFinished)
+                self.busy = True
+                self.scene.threadpool.start(self.worker)
             return None
         else:
             self.markDirty(False)
             self.markInvalid(False)
-            #self.markDescendantsDirty()
-            #self.evalChildren()
-            self.executeChild()
             return self.value
 
     def onMarkedDirty(self):
@@ -118,7 +117,9 @@ class ConditioningNode(CalcNode):
     def onWorkerFinished(self, result):
         # Update the node value and mark it as dirty
         self.value = result
-        self.scene.queue.task_finished.disconnect(self.onWorkerFinished)
+        #self.scene.queue.task_finished.disconnect(self.onWorkerFinished)
+        #self.worker.autoDelete()
+        #result = None
         self.setOutput(0, result)
         self.markDirty(False)
         self.markInvalid(False)
