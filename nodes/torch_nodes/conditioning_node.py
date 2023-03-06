@@ -1,13 +1,5 @@
-from backend.k_sampler import common_ksampler
+from qtpy import QtWidgets, QtCore, QtGui
 
-import torch
-from PIL import Image
-from PIL.ImageQt import ImageQt
-from diffusers import StableDiffusionPipeline
-#from qtpy.QtWidgets import QLineEdit, QLabel, QPushButton, QFileDialog, QVBoxLayout
-from qtpy import QtWidgets, QtCore
-from qtpy.QtCore import Qt
-from qtpy.QtGui import QPixmap
 from nodes.base.node_config import register_node, OP_NODE_CONDITIONING
 from nodes.base.ai_node_base import CalcNode, CalcGraphicsNode
 from node_engine.node_content_widget import QDMNodeContentWidget
@@ -106,7 +98,7 @@ class ConditioningNode(CalcNode):
     def onMarkedDirty(self):
         self.value = None
     def get_conditioning(self, progress_callback=None):
-        print("Getting Conditioning")
+        #print("Getting Conditioning on ", id(self))
         prompt = self.content.prompt.toPlainText()
         c = gs.models["sd"].cond_stage_model.encode([prompt])
         uc = {}
@@ -120,8 +112,8 @@ class ConditioningNode(CalcNode):
         self.markDirty(False)
         self.markInvalid(False)
         self.busy = False
-        if len(self.getOutputs(0)) > 0:
-            self.executeChild()
+        if len(self.getOutputs(1)) > 0:
+            self.executeChild(output_index=1)
         return
         #self.markDescendantsDirty()
         #self.evalChildren()

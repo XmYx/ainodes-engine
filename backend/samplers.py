@@ -478,13 +478,13 @@ class KSampler:
                 if denoise_mask is not None:
                     noise_mask = 1.0 - denoise_mask
                 sampler = DDIMSampler(self.model)
-                sampler.make_schedule_timesteps(ddim_timesteps=timesteps, verbose=False)
+                sampler.make_schedule_timesteps(ddim_timesteps=timesteps, verbose=True)
                 z_enc = sampler.stochastic_encode(latent_image, torch.tensor([len(timesteps) - 1] * noise.shape[0]).to(self.device), noise=noise, max_denoise=max_denoise)
                 samples, _ = sampler.sample_custom(ddim_timesteps=timesteps,
                                                      conditioning=positive,
                                                      batch_size=noise.shape[0],
                                                      shape=noise.shape[1:],
-                                                     verbose=False,
+                                                     verbose=True,
                                                      unconditional_guidance_scale=cfg,
                                                      unconditional_conditioning=negative,
                                                      eta=0.0,

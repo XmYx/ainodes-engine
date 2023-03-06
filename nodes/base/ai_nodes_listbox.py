@@ -1,9 +1,11 @@
+import os
+
 from qtpy.QtGui import QPixmap, QIcon, QDrag
 from qtpy.QtCore import QSize, Qt, QByteArray, QDataStream, QMimeData, QIODevice, QPoint
 from qtpy.QtWidgets import QListWidget, QAbstractItemView, QListWidgetItem
 
 from nodes.base.node_config import CALC_NODES, get_class_from_opcode, LISTBOX_MIMETYPE
-from node_engine.utils import dumpException
+from node_engine.utils import dumpException, loadStylesheets
 
 
 class QDMDragListbox(QListWidget):
@@ -18,6 +20,11 @@ class QDMDragListbox(QListWidget):
         self.setDragEnabled(True)
 
         self.addMyItems()
+        self.stylesheet_filename = os.path.join(os.path.dirname(__file__), "qss/node_engine-dark.qss")
+        loadStylesheets(
+            os.path.join(os.path.dirname(__file__), "qss/node_engine-dark.qss"),
+            self.stylesheet_filename
+        )
 
 
     def addMyItems(self):

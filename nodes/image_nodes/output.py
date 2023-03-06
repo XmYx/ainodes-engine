@@ -44,13 +44,16 @@ class ImagePreviewWidget(CalcNode):
     content_label_objname = "image_output_node"
 
     def __init__(self, scene):
-        super().__init__(scene, inputs=[3], outputs=[5])
+        super().__init__(scene, inputs=[3,3], outputs=[3,3])
         self.eval()
         self.content.eval_signal.connect(self.evalImplementation)
 
     def initInnerClasses(self):
         self.content = ImageOutputWidget(self)
         self.grNode = CalcGraphicsNode(self)
+        self.output_socket_name = ["EXEC", "IMAGE"]
+        self.input_socket_name = ["EXEC", "IMAGE"]
+
         #self.content.mark_dirty_signal.connect(self.markDirty)
         #self.content.image.changeEvent.connect(self.onInputChanged)
 
@@ -69,7 +72,7 @@ class ImagePreviewWidget(CalcNode):
                 self.grNode.setToolTip("Input is NaN")
                 self.markInvalid()
                 return
-            print("Preview Node Value", val)
+            #print("Preview Node Value", val)
             self.content.image.setPixmap(val)
             self.setOutput(0, val)
             self.markInvalid(False)
@@ -84,13 +87,14 @@ class ImagePreviewWidget(CalcNode):
                 socket.setSocketPosition()
             self.updateConnectedEdges()
             #print("Reloaded")
-            if len(self.getOutputs(0)) > 0:
-                self.executeChild()
+            if len(self.getOutputs(1)) > 0:
+                self.executeChild(output_index=1)
         else:
             val = self.value
         return val
 
     def onInputChanged(self, socket=None):
+        super().onInputChanged(socket=socket)
         self.markDirty(True)
         self.markInvalid(True)
         self.eval()

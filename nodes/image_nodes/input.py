@@ -36,8 +36,9 @@ class ImageInputWidget(QDMNodeContentWidget):
         # Open the file dialog to select a PNG file
         options = QFileDialog.Options()
         options |= QFileDialog.DontUseNativeDialog
-        fileName, _ = QFileDialog.getOpenFileName(self, "Select Image", "", "PNG Files (*.png)", options=options)
-
+        fileName, _ = QFileDialog.getOpenFileName(self, "Select Image", "",
+                                                  "PNG Files (*.png);JPEG Files (*.jpeg *.jpg);All Files(*)",
+                                                  options=options)
         # If a file is selected, display the image in the label
         if fileName:
             return fileName

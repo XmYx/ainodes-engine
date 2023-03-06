@@ -24,8 +24,9 @@ OP_NODE_CONDITIONING = 10
 OP_NODE_K_SAMPLER = 11
 OP_NODE_VIDEO_INPUT = 12
 OP_NODE_CONTROLNET_LOADER = 13
-
-
+OP_NODE_CN_APPLY = 14
+OP_NODE_CONDITIONING_COMBINE = 15
+OP_NODE_CONDITIONING_SET_AREA = 16
 
 CALC_NODES = {
 }
@@ -60,5 +61,5 @@ def get_class_from_opcode(op_code):
 from nodes.image_nodes import image_op_node, input, output, video_input
 from nodes.diffusers_nodes import diffusers_loader, diffusers_sampler
 from nodes.exec_op_nodes import loop
-from nodes.torch_nodes import torch_loader, ksampler_node, conditioning_node, controlnet_loader
+from nodes.torch_nodes import torch_loader, ksampler_node, conditioning_node, controlnet_loader, controlnet_apply, conditioning_combine
 from nodes.debug_nodes import debug_text_output, debug_multi_input

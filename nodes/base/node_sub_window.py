@@ -1,3 +1,5 @@
+import os
+
 from qtpy.QtGui import QIcon, QPixmap
 from qtpy.QtCore import QDataStream, QIODevice, Qt, QThreadPool
 from qtpy.QtWidgets import QAction, QGraphicsProxyWidget, QMenu
@@ -7,7 +9,7 @@ from nodes.base.node_config import CALC_NODES, get_class_from_opcode, LISTBOX_MI
 from node_engine.node_editor_widget import NodeEditorWidget
 from node_engine.node_edge import EDGE_TYPE_DIRECT, EDGE_TYPE_BEZIER, EDGE_TYPE_SQUARE
 from node_engine.node_graphics_view import MODE_EDGE_DRAG
-from node_engine.utils import dumpException
+from node_engine.utils import dumpException, loadStylesheets
 from worker.queue import QueueSystem
 
 DEBUG = False
@@ -34,6 +36,13 @@ class CalculatorSubWindow(NodeEditorWidget):
 
         self.run_all_action = QAction("Run All")
         self.run_all_action.triggered.connect(self.doRunAll)
+        self.stylesheet_filename = os.path.join(os.path.dirname(__file__), "qss/node_engine-dark.qss")
+        loadStylesheets(
+            os.path.join(os.path.dirname(__file__), "qss/node_engine-dark.qss"),
+            self.stylesheet_filename
+        )
+
+
     def handle_task_finished(self):
         self.scene.queue.start_next_task()
     def getNodeClassFromData(self, data):
@@ -162,7 +171,7 @@ class CalculatorSubWindow(NodeEditorWidget):
             selected = item.socket.node
 
         if DEBUG_CONTEXT: print("got item:", selected)
-        if selected and action == markDirtyAct: selected.markDirty_signal()
+        if selected and action == markDirtyAct: selected.markDirty()
         if selected and action == markDirtyDescendantsAct: selected.markDescendantsDirty()
         if selected and action == markInvalidAct: selected.markInvalid()
         if selected and action == unmarkInvalidAct: selected.markInvalid(False)

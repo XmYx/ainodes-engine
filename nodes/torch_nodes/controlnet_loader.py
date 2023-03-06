@@ -104,9 +104,12 @@ class ControlnetLoaderNode(CalcNode):
 
 
     def load_controlnet(self):
-        if not "controlnet" in gs.models:
-            controlnet_path = os.path.join(self.controlnet_dir, self.control_net_name.currentText())
+        if "controlnet" not in gs.models:
+            controlnet_dir = "comfy_defaults/models/controlnet"
+            controlnet_path = os.path.join(controlnet_dir, self.content.control_net_name.currentText())
             gs.models["controlnet"] = load_controlnet(controlnet_path)
+            gs.models["controlnet"].control_model.cuda()
+
             return "controlnet"
         else:
             print("No reload needed")
