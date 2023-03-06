@@ -102,6 +102,8 @@ class VideoInputNode(CalcNode):
     op_code = OP_NODE_VIDEO_INPUT
     op_title = "Video Input"
     content_label_objname = "video_input_node"
+    category = "debug"
+
 
     def __init__(self, scene):
         super().__init__(scene, inputs=[], outputs=[1])

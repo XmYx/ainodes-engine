@@ -60,6 +60,8 @@ class ImageOpNode(CalcNode):
     op_code = OP_NODE_IMAGE_OPS
     op_title = "Image Operators"
     content_label_objname = "diffusers_sampling_node"
+    category = "image"
+
 
     def __init__(self, scene):
         super().__init__(scene, inputs=[3], outputs=[3])

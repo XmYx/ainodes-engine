@@ -60,6 +60,8 @@ class DiffusersNode(CalcNode):
     op_code = OP_NODE_DIFFUSERS_SAMPLER
     op_title = "Diffusers Sampling"
     content_label_objname = "diffusers_sampling_node"
+    category = "sampling"
+
 
     def __init__(self, scene):
         super().__init__(scene, inputs=[3,3], outputs=[3])

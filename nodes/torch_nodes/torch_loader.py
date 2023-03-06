@@ -74,9 +74,9 @@ class TorchLoaderNode(CalcNode):
     op_code = OP_NODE_TORCH_LOADER
     op_title = "Torch Loader"
     content_label_objname = "torch_loader_node"
-
+    category = "model"
     def __init__(self, scene):
-        super().__init__(scene, inputs=[], outputs=[3])
+        super().__init__(scene, inputs=[], outputs=[])
 
         self.content.eval_signal.connect(self.eval)
         self.loader = ModelLoader()
@@ -84,8 +84,8 @@ class TorchLoaderNode(CalcNode):
     def initInnerClasses(self):
         self.content = TorchLoaderWidget(self)
         self.grNode = CalcGraphicsNode(self)
-        self.grNode.width = 320
-        self.grNode.height = 180
+        self.grNode.width = 300
+        self.grNode.height = 110
 
     def evalImplementation(self, index=0):
         model_name = self.content.dropdown.currentText()

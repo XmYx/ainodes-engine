@@ -38,6 +38,8 @@ class LoopNode(CalcNode):
     op_code = OP_NODE_LOOP_NODE
     op_title = "Loop"
     content_label_objname = "image_output_node"
+    category = "debug"
+
 
     def __init__(self, scene):
         super().__init__(scene, inputs=[1], outputs=[1])

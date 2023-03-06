@@ -69,6 +69,7 @@ class ControlnetLoaderNode(CalcNode):
     op_code = OP_NODE_CONTROLNET_LOADER
     op_title = "ControlNet Loader"
     content_label_objname = "controlnet_loader_node"
+    category = "controlnet"
 
     def __init__(self, scene):
         super().__init__(scene, inputs=[], outputs=[3])

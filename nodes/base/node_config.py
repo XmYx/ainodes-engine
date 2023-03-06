@@ -32,6 +32,7 @@ OP_NODE_LATENT = 17
 CALC_NODES = {
 }
 
+node_categories = ['default', 'model', 'conditioning', 'latent', 'sampling', 'image', 'controlnet', 'debug']
 
 class ConfException(Exception): pass
 class InvalidNodeRegistration(ConfException): pass

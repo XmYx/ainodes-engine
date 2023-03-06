@@ -89,6 +89,7 @@ class KSamplerNode(CalcNode):
     op_code = OP_NODE_K_SAMPLER
     op_title = "K Sampler"
     content_label_objname = "K_sampling_node"
+    category = "sampling"
     def __init__(self, scene):
         super().__init__(scene, inputs=[1,1,1,1], outputs=[3,3])
 

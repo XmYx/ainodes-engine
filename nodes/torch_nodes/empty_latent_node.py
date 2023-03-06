@@ -55,8 +55,9 @@ class LatentWidget(QDMNodeContentWidget):
 class LatentNode(CalcNode):
     icon = "icons/in.png"
     op_code = OP_NODE_LATENT
-    op_title = "Image Operators"
+    op_title = "Empty Latent Image"
     content_label_objname = "diffusers_sampling_node"
+    category = "latent"
 
     def __init__(self, scene):
         super().__init__(scene, inputs=[3], outputs=[3,3])
@@ -66,16 +67,10 @@ class LatentNode(CalcNode):
     def initInnerClasses(self):
         self.content = LatentWidget(self)
         self.grNode = CalcGraphicsNode(self)
-        #self.content.dropdown.currentIndexChanged.connect(self.evalImplementation)
         self.input_socket_name = ["EXEC"]
         self.output_socket_name = ["EXEC", "LATENT"]
-
         self.grNode.height = 160
         self.grNode.width = 200
-        #self.content.setMinimumHeight(400)
-        #self.content.setMinimumWidth(256)
-
-        #self.content.image.changeEvent.connect(self.onInputChanged)
     @QtCore.Slot(int)
     def evalImplementation(self, index=0):
 

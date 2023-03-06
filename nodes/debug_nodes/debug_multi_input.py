@@ -37,6 +37,7 @@ class ImageInputNode(CalcNode):
     op_code = OP_NODE_DEBUG_MULTI_INPUT
     op_title = "MultiInput"
     content_label_objname = "debug_multi_input_node"
+    category = "debug"
 
     def __init__(self, scene):
         super().__init__(scene, inputs=[], outputs=[3,3,3])

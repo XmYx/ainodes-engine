@@ -82,6 +82,8 @@ class ConditioningNode(CalcNode):
     op_code = OP_NODE_CONDITIONING_COMBINE
     op_title = "Combine Conditioning"
     content_label_objname = "diffusers_sampling_node"
+    category = "conditioning"
+
 
     def __init__(self, scene):
         super().__init__(scene, inputs=[3,3,3], outputs=[3,3])
@@ -155,6 +157,7 @@ class ConditioningAreaNode(CalcNode):
     op_code = OP_NODE_CONDITIONING_SET_AREA
     op_title = "Set Conditioning Area"
     content_label_objname = "diffusers_sampling_node"
+    category = "conditioning"
 
     def __init__(self, scene):
         super().__init__(scene, inputs=[3,3], outputs=[3,3])

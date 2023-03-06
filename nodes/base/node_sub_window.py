@@ -5,7 +5,7 @@ from qtpy.QtCore import QDataStream, QIODevice, Qt, QThreadPool
 from qtpy.QtWidgets import QAction, QGraphicsProxyWidget, QMenu
 
 from node_engine.node_node import Node
-from nodes.base.node_config import CALC_NODES, get_class_from_opcode, LISTBOX_MIMETYPE
+from nodes.base.node_config import CALC_NODES, get_class_from_opcode, LISTBOX_MIMETYPE, node_categories
 from node_engine.node_editor_widget import NodeEditorWidget
 from node_engine.node_edge import EDGE_TYPE_DIRECT, EDGE_TYPE_BEZIER, EDGE_TYPE_SQUARE
 from node_engine.node_graphics_view import MODE_EDGE_DRAG
@@ -79,7 +79,7 @@ class CalculatorSubWindow(NodeEditorWidget):
             self.node_actions[node.op_code] = QAction(QIcon(node.icon), node.op_title)
             self.node_actions[node.op_code].setData(node.op_code)
 
-    def initNodesContextMenu(self):
+    def initNodesContextMenu_orig(self):
         context_menu = QMenu(self)
         keys = list(CALC_NODES.keys())
         keys.sort()
@@ -211,11 +211,38 @@ class CalculatorSubWindow(NodeEditorWidget):
         new_calc_node.grNode.doSelect(True)
         new_calc_node.grNode.onSelected()
 
+    def initNodesContextMenu(self, event):
+        menu = QMenu()
 
+        # create submenus for categories
+        category_menus = {}
+        for category in node_categories:
+            submenu = QMenu(category.capitalize(), menu)
+            category_menus[category] = submenu
+            menu.addMenu(submenu)
+
+        # add nodes to corresponding submenu
+        keys = list(CALC_NODES.keys())
+        keys.sort()
+        for key in keys:
+            node = get_class_from_opcode(key)
+            action = QAction(node.op_title, self)
+            action.setData(node.op_code)
+            pixmap = QPixmap(node.icon if node.icon is not None else ".")
+            action.setIcon(QIcon(pixmap))
+
+            # add action to the corresponding submenu
+            category_menus[node.category].addAction(action)
+
+        # add "Run All" action to the root menu
+        run_all_action = QAction("Run All", self)
+        menu.addAction(run_all_action)
+
+        return menu
     def handleNewNodeContextMenu(self, event):
 
         if DEBUG_CONTEXT: print("CONTEXT: EMPTY SPACE")
-        context_menu = self.initNodesContextMenu()
+        context_menu = self.initNodesContextMenu(event)
         action = context_menu.exec_(self.mapToGlobal(event.pos()))
 
         if action is not None:

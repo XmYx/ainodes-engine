@@ -42,6 +42,8 @@ class ImagePreviewWidget(CalcNode):
     op_code = OP_NODE_IMG_PREVIEW
     op_title = "Image Preview"
     content_label_objname = "image_output_node"
+    category = "image"
+
 
     def __init__(self, scene):
         super().__init__(scene, inputs=[3,3], outputs=[3,3])

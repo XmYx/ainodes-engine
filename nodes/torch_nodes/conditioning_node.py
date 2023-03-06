@@ -56,6 +56,8 @@ class ConditioningNode(CalcNode):
     op_code = OP_NODE_CONDITIONING
     op_title = "Conditioning"
     content_label_objname = "diffusers_sampling_node"
+    category = "conditioning"
+
 
     def __init__(self, scene):
         super().__init__(scene, inputs=[3], outputs=[4,4])

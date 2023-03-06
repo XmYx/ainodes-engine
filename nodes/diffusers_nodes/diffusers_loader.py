@@ -62,6 +62,8 @@ class DiffusersNode(CalcNode):
     op_code = OP_NODE_DIFFUSERS_LOADER
     op_title = "Diffusers"
     content_label_objname = "diffusers_node"
+    category = "model"
+
 
     def __init__(self, scene):
         super().__init__(scene, inputs=[], outputs=[3])

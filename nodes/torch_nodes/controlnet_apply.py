@@ -63,6 +63,8 @@ class CNApplyNode(CalcNode):
     op_code = OP_NODE_CN_APPLY
     op_title = "Apply ControlNet"
     content_label_objname = "CN_apply_node"
+    category = "controlnet"
+
     def __init__(self, scene):
         super().__init__(scene, inputs=[1,1,1], outputs=[3])
 

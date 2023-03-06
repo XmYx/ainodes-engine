@@ -55,7 +55,7 @@ class CalcNode(Node):
     op_title = "Undefined"
     content_label = ""
     content_label_objname = "calc_node_bg"
-
+    category = "default"
     GraphicsNode_class = CalcGraphicsNode
     NodeContent_class = CalcContent
 

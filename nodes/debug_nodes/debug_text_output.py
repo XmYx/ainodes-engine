@@ -42,6 +42,8 @@ class DebugOutputNode(CalcNode):
     op_code = OP_NODE_DEBUG_OUTPUT
     op_title = "Output"
     content_label_objname = "debug_output_node"
+    category = "debug"
+
 
     def __init__(self, scene):
         super().__init__(scene, inputs=[1], outputs=[])

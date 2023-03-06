@@ -71,6 +71,8 @@ class ImageInputNode(CalcNode):
     op_code = OP_NODE_IMG_INPUT
     op_title = "Input"
     content_label_objname = "image_input_node"
+    category = "image"
+
 
     def __init__(self, scene):
         super().__init__(scene, inputs=[], outputs=[3])
