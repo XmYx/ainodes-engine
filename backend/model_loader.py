@@ -143,7 +143,7 @@ class ModelLoader(torch.nn.Module):
                 config = 'v2-inference-v.yaml'
             else:
                 version = 'unknown'
-                config = None
+                config = 'v1-inference_fp16.yaml'
         return config, version
     def get_state_dict_from_checkpoint(self, pl_sd):
         pl_sd = pl_sd.pop("state_dict", pl_sd)
