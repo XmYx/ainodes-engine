@@ -37,4 +37,5 @@ if __name__ == "__main__":
 
     exec(open(activate_this).read(), {'__file__': activate_this})
     subprocess.run(["pip", "install", "-r", "requirements.txt"])
+    subprocess.run(["git", "pull"])
     subprocess.run([python, "main.py"])
