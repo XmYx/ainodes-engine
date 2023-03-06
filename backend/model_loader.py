@@ -12,14 +12,15 @@ import os
 from omegaconf import OmegaConf
 
 from ldm.util import instantiate_from_config
-import singleton
+from backend import singleton
+
 gs = singleton
 gs.ckpt = {}
 gs.ckpt["loaded"] = "Empty"
 gs.models = {}
 
 import torch
-from torch import nn, autocast
+from torch import nn
 import safetensors.torch
 
 

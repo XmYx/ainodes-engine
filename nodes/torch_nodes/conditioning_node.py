@@ -1,15 +1,16 @@
-from qtpy import QtWidgets, QtCore, QtGui
+from qtpy import QtWidgets, QtCore
 
 from nodes.base.node_config import register_node, OP_NODE_CONDITIONING
 from nodes.base.ai_node_base import CalcNode, CalcGraphicsNode
 from node_engine.node_content_widget import QDMNodeContentWidget
 from node_engine.utils import dumpException
 
-from worker.worker import Worker
 #from singleton import Singleton
 #gs = Singleton()
 
-import singleton as gs
+from backend import singleton as gs
+
+
 class ConditioningWidget(QDMNodeContentWidget):
     def initUI(self):
         # Create a label to display the image

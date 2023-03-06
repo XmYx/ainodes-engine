@@ -1,6 +1,6 @@
 import os, sys
 from qtpy.QtWidgets import QApplication
-from singleton import Singleton
+from backend.singleton import Singleton
 
 gs = Singleton()
 gs.obj = {}

@@ -7,10 +7,10 @@ from node_engine.node_graphics_node import QDMGraphicsNode
 from node_engine.node_content_widget import QDMNodeContentWidget
 from node_engine.node_serializable import Serializable
 from node_engine.node_socket import Socket, LEFT_BOTTOM, LEFT_CENTER, LEFT_TOP, RIGHT_BOTTOM, RIGHT_CENTER, RIGHT_TOP
-from node_engine.utils_no_qt import dumpException, pp
+from node_engine.utils_no_qt import dumpException
 
 DEBUG = False
-from singleton import Singleton
+from backend.singleton import Singleton
 
 gs = Singleton()
 

@@ -1,13 +1,9 @@
 import os
 
 import torch
-from PIL import Image
-from PIL.ImageQt import ImageQt
 from diffusers import StableDiffusionPipeline
 #from qtpy.QtWidgets import QLineEdit, QLabel, QPushButton, QFileDialog, QVBoxLayout
 from qtpy import QtWidgets
-from qtpy.QtCore import Qt
-from qtpy.QtGui import QPixmap
 
 from backend.model_loader import ModelLoader
 from nodes.base.node_config import register_node, OP_NODE_TORCH_LOADER
@@ -18,7 +14,8 @@ from node_engine.utils import dumpException
 
 #gs = Singleton()
 
-import singleton
+from backend import singleton
+
 gs = singleton
 class TorchLoaderWidget(QDMNodeContentWidget):
     def initUI(self):

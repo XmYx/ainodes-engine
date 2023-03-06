@@ -1,8 +1,8 @@
 import torch
 
 #from comfy import model_management, samplers
-from backend import samplers
-import singleton as gs
+from backend import samplers, singleton as gs
+
 
 def common_ksampler(device, seed, steps, cfg, sampler_name, scheduler, positive, negative, latent, denoise=1.0, disable_noise=False, start_step=None, last_step=None, force_full_denoise=False):
     latent_image = latent

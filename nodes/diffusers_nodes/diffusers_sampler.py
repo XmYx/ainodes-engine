@@ -1,19 +1,15 @@
-import torch
-from PIL import Image
 from PIL.ImageQt import ImageQt
-from diffusers import StableDiffusionPipeline
 #from qtpy.QtWidgets import QLineEdit, QLabel, QPushButton, QFileDialog, QVBoxLayout
 from qtpy import QtWidgets, QtCore
-from qtpy.QtCore import Qt
 from qtpy.QtGui import QPixmap
 from nodes.base.node_config import register_node, OP_NODE_DIFFUSERS_SAMPLER
 from nodes.base.ai_node_base import CalcNode, CalcGraphicsNode
 from node_engine.node_content_widget import QDMNodeContentWidget
 from node_engine.utils import dumpException
-from singleton import Singleton
+import backend.singleton as gs
 from worker.worker import Worker
 
-gs = Singleton()
+
 class DiffusersWidget(QDMNodeContentWidget):
     def initUI(self):
         # Create a label to display the image

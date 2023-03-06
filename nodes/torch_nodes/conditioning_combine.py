@@ -1,18 +1,15 @@
-import cv2
-import numpy as np
-import torch
-from qtpy import QtWidgets, QtCore, QtGui
+from qtpy import QtWidgets, QtCore
 
 from nodes.base.node_config import register_node, OP_NODE_CONDITIONING_COMBINE, OP_NODE_CONDITIONING_SET_AREA
 from nodes.base.ai_node_base import CalcNode, CalcGraphicsNode
 from node_engine.node_content_widget import QDMNodeContentWidget
 from node_engine.utils import dumpException
 
-from worker.worker import Worker
+import backend.singleton as gs
+
 #from singleton import Singleton
 #gs = Singleton()
 
-import singleton as gs
 class ConditioningCombineWidget(QDMNodeContentWidget):
     def initUI(self):
         # Create a label to display the image

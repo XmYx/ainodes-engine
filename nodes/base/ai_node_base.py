@@ -5,9 +5,9 @@ from qtpy.QtWidgets import QLabel
 from node_engine.node_node import Node
 from node_engine.node_content_widget import QDMNodeContentWidget
 from node_engine.node_graphics_node import QDMGraphicsNode
-from node_engine.node_socket import LEFT_CENTER, LEFT_BOTTOM, RIGHT_CENTER, RIGHT_BOTTOM
+from node_engine.node_socket import LEFT_BOTTOM, RIGHT_BOTTOM
 from node_engine.utils import dumpException
-from singleton import Singleton
+from backend.singleton import Singleton
 
 gs = Singleton()
 

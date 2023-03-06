@@ -8,17 +8,15 @@ from backend.k_sampler import common_ksampler
 import torch
 from PIL import Image
 from PIL.ImageQt import ImageQt
-from diffusers import StableDiffusionPipeline
 #from qtpy.QtWidgets import QLineEdit, QLabel, QPushButton, QFileDialog, QVBoxLayout
 from qtpy import QtWidgets, QtCore
-from qtpy.QtCore import Qt
 from qtpy.QtGui import QPixmap
 from nodes.base.node_config import register_node, OP_NODE_K_SAMPLER
 from nodes.base.ai_node_base import CalcNode, CalcGraphicsNode
 from node_engine.node_content_widget import QDMNodeContentWidget
 from node_engine.utils import dumpException
-import singleton as gs
-from worker.worker import Worker
+from backend import singleton as gs
+
 SCHEDULERS = ["karras", "normal", "simple", "ddim_uniform"]
 SAMPLERS = ["euler", "euler_ancestral", "heun", "dpm_2", "dpm_2_ancestral",
             "lms", "dpm_fast", "dpm_adaptive", "dpmpp_2s_ancestral", "dpmpp_sde",
