@@ -89,7 +89,7 @@ class KSamplerNode(CalcNode):
     content_label_objname = "K_sampling_node"
     category = "sampling"
     def __init__(self, scene):
-        super().__init__(scene, inputs=[1,1,1,1], outputs=[3,3])
+        super().__init__(scene, inputs=[1,1,1,1], outputs=[3,3,3])
 
 
         self.eval()
@@ -105,7 +105,7 @@ class KSamplerNode(CalcNode):
         self.content.setMinimumWidth(256)
         self.content.setMinimumHeight(256)
         self.input_socket_name = ["EXEC", "COND", "N COND", "LATENT"]
-        self.output_socket_name = ["EXEC", "IMAGE"]
+        self.output_socket_name = ["EXEC", "LATENT", "IMAGE"]
 
         #self.content.setMinimumHeight(400)
         #self.content.setMinimumWidth(256)
@@ -159,25 +159,29 @@ class KSamplerNode(CalcNode):
             seed = secrets.randbelow(99999999)
 
         sample = common_ksampler("cuda", seed, self.content.steps.value(), self.content.guidance_scale.value(), self.content.sampler.currentText(), self.content.schedulers.currentText(), cond, n_cond, latent)
-        x_samples = gs.models["sd"].decode_first_stage(sample.cuda().half())
+
+        return_sample = sample.cpu().half()
+
+        x_samples = gs.models["sd"].decode_first_stage(sample.half())
         x_samples = torch.clamp((x_samples + 1.0) / 2.0, min=0.0, max=1.0)
         x_sample = 255. * rearrange(x_samples[0].cpu().numpy(), 'c h w -> h w c')
         image = Image.fromarray(x_sample.astype(np.uint8))
         qimage = ImageQt(image)
         pixmap = QPixmap().fromImage(qimage)
         self.value = pixmap
-        return pixmap
+        return [pixmap, latent]
     @QtCore.Slot(object)
     def onWorkerFinished(self, result):
         # Update the node value and mark it as dirty
-        self.value = result
+        #self.value = result[0]
         self.markDirty(False)
         self.markInvalid(False)
-        self.setOutput(0, result)
+        self.setOutput(0, result[0])
+        self.setOutput(1, result[1])
         self.busy = False
         self.scene.queue.task_finished.disconnect(self.onWorkerFinished)
-        if len(self.getOutputs(1)) > 0:
-            self.executeChild(output_index=1)
+        if len(self.getOutputs(2)) > 0:
+            self.executeChild(output_index=2)
         return
         #self.markDescendantsDirty()
         #self.evalChildren()

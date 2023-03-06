@@ -36,7 +36,7 @@ class QDMGraphicsSocket(QGraphicsItem):
         self.socket = socket
 
         self.isHighlighted = False
-
+        self.setZValue(-1)
         self.radius = 8
         self.outline_width = 2
         self.initAssets()
@@ -73,6 +73,7 @@ class QDMGraphicsSocket(QGraphicsItem):
         self._brush = QBrush(self._color_background)
 
     def paint(self, painter, QStyleOptionGraphicsItem, widget=None):
+
         """Painting a circle"""
         painter.setBrush(self._brush)
         painter.setPen(self._pen if not self.isHighlighted else self._pen_highlight)

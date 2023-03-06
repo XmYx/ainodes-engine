@@ -8,6 +8,7 @@ import contextlib
 #from . import model_management
 from ldm.models.diffusion.ddim import DDIMSampler
 from ldm.modules.diffusionmodules.util import make_ddim_timesteps
+from backend import singleton as gs
 def get_free_memory(dev=None, torch_free_too=False):
     if dev is None:
         dev = torch.cuda.current_device()
@@ -354,14 +355,14 @@ class KSampler:
                 "lms", "dpm_fast", "dpm_adaptive", "dpmpp_2s_ancestral", "dpmpp_sde",
                 "dpmpp_2m", "ddim", "uni_pc", "uni_pc_bh2"]
 
-    def __init__(self, model, steps, device, sampler=None, scheduler=None, denoise=None):
-        self.model = model
-        self.model_denoise = CFGNoisePredictor(self.model)
-        if self.model.parameterization == "v":
+    def __init__(self, steps, device, sampler=None, scheduler=None, denoise=None):
+        #self.model = model
+        self.model_denoise = CFGNoisePredictor(gs.models["sd"])
+        if gs.models["sd"].parameterization == "v":
             self.model_wrap = CompVisVDenoiser(self.model_denoise, quantize=True)
         else:
             self.model_wrap = k_diffusion_external.CompVisDenoiser(self.model_denoise, quantize=True)
-        self.model_wrap.parameterization = self.model.parameterization
+        self.model_wrap.parameterization = gs.models["sd"].parameterization
         self.model_k = KSamplerX0Inpaint(self.model_wrap)
         self.device = device
         if scheduler not in self.SCHEDULERS:
@@ -437,7 +438,7 @@ class KSampler:
 
         apply_control_net_to_equal_area(positive, negative)
 
-        if self.model.model.diffusion_model.dtype == torch.float16:
+        if gs.models["sd"].model.diffusion_model.dtype == torch.float16:
             precision_scope = torch.autocast
         else:
             precision_scope = contextlib.nullcontext
@@ -445,9 +446,9 @@ class KSampler:
         extra_args = {"cond":positive, "uncond":negative, "cond_scale": cfg}
 
         cond_concat = None
-        if hasattr(self.model, 'concat_keys'):
+        if hasattr(gs.models["sd"], 'concat_keys'):
             cond_concat = []
-            for ck in self.model.concat_keys:
+            for ck in gs.models["sd"].concat_keys:
                 if denoise_mask is not None:
                     if ck == "mask":
                         cond_concat.append(denoise_mask[:,:1])
@@ -477,7 +478,7 @@ class KSampler:
                 noise_mask = None
                 if denoise_mask is not None:
                     noise_mask = 1.0 - denoise_mask
-                sampler = DDIMSampler(self.model)
+                sampler = DDIMSampler(gs.models["sd"])
                 sampler.make_schedule_timesteps(ddim_timesteps=timesteps, verbose=True)
                 z_enc = sampler.stochastic_encode(latent_image, torch.tensor([len(timesteps) - 1] * noise.shape[0]).to(self.device), noise=noise, max_denoise=max_denoise)
                 samples, _ = sampler.sample_custom(ddim_timesteps=timesteps,

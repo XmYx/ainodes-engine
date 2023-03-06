@@ -44,7 +44,7 @@ class ConditioningWidget(QDMNodeContentWidget):
         res = super().deserialize(data, hashmap)
         try:
             value = data['value']
-            self.image.setPixmap(value)
+            #self.image.setPixmap(value)
             return True & res
         except Exception as e:
             dumpException(e)

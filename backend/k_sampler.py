@@ -53,14 +53,15 @@ def common_ksampler(device, seed, steps, cfg, sampler_name, scheduler, positive,
     #model_management.load_controlnet_gpu(control_net_models)
 
     if sampler_name in samplers.KSampler.SAMPLERS:
-        sampler = samplers.KSampler(gs.models["sd"], steps=steps, device=device, sampler=sampler_name, scheduler=scheduler, denoise=denoise)
+        sampler = samplers.KSampler(steps=steps, device=device, sampler=sampler_name, scheduler=scheduler, denoise=denoise)
     else:
         #other samplers
         pass
 
     samples = sampler.sample(noise, positive_copy, negative_copy, cfg=cfg, latent_image=latent_image, start_step=start_step, last_step=last_step, force_full_denoise=force_full_denoise, denoise_mask=noise_mask)
-    samples = samples.cpu()
+    #samples = samples.cpu()
     for c in control_nets:
         c.cleanup()
+    del sampler
 
     return samples
