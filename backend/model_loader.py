@@ -33,17 +33,18 @@ class ModelLoader(torch.nn.Module):
         self.device = "cuda"
         print("PyTorch model loader")
 
-    def load_model(self, file=None, verbose=False):
+    def load_model(self, file=None, config=None, verbose=False):
         print(file)
         print(gs.ckpt["loaded"])
         if gs.ckpt["loaded"] != file:
             ckpt = f"models/checkpoints/{file}"
             gs.force_inpaint = False
             ckpt_print = ckpt.replace('\\', '/')
-            config, version = self.return_model_version(ckpt)
-            if 'Inpaint' in version:
-                gs.force_inpaint = True
-                print("Forcing Inpaint")
+            #config, version = self.return_model_version(ckpt)
+            #if 'Inpaint' in version:
+            #    gs.force_inpaint = True
+            #    print("Forcing Inpaint")
+
             config = os.path.join('models/configs', config)
 
 

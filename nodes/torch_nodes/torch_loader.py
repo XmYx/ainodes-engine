@@ -25,15 +25,20 @@ class TorchLoaderWidget(QDMNodeContentWidget):
         # Create a label to display the image
         # Create the dropdown widget
         self.dropdown = QtWidgets.QComboBox(self)
+        self.config_dropdown = QtWidgets.QComboBox(self)
         #self.dropdown.currentIndexChanged.connect(self.on_dropdown_changed)
         # Populate the dropdown with .ckpt and .safetensors files in the checkpoints folder
         checkpoint_folder = "models/checkpoints"
         checkpoint_files = [f for f in os.listdir(checkpoint_folder) if f.endswith((".ckpt", ".safetensors"))]
         self.dropdown.addItems(checkpoint_files)
+        config_folder = "models/configs"
+        config_files = [f for f in os.listdir(config_folder) if f.endswith((".yaml"))]
+        self.config_dropdown.addItems(config_files)
 
         # Add the dropdown widget to the layout
         layout = QtWidgets.QVBoxLayout()
         layout.addWidget(self.dropdown)
+        layout.addWidget(self.config_dropdown)
         self.setLayout(layout)
         self.setSizePolicy(CenterExpandingSizePolicy(self))
         self.setLayout(layout)
@@ -68,7 +73,7 @@ class TorchLoaderNode(CalcNode):
     icon = "icons/in.png"
     op_code = OP_NODE_TORCH_LOADER
     op_title = "Torch Loader"
-    content_label_objname = "diffusers_node"
+    content_label_objname = "torch_loader_node"
 
     def __init__(self, scene):
         super().__init__(scene, inputs=[], outputs=[3])
@@ -79,16 +84,18 @@ class TorchLoaderNode(CalcNode):
     def initInnerClasses(self):
         self.content = TorchLoaderWidget(self)
         self.grNode = CalcGraphicsNode(self)
-        self.grNode.width = 260
+        self.grNode.width = 320
+        self.grNode.height = 180
 
     def evalImplementation(self, index=0):
         model_name = self.content.dropdown.currentText()
+        config_name = self.content.config_dropdown.currentText()
         if self.value != model_name:
             self.markInvalid()
             if model_name != "":
                 self.value = model_name
                 self.setOutput(0, model_name)
-                self.loader.load_model(model_name)
+                self.loader.load_model(model_name, config_name)
                 self.markDirty(False)
                 self.markInvalid(False)
                 return self.value
