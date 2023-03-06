@@ -27,7 +27,7 @@ class TorchLoaderWidget(QDMNodeContentWidget):
         self.dropdown = QtWidgets.QComboBox(self)
         #self.dropdown.currentIndexChanged.connect(self.on_dropdown_changed)
         # Populate the dropdown with .ckpt and .safetensors files in the checkpoints folder
-        checkpoint_folder = "comfy_defaults/models/checkpoints"
+        checkpoint_folder = "models/checkpoints"
         checkpoint_files = [f for f in os.listdir(checkpoint_folder) if f.endswith((".ckpt", ".safetensors"))]
         self.dropdown.addItems(checkpoint_files)
 

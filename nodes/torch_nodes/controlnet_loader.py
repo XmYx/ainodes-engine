@@ -28,7 +28,7 @@ class ControlnetLoaderWidget(QDMNodeContentWidget):
         self.control_net_name = QtWidgets.QComboBox(self)
         #self.dropdown.currentIndexChanged.connect(self.on_dropdown_changed)
         # Populate the dropdown with .ckpt and .safetensors files in the checkpoints folder
-        checkpoint_folder = "comfy_defaults/models/controlnet"
+        checkpoint_folder = "models/controlnet"
         checkpoint_files = [f for f in os.listdir(checkpoint_folder) if f.endswith(('.ckpt', '.pt', '.bin', '.pth', ".safetensors"))]
         self.control_net_name.addItems(checkpoint_files)
         # Add the dropdown widget to the layout
@@ -105,7 +105,7 @@ class ControlnetLoaderNode(CalcNode):
 
     def load_controlnet(self):
         if "controlnet" not in gs.models:
-            controlnet_dir = "comfy_defaults/models/controlnet"
+            controlnet_dir = "models/controlnet"
             controlnet_path = os.path.join(controlnet_dir, self.content.control_net_name.currentText())
             gs.models["controlnet"] = load_controlnet(controlnet_path)
             gs.models["controlnet"].control_model.cuda()

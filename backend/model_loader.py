@@ -37,14 +37,14 @@ class ModelLoader(torch.nn.Module):
         print(file)
         print(gs.ckpt["loaded"])
         if gs.ckpt["loaded"] != file:
-            ckpt = f"comfy_defaults/models/checkpoints/{file}"
+            ckpt = f"models/checkpoints/{file}"
             gs.force_inpaint = False
             ckpt_print = ckpt.replace('\\', '/')
             config, version = self.return_model_version(ckpt)
             if 'Inpaint' in version:
                 gs.force_inpaint = True
                 print("Forcing Inpaint")
-            config = os.path.join('comfy_defaults/models/configs', config)
+            config = os.path.join('models/configs', config)
 
 
             gs.ckpt = ckpt

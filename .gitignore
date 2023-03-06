@@ -155,3 +155,5 @@ cython_debug/
 .idea/misc.xml
 .idea/inspectionProfiles/profiles_settings.xml
 .idea/ainodes-engine.iml
+*.ckpt
+*.pth
