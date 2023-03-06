@@ -25,7 +25,9 @@ if __name__ == '__main__':
     # Load your style sheet from a file
     with open("qss/nodeeditor-dark.qss", "r") as f:
         style_sheet = f.read()
-
+    icon = QtGui.QIcon("qss/icon.png")
+    app.setWindowIcon(icon)
+    app.setApplicationName("aiNodes - engine")
     # Set the style sheet for your entire application
 
     # print(QStyleFactory.keys())
