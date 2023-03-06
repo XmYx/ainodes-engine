@@ -152,8 +152,7 @@ class KSamplerNode(CalcNode):
             latent_node, index = self.getInput(0)
             latent = latent_node.getOutput(index)
         except:
-            latent = None
-        latent = torch.zeros([1, 4, 512 // 8, 512 // 8])
+            latent = torch.zeros([1, 4, 512 // 8, 512 // 8])
         seed = self.content.seed.text()
         try:
             seed = int(seed)
