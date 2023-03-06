@@ -95,7 +95,7 @@ class TorchLoaderNode(CalcNode):
             if model_name != "":
                 self.value = model_name
                 self.setOutput(0, model_name)
-                
+
                 self.loader.load_model(model_name, config_name)
                 self.markDirty(False)
                 self.markInvalid(False)

@@ -9,7 +9,8 @@ gs.obj = {}
 gs.values = {}
 
 sys.path.insert(0, os.path.join( os.path.dirname(__file__), "..", ".." ))
-
+os.makedirs('hf_cache', exist_ok=True)
+os.environ['HF_HOME'] = 'hf_cache'
 from nodes.base.node_window import CalculatorWindow
 # Create a high-quality QSurfaceFormat object with OpenGL 3.3 and 8x antialiasing
 format = QtGui.QSurfaceFormat()

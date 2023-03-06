@@ -42,12 +42,12 @@ class KSamplerWidget(QDMNodeContentWidget):
         self.start_step = QtWidgets.QSpinBox()
         self.start_step.setMinimum(1)
         self.start_step.setMaximum(1000)
-        self.start_step.setValue(10)
+        self.start_step.setValue(1)
 
         self.last_step = QtWidgets.QSpinBox()
         self.last_step.setMinimum(1)
         self.last_step.setMaximum(1000)
-        self.last_step.setValue(10)
+        self.last_step.setValue(5)
 
         self.stop_early = QtWidgets.QCheckBox("Stop sampling early")
 
@@ -180,7 +180,7 @@ class KSamplerNode(CalcNode):
             seed = int(seed)
         except:
             seed = secrets.randbelow(99999999)
-        last_step = self.content.steps.value() if self.content.stop_early.isChecked == False else self.content.last_step.value()
+        last_step = self.content.steps.value() if self.content.stop_early.isChecked() == False else self.content.last_step.value()
         sample = common_ksampler(device="cuda",
                                  seed=seed,
                                  steps=self.content.steps.value(),
@@ -209,7 +209,6 @@ class KSamplerNode(CalcNode):
         #self.value = result[0]
         self.markDirty(False)
         self.markInvalid(False)
-        print(result)
         self.setOutput(0, result[0])
         self.setOutput(1, result[1])
         self.busy = False
