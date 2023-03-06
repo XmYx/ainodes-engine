@@ -7,12 +7,17 @@ from platform import platform
 def create_venv(venv_path):
     try:
         if 'Windows' in platform():
-            subprocess.run(["python3", "-m", "virtualenv", venv_path])
+            subprocess.run(["python", "-m", "virtualenv", venv_path])
         else:
             subprocess.run(["python3", "-m", "virtualenv", venv_path])
     except:
         print("Error, Python 3.10 not found. Trying to make env with any python available. If you run into any issue, please delete test_venv folder, and install Python 3.10 before running the installer again.")
         subprocess.run(["python3", "-m", "virtualenv", venv_path])
+    finally:
+        if os.path.exists("nodes_env") == False:
+            subprocess.run(["python", "-m", "virtualenv", venv_path])
+        else:
+            return
 
 def activate_venv(venv_path):
     activate_this = os.path.join(venv_path, "Scripts", "activate.bat")
