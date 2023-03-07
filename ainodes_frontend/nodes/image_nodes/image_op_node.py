@@ -3,6 +3,12 @@ import numpy as np
 from PIL import ImageOps, Image
 #from qtpy.QtWidgets import QLineEdit, QLabel, QPushButton, QFileDialog, QVBoxLayout
 from qtpy import QtWidgets, QtCore
+
+from ainodes_backend.cnet_preprocessors import hed
+from ainodes_backend.cnet_preprocessors.mlsd import MLSDdetector
+
+from ainodes_backend.cnet_preprocessors.midas import MidasDetector
+from ainodes_backend.cnet_preprocessors.openpose import OpenposeDetector
 from ainodes_frontend.nodes.base.node_config import register_node, OP_NODE_IMAGE_OPS
 from ainodes_frontend.nodes.base.ai_node_base import CalcNode, CalcGraphicsNode
 from ainodes_backend.node_engine.node_content_widget import QDMNodeContentWidget
@@ -12,6 +18,12 @@ from ainodes_frontend.nodes.qops.qimage_ops import pixmap_to_pil_image, pil_imag
 image_ops_methods = [
     "resize",
     "canny",
+    "fake_scribble",
+    'hed',
+    'depth',
+    'normal',
+    'mlsd',
+    'openpose',
     "autocontrast",
     "colorize",
     "contrast",
@@ -68,6 +80,20 @@ class ImageOpsWidget(QDMNodeContentWidget):
         self.canny_high.setValue(100)
         self.canny_high.setVisible(False)
 
+        self.midas_a = QtWidgets.QDoubleSpinBox()
+        self.midas_a.setMinimum(0)
+        self.midas_a.setSingleStep(0.01)
+        self.midas_a.setMaximum(100)
+        self.midas_a.setValue(np.pi*2.0)
+        self.midas_a.setVisible(False)
+
+        self.midas_bg = QtWidgets.QDoubleSpinBox()
+        self.midas_bg.setMinimum(0)
+        self.midas_bg.setSingleStep(1)
+        self.midas_bg.setMaximum(100)
+        self.midas_bg.setValue(0.01)
+        self.midas_bg.setVisible(False)
+
         layout = QtWidgets.QVBoxLayout(self)
         layout.setContentsMargins(0,0,0,0)
         layout.addWidget(self.dropdown)
@@ -75,6 +101,9 @@ class ImageOpsWidget(QDMNodeContentWidget):
         layout.addWidget(self.height_value)
         layout.addWidget(self.canny_low)
         layout.addWidget(self.canny_high)
+        layout.addWidget(self.midas_a)
+        layout.addWidget(self.midas_bg)
+
         self.setLayout(layout)
 
     def dropdownChanged(self, event):
@@ -84,17 +113,32 @@ class ImageOpsWidget(QDMNodeContentWidget):
             self.height_value.setVisible(True)
             self.canny_high.setVisible(False)
             self.canny_low.setVisible(False)
+            self.midas_a.setVisible(False)
+            self.midas_bg.setVisible(False)
 
         elif value == 'canny':
             self.width_value.setVisible(False)
             self.height_value.setVisible(False)
             self.canny_high.setVisible(True)
             self.canny_low.setVisible(True)
+            self.midas_a.setVisible(False)
+            self.midas_bg.setVisible(False)
+        elif value in ['depth', 'normal', 'mlsd']:
+            self.width_value.setVisible(False)
+            self.height_value.setVisible(False)
+            self.canny_high.setVisible(False)
+            self.canny_low.setVisible(False)
+            self.midas_a.setVisible(True)
+            self.midas_bg.setVisible(True)
+
         else:
             self.width_value.setVisible(False)
             self.height_value.setVisible(False)
             self.canny_high.setVisible(False)
             self.canny_low.setVisible(False)
+            self.midas_a.setVisible(False)
+            self.midas_bg.setVisible(False)
+
     def serialize(self):
         res = super().serialize()
         #res['value'] = self.edit.text()
@@ -121,7 +165,7 @@ class ImageOpNode(CalcNode):
 
 
     def __init__(self, scene):
-        super().__init__(scene, inputs=[3,3], outputs=[3,3])
+        super().__init__(scene, inputs=[5,1], outputs=[5,1])
         self.eval()
         self.content.eval_signal.connect(self.eval)
 
@@ -140,31 +184,22 @@ class ImageOpNode(CalcNode):
         #self.content.image.changeEvent.connect(self.onInputChanged)
     @QtCore.Slot(int)
     def evalImplementation(self, index=0):
-        self.value = None
-        if self.value == None:
-            if self.getInput(index) != None:
-                #self.markInvalid()
-                #self.markDescendantsDirty()
-                node, index = self.getInput(index)
+        #if self.getInput(index) != None:
+        #self.markInvalid()
+        #self.markDescendantsDirty()
+        node, index = self.getInput(index)
 
-                print("RETURN", node, index)
+        print("RETURN", node, index)
 
-                pixmap = node.getOutput(index)
-                method = self.content.dropdown.currentText()
-                self.value = self.image_op(pixmap, method)
-                self.setOutput(0, self.value)
-                self.markDirty(False)
-                self.markInvalid(False)
-                if len(self.getOutputs(1)) > 0:
-                    self.executeChild(output_index=1)
-                return self.value
-        else:
-            self.markDirty(False)
-            self.markInvalid(False)
-            self.markDescendantsDirty()
-            self.evalChildren()
-            return self.value
-
+        pixmap = node.getOutput(index)
+        method = self.content.dropdown.currentText()
+        self.value = self.image_op(pixmap, method)
+        self.setOutput(0, self.value)
+        self.markDirty(False)
+        self.markInvalid(False)
+        if len(self.getOutputs(1)) > 0:
+            self.executeChild(output_index=1)
+        return self.value
     def onMarkedDirty(self):
         self.value = None
     def eval(self):
@@ -194,10 +229,70 @@ class ImageOpNode(CalcNode):
             image = HWC3(image)
             image = Image.fromarray(image)
 
+        elif method == 'fake_scribble':
+            image = np.array(image)
+            detector = hed.HEDdetector()
+            image = detector(image)
+            image = HWC3(image)
+            image = hed.nms(image, 127, 3.0)
+            image = cv2.GaussianBlur(image, (0, 0), 3.0)
+            image[image > 4] = 255
+            image[image < 255] = 0
+            image = Image.fromarray(image)
+            del detector
+        elif method == 'hed':
+            # Ref: https://github.com/lllyasviel/ControlNet/blob/main/gradio_hed2image.py
+            image = np.array(image)
+            detector = hed.HEDdetector()
+            image = detector(image)
+            image = HWC3(image)
+            image = Image.fromarray(image)
+            del detector
+        elif method == 'depth':
+            image = np.array(image)
+            detector = MidasDetector()
+            a = self.content.midas_a.value()
+            bg_threshold = self.content.midas_bg.value()
+            depth_map_np, normal_map_np = detector(image, a, bg_threshold)
+            image = HWC3(depth_map_np)
+            image = Image.fromarray(image)
+            del detector
+        elif method == 'normal':
+            image = np.array(image)
+            detector = MidasDetector()
+            a = self.content.midas_a.value()
+            bg_threshold = self.content.midas_bg.value()
+            depth_map_np, normal_map_np = detector(image, a, bg_threshold)
+            image = HWC3(normal_map_np)
+            image = Image.fromarray(image)
+            del detector
+        elif method == 'mlsd':
+            image = image.convert('RGB')
+            image = np.array(image)
+            print(image.shape)
+            detector = MLSDdetector()
+            a = self.content.midas_a.value()
+            bg_threshold = self.content.midas_bg.value()
+            mlsd = detector(image, bg_threshold, a)
+            image = HWC3(mlsd)
+            image = Image.fromarray(image)
+            del detector
+        elif method == 'openpose':
+            image = image.convert('RGB')
+            image = np.array(image)
+            print(image.shape)
+            detector = OpenposeDetector()
+            pose, _ = detector(image, True)
+            #image = HWC3(pose)
+            image = Image.fromarray(pose)
+            del detector
+
         # Convert the PIL Image object to a QPixmap object
         pixmap = pil_image_to_pixmap(image)
 
         return pixmap
+
+
 
 def HWC3(x):
     assert x.dtype == np.uint8

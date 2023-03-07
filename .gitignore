@@ -169,3 +169,5 @@ torch
 torch.json
 torch2.json
 torch3.json
+semseg/
+*.pt

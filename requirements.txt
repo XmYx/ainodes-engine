@@ -20,3 +20,14 @@ torchdiffeq
 torchsde
 opencv-contrib-python
 triton==2.0.0
+
+# Semseg Requirements:
+tqdm
+tabulate
+numpy
+scipy
+matplotlib
+tensorboard
+fvcore
+einops
+rich

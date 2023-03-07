@@ -127,16 +127,17 @@ class ConditioningCombineNode(CalcNode):
         #self.content.image.changeEvent.connect(self.onInputChanged)
 
     def evalImplementation(self, index=0):
-        if self.value is None:
-            self.scene.queue.add_task(self.combine_conditioning)
-            self.scene.queue.task_finished.connect(self.onWorkerFinished)
-            self.busy = True
-            return None
-        else:
-            self.markDirty(False)
-            self.markInvalid(False)
-            self.executeChild()
-            return self.value
+        self.value = self.combine_conditioning()
+        self.markDirty(False)
+        self.markInvalid(False)
+        self.setOutput(0, self.value)
+        if len(self.getOutputs(1)) > 0:
+            self.executeChild(output_index=1)
+
+        #self.scene.queue.add_task(self.combine_conditioning)
+        #self.scene.queue.task_finished.connect(self.onWorkerFinished)
+        #self.busy = True
+        return self.value
 
     def onMarkedDirty(self):
         self.value = None

@@ -3,6 +3,8 @@ import numpy as np
 import torch
 #from qtpy.QtWidgets import QLineEdit, QLabel, QPushButton, QFileDialog, QVBoxLayout
 from qtpy import QtWidgets, QtCore
+
+from ainodes_backend.worker.worker import Worker
 from ainodes_frontend.nodes.base.node_config import register_node, OP_NODE_CN_APPLY
 from ainodes_frontend.nodes.base.ai_node_base import CalcNode, CalcGraphicsNode
 from ainodes_backend.node_engine.node_content_widget import QDMNodeContentWidget
@@ -56,7 +58,7 @@ class CNApplyNode(CalcNode):
     category = "controlnet"
 
     def __init__(self, scene):
-        super().__init__(scene, inputs=[1,1,1], outputs=[3])
+        super().__init__(scene, inputs=[5,3,1], outputs=[3,1])
 
 
         self.eval()
@@ -72,7 +74,7 @@ class CNApplyNode(CalcNode):
         self.content.setMinimumWidth(256)
         self.content.setMinimumHeight(256)
         self.input_socket_name = ["EXEC", "COND", "IMAGE"]
-        self.output_socket_name = ["COND"]
+        self.output_socket_name = ["EXEC", "COND"]
 
         #self.content.setMinimumHeight(400)
         #self.content.setMinimumWidth(256)
@@ -84,13 +86,13 @@ class CNApplyNode(CalcNode):
         self.busy = False
         if self.value is None:
             # Start the worker thread
-            #self.worker = Worker(self.k_sampling)
+            self.worker = Worker(self.apply_control_net)
             # Connect the worker's finished signal to a slot that updates the node value
-            #self.worker.signals.result.connect(self.onWorkerFinished)
-            self.scene.queue.add_task(self.apply_control_net)
-            self.scene.queue.task_finished.connect(self.onWorkerFinished)
+            self.worker.signals.result.connect(self.onWorkerFinished)
+            #self.scene.queue.add_task(self.apply_control_net)
+            #self.scene.queue.task_finished.connect(self.onWorkerFinished)
             self.busy = True
-            #self.scene.threadpool.start(self.worker)
+            self.scene.threadpool.start(self.worker)
             return None
         else:
             self.markDirty(False)
@@ -147,9 +149,9 @@ class CNApplyNode(CalcNode):
         self.markInvalid(False)
         self.setOutput(0, result)
         self.busy = False
-        self.scene.queue.task_finished.disconnect(self.onWorkerFinished)
-        if len(self.getOutputs(0)) > 0:
-            self.executeChild()
+        #self.scene.queue.task_finished.disconnect(self.onWorkerFinished)
+        if len(self.getOutputs(1)) > 0:
+            self.executeChild(1)
         return
         #self.markDescendantsDirty()
         #self.evalChildren()

@@ -71,10 +71,10 @@ class ImageInputNode(CalcNode):
     op_title = "Input"
     content_label_objname = "image_input_node"
     category = "image"
-
+    output_socket_name = ["EXEC", "IMAGE"]
 
     def __init__(self, scene):
-        super().__init__(scene, inputs=[], outputs=[3])
+        super().__init__(scene, inputs=[], outputs=[5,1])
         self.eval()
         self.content.eval_signal.connect(self.eval)
 
@@ -86,7 +86,7 @@ class ImageInputNode(CalcNode):
 
         self.content.setMinimumHeight(self.content.image.pixmap().size().height())
         self.content.setMinimumWidth(self.content.image.pixmap().size().width())
-        self.grNode.height = self.content.image.pixmap().size().height() + 64
+        self.grNode.height = self.content.image.pixmap().size().height() + 96
         self.grNode.width = self.content.image.pixmap().size().width() + 64
 
         #self.content.image.changeEvent.connect(self.onInputChanged)
@@ -103,6 +103,7 @@ class ImageInputNode(CalcNode):
 
         self.grNode.setToolTip("")
         self.setOutput(0, self.content.image.pixmap())
-        self.evalChildren()
+        if len(self.getOutputs(1)) > 0:
+            self.executeChild(output_index=1)
 
         return self.content.image.pixmap()

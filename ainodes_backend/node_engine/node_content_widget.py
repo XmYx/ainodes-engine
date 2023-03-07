@@ -28,7 +28,7 @@ class QDMNodeContentWidget(QWidget, Serializable):
         super().__init__(parent)
 
         self.initUI()
-        sshFile = "qss/nodeeditor-dark.qss"
+        sshFile = "ainodes_frontend/qss/nodeeditor-dark.qss"
         with open(sshFile, "r") as fh:
             self.setStyleSheet(fh.read())
 

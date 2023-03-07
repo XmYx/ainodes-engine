@@ -24,7 +24,7 @@ class CalcGraphicsNode(QDMGraphicsNode):
 
     def initAssets(self):
         super().initAssets()
-        self.icons = QImage("icons/status_icons.png")
+        self.icons = QImage("ainodes_frontend/icons/status_icons.png")
 
     def paint(self, painter, QStyleOptionGraphicsItem, widget=None):
         super().paint(painter, QStyleOptionGraphicsItem, widget)
