@@ -147,7 +147,7 @@ class ImageOpsWidget(QDMNodeContentWidget):
     def deserialize(self, data, hashmap={}):
         res = super().deserialize(data, hashmap)
         try:
-            value = data['value']
+            #value = data['value']
             #self.image.setPixmap(value)
             return True & res
         except Exception as e:
@@ -166,7 +166,7 @@ class ImageOpNode(CalcNode):
 
     def __init__(self, scene):
         super().__init__(scene, inputs=[5,1], outputs=[5,1])
-        self.eval()
+        #self.eval()
         self.content.eval_signal.connect(self.eval)
 
     def initInnerClasses(self):

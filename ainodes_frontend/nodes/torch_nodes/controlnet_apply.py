@@ -63,7 +63,7 @@ class CNApplyNode(CalcNode):
         super().__init__(scene, inputs=[5,3,1], outputs=[3,1])
 
 
-        self.eval()
+        #self.eval()
         self.content.eval_signal.connect(self.evalImplementation)
         self.content.button.clicked.connect(self.evalImplementation)
         self.busy = False

@@ -56,8 +56,8 @@ class ImageInputWidget(QDMNodeContentWidget):
     def deserialize(self, data, hashmap={}):
         res = super().deserialize(data, hashmap)
         try:
-            value = data['value']
-            self.image.setPixmap(value)
+            #value = data['value']
+            #self.image.setPixmap(value)
             return True & res
         except Exception as e:
             dumpException(e)

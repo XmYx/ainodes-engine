@@ -90,7 +90,7 @@ class ConditioningCombineWidget(QDMNodeContentWidget):
     def deserialize(self, data, hashmap={}):
         res = super().deserialize(data, hashmap)
         try:
-            value = data['value']
+            #value = data['value']
             #self.image.setPixmap(value)
             return True & res
         except Exception as e:
@@ -109,7 +109,7 @@ class ConditioningCombineNode(CalcNode):
 
     def __init__(self, scene):
         super().__init__(scene, inputs=[3,3,1], outputs=[3,1])
-        self.eval()
+        #self.eval()
         self.content.eval_signal.connect(self.evalImplementation)
         # Create a worker object
     def initInnerClasses(self):

@@ -13,13 +13,13 @@ class LatentWidget(QDMNodeContentWidget):
         self.width = QtWidgets.QSpinBox()
         self.width.setMinimum(64)
         self.width.setMaximum(4096)
-        self.width.setValue(64)
+        self.width.setValue(512)
         self.width.setSingleStep(64)
 
         self.height = QtWidgets.QSpinBox()
         self.height.setMinimum(64)
         self.height.setMaximum(4096)
-        self.height.setValue(64)
+        self.height.setValue(512)
         self.height.setSingleStep(64)
 
         layout = QtWidgets.QVBoxLayout(self)
@@ -37,7 +37,7 @@ class LatentWidget(QDMNodeContentWidget):
     def deserialize(self, data, hashmap={}):
         res = super().deserialize(data, hashmap)
         try:
-            value = data['value']
+            #value = data['value']
             #self.image.setPixmap(value)
             return True & res
         except Exception as e:
@@ -55,7 +55,7 @@ class LatentNode(CalcNode):
 
     def __init__(self, scene):
         super().__init__(scene, inputs=[3], outputs=[3,3])
-        self.eval()
+        #self.eval()
         self.content.eval_signal.connect(self.eval)
 
     def initInnerClasses(self):
