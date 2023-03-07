@@ -42,14 +42,13 @@ class TorchLoaderWidget(QDMNodeContentWidget):
 
     def serialize(self):
         res = super().serialize()
-        #res['value'] = self.edit.text()
+        res = self.serializeWidgets(res)
         return res
 
     def deserialize(self, data, hashmap={}):
         res = super().deserialize(data, hashmap)
         try:
-            value = data['value']
-            #self.image.setPixmap(value)
+            self.deserializeWidgets(data)
             return True & res
         except Exception as e:
             dumpException(e)

@@ -39,13 +39,13 @@ class ConditioningWidget(QDMNodeContentWidget):
 
     def serialize(self):
         res = super().serialize()
-        #res['value'] = self.edit.text()
+        res = self.serializeWidgets(res)
         return res
 
     def deserialize(self, data, hashmap={}):
         res = super().deserialize(data, hashmap)
         try:
-            value = data['value']
+            self.deserializeWidgets(data)
             #self.image.setPixmap(value)
             return True & res
         except Exception as e:
@@ -75,28 +75,31 @@ class ConditioningNode(CalcNode):
         self.content.setMinimumHeight(200)
         self.content.setMinimumWidth(320)
         self.busy = False
-        self.content.button.clicked.connect(self.exec)
+        self.content.button.clicked.connect(self.evalImplementation)
         self.input_socket_name = ["EXEC"]
         self.output_socket_name = ["EXEC", "COND"]
 
         #self.content.image.changeEvent.connect(self.onInputChanged)
 
     def evalImplementation(self, index=0):
-        if self.value is None:
-            if self.busy == False:
-                # Start the worker thread
-                self.worker = Worker(self.get_conditioning)
-                # Connect the worker's finished signal to a slot that updates the node value
-                self.worker.signals.result.connect(self.onWorkerFinished)
-                #self.scene.queue.add_task(self.get_conditioning)
-                #self.scene.queue.task_finished.connect(self.onWorkerFinished)
-                self.busy = True
-                self.scene.threadpool.start(self.worker)
-            return None
-        else:
-            self.markDirty(False)
-            self.markInvalid(False)
-            return self.value
+        # Start the worker thread
+        #self.worker = Worker(self.get_conditioning)
+        # Connect the worker's finished signal to a slot that updates the node value
+        #self.worker.signals.result.connect(self.onWorkerFinished)
+        #self.scene.queue.add_task(self.get_conditioning)
+        #self.scene.queue.task_finished.connect(self.onWorkerFinished)
+
+        result = self.get_conditioning()
+        self.setOutput(0, result)
+        # print(result)
+        self.markDirty(False)
+        self.markInvalid(False)
+        self.busy = False
+        if len(self.getOutputs(1)) > 0:
+            self.executeChild(output_index=1)
+        self.busy = True
+        #self.scene.threadpool.start(self.worker)
+        return result
 
     def onMarkedDirty(self):
         self.value = None
@@ -121,6 +124,7 @@ class ConditioningNode(CalcNode):
         #self.worker.autoDelete()
         #result = None
         self.setOutput(0, result)
+        #print(result)
         self.markDirty(False)
         self.markInvalid(False)
         self.busy = False

@@ -4,7 +4,7 @@ an overridden Text Widget, which can pass a notification to it's parent about be
 from collections import OrderedDict
 from node_engine.node_serializable import Serializable
 from qtpy.QtWidgets import QWidget, QLabel, QVBoxLayout, QTextEdit
-from qtpy import QtCore
+from qtpy import QtCore, QtWidgets
 
 
 class QDMNodeContentWidget(QWidget, Serializable):
@@ -63,6 +63,38 @@ class QDMNodeContentWidget(QWidget, Serializable):
     def serialize(self) -> OrderedDict:
         return OrderedDict([
         ])
+
+    def serializeWidgets(self, res):
+        return res
+        for widget in self.findChildren(QtWidgets.QWidget):
+            #print(widget)
+            if isinstance(widget, QtWidgets.QComboBox):
+                name = widget.dynamicPropertyNames()
+                print(name)
+                res[name] = widget.currentText()
+            elif isinstance(widget, QtWidgets.QLineEdit):
+                res[widget.objectName()] = widget.text()
+            elif isinstance(widget, QtWidgets.QSpinBox):
+                res[widget.objectName()] = widget.value()
+            elif isinstance(widget, QtWidgets.QDoubleSpinBox):
+                res[widget.objectName()] = widget.value()
+        print(res)
+        return res
+
+    def deserializeWidgets(self, data):
+        return data
+        for key, value in data.items():
+            widget = self.findChild(QtWidgets.QWidget, key)
+            if widget:
+                if isinstance(widget, QtWidgets.QComboBox):
+                    widget.setCurrentText(str(value))
+                elif isinstance(widget, QtWidgets.QLineEdit):
+                    widget.setText(str(value))
+                elif isinstance(widget, QtWidgets.QSpinBox):
+                    widget.setValue(int(value))
+                elif isinstance(widget, QtWidgets.QDoubleSpinBox):
+                    widget.setValue(float(value))
+
 
     def deserialize(self, data:dict, hashmap:dict={}, restore_id:bool=True) -> bool:
         return True

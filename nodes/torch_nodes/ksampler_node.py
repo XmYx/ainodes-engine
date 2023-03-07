@@ -41,9 +41,9 @@ class KSamplerWidget(QDMNodeContentWidget):
         self.steps.setValue(10)
 
         self.start_step = QtWidgets.QSpinBox()
-        self.start_step.setMinimum(1)
+        self.start_step.setMinimum(0)
         self.start_step.setMaximum(1000)
-        self.start_step.setValue(1)
+        self.start_step.setValue(0)
 
         self.last_step = QtWidgets.QSpinBox()
         self.last_step.setMinimum(1)
@@ -84,21 +84,23 @@ class KSamplerWidget(QDMNodeContentWidget):
 
     def serialize(self):
         res = super().serialize()
-        res['scheduler'] = self.schedulers.currentText()
+        res = self.serializeWidgets(res)
+        """res['scheduler'] = self.schedulers.currentText()
         res['sampler'] = self.sampler.currentText()
         res['seed'] = self.seed.text()
         res['steps'] = self.steps.value()
-        res['guidance_scale'] = self.guidance_scale.value()
+        res['guidance_scale'] = self.guidance_scale.value()"""
         return res
 
     def deserialize(self, data, hashmap={}):
         res = super().deserialize(data, hashmap)
         try:
-            self.schedulers.setCurrentText(data['scheduler'])
+            self.deserializeWidgets(data)
+            """self.schedulers.setCurrentText(data['scheduler'])
             self.sampler.setCurrentText(data['sampler'])
             self.seed.setText(data['seed'])
             self.steps.setValue(data['steps'])
-            self.guidance_scale.setValue(data['guidance_scale'])
+            self.guidance_scale.setValue(data['guidance_scale'])"""
             return True & res
         except Exception as e:
             dumpException(e)
@@ -116,8 +118,8 @@ class KSamplerNode(CalcNode):
         super().__init__(scene, inputs=[2,3,3,1], outputs=[5,2,1])
 
 
-        self.eval()
-        self.content.eval_signal.connect(self.evalImplementation)
+        #self.eval()
+        #self.content.eval_signal.connect(self.evalImplementation)
         self.content.button.clicked.connect(self.evalImplementation)
         self.busy = False
         # Create a worker object
