@@ -20,10 +20,10 @@ SAMPLERS = ["euler", "euler_ancestral", "heun", "dpm_2", "dpm_2_ancestral",
 class CNApplyWidget(QDMNodeContentWidget):
     def initUI(self):
         self.strength = QtWidgets.QDoubleSpinBox()
-        self.strength.setMinimum(1.01)
+        self.strength.setMinimum(0.01)
         self.strength.setMaximum(100.00)
         self.strength.setSingleStep(0.01)
-        self.strength.setValue(7.50)
+        self.strength.setValue(1.00)
 
         self.button = QtWidgets.QPushButton("Run")
         layout = QtWidgets.QVBoxLayout(self)
