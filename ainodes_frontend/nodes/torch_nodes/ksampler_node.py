@@ -84,7 +84,7 @@ class KSamplerWidget(QDMNodeContentWidget):
 
     def serialize(self):
         res = super().serialize()
-        res = self.serializeWidgets(res)
+        #res = self.serializeWidgets(res)
         """res['scheduler'] = self.schedulers.currentText()
         res['sampler'] = self.sampler.currentText()
         res['seed'] = self.seed.text()
@@ -95,7 +95,7 @@ class KSamplerWidget(QDMNodeContentWidget):
     def deserialize(self, data, hashmap={}):
         res = super().deserialize(data, hashmap)
         try:
-            self.deserializeWidgets(data)
+            #self.deserializeWidgets(data)
             """self.schedulers.setCurrentText(data['scheduler'])
             self.sampler.setCurrentText(data['sampler'])
             self.seed.setText(data['seed'])

@@ -40,7 +40,7 @@ class TorchLoaderWidget(QDMNodeContentWidget):
 
     def serialize(self):
         res = super().serialize()
-        res = self.serializeWidgets(res)
+        #res = self.serializeWidgets(res)
         return res
 
     def deserialize(self, data, hashmap={}):

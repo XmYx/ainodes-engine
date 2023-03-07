@@ -27,7 +27,7 @@ STATE_STRING = ['', 'Noop', 'Edge Drag', 'Edge Cut', 'Edge Rerouting', 'Node Dra
 EDGE_DRAG_START_THRESHOLD = 50
 
 #: Enable UnrealEngine style rerouting
-EDGE_REROUTING_UE = True
+EDGE_REROUTING_UE = False
 
 #: Socket snapping distance
 EDGE_SNAPPING_RADIUS = 24
@@ -120,7 +120,9 @@ class QDMGraphicsView(QGraphicsView):
 
     def isSnappingEnabled(self, event: 'QInputEvent' = None) -> bool:
         """Returns ``True`` if snapping is currently enabled"""
-        return EDGE_SNAPPING and (event.modifiers() and Qt.CTRL) if event else True
+        print(event.modifiers())
+        return True
+        return EDGE_SNAPPING and (event.modifiers() and Qt.CTRL) if event else True #
 
     def resetMode(self):
         """Helper function to re-set the grView's State Machine state to the default"""

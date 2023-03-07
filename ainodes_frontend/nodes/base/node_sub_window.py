@@ -37,9 +37,9 @@ class CalculatorSubWindow(NodeEditorWidget):
 
         self.run_all_action = QAction("Run All")
         self.run_all_action.triggered.connect(self.doRunAll)
-        self.stylesheet_filename = os.path.join(os.path.dirname(__file__), "qss/node_engine-dark.qss")
+        self.stylesheet_filename = os.path.join(os.path.dirname(__file__), "ainodes_frontend/qss/node_engine-dark.qss")
         loadStylesheets(
-            os.path.join(os.path.dirname(__file__), "qss/node_engine-dark.qss"),
+            os.path.join(os.path.dirname(__file__), "ainodes_frontend/qss/node_engine-dark.qss"),
             self.stylesheet_filename
         )
 
