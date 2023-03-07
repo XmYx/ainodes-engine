@@ -43,6 +43,7 @@ def load_controlnet(ckpt_path, model=None):
 
     if pth:
         if 'difference' in controlnet_data:
+            print(model)
             if model is not None:
                 m = model.patch_model()
                 model_sd = m.state_dict()

@@ -3,7 +3,7 @@ import os
 #from qtpy.QtWidgets import QLineEdit, QLabel, QPushButton, QFileDialog, QVBoxLayout
 from qtpy import QtWidgets
 
-from ainodes_backend.model_loader import ModelLoader
+#from ainodes_backend.model_loader import ModelLoader
 from ainodes_backend.controlnet_loader import load_controlnet
 from ainodes_frontend.nodes.base.node_config import register_node, OP_NODE_CONTROLNET_LOADER
 from ainodes_frontend.nodes.base.ai_node_base import CalcNode, CalcGraphicsNode
@@ -70,7 +70,7 @@ class ControlnetLoaderNode(CalcNode):
         super().__init__(scene, inputs=[], outputs=[3])
 
         self.content.eval_signal.connect(self.eval)
-        self.loader = ModelLoader()
+        #self.loader = ModelLoader()
 
     def initInnerClasses(self):
         self.content = ControlnetLoaderWidget(self)
@@ -78,7 +78,7 @@ class ControlnetLoaderNode(CalcNode):
         self.grNode.width = 260
 
     def evalImplementation(self, index=0):
-        self.executeChild()
+        #self.executeChild()
         model_name = self.content.control_net_name.currentText()
         if self.value != model_name:
             self.markInvalid()
@@ -86,7 +86,6 @@ class ControlnetLoaderNode(CalcNode):
                 self.value = model_name
                 self.setOutput(0, "controlnet")
                 self.load_controlnet()
-
                 self.markDirty(False)
                 self.markInvalid(False)
                 return self.value
@@ -100,15 +99,12 @@ class ControlnetLoaderNode(CalcNode):
 
 
     def load_controlnet(self):
-        if "controlnet" not in gs.models:
-            controlnet_dir = "models/controlnet"
-            controlnet_path = os.path.join(controlnet_dir, self.content.control_net_name.currentText())
-            gs.models["controlnet"] = load_controlnet(controlnet_path)
-            gs.models["controlnet"].control_model.cuda()
+        #if "controlnet" not in gs.models:
+        controlnet_dir = "models/controlnet"
+        controlnet_path = os.path.join(controlnet_dir, self.content.control_net_name.currentText())
+        gs.models["controlnet"] = load_controlnet(controlnet_path)
+        gs.models["controlnet"].control_model.cuda()
 
-            return "controlnet"
-        else:
-            print("No reload needed")
         return "controlnet"
 
 

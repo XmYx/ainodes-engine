@@ -31,3 +31,5 @@ tensorboard
 fvcore
 einops
 rich
+
+basicsr

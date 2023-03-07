@@ -37,6 +37,7 @@ def common_ksampler(device, seed, steps, cfg, sampler_name, scheduler, positive,
             t = torch.cat([t] * noise.shape[0])
         t = t.to(device)
         if 'control' in p[1]:
+            #print("Applying CN's")
             control_nets += [p[1]['control']]
         positive_copy += [[t] + p[1:]]
     for n in negative:
@@ -51,7 +52,7 @@ def common_ksampler(device, seed, steps, cfg, sampler_name, scheduler, positive,
     control_net_models = []
     for x in control_nets:
         control_net_models += x.get_control_models()
-    #model_management.load_controlnet_gpu(control_net_models)
+    #load_controlnet_gpu(control_net_models)
 
     if sampler_name in samplers.KSampler.SAMPLERS:
         sampler = samplers.KSampler(steps=steps, device=device, sampler=sampler_name, scheduler=scheduler, denoise=denoise)

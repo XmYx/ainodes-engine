@@ -1,3 +1,5 @@
+import time
+
 import numpy as np
 
 import torch
@@ -104,6 +106,7 @@ class CNApplyNode(CalcNode):
     def onMarkedDirty(self):
         self.value = None
     def apply_control_net(self, progress_callback=None):
+        start_time = time.time()
         try:
             n_cond_node, index = self.getInput(1)
             conditioning = n_cond_node.getOutput(index)
@@ -139,7 +142,9 @@ class CNApplyNode(CalcNode):
             print("CN APPENDED")
         self.value = c
         self.setOutput(0, c)
-
+        end_time = time.time()
+        time_diff_ms = (end_time - start_time) * 1000
+        print("Controlnet ran in: ", time_diff_ms, "ms")
         return c
     @QtCore.Slot(object)
     def onWorkerFinished(self, result):
