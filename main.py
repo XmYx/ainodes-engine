@@ -1,4 +1,9 @@
 import os, sys
+import platform
+import subprocess
+
+if "Linux" in platform.platform():
+    subprocess.run(["pip", "install", "triton==2.0.0"])
 
 from qtpy import QtOpenGL, QtGui
 from qtpy.QtWidgets import QApplication

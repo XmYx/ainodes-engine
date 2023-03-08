@@ -1,1 +1,1 @@
-ainodes_backend/win_python/python.exe launcher.py
+python launcher.py

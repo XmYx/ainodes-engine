@@ -19,7 +19,7 @@ scipy
 torchdiffeq
 torchsde
 opencv-contrib-python
-triton==2.0.0
+
 
 # Semseg Requirements:
 tqdm
@@ -33,3 +33,5 @@ einops
 rich
 
 basicsr
+
+#triton==2.0.0
