@@ -120,7 +120,7 @@ class QDMGraphicsView(QGraphicsView):
 
     def isSnappingEnabled(self, event: 'QInputEvent' = None) -> bool:
         """Returns ``True`` if snapping is currently enabled"""
-        print(event.modifiers())
+        #print(event.modifiers())
         return True
         return EDGE_SNAPPING and (event.modifiers() and Qt.CTRL) if event else True #
 

@@ -32,6 +32,8 @@ class ControlnetLoaderWidget(QDMNodeContentWidget):
         self.setLayout(layout)
         self.setSizePolicy(CenterExpandingSizePolicy(self))
         self.setLayout(layout)
+        if "loaded_controlnet" not in gs.models:
+            gs.models["loaded_controlnet"] = None
 
     def serialize(self):
         res = super().serialize()
@@ -67,7 +69,7 @@ class ControlnetLoaderNode(CalcNode):
     category = "controlnet"
 
     def __init__(self, scene):
-        super().__init__(scene, inputs=[], outputs=[3])
+        super().__init__(scene, inputs=[1], outputs=[1])
 
         self.content.eval_signal.connect(self.eval)
         #self.loader = ModelLoader()
@@ -80,28 +82,40 @@ class ControlnetLoaderNode(CalcNode):
     def evalImplementation(self, index=0):
         #self.executeChild()
         model_name = self.content.control_net_name.currentText()
-        if self.value != model_name:
+        if gs.models["loaded_controlnet"] != model_name:
             self.markInvalid()
             if model_name != "":
-                self.value = model_name
                 self.setOutput(0, "controlnet")
                 self.load_controlnet()
+                gs.models["loaded_controlnet"] = model_name
                 self.markDirty(False)
                 self.markInvalid(False)
+                if len(self.getOutputs(0)) > 0:
+                    self.executeChild(output_index=0)
                 return self.value
             else:
+                if len(self.getOutputs(0)) > 0:
+                    self.executeChild(output_index=0)
+
                 return self.value
         else:
             self.markDirty(False)
             self.markInvalid(False)
             self.grNode.setToolTip("")
+            if len(self.getOutputs(0)) > 0:
+                self.executeChild(output_index=0)
+
             return self.value
+    def eval(self, index=0):
+        self.markDirty(True)
+        self.evalImplementation(0)
 
 
     def load_controlnet(self):
         #if "controlnet" not in gs.models:
         controlnet_dir = "models/controlnet"
         controlnet_path = os.path.join(controlnet_dir, self.content.control_net_name.currentText())
+        gs.models["controlnet"] = None
         gs.models["controlnet"] = load_controlnet(controlnet_path)
         gs.models["controlnet"].control_model.cuda()
 

@@ -1,8 +1,10 @@
 import os, sys
+os.environ['QT_API'] = 'pyside6'
 import platform
 import subprocess
 
 if "Linux" in platform.platform():
+    print(platform.platform())
     subprocess.run(["pip", "install", "triton==2.0.0"])
 
 from qtpy import QtOpenGL, QtGui
