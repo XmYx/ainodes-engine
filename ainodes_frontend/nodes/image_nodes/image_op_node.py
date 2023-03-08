@@ -251,6 +251,9 @@ class ImageOpNode(CalcNode):
             image[image > 4] = 255
             image[image < 255] = 0
             image = Image.fromarray(image)
+            detector.netNetwork.cpu()
+            detector.netNetwork = None
+
             del detector
         elif method == 'hed':
             # Ref: https://github.com/lllyasviel/ControlNet/blob/main/gradio_hed2image.py
@@ -259,6 +262,9 @@ class ImageOpNode(CalcNode):
             image = detector(image)
             image = HWC3(image)
             image = Image.fromarray(image)
+            detector.netNetwork.cpu()
+            detector.netNetwork = None
+
             del detector
         elif method == 'depth':
             image = np.array(image)
@@ -268,6 +274,9 @@ class ImageOpNode(CalcNode):
             depth_map_np, normal_map_np = detector(image, a, bg_threshold)
             image = HWC3(depth_map_np)
             image = Image.fromarray(image)
+            detector.model.cpu()
+            detector.model = None
+
             del detector
         elif method == 'normal':
             image = np.array(image)
@@ -277,6 +286,9 @@ class ImageOpNode(CalcNode):
             depth_map_np, normal_map_np = detector(image, a, bg_threshold)
             image = HWC3(normal_map_np)
             image = Image.fromarray(image)
+            detector.model.cpu()
+            detector.model = None
+
             del detector
         elif method == 'mlsd':
             image = image.convert('RGB')
@@ -288,6 +300,8 @@ class ImageOpNode(CalcNode):
             mlsd = detector(image, bg_threshold, a)
             image = HWC3(mlsd)
             image = Image.fromarray(image)
+            detector.model.cpu()
+            detector.model = None
             del detector
         elif method == 'openpose':
             image = image.convert('RGB')
@@ -295,8 +309,8 @@ class ImageOpNode(CalcNode):
             print(image.shape)
             detector = OpenposeDetector()
             pose, _ = detector(image, True)
-            #image = HWC3(pose)
-            image = Image.fromarray(pose)
+            image = HWC3(pose)
+            image = Image.fromarray(image)
             del detector
 
         # Convert the PIL Image object to a QPixmap object

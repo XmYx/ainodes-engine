@@ -389,7 +389,15 @@
                     "socket_type": 1
                 }
             ],
-            "content": {},
+            "content": {
+                "dropdown": "depth",
+                "w": 512,
+                "h": 512,
+                "canny_high": 100,
+                "canny_low": 100,
+                "midas_a": 6.28,
+                "midas_bg": 0.01
+            },
             "op_code": 7
         },
         {
@@ -835,7 +843,15 @@
                     "socket_type": 1
                 }
             ],
-            "content": {},
+            "content": {
+                "dropdown": "depth",
+                "w": 512,
+                "h": 512,
+                "canny_high": 100,
+                "canny_low": 100,
+                "midas_a": 6.28,
+                "midas_bg": 0.01
+            },
             "op_code": 7
         },
         {
@@ -1353,7 +1369,15 @@
                     "socket_type": 1
                 }
             ],
-            "content": {},
+            "content": {
+                "dropdown": "fake_scribble",
+                "w": 512,
+                "h": 512,
+                "canny_high": 100,
+                "canny_low": 100,
+                "midas_a": 6.28,
+                "midas_bg": 0.01
+            },
             "op_code": 7
         },
         {
@@ -1499,7 +1523,15 @@
                     "socket_type": 1
                 }
             ],
-            "content": {},
+            "content": {
+                "dropdown": "fake_scribble",
+                "w": 512,
+                "h": 512,
+                "canny_high": 100,
+                "canny_low": 100,
+                "midas_a": 6.28,
+                "midas_bg": 0.01
+            },
             "op_code": 7
         },
         {
@@ -2093,7 +2125,15 @@
                     "socket_type": 1
                 }
             ],
-            "content": {},
+            "content": {
+                "dropdown": "depth",
+                "w": 512,
+                "h": 512,
+                "canny_high": 100,
+                "canny_low": 100,
+                "midas_a": 6.28,
+                "midas_bg": 0.01
+            },
             "op_code": 7
         },
         {
@@ -2463,7 +2503,15 @@
                     "socket_type": 1
                 }
             ],
-            "content": {},
+            "content": {
+                "dropdown": "depth",
+                "w": 512,
+                "h": 512,
+                "canny_high": 100,
+                "canny_low": 100,
+                "midas_a": 6.28,
+                "midas_bg": 0.01
+            },
             "op_code": 7
         },
         {
@@ -2833,7 +2881,15 @@
                     "socket_type": 1
                 }
             ],
-            "content": {},
+            "content": {
+                "dropdown": "depth",
+                "w": 512,
+                "h": 512,
+                "canny_high": 100,
+                "canny_low": 100,
+                "midas_a": 6.28,
+                "midas_bg": 0.01
+            },
             "op_code": 7
         },
         {
@@ -3203,7 +3259,15 @@
                     "socket_type": 1
                 }
             ],
-            "content": {},
+            "content": {
+                "dropdown": "depth",
+                "w": 512,
+                "h": 512,
+                "canny_high": 100,
+                "canny_low": 100,
+                "midas_a": 6.28,
+                "midas_bg": 0.01
+            },
             "op_code": 7
         },
         {
@@ -4167,9 +4231,9 @@
             "end": 139815058728944
         },
         {
-            "id": 139814424944896,
+            "id": 139814424831840,
             "edge_type": 2,
-            "start": 139815304425968,
+            "start": 139815058728992,
             "end": 139814424909664
         }
     ]

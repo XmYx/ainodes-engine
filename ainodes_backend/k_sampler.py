@@ -65,13 +65,14 @@ def common_ksampler(device, seed, steps, cfg, sampler_name, scheduler, positive,
     #samples = samples.cpu()
     for c in control_nets:
         c.cleanup()
+    del control_nets
     del sampler.model_k
     del sampler.model_wrap.inner_model
     del sampler.model_wrap
     del sampler.model_denoise
     del sampler
     if "controlnet" in gs.models:
-        gs.models["controlnet"].control_model.cuda()
+        gs.models["controlnet"].control_model.cpu()
     torch_gc()
 
     return samples

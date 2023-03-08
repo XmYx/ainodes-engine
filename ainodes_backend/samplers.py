@@ -512,5 +512,7 @@ class KSampler:
                     samples = k_diffusion_sampling.sample_dpm_adaptive(self.model_k, noise, sigma_min, sigmas[0], extra_args=extra_args)
                 else:
                     samples = getattr(k_diffusion_sampling, "sample_{}".format(self.sampler))(self.model_k, noise, sigmas, extra_args=extra_args)
-
+        del positive
+        del negative
+        del self.sampler
         return samples.to(torch.float32)
