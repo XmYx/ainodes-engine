@@ -25,11 +25,9 @@ class VideoInputWidget(QDMNodeContentWidget):
         self.play_button.clicked.connect(self.playVideo)
 
         self.pause_button = QPushButton("Pause", self)
-        self.pause_button.setEnabled(False)
         self.pause_button.clicked.connect(self.pauseVideo)
 
         self.stop_button = QPushButton("Stop", self)
-        self.stop_button.setEnabled(False)
         #self.stop_button.clicked.connect(self.stopVideo)
 
         layout = QVBoxLayout()
@@ -60,8 +58,6 @@ class VideoInputWidget(QDMNodeContentWidget):
         pixmap = self.video.get_frame()
         self.label.setPixmap(pixmap)
         self.node.resize()
-        self.play_button.setEnabled(True)
-        self.stop_button.setEnabled(True)
 
     def loadVideo(self):
         file_name, _ = QFileDialog.getOpenFileName(self, "Open Video File", "", "Video Files (*.mp4 *.avi *.mkv)")
@@ -73,19 +69,12 @@ class VideoInputWidget(QDMNodeContentWidget):
 
     def playVideo(self):
         self.advance_frame()
-        self.play_button.setEnabled(False)
-        self.pause_button.setEnabled(True)
-        self.stop_button.setEnabled(True)
 
     def pauseVideo(self):
-        self.play_button.setEnabled(True)
-        self.pause_button.setEnabled(False)
+        pass
 
     def stopVideo(self):
         #self.movie.stop()
-        self.play_button.setEnabled(True)
-        self.pause_button.setEnabled(False)
-        self.stop_button.setEnabled(False)
         self.current_frame = 0
         self.label.setText("Frame: 0")
 
@@ -125,9 +114,14 @@ class VideoInputNode(CalcNode):
         self.content.stop_button.clicked.connect(self.content.video.reset)
     def evalImplementation(self, index=0):
         pixmap = self.content.video.get_frame()
+
+
+
         self.setOutput(0, pixmap)
         self.markDirty(False)
         self.markInvalid(False)
+        self.content.label.setPixmap(pixmap)
+
         if len(self.getOutputs(1)) > 0:
             self.executeChild(output_index=1)
 
@@ -142,6 +136,10 @@ class VideoInputNode(CalcNode):
         for socket in self.outputs + self.inputs:
             socket.setSocketPosition()
         self.updateConnectedEdges()
+
+    def eval(self):
+        self.markDirty(True)
+        self.evalImplementation()
 
 
 class VideoPlayer:
@@ -163,6 +161,8 @@ class VideoPlayer:
 
     def get_frame(self):
         ret, frame = self.video_capture.read()
+        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+
         image = Image.fromarray(frame)
         pixmap = pil_image_to_pixmap(image)
         if ret:
