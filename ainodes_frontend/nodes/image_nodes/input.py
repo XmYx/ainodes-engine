@@ -1,5 +1,6 @@
 from PIL import Image
 from PIL.ImageQt import ImageQt
+from qtpy import QtCore
 from qtpy.QtWidgets import QLabel, QFileDialog, QVBoxLayout
 from qtpy.QtGui import QPixmap
 from ainodes_frontend.nodes.base.node_config import register_node, OP_NODE_IMG_INPUT
@@ -9,21 +10,14 @@ from ainodes_backend.node_engine.utils import dumpException
 
 
 class ImageInputWidget(QDMNodeContentWidget):
+    fileName = None
+    parent_resize_signal = QtCore.Signal()
     def initUI(self):
         # Create a label to display the image
 
         self.image = QLabel(self)
         self.image.setObjectName(self.node.content_label_objname)
-
-        ## Add a button to open the file dialog
-        #self.btn = QPushButton("Select Image", self)
-        #self.btn.clicked.connect(self.openFileDialog)
-        fileName = self.openFileDialog()
-        if fileName != None:
-            image = Image.open(fileName)
-            qimage = ImageQt(image)
-            pixmap = QPixmap().fromImage(qimage)
-            self.image.setPixmap(pixmap)
+        self.firstRun_done = None
         # Create a layout to place the label and button
         layout = QVBoxLayout(self)
         layout.setContentsMargins(25, 25, 25, 25)
@@ -35,29 +29,42 @@ class ImageInputWidget(QDMNodeContentWidget):
         # Open the file dialog to select a PNG file
         options = QFileDialog.Options()
         options |= QFileDialog.DontUseNativeDialog
-        fileName, _ = QFileDialog.getOpenFileName(self, "Select Image", "",
+        self.fileName, _ = QFileDialog.getOpenFileName(None, "Select Image", "",
                                                   "PNG Files (*.png);JPEG Files (*.jpeg *.jpg);All Files(*)",
                                                   options=options)
         # If a file is selected, display the image in the label
-        if fileName:
-            return fileName
-        else:
-            return None
-            image = Image.open(fileName)
+        if self.fileName != None:
+            image = Image.open(self.fileName)
             qimage = ImageQt(image)
             pixmap = QPixmap().fromImage(qimage)
             self.image.setPixmap(pixmap)
+            self.parent_resize_signal.emit()
 
     def serialize(self):
         res = super().serialize()
-        #res['value'] = self.edit.text()
+        #if hasattr(self, 'fileName'):
+        res['filename'] = self.fileName
         return res
 
     def deserialize(self, data, hashmap={}):
         res = super().deserialize(data, hashmap)
         try:
             #value = data['value']
-            #self.image.setPixmap(value)
+            self.fileName = data['filename']
+            if self.firstRun_done == None:
+                if self.fileName != None:
+                    try:
+                        image = Image.open(self.fileName)
+                        qimage = ImageQt(image)
+                        pixmap = QPixmap().fromImage(qimage)
+                        self.image.setPixmap(pixmap)
+                        self.firstRun_done = True
+                        self.parent_resize_signal.emit()
+                    except:
+                        self.openFileDialog()
+                elif self.fileName == None:
+                    print("Opening file dialog")
+                    self.openFileDialog()
             return True & res
         except Exception as e:
             dumpException(e)
@@ -75,23 +82,51 @@ class ImageInputNode(CalcNode):
 
     def __init__(self, scene):
         super().__init__(scene, inputs=[], outputs=[5,1])
-        self.eval()
+        #self.eval()
         self.content.eval_signal.connect(self.eval)
-
-
-    def initInnerClasses(self):
-        self.content = ImageInputWidget(self)
-        self.grNode = CalcGraphicsNode(self)
-
-
+        #print(self.content.firstRun_done)
+    @QtCore.Slot()
+    def resize(self):
         self.content.setMinimumHeight(self.content.image.pixmap().size().height())
         self.content.setMinimumWidth(self.content.image.pixmap().size().width())
         self.grNode.height = self.content.image.pixmap().size().height() + 96
         self.grNode.width = self.content.image.pixmap().size().width() + 64
 
+        for socket in self.outputs + self.inputs:
+            socket.setSocketPosition()
+        self.updateConnectedEdges()
+
+    def init_image(self):
+        #self.content.update()
+        if self.content.fileName == None:
+            self.content.fileName = self.openFileDialog()
+        if self.content.fileName != None:
+            image = Image.open(self.content.fileName)
+            qimage = ImageQt(image)
+            pixmap = QPixmap().fromImage(qimage)
+            self.content.image.setPixmap(pixmap)
+        self.resize()
+
+
+    def onMarkedDirty(self):
+        self.content.fileName = None
+        #self.eval()
+
+    def initInnerClasses(self):
+        self.content = ImageInputWidget(self)
+        self.grNode = CalcGraphicsNode(self)
+        #self.init_image()
+        self.content.parent_resize_signal.connect(self.resize)
+
+
+        #self.content.parent_resize_signal.emit()
+
         #self.content.image.changeEvent.connect(self.onInputChanged)
 
     def evalImplementation(self, index=0):
+
+        self.init_image()
+
         u_value = self.content.image.pixmap()
         s_value = u_value
         self.value = s_value
@@ -107,3 +142,16 @@ class ImageInputNode(CalcNode):
             self.executeChild(output_index=1)
 
         return self.content.image.pixmap()
+
+    def openFileDialog(self):
+        # Open the file dialog to select a PNG file
+        options = QFileDialog.Options()
+        options |= QFileDialog.DontUseNativeDialog
+        fileName, _ = QFileDialog.getOpenFileName(None, "Select Image", "",
+                                                  "PNG Files (*.png);JPEG Files (*.jpeg *.jpg);All Files(*)",
+                                                  options=options)
+        # If a file is selected, display the image in the label
+        if fileName:
+            return fileName
+        else:
+            return None

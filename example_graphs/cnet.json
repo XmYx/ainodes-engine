@@ -26,7 +26,10 @@
                     "socket_type": 1
                 }
             ],
-            "content": {},
+            "content": {
+                "model": "model.ckpt",
+                "config": "v1-inference_fp16.yaml"
+            },
             "op_code": 9
         },
         {
@@ -52,33 +55,10 @@
                     "socket_type": 1
                 }
             ],
-            "content": {},
+            "content": {
+                "cn": "control_sd15_scribble.pth"
+            },
             "op_code": 13
-        },
-        {
-            "id": 140462536418688,
-            "title": "Input",
-            "pos_x": -1570.7070312499995,
-            "pos_y": -153.15234374999997,
-            "inputs": [],
-            "outputs": [
-                {
-                    "id": 140462981757488,
-                    "index": 0,
-                    "multi_edges": true,
-                    "position": 6,
-                    "socket_type": 5
-                },
-                {
-                    "id": 140462981756336,
-                    "index": 1,
-                    "multi_edges": true,
-                    "position": 6,
-                    "socket_type": 1
-                }
-            ],
-            "content": {},
-            "op_code": 1
         },
         {
             "id": 140462953593488,
@@ -279,7 +259,9 @@
                     "socket_type": 1
                 }
             ],
-            "content": {},
+            "content": {
+                "prompt": ""
+            },
             "op_code": 10
         },
         {
@@ -340,7 +322,13 @@
                     "socket_type": 1
                 }
             ],
-            "content": {},
+            "content": {
+                "scheduler": "karras",
+                "sampler": "euler",
+                "seed": "",
+                "steps": 10,
+                "guidance_scale": 7.5
+            },
             "op_code": 11
         },
         {
@@ -373,7 +361,9 @@
                     "socket_type": 1
                 }
             ],
-            "content": {},
+            "content": {
+                "prompt": ""
+            },
             "op_code": 10
         },
         {
@@ -603,7 +593,13 @@
                     "socket_type": 1
                 }
             ],
-            "content": {},
+            "content": {
+                "scheduler": "karras",
+                "sampler": "euler",
+                "seed": "",
+                "steps": 10,
+                "guidance_scale": 7.5
+            },
             "op_code": 11
         },
         {
@@ -669,23 +665,40 @@
                     "socket_type": 1
                 }
             ],
-            "content": {},
+            "content": {
+                "cn": "control_sd15_depth.pth"
+            },
             "op_code": 13
+        },
+        {
+            "id": 139956247891008,
+            "title": "Input",
+            "pos_x": -1645.0195312499995,
+            "pos_y": -374.9999999999996,
+            "inputs": [],
+            "outputs": [
+                {
+                    "id": 139956247461744,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 5
+                },
+                {
+                    "id": 139956247461696,
+                    "index": 1,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 1
+                }
+            ],
+            "content": {
+                "filename": "docs/peug2.jpg"
+            },
+            "op_code": 1
         }
     ],
     "edges": [
-        {
-            "id": 140451472182096,
-            "edge_type": 2,
-            "start": 140462981757488,
-            "end": 140462981757440
-        },
-        {
-            "id": 140451472182048,
-            "edge_type": 2,
-            "start": 140462981756336,
-            "end": 140462981756144
-        },
         {
             "id": 140451472181664,
             "edge_type": 2,
@@ -847,6 +860,18 @@
             "edge_type": 2,
             "start": 140457829086880,
             "end": 140458289741776
+        },
+        {
+            "id": 139951603201936,
+            "edge_type": 2,
+            "start": 139956247461696,
+            "end": 140462981756144
+        },
+        {
+            "id": 139951602899264,
+            "edge_type": 2,
+            "start": 139956247461744,
+            "end": 140462981757440
         }
     ]
 }

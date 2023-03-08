@@ -84,23 +84,21 @@ class KSamplerWidget(QDMNodeContentWidget):
 
     def serialize(self):
         res = super().serialize()
-        #res = self.serializeWidgets(res)
-        """res['scheduler'] = self.schedulers.currentText()
+        res['scheduler'] = self.schedulers.currentText()
         res['sampler'] = self.sampler.currentText()
         res['seed'] = self.seed.text()
         res['steps'] = self.steps.value()
-        res['guidance_scale'] = self.guidance_scale.value()"""
+        res['guidance_scale'] = self.guidance_scale.value()
         return res
 
     def deserialize(self, data, hashmap={}):
         res = super().deserialize(data, hashmap)
         try:
-            #self.deserializeWidgets(data)
-            """self.schedulers.setCurrentText(data['scheduler'])
+            self.schedulers.setCurrentText(data['scheduler'])
             self.sampler.setCurrentText(data['sampler'])
             self.seed.setText(data['seed'])
             self.steps.setValue(data['steps'])
-            self.guidance_scale.setValue(data['guidance_scale'])"""
+            self.guidance_scale.setValue(data['guidance_scale'])
             return True & res
         except Exception as e:
             dumpException(e)

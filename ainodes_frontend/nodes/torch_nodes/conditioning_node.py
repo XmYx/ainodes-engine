@@ -38,6 +38,7 @@ class ConditioningWidget(QDMNodeContentWidget):
 
     def serialize(self):
         res = super().serialize()
+        res['prompt'] = self.prompt.toPlainText()
         #res = self.serializeWidgets(res)
         return res
 
@@ -45,7 +46,7 @@ class ConditioningWidget(QDMNodeContentWidget):
         res = super().deserialize(data, hashmap)
         try:
             #self.deserializeWidgets(data)
-            #self.image.setPixmap(value)
+            self.prompt.setText(data['prompt'])
             return True & res
         except Exception as e:
             dumpException(e)

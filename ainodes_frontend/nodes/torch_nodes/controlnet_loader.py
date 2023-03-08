@@ -37,14 +37,14 @@ class ControlnetLoaderWidget(QDMNodeContentWidget):
 
     def serialize(self):
         res = super().serialize()
-        #res['value'] = self.edit.text()
+        res['cn'] = self.control_net_name.currentText()
         return res
 
     def deserialize(self, data, hashmap={}):
         res = super().deserialize(data, hashmap)
         try:
             #value = data['value']
-            #self.image.setPixmap(value)
+            self.control_net_name.setCurrentText(data['cn'])
             return True & res
         except Exception as e:
             dumpException(e)

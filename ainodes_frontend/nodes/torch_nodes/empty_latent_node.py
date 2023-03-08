@@ -31,14 +31,16 @@ class LatentWidget(QDMNodeContentWidget):
 
     def serialize(self):
         res = super().serialize()
-        #res['value'] = self.edit.text()
+        res['w'] = self.width.value()
+        res['h'] = self.height.value()
         return res
 
     def deserialize(self, data, hashmap={}):
         res = super().deserialize(data, hashmap)
         try:
             #value = data['value']
-            #self.image.setPixmap(value)
+            self.width.setValue(int(data["w"]))
+            self.height.setValue(int(data["h"]))
             return True & res
         except Exception as e:
             dumpException(e)
