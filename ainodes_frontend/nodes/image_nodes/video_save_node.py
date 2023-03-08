@@ -78,17 +78,18 @@ class VideoOutputNode(CalcNode):
 
     def __init__(self, scene):
         super().__init__(scene, inputs=[5,1], outputs=[5,1])
-        self.eval()
-        self.content.eval_signal.connect(self.evalImplementation)
+        #self.eval()
+        #self.content.eval_signal.connect(self.evalImplementation)
 
     def initInnerClasses(self):
         self.content = VideoOutputWidget(self)
         self.grNode = CalcGraphicsNode(self)
         self.content.new_button.clicked.connect(self.start_new_video)
-        self.content.save_button.clicked.connect(self.content.video.close)
+        self.content.save_button.clicked.connect(self.close)
         self.grNode.height = 512
         self.grNode.width = 512
         self.content.setGeometry(0, 0, 512, 512)
+        self.markInvalid(True)
     def evalImplementation(self, index=0):
         if self.getInput(0) is not None:
             input_node, other_index = self.getInput(0)
@@ -100,18 +101,18 @@ class VideoOutputNode(CalcNode):
             val = input_node.getOutput(other_index)
             image = pixmap_to_pil_image(val)
             frame = np.array(image)
+            self.markInvalid(False)
+            self.markDirty(True)
             self.content.video.add_frame(frame)
             self.setOutput(0, val)
             if len(self.getOutputs(1)) > 0:
                 self.executeChild(output_index=1)
 
-
-
+        return None
+    def close(self):
+        self.content.video.close()
         self.markDirty(False)
         self.markInvalid(False)
-
-        return None
-
     def resize(self):
         self.content.setMinimumHeight(self.content.label.pixmap().size().height())
         self.content.setMinimumWidth(self.content.label.pixmap().size().width())
@@ -129,8 +130,10 @@ class VideoOutputNode(CalcNode):
     def start_new_video(self):
         try:
             self.content.video.close()
+            self.markDirty(True)
         except:
             pass
+        self.markDirty(True)
         filename = "test.mp4"
         fps = self.content.fps.value()
         width = self.content.width_value.value()

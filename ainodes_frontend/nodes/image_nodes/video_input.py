@@ -24,8 +24,8 @@ class VideoInputWidget(QDMNodeContentWidget):
         self.play_button = QPushButton("Play", self)
         self.play_button.clicked.connect(self.playVideo)
 
-        self.pause_button = QPushButton("Pause", self)
-        self.pause_button.clicked.connect(self.pauseVideo)
+        #self.pause_button = QPushButton("Pause", self)
+        #self.pause_button.clicked.connect(self.pauseVideo)
 
         self.stop_button = QPushButton("Stop", self)
         #self.stop_button.clicked.connect(self.stopVideo)
@@ -106,17 +106,14 @@ class VideoInputNode(CalcNode):
     def initInnerClasses(self):
         self.content = VideoInputWidget(self)
         self.grNode = CalcGraphicsNode(self)
+        self.resize()
+        #self.grNode.height = 512
+        #self.grNode.width = 512
 
-        self.grNode.height = 512
-        self.grNode.width = 512
-
-        self.content.setGeometry(0, 0, 512, 512)
+        #self.content.setGeometry(0, 0, 512, 512)
         self.content.stop_button.clicked.connect(self.content.video.reset)
     def evalImplementation(self, index=0):
         pixmap = self.content.video.get_frame()
-
-
-
         self.setOutput(0, pixmap)
         self.markDirty(False)
         self.markInvalid(False)
