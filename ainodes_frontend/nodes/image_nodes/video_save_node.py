@@ -1,3 +1,6 @@
+import datetime
+import os
+
 import cv2
 import numpy as np
 from PIL import Image
@@ -125,7 +128,7 @@ class VideoOutputNode(CalcNode):
 
     def start_new_video(self):
         try:
-            self.video_writer.release()
+            self.content.video.close()
         except:
             pass
         filename = "test.mp4"
@@ -147,4 +150,7 @@ class VideoRecorder:
 
     def close(self):
         self.video_writer.release()
+        timestamp = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
+        filename = f"{timestamp}.mp4"
+        os.rename("test.mp4", filename)
         print("Video allegedly saved")

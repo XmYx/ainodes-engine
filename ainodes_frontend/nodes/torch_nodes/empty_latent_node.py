@@ -56,14 +56,14 @@ class LatentNode(CalcNode):
     category = "latent"
 
     def __init__(self, scene):
-        super().__init__(scene, inputs=[3], outputs=[3,3])
+        super().__init__(scene, inputs=[3,1], outputs=[3,1])
         #self.eval()
         #self.content.eval_signal.connect(self.eval)
 
     def initInnerClasses(self):
         self.content = LatentWidget(self)
         self.grNode = CalcGraphicsNode(self)
-        self.input_socket_name = ["EXEC"]
+        self.input_socket_name = ["EXEC", "LATENT"]
         self.output_socket_name = ["EXEC", "LATENT"]
         self.grNode.height = 160
         self.grNode.width = 200
@@ -74,13 +74,22 @@ class LatentNode(CalcNode):
             if self.getInput(index) != None:
                 #self.markInvalid()
                 #self.markDescendantsDirty()
-                self.value = self.generate_latent()
+
+                try:
+                    latent_node, index = self.getInput(0)
+                    self.value = latent_node.getOutput(index)
+                except:
+                    self.value = torch.zeros([1, 4, 512 // 8, 512 // 8])
                 self.setOutput(0, self.value)
                 self.markDirty(False)
                 self.markInvalid(False)
-                self.executeChild(output_index=1)
+                if len(self.getOutputs(1)) > 0:
+                    self.executeChild(output_index=1)
                 return self.value
         else:
+            self.value = self.generate_latent()
+            self.setOutput(0, self.value)
+
             self.markDirty(False)
             self.markInvalid(False)
             #self.markDescendantsDirty()
