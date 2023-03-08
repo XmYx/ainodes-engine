@@ -64,7 +64,7 @@ class VideoOutputWidget(QDMNodeContentWidget):
         try:
             self.height_value.setValue(int(data['h']))
             self.width_value.setValue(int(data['w']))
-            self.fps.setValue(float(data['fps']))
+            self.fps.setValue(int(data['fps']))
             #self.image.setPixmap(value)
             return True & res
         except Exception as e:
