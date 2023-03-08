@@ -1,41 +1,30 @@
-# ainodes-engine
+<h1>aiNodes Engine</h1>
 
-Simple Qt Node engine written in Python based on Qt Node Graph Engine
+<img src="docs/main.png" alt="Main Image">
 
-Parts of the backend, and some nodes are heavily inspired by ComfyUI,
-a great web based node engine repo, please find it at:
+<p>Ainodes Engine is a simple and easy-to-use Python-based node engine that is built on top of the popular Qt Node Graph Engine. The project is designed to provide users with an intuitive and user-friendly platform for creating and managing node graphs with ease.</p>
 
-https://github.com/comfyanonymous/ComfyUI
+<p>The engine comes packed with various features and functionalities, and some of the backend and nodes are heavily inspired by ComfyUI, a web-based node engine repository.</p>
 
-Installation / Running the app:
+<h2>Installation / Running the App</h2>
 
-In any case, it is advised to use "git clone https://github.com/XmYx/ainodes-engine" to allow the app to self update at launch.
+<p>To get started with the Ainodes Engine, follow the steps below:</p>
 
-  Windows:
-    Run run.bat
-    
-  Linux
-    python launcher.py
-    
-Models go to models/checkpoints, controlnets to models/controlnet
+<ol>
+  <li>Clone the repository by running <code>git clone https://github.com/XmYx/ainodes-engine</code> in your terminal or command prompt.</li>
+  <li>After cloning the repository, navigate to the root directory of the project.</li>
+  <li>On Windows, run <code>run.bat</code> to launch the app, and on Linux, run <code>python launcher.py</code>.</li>
+  <li>Once the app is up and running, you can start creating and managing your node graphs with ease.</li>
+</ol>
 
-Node List:
+<h2>Contributing</h2>
 
-OP_NODE_IMG_INPUT = 1
-OP_NODE_IMG_PREVIEW = 2
-OP_NODE_DIFFUSERS_LOADER = 3
-OP_NODE_DIFFUSERS_SAMPLER = 4
-OP_NODE_DEBUG_OUTPUT = 5
-OP_NODE_DEBUG_MULTI_INPUT = 6
-OP_NODE_IMAGE_OPS = 7
-OP_NODE_LOOP_NODE = 8
-OP_NODE_TORCH_LOADER = 9
-OP_NODE_CONDITIONING = 10
-OP_NODE_K_SAMPLER = 11
-OP_NODE_VIDEO_INPUT = 12
-OP_NODE_CONTROLNET_LOADER = 13
-OP_NODE_CN_APPLY = 14
-OP_NODE_CONDITIONING_COMBINE = 15
-OP_NODE_CONDITIONING_SET_AREA = 16
-OP_NODE_LATENT = 17
-OP_NODE_LATENT_COMPOSITE = 18
+<p>Contributions to the Ainodes Engine are welcome and appreciated. If you find any bugs or issues with the app, please feel free to open an issue or submit a pull request.</p>
+
+<h2>Acknowledgments</h2>
+
+<p>Ainodes Engine is built on top of the Qt Node Graph Engine and is inspired by the ComfyUI web-based node engine repository. We appreciate the contributions of the creators and contributors of these projects.</p>
+
+<h2>License</h2>
+
+<p>This project is licensed under the MIT License. See the <a href="LICENSE">LICENSE</a> file for details.</p>
