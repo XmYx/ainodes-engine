@@ -11,6 +11,7 @@ import os
 
 from omegaconf import OmegaConf
 
+from ainodes_backend.torch_gc import torch_gc
 from ldm.util import instantiate_from_config
 from ainodes_backend import singleton as gs
 
@@ -32,8 +33,6 @@ class ModelLoader(torch.nn.Module):
 
 
     def load_model(self, file=None, config=None, verbose=False):
-        print(file)
-        print(gs.loaded_models["loaded"])
         if gs.loaded_models["loaded"] != file:
             gs.loaded_models["loaded"] = file
             ckpt = f"models/checkpoints/{file}"
@@ -100,7 +99,7 @@ class ModelLoader(torch.nn.Module):
             del sd
             del m, u
             del model
-            #torch_gc()
+            torch_gc()
 
             #if gs.model_version == '1.5' and not 'Inpaint' in version:
             #    self.run_post_load_model_generation_specifics()
@@ -145,6 +144,8 @@ class ModelLoader(torch.nn.Module):
             else:
                 version = 'unknown'
                 config = 'v1-inference_fp16.yaml'
+        del file
+        del file_contents
         return config, version
     def get_state_dict_from_checkpoint(self, pl_sd):
         pl_sd = pl_sd.pop("state_dict", pl_sd)
@@ -159,7 +160,7 @@ class ModelLoader(torch.nn.Module):
 
         pl_sd.clear()
         pl_sd.update(sd)
-
+        sd = None
         return pl_sd
     def get_autoencoder_version(self):
         return "sd-v1"  # TODO this will be different for different models

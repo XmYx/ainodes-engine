@@ -53,7 +53,8 @@ def common_ksampler(device, seed, steps, cfg, sampler_name, scheduler, positive,
     for x in control_nets:
         control_net_models += x.get_control_models()
     #load_controlnet_gpu(control_net_models)
-
+    if "controlnet" in gs.models:
+        gs.models["controlnet"].control_model.cuda()
     if sampler_name in samplers.KSampler.SAMPLERS:
         sampler = samplers.KSampler(steps=steps, device=device, sampler=sampler_name, scheduler=scheduler, denoise=denoise)
     else:
@@ -69,6 +70,8 @@ def common_ksampler(device, seed, steps, cfg, sampler_name, scheduler, positive,
     del sampler.model_wrap
     del sampler.model_denoise
     del sampler
+    if "controlnet" in gs.models:
+        gs.models["controlnet"].control_model.cuda()
     torch_gc()
 
     return samples

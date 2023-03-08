@@ -4,6 +4,7 @@ import os
 from qtpy import QtWidgets
 
 from ainodes_backend.model_loader import ModelLoader
+from ainodes_backend.torch_gc import torch_gc
 from ainodes_frontend.nodes.base.node_config import register_node, OP_NODE_TORCH_LOADER
 from ainodes_frontend.nodes.base.ai_node_base import CalcNode, CalcGraphicsNode
 from ainodes_backend.node_engine.node_content_widget import QDMNodeContentWidget
@@ -93,10 +94,18 @@ class TorchLoaderNode(CalcNode):
         if gs.loaded_models["loaded"] != model_name:
 
             if model_name != "":
+                if "sd" in gs.models:
+                    try:
+                        gs.models["sd"].cpu()
+                    except:
+                        pass
+                    del gs.models["sd"]
+                    gs.models["sd"] = None
+                    torch_gc()
                 self.value = model_name
+                self.loader.load_model(model_name, config_name)
                 self.setOutput(0, model_name)
 
-                self.loader.load_model(model_name, config_name)
                 self.markDirty(False)
                 self.markInvalid(False)
         else:

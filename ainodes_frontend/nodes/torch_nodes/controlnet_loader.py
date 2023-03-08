@@ -5,6 +5,7 @@ from qtpy import QtWidgets
 
 #from ainodes_backend.model_loader import ModelLoader
 from ainodes_backend.controlnet_loader import load_controlnet
+from ainodes_backend.torch_gc import torch_gc
 from ainodes_frontend.nodes.base.node_config import register_node, OP_NODE_CONTROLNET_LOADER
 from ainodes_frontend.nodes.base.ai_node_base import CalcNode, CalcGraphicsNode
 from ainodes_backend.node_engine.node_content_widget import QDMNodeContentWidget
@@ -115,10 +116,16 @@ class ControlnetLoaderNode(CalcNode):
         #if "controlnet" not in gs.models:
         controlnet_dir = "models/controlnet"
         controlnet_path = os.path.join(controlnet_dir, self.content.control_net_name.currentText())
-        gs.models["controlnet"] = None
-        gs.models["controlnet"] = load_controlnet(controlnet_path)
-        gs.models["controlnet"].control_model.cuda()
-
+        if "controlnet" in gs.models:
+            try:
+                gs.models["controlnet"].cpu()
+                del gs.models["controlnet"]
+                gs.models["controlnet"] = None
+            except:
+                pass
+        load_controlnet(controlnet_path)
+        torch_gc()
+        #gs.models["controlnet"].control_model.cuda()
         return "controlnet"
 
 

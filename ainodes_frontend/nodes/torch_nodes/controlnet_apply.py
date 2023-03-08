@@ -6,6 +6,7 @@ import torch
 #from qtpy.QtWidgets import QLineEdit, QLabel, QPushButton, QFileDialog, QVBoxLayout
 from qtpy import QtWidgets, QtCore
 
+from ainodes_backend.torch_gc import torch_gc
 from ainodes_backend.worker.worker import Worker
 from ainodes_frontend.nodes.base.node_config import register_node, OP_NODE_CN_APPLY
 from ainodes_frontend.nodes.base.ai_node_base import CalcNode, CalcGraphicsNode
@@ -108,8 +109,8 @@ class CNApplyNode(CalcNode):
     def apply_control_net(self, progress_callback=None):
         start_time = time.time()
         try:
-            n_cond_node, index = self.getInput(1)
-            conditioning = n_cond_node.getOutput(index)
+            cond_node, index = self.getInput(1)
+            conditioning = cond_node.getOutput(index)
         except:
             conditioning = None
         try:
@@ -119,18 +120,11 @@ class CNApplyNode(CalcNode):
             image = None
 
         image = pixmap_to_pil_image(image)
-
         image = image.convert("RGB")
         image = np.array(image).astype(np.float32) / 255.0
         image = torch.from_numpy(image)[None,]
-
-
-
-
         c = []
         control_hint = image.movedim(-1,1)
-
-        print(control_hint.shape)
         for t in conditioning:
             n = [t[0], t[1].copy()]
             c_net = gs.models["controlnet"]
@@ -139,17 +133,18 @@ class CNApplyNode(CalcNode):
                 c_net.set_previous_controlnet(t[1]['control'])
             n[1]['control'] = c_net
             c.append(n)
-            print("CN APPENDED")
-        self.value = c
+        #self.value = c
         self.setOutput(0, c)
         end_time = time.time()
         time_diff_ms = (end_time - start_time) * 1000
-        print("Controlnet ran in: ", time_diff_ms, "ms")
+        conditioning = None
+        control_hint = None
+        torch_gc()
         return c
     @QtCore.Slot(object)
     def onWorkerFinished(self, result):
         # Update the node value and mark it as dirty
-        self.value = result
+        #self.value = result
         self.markDirty(False)
         self.markInvalid(False)
         self.setOutput(0, result)

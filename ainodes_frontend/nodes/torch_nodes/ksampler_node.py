@@ -11,6 +11,8 @@ from PIL.ImageQt import ImageQt
 #from qtpy.QtWidgets import QLineEdit, QLabel, QPushButton, QFileDialog, QVBoxLayout
 from qtpy import QtWidgets, QtCore, QtGui
 from qtpy.QtGui import QPixmap
+
+from ainodes_backend.torch_gc import torch_gc
 from ainodes_frontend.nodes.base.node_config import register_node, OP_NODE_K_SAMPLER
 from ainodes_frontend.nodes.base.ai_node_base import CalcNode, CalcGraphicsNode
 from ainodes_backend.node_engine.node_content_widget import QDMNodeContentWidget
@@ -204,6 +206,11 @@ class KSamplerNode(CalcNode):
         qimage = ImageQt(image)
         pixmap = QPixmap().fromImage(qimage)
         self.value = pixmap
+        del sample
+        del x_samples
+        x_samples = None
+        sample = None
+        torch_gc()
         return [pixmap, return_sample]
     @QtCore.Slot(object)
     def onWorkerFinished(self, result):

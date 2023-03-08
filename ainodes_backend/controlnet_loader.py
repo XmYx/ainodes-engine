@@ -3,7 +3,7 @@ import contextlib
 import torch
 
 from ainodes_backend import cldm
-
+from ainodes_backend import singleton as gs
 
 def load_controlnet(ckpt_path, model=None):
     controlnet_data = load_torch_file(ckpt_path)
@@ -66,8 +66,11 @@ def load_controlnet(ckpt_path, model=None):
     else:
         control_model.load_state_dict(controlnet_data, strict=False)
 
-    control = ControlNet(control_model)
-    return control
+
+    gs.models["controlnet"] = ControlNet(control_model)
+    del controlnet_data
+    del control_model
+    #return control
 
 class ControlNet:
     def __init__(self, control_model, device="cuda"):
