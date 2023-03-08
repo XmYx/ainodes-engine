@@ -152,9 +152,6 @@ class LatentCompositeNode(CalcNode):
 
     def __init__(self, scene):
         super().__init__(scene, inputs=[3,3,3], outputs=[3,3])
-        self.eval()
-        #self.content.eval_signal.connect(self.eval)
-
     def initInnerClasses(self):
         self.content = LatentCompositeWidget(self)
         self.grNode = CalcGraphicsNode(self)

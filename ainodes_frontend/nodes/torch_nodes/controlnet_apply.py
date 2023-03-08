@@ -64,8 +64,6 @@ class CNApplyNode(CalcNode):
         super().__init__(scene, inputs=[5,3,1], outputs=[3,1])
 
 
-        #self.eval()
-        self.content.eval_signal.connect(self.evalImplementation)
         self.content.button.clicked.connect(self.evalImplementation)
         self.busy = False
         # Create a worker object
@@ -88,14 +86,21 @@ class CNApplyNode(CalcNode):
         self.markInvalid(True)
         self.busy = False
         if self.value is None:
-            # Start the worker thread
+            """"# Start the worker thread
             self.worker = Worker(self.apply_control_net)
             # Connect the worker's finished signal to a slot that updates the node value
             self.worker.signals.result.connect(self.onWorkerFinished)
             #self.scene.queue.add_task(self.apply_control_net)
             #self.scene.queue.task_finished.connect(self.onWorkerFinished)
-            self.busy = True
-            self.scene.threadpool.start(self.worker)
+            self.busy = True"""
+            result = self.apply_control_net()
+            self.setOutput(0, result)
+            self.busy = False
+            # self.scene.queue.task_finished.disconnect(self.onWorkerFinished)
+            if len(self.getOutputs(1)) > 0:
+                self.executeChild(1)
+
+            #self.scene.threadpool.start(self.worker)
             return None
         else:
             self.markDirty(False)

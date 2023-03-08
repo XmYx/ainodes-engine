@@ -68,7 +68,7 @@ class CalcNode(Node):
         # it's really important to mark all nodes Dirty by default
         self.markDirty()
         self.values = {}
-        self.content.mark_dirty_signal.connect(self.markDirty)
+        #self.content.mark_dirty_signal.connect(self.markDirty)
 
     def getID(self, index):
         return f"{id(self)}_output_{index}"
@@ -113,7 +113,6 @@ class CalcNode(Node):
         if not self.isDirty() and not self.isInvalid():
             print(" _> returning cached %s value:" % self.__class__.__name__, self.value)
             return self.value
-
         try:
             val = self.evalImplementation(index)
             return val

@@ -116,10 +116,6 @@ class KSamplerNode(CalcNode):
     category = "sampling"
     def __init__(self, scene):
         super().__init__(scene, inputs=[2,3,3,1], outputs=[5,2,1])
-
-
-        #self.eval()
-        #self.content.eval_signal.connect(self.evalImplementation)
         self.content.button.clicked.connect(self.evalImplementation)
         self.busy = False
         # Create a worker object
