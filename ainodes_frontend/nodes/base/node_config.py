@@ -63,7 +63,7 @@ def get_class_from_opcode(op_code):
 
 
 # import all nodes and register them
-from ainodes_frontend.nodes.image_nodes import image_op_node, input, output
+from ainodes_frontend.nodes.image_nodes import image_op_node, input, output, video_input
 from ainodes_frontend.nodes.qops import qimage_ops
 from ainodes_frontend.nodes.torch_nodes import conditioning_combine, conditioning_node, controlnet_loader, controlnet_apply, empty_latent_node, ksampler_node
 from ainodes_frontend.nodes.exec_op_nodes import exec_node

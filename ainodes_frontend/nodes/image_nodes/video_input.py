@@ -1,3 +1,5 @@
+import cv2
+from PIL import Image
 from qtpy.QtWidgets import QLabel, QPushButton, QVBoxLayout, QHBoxLayout, QFileDialog
 from qtpy.QtGui import QMovie
 from qtpy.QtCore import Qt
@@ -5,13 +7,13 @@ from ainodes_frontend.nodes.base.node_config import register_node, OP_NODE_VIDEO
 from ainodes_frontend.nodes.base.ai_node_base import CalcNode, CalcGraphicsNode
 from ainodes_backend.node_engine.node_content_widget import QDMNodeContentWidget
 from ainodes_backend.node_engine.utils import dumpException
+from ainodes_frontend.nodes.qops.qimage_ops import pil_image_to_pixmap
 
 
 class VideoInputWidget(QDMNodeContentWidget):
     def initUI(self):
+        self.video = VideoPlayer()
         self.current_frame = 0
-        self.movie = QMovie()
-        self.movie.frameChanged.connect(self.onFrameChanged)
 
         self.label = QLabel()
         self.label.setAlignment(Qt.AlignCenter)
@@ -28,7 +30,7 @@ class VideoInputWidget(QDMNodeContentWidget):
 
         self.stop_button = QPushButton("Stop", self)
         self.stop_button.setEnabled(False)
-        self.stop_button.clicked.connect(self.stopVideo)
+        #self.stop_button.clicked.connect(self.stopVideo)
 
         layout = QVBoxLayout()
         layout.addWidget(self.label)
@@ -37,7 +39,7 @@ class VideoInputWidget(QDMNodeContentWidget):
 
         buttons_layout = QHBoxLayout()
         buttons_layout.addWidget(self.play_button)
-        buttons_layout.addWidget(self.pause_button)
+        #buttons_layout.addWidget(self.pause_button)
         buttons_layout.addWidget(self.stop_button)
         layout.addLayout(buttons_layout)
 
@@ -54,32 +56,33 @@ class VideoInputWidget(QDMNodeContentWidget):
         except Exception as e:
             dumpException(e)
         return res
+    def advance_frame(self):
+        pixmap = self.video.get_frame()
+        self.label.setPixmap(pixmap)
+        self.node.resize()
+        self.play_button.setEnabled(True)
+        self.stop_button.setEnabled(True)
 
     def loadVideo(self):
         file_name, _ = QFileDialog.getOpenFileName(self, "Open Video File", "", "Video Files (*.mp4 *.avi *.mkv)")
 
         if file_name:
             print(file_name)
-            self.movie.setFileName(file_name)
-            self.movie.jumpToFrame(5)
-            pixmap = self.movie.currentPixmap()
-            self.label.setPixmap(pixmap)
-            self.play_button.setEnabled(True)
-            self.stop_button.setEnabled(True)
+            self.video.load_video(file_name)
+            self.advance_frame()
 
     def playVideo(self):
-        self.movie.start()
+        self.advance_frame()
         self.play_button.setEnabled(False)
         self.pause_button.setEnabled(True)
         self.stop_button.setEnabled(True)
 
     def pauseVideo(self):
-        self.movie.setPaused(True)
         self.play_button.setEnabled(True)
         self.pause_button.setEnabled(False)
 
     def stopVideo(self):
-        self.movie.stop()
+        #self.movie.stop()
         self.play_button.setEnabled(True)
         self.pause_button.setEnabled(False)
         self.stop_button.setEnabled(False)
@@ -102,10 +105,12 @@ class VideoInputNode(CalcNode):
     op_title = "Video Input"
     content_label_objname = "video_input_node"
     category = "debug"
+    input_socket_name = ["EXEC"]
+    output_socket_name = ["EXEC", "IMAGE"]
 
 
     def __init__(self, scene):
-        super().__init__(scene, inputs=[], outputs=[1])
+        super().__init__(scene, inputs=[1], outputs=[5,1])
         self.eval()
         self.content.eval_signal.connect(self.evalImplementation)
 
@@ -115,27 +120,55 @@ class VideoInputNode(CalcNode):
 
         self.grNode.height = 512
         self.grNode.width = 512
-        #self.content.movie.setMinimumHeight(512)
-        #self.content.movie.setMinimumWidth(512)
-        # self.content.setMinimumHeight(self.content.image.pixmap().size().height())
-        # self.content.setMinimumWidth(self.content.image.pixmap().size().width())
 
         self.content.setGeometry(0, 0, 512, 512)
-
+        self.content.stop_button.clicked.connect(self.content.video.reset)
     def evalImplementation(self, index=0):
-        if self.content.movie.frameCount() == 0:
-            return
-
-        pixmap = self.content.movie.currentPixmap()
+        pixmap = self.content.video.get_frame()
         self.setOutput(0, pixmap)
-
-        self.content.current_frame += 1
-        if self.content.current_frame >= self.content.movie.frameCount():
-            self.content.current_frame = 0
-
-        self.content.movie.jumpToFrame(self.content.current_frame)
-        self.content.movie.setPaused(True)
-        #self.timer.start(100)
         self.markDirty(False)
         self.markInvalid(False)
+        if len(self.getOutputs(1)) > 0:
+            self.executeChild(output_index=1)
+
         return pixmap
+
+    def resize(self):
+        self.content.setMinimumHeight(self.content.label.pixmap().size().height())
+        self.content.setMinimumWidth(self.content.label.pixmap().size().width())
+        self.grNode.height = self.content.label.pixmap().size().height() + 96
+        self.grNode.width = self.content.label.pixmap().size().width() + 64
+
+        for socket in self.outputs + self.inputs:
+            socket.setSocketPosition()
+        self.updateConnectedEdges()
+
+
+class VideoPlayer:
+    def __init__(self):
+        self.video_file = None
+        self.video_capture = None
+
+
+
+    def load_video(self, video_file):
+        try:
+            self.video_capture.release()
+        except:
+            pass
+        self.video_file = video_file
+        self.video_capture = cv2.VideoCapture(self.video_file)
+    def __del__(self):
+        self.video_capture.release()
+
+    def get_frame(self):
+        ret, frame = self.video_capture.read()
+        image = Image.fromarray(frame)
+        pixmap = pil_image_to_pixmap(image)
+        if ret:
+            return pixmap
+        else:
+            return None
+
+    def reset(self):
+        self.video_capture.set(cv2.CAP_PROP_POS_FRAMES, 0)
