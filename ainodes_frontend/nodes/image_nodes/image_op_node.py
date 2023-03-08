@@ -141,13 +141,25 @@ class ImageOpsWidget(QDMNodeContentWidget):
 
     def serialize(self):
         res = super().serialize()
-        #res['value'] = self.edit.text()
+        res['dropdown'] = self.dropdown.currentText()
+        res['w'] = self.width_value.value()
+        res['h'] = self.height_value.value()
+        res['canny_high'] = self.canny_high.value()
+        res['canny_low'] = self.canny_low.value()
+        res['midas_a'] = self.midas_a.value()
+        res['midas_bg'] = self.midas_bg.value()
         return res
 
     def deserialize(self, data, hashmap={}):
         res = super().deserialize(data, hashmap)
         try:
-            #value = data['value']
+            self.dropdown.setCurrentText(data['dropdown'])
+            self.height_value.setValue(int(data['h']))
+            self.width_value.setValue(int(data['w']))
+            self.canny_high.setValue(float(data['canny_high']))
+            self.canny_low.setValue(float(data['canny_low']))
+            self.midas_a.setValue(float(data['midas_a']))
+            self.midas_bg.setValue(float(data['midas_bg']))
             #self.image.setPixmap(value)
             return True & res
         except Exception as e:
