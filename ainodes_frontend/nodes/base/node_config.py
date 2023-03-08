@@ -30,6 +30,8 @@ OP_NODE_CONDITIONING_SET_AREA = 16
 OP_NODE_LATENT = 17
 OP_NODE_LATENT_COMPOSITE = 18
 
+OP_NODE_EXEC = 19
+
 CALC_NODES = {
 }
 
@@ -64,3 +66,4 @@ def get_class_from_opcode(op_code):
 from ainodes_frontend.nodes.image_nodes import image_op_node, input, output
 from ainodes_frontend.nodes.qops import qimage_ops
 from ainodes_frontend.nodes.torch_nodes import conditioning_combine, conditioning_node, controlnet_loader, controlnet_apply, empty_latent_node, ksampler_node
+from ainodes_frontend.nodes.exec_op_nodes import exec_node
