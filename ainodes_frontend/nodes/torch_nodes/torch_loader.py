@@ -76,7 +76,7 @@ class TorchLoaderNode(CalcNode):
     def __init__(self, scene):
         super().__init__(scene, inputs=[1], outputs=[1])
 
-        self.content.eval_signal.connect(self.eval)
+        #self.content.eval_signal.connect(self.eval)
         self.loader = ModelLoader()
 
     def initInnerClasses(self):

@@ -140,7 +140,7 @@ class ConditioningNode(CalcNode):
         self.markDirty(True)
         self.markInvalid(True)
         self.value = None
-        self.content.eval_signal.emit(0)
+        self.eval(0)
 
 SCHEDULERS = ["karras", "normal", "simple", "ddim_uniform"]
 SAMPLERS = ["euler", "euler_ancestral", "heun", "dpm_2", "dpm_2_ancestral",

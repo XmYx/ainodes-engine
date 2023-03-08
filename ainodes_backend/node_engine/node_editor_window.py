@@ -164,8 +164,10 @@ class NodeEditorWindow(QMainWindow):
         self.status_mouse_pos.setText("Scene Pos: [%d, %d]" % (x, y))
 
     def getFileDialogDirectory(self):
+        directory = os.getcwd()
+        #directory = f"{directory}/example_graphs"
         """Returns starting directory for ``QFileDialog`` file open/save"""
-        return ''
+        return directory
 
     def getFileDialogFilter(self):
         """Returns ``str`` standard file open/save filter for ``QFileDialog``"""
@@ -181,7 +183,7 @@ class NodeEditorWindow(QMainWindow):
     def onFileOpen(self):
         """Handle File Open operation"""
         if self.maybeSave():
-            fname, filter = QFileDialog.getOpenFileName(self, 'Open graph from file', self.getFileDialogDirectory(), self.getFileDialogFilter())
+            fname, filter = QFileDialog.getOpenFileName(None, 'Open graph from file', self.getFileDialogDirectory(), self.getFileDialogFilter())
             if fname != '' and os.path.isfile(fname):
                 self.getCurrentNodeEditorWidget().fileLoad(fname)
                 self.setTitle()

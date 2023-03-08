@@ -1,0 +1,305 @@
+{
+    "id": 139955377350352,
+    "scene_width": 64000,
+    "scene_height": 64000,
+    "nodes": [
+        {
+            "id": 139951663722560,
+            "title": "Torch Loader",
+            "pos_x": -255.5,
+            "pos_y": -306.25,
+            "inputs": [
+                {
+                    "id": 139951663723904,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 1
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 139951663725200,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 1
+                }
+            ],
+            "content": {
+                "model": "v1-5-pruned-emaonly.ckpt",
+                "config": "v1-inference_fp16.yaml"
+            },
+            "op_code": 9
+        },
+        {
+            "id": 139951663723760,
+            "title": "K Sampler",
+            "pos_x": -188.25,
+            "pos_y": -14.75,
+            "inputs": [
+                {
+                    "id": 139951663723808,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 2
+                },
+                {
+                    "id": 139951663724192,
+                    "index": 1,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 3
+                },
+                {
+                    "id": 139951663726208,
+                    "index": 2,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 3
+                },
+                {
+                    "id": 139951663723136,
+                    "index": 3,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 1
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 139951663724048,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 5
+                },
+                {
+                    "id": 139955376544976,
+                    "index": 1,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 2
+                },
+                {
+                    "id": 139955376542192,
+                    "index": 2,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 1
+                }
+            ],
+            "content": {
+                "scheduler": "karras",
+                "sampler": "euler",
+                "seed": "",
+                "steps": 10,
+                "guidance_scale": 7.5
+            },
+            "op_code": 11
+        },
+        {
+            "id": 139951663723568,
+            "title": "Conditioning",
+            "pos_x": -731.5,
+            "pos_y": -167.0,
+            "inputs": [
+                {
+                    "id": 139955376545696,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 1
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 139955376545168,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 3
+                },
+                {
+                    "id": 139955376542048,
+                    "index": 1,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 1
+                }
+            ],
+            "content": {
+                "prompt": "beautiful alien landscape, trending on artstation"
+            },
+            "op_code": 10
+        },
+        {
+            "id": 139951717794384,
+            "title": "Conditioning",
+            "pos_x": -727.0,
+            "pos_y": 111.0,
+            "inputs": [
+                {
+                    "id": 139951717781904,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 1
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 139951717782144,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 3
+                },
+                {
+                    "id": 139951717781856,
+                    "index": 1,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 1
+                }
+            ],
+            "content": {
+                "prompt": "greyscale, blur, symmetry, noise"
+            },
+            "op_code": 10
+        },
+        {
+            "id": 139951000247552,
+            "title": "Image Preview",
+            "pos_x": 208.75,
+            "pos_y": -100.0,
+            "inputs": [
+                {
+                    "id": 139951000246400,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 5
+                },
+                {
+                    "id": 139951000247504,
+                    "index": 1,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 1
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 139951000247360,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 5
+                },
+                {
+                    "id": 139951000247312,
+                    "index": 1,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 1
+                }
+            ],
+            "content": {},
+            "op_code": 2
+        },
+        {
+            "id": 139951717785216,
+            "title": "Empty Latent Image",
+            "pos_x": -650.0,
+            "pos_y": 402.5,
+            "inputs": [
+                {
+                    "id": 139955376636544,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 3
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 139955376556736,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 3
+                },
+                {
+                    "id": 139955376556544,
+                    "index": 1,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 3
+                }
+            ],
+            "content": {
+                "w": 512,
+                "h": 512
+            },
+            "op_code": 17
+        }
+    ],
+    "edges": [
+        {
+            "id": 139951717740752,
+            "edge_type": 2,
+            "start": 139951663724048,
+            "end": 139951000246400
+        },
+        {
+            "id": 139955376554816,
+            "edge_type": 2,
+            "start": 139955376542192,
+            "end": 139951000247504
+        },
+        {
+            "id": 139951717740608,
+            "edge_type": 2,
+            "start": 139951717782144,
+            "end": 139951663724192
+        },
+        {
+            "id": 139955376557264,
+            "edge_type": 2,
+            "start": 139955376545168,
+            "end": 139951663726208
+        },
+        {
+            "id": 139955376557648,
+            "edge_type": 2,
+            "start": 139955376542048,
+            "end": 139951717781904
+        },
+        {
+            "id": 139951000247744,
+            "edge_type": 2,
+            "start": 139951717781856,
+            "end": 139955376636544
+        },
+        {
+            "id": 139955376541808,
+            "edge_type": 2,
+            "start": 139955376556736,
+            "end": 139951663723808
+        },
+        {
+            "id": 139955376658128,
+            "edge_type": 2,
+            "start": 139955376556544,
+            "end": 139951663723136
+        },
+        {
+            "id": 139819368810720,
+            "edge_type": 2,
+            "start": 139951663725200,
+            "end": 139955376545696
+        }
+    ]
+}

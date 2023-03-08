@@ -300,6 +300,9 @@ class Scene(Serializable):
         :param filename: where to save this scene
         :type filename: ``str``
         """
+
+        if ".json" not in filename:
+            filename = f"{filename}.json"
         with open(filename, "w") as file:
             file.write( json.dumps( self.serialize(), indent=4 ) )
             print("saving to", filename, "was successfull.")
