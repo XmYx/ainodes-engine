@@ -79,7 +79,7 @@ class LatentNode(CalcNode):
                     latent_node, index = self.getInput(0)
                     self.value = latent_node.getOutput(index)
                 except:
-                    self.value = torch.zeros([1, 4, 512 // 8, 512 // 8])
+                    self.value = self.generate_latent()
                 self.setOutput(0, self.value)
                 self.markDirty(False)
                 self.markInvalid(False)
