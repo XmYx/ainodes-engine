@@ -157,6 +157,7 @@ class VideoRecorder:
     def add_frame(self, frame):
         frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
         self.video_writer.write(frame)
+        print("Frame added.")
 
     def close(self):
         self.video_writer.release()

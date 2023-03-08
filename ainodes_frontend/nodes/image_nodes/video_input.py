@@ -101,7 +101,7 @@ class VideoInputNode(CalcNode):
     def __init__(self, scene):
         super().__init__(scene, inputs=[1], outputs=[5,1])
         #self.eval()
-        self.content.eval_signal.connect(self.evalImplementation)
+        #self.content.eval_signal.connect(self.evalImplementation)
 
     def initInnerClasses(self):
         self.content = VideoInputWidget(self)
@@ -112,12 +112,14 @@ class VideoInputNode(CalcNode):
 
         #self.content.setGeometry(0, 0, 512, 512)
         self.content.stop_button.clicked.connect(self.content.video.reset)
+        self.markInvalid(True)
     def evalImplementation(self, index=0):
         pixmap = self.content.video.get_frame()
-        self.setOutput(0, pixmap)
-        self.markDirty(False)
-        self.markInvalid(False)
-        self.content.label.setPixmap(pixmap)
+        if pixmap != None:
+            self.setOutput(0, pixmap)
+            self.markDirty(False)
+            self.markInvalid(False)
+            self.content.label.setPixmap(pixmap)
 
         if len(self.getOutputs(1)) > 0:
             self.executeChild(output_index=1)
