@@ -141,7 +141,8 @@ class VideoOutputNode(CalcNode):
         except:
             pass
         self.markDirty(True)
-        filename = "test.mp4"
+        timestamp = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
+        filename = f"{timestamp}.mp4"
         fps = self.content.fps.value()
         width = self.content.width_value.value()
         height = self.content.height_value.value()
@@ -161,7 +162,5 @@ class VideoRecorder:
 
     def close(self):
         self.video_writer.release()
-        timestamp = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
-        filename = f"{timestamp}.mp4"
-        os.rename("test.mp4", filename)
+        #os.rename("test.mp4", filename)
         print("Video allegedly saved")

@@ -1,11 +1,16 @@
+import numpy as np
+import requests
 import torch
+from PIL import Image
 #from qtpy.QtWidgets import QLineEdit, QLabel, QPushButton, QFileDialog, QVBoxLayout
 from qtpy import QtWidgets, QtCore
 from ainodes_frontend.nodes.base.node_config import register_node, OP_NODE_LATENT,OP_NODE_LATENT_COMPOSITE
 from ainodes_frontend.nodes.base.ai_node_base import CalcNode, CalcGraphicsNode
 from ainodes_backend.node_engine.node_content_widget import QDMNodeContentWidget
 from ainodes_backend.node_engine.utils import dumpException
-
+from ainodes_backend import singleton as gs
+from ainodes_frontend.nodes.qops.qimage_ops import pixmap_to_pil_image
+from einops import rearrange, repeat
 
 class LatentWidget(QDMNodeContentWidget):
     def initUI(self):
@@ -56,49 +61,77 @@ class LatentNode(CalcNode):
     category = "latent"
 
     def __init__(self, scene):
-        super().__init__(scene, inputs=[3,1], outputs=[3,1])
+        super().__init__(scene, inputs=[3,5,1], outputs=[3,1])
         #self.eval()
         #self.content.eval_signal.connect(self.eval)
 
     def initInnerClasses(self):
         self.content = LatentWidget(self)
         self.grNode = CalcGraphicsNode(self)
-        self.input_socket_name = ["EXEC", "LATENT"]
+        self.input_socket_name = ["EXEC", "IMAGE", "LATENT"]
         self.output_socket_name = ["EXEC", "LATENT"]
         self.grNode.height = 160
         self.grNode.width = 200
     @QtCore.Slot(int)
     def evalImplementation(self, index=0):
 
-        if self.isDirty() == True:
-            if self.getInput(index) != None:
-                #self.markInvalid()
-                #self.markDescendantsDirty()
+        print(self.getInput(0))
+        if self.getInput(0) != None:
+            #self.markInvalid()
+            #self.markDescendantsDirty()
 
-                try:
-                    latent_node, index = self.getInput(0)
-                    self.value = latent_node.getOutput(index)
-                except:
-                    self.value = self.generate_latent()
-                self.setOutput(0, self.value)
-                self.markDirty(False)
-                self.markInvalid(False)
-                if len(self.getOutputs(1)) > 0:
-                    self.executeChild(output_index=1)
-                return self.value
-        else:
-            self.value = self.generate_latent()
+            try:
+                latent_node, index = self.getInput(0)
+                self.value = latent_node.getOutput(index)
+            except:
+                self.value = self.generate_latent()
+
             self.setOutput(0, self.value)
-
             self.markDirty(False)
             self.markInvalid(False)
-            #self.markDescendantsDirty()
             if len(self.getOutputs(1)) > 0:
                 self.executeChild(output_index=1)
-            return self.value
+        elif self.getInput(1) != None:
+            try:
+                node, index = self.getInput(1)
+                pixmap = node.getOutput(index)
+                image = pixmap_to_pil_image(pixmap)
+
+                image, mask_image = load_img(image,
+                                             shape=(image.size[0], image.size[1]),
+                                             use_alpha_as_mask=True)
+                image = image.to("cuda")
+                image = repeat(image, '1 ... -> b ...', b=1)
+
+                latent = self.encode_image(image)
+                self.setOutput(0, latent)
+                if len(self.getOutputs(1)) > 0:
+                    self.executeChild(output_index=1)
+            except Exception as e:
+                print(e)
+        else:
+            self.value = self.generate_latent()
+
+            self.setOutput(0, self.value)
+            self.markDirty(False)
+            self.markInvalid(False)
+            if len(self.getOutputs(1)) > 0:
+                self.executeChild(output_index=1    )
+        return None
+            #return self.value
 
     def onMarkedDirty(self):
         self.value = None
+    def encode_image(self, init_image=None):
+        init_latent = gs.models["sd"].get_first_stage_encoding(
+            gs.models["sd"].encode_first_stage(init_image))  # move to latent space
+        """init_latent = resizeright.resize(init_latent, scale_factors=None,
+                                         out_shape=[init_latent.shape[0], init_latent.shape[1], args.H // 8,
+                                                    args.W // 8],
+                                         interp_method=interp_methods.lanczos3, support_sz=None,
+                                         antialiasing=True, by_convs=True, scale_tolerance=None,
+                                         max_numerator=10, pad_mode='reflect')"""
+        return init_latent
 
     def generate_latent(self):
         width = self.content.width.value()
@@ -106,6 +139,10 @@ class LatentNode(CalcNode):
         batch_size = 1
         latent = torch.zeros([batch_size, 4, height // 8, width // 8])
         return latent
+
+    def eval(self):
+        self.markDirty(True)
+        self.evalImplementation(0)
 class LatentCompositeWidget(QDMNodeContentWidget):
     def initUI(self):
         # Create a label to display the image
@@ -225,3 +262,31 @@ class LatentCompositeNode(CalcNode):
         self.setOutput(0, s)
         #samples_out["samples"] = s
         return s
+def load_img(image, shape=None, use_alpha_as_mask=False):
+    # use_alpha_as_mask: Read the alpha channel of the image as the mask image
+    #if path.startswith('http://') or path.startswith('https://'):
+    #    image = Image.open(requests.get(path, stream=True).raw)
+    #else:
+    #    image = Image.open(path)
+
+    if use_alpha_as_mask:
+        image = image.convert('RGBA')
+    else:
+        image = image.convert('RGB')
+
+    if shape is not None:
+        image = image.resize(shape, resample=Image.Resampling.LANCZOS)
+
+    mask_image = None
+    if use_alpha_as_mask:
+        # Split alpha channel into a mask_image
+        red, green, blue, alpha = Image.Image.split(image)
+        mask_image = alpha.convert('L')
+        image = image.convert('RGB')
+
+    image = np.array(image).astype(np.float16) / 255.0
+    image = image[None].transpose(0, 3, 1, 2)
+    image = torch.from_numpy(image)
+    image = 2. * image - 1.
+
+    return image, mask_image
