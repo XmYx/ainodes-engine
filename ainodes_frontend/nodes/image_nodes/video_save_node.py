@@ -2,6 +2,7 @@ import datetime
 import os
 
 import cv2
+import imageio
 import numpy as np
 from PIL import Image
 from qtpy import QtWidgets
@@ -17,7 +18,7 @@ from ainodes_frontend.nodes.qops.qimage_ops import pil_image_to_pixmap, pixmap_t
 
 class VideoOutputWidget(QDMNodeContentWidget):
     def initUI(self):
-        self.video = VideoRecorder()
+        self.video = GifRecorder()
         self.current_frame = 0
 
         self.save_button = QPushButton("Save Video", self)
@@ -85,6 +86,7 @@ class VideoOutputNode(CalcNode):
 
     def __init__(self, scene):
         super().__init__(scene, inputs=[5,1], outputs=[5,1])
+        self.filename = ""
         #self.eval()
         #self.content.eval_signal.connect(self.evalImplementation)
 
@@ -117,9 +119,10 @@ class VideoOutputNode(CalcNode):
 
         return None
     def close(self):
-        self.content.video.close()
+        self.content.video.close(self.filename)
         self.markDirty(False)
         self.markInvalid(False)
+        self.start_new_video()
     def resize(self):
         self.content.setMinimumHeight(self.content.label.pixmap().size().height())
         self.content.setMinimumWidth(self.content.label.pixmap().size().width())
@@ -142,25 +145,46 @@ class VideoOutputNode(CalcNode):
             pass
         self.markDirty(True)
         timestamp = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
-        filename = f"{timestamp}.mp4"
+        self.filename = f"{timestamp}.gif"
         fps = self.content.fps.value()
         width = self.content.width_value.value()
         height = self.content.height_value.value()
-        self.content.video.start_recording(filename, fps, width, height)
+        self.content.video.start_recording(self.filename, fps, width, height)
+        print(f"VIDEO SAVE NODE: New video stream started as as {self.filename}")
+
 class VideoRecorder:
 
     def __init__(self):
         pass
     def start_recording(self, filename, fps, width, height):
-        fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-        self.video_writer = cv2.VideoWriter(filename, fourcc, fps, (width, height))
+        #fourcc = cv2.VideoWriter_fourcc(*'GIF')
+        self.video_writer = cv2.VideoWriter(filename, cv2.VideoWriter_fourcc(*'GIF'), fps, (width, height))
+        #self.video_writer = cv2.VideoWriter(filename, fourcc, fps, (width, height))
 
     def add_frame(self, frame):
         frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
         self.video_writer.write(frame)
-        print("Frame added.")
+        print("VIDEO SAVE NODE: New frame added to video stream")
 
-    def close(self):
+    def close(self, filename=""):
         self.video_writer.release()
         #os.rename("test.mp4", filename)
-        print("Video allegedly saved")
+        print(f"VIDEO SAVE NODE: Video saved as {filename}")
+
+
+class GifRecorder:
+
+    def __init__(self):
+        self.frames = []
+
+    def start_recording(self, filename, fps, width, height):
+        self.filename = filename
+        self.fps = fps
+
+    def add_frame(self, frame):
+        self.frames.append(frame)
+        print("VIDEO SAVE NODE: New frame added to video stream")
+
+    def close(self):
+        imageio.mimsave(self.filename, self.frames, fps=self.fps)
+        print(f"VIDEO SAVE NODE: Video saved as {self.filename}")

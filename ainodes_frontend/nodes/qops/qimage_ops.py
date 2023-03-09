@@ -15,7 +15,7 @@ def pil_image_to_pixmap(pil_image):
 
 
 def pixmap_to_pil_image(pixmap):
-    print(type(pixmap))
+    #print(type(pixmap))
     # Convert the QPixmap object to a QImage object
     image = pixmap.toImage()
     # Convert the QImage object to a PIL Image object

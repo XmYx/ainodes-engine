@@ -11,7 +11,7 @@ class MidasDetector:
         self.model = MiDaSInference(model_type="dpt_hybrid").cuda()
 
     def __call__(self, input_image, a=np.pi * 2.0, bg_th=0.1):
-        print("Using", a, bg_th)
+        #print("Using", a, bg_th)
         assert input_image.ndim == 3
         image_depth = input_image
         with torch.no_grad():

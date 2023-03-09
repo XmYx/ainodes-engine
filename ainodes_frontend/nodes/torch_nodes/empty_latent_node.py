@@ -75,7 +75,7 @@ class LatentNode(CalcNode):
     @QtCore.Slot(int)
     def evalImplementation(self, index=0):
 
-        print(self.getInput(0))
+        #print(self.getInput(0))
         if self.getInput(0) != None:
             #self.markInvalid()
             #self.markDescendantsDirty()
@@ -83,7 +83,9 @@ class LatentNode(CalcNode):
             try:
                 latent_node, index = self.getInput(0)
                 self.value = latent_node.getOutput(index)
+                print(f"EMPTY LATENT NODE: Using Latent input with parameters: {self.value.shape}")
             except:
+                print(f"EMPTY LATENT NODE: Tried using Latent input, but found an invalid value, generating latent with parameters: {self.content.width.value(), self.content.height.value()}")
                 self.value = self.generate_latent()
 
             self.setOutput(0, self.value)
@@ -95,6 +97,7 @@ class LatentNode(CalcNode):
             try:
                 node, index = self.getInput(1)
                 pixmap = node.getOutput(index)
+
                 image = pixmap_to_pil_image(pixmap)
 
                 image, mask_image = load_img(image,
@@ -104,6 +107,7 @@ class LatentNode(CalcNode):
                 image = repeat(image, '1 ... -> b ...', b=1)
 
                 latent = self.encode_image(image)
+                print(f"EMPTY LATENT NODE: Using Image input, encoding to Latent with parameters: {latent.shape}")
                 self.setOutput(0, latent)
                 if len(self.getOutputs(1)) > 0:
                     self.executeChild(output_index=1)

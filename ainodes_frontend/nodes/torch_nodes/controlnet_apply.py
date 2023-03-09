@@ -112,6 +112,7 @@ class CNApplyNode(CalcNode):
     def onMarkedDirty(self):
         self.value = None
     def apply_control_net(self, progress_callback=None):
+        print(f"CONTROLNET APPLY NODE: Applying {gs.models['loaded_controlnet']}")
         start_time = time.time()
         try:
             cond_node, index = self.getInput(1)

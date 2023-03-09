@@ -88,7 +88,7 @@ class ConditioningNode(CalcNode):
         #self.worker.signals.result.connect(self.onWorkerFinished)
         #self.scene.queue.add_task(self.get_conditioning)
         #self.scene.queue.task_finished.connect(self.onWorkerFinished)
-
+        print(f"CONDITIONING NODE: Applying conditioning with prompt: {self.content.prompt.toPlainText()}")
         result = self.get_conditioning()
         self.setOutput(0, result)
         # print(result)

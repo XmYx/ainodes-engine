@@ -172,7 +172,7 @@ def resize_image_to(tensor, target_latent_tensor, batched_number):
     target_batch_size = target_latent_tensor.shape[0]
 
     current_batch_size = tensor.shape[0]
-    print(current_batch_size, target_batch_size)
+    #print(current_batch_size, target_batch_size)
     if current_batch_size == 1:
         return tensor
 
@@ -190,7 +190,7 @@ def resize_image_to(tensor, target_latent_tensor, batched_number):
 
 def common_upscale(samples, width, height, upscale_method, crop):
     if crop == "center":
-        print("RESIZE", samples.shape)
+        #print("RESIZE", samples.shape)
         old_width = samples.shape[3]
         old_height = samples.shape[2]
         old_aspect = old_width / old_height

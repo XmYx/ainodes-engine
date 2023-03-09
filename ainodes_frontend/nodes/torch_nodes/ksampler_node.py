@@ -134,6 +134,7 @@ class KSamplerNode(CalcNode):
         #self.content.image.changeEvent.connect(self.onInputChanged)
 
     def evalImplementation(self, index=0):
+        print("K SAMPLER:", self.content.steps.value(), "steps,", self.content.sampler.currentText())
         self.markDirty(True)
         #self.markInvalid(True)
         self.busy = False

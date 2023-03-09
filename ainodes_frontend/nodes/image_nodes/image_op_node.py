@@ -199,11 +199,11 @@ class ImageOpNode(CalcNode):
         #if self.getInput(index) != None:
         #self.markInvalid()
         #self.markDescendantsDirty()
-        print(self.getInput(index))
+        #print(self.getInput(index))
         if self.getInput(index) != (None,None):
             node, index = self.getInput(index)
 
-            print("RETURN", node, index)
+            #print("RETURN", node, index)
 
             pixmap = node.getOutput(index)
             method = self.content.dropdown.currentText()
@@ -295,7 +295,7 @@ class ImageOpNode(CalcNode):
         elif method == 'mlsd':
             image = image.convert('RGB')
             image = np.array(image)
-            print(image.shape)
+            #print(image.shape)
             detector = MLSDdetector()
             a = self.content.midas_a.value()
             bg_threshold = self.content.midas_bg.value()
@@ -308,7 +308,7 @@ class ImageOpNode(CalcNode):
         elif method == 'openpose':
             image = image.convert('RGB')
             image = np.array(image)
-            print(image.shape)
+            #print(image.shape)
             detector = OpenposeDetector()
             pose, _ = detector(image, True)
             image = HWC3(pose)

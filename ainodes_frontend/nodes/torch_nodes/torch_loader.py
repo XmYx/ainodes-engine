@@ -88,7 +88,7 @@ class TorchLoaderNode(CalcNode):
 
         model_name = self.content.dropdown.currentText()
         config_name = self.content.config_dropdown.currentText()
-        print("Loaded Model currently:", gs.loaded_models["loaded"])
+        print("TORCH LOADER:", gs.loaded_models["loaded"])
         if gs.loaded_models["loaded"] != model_name:
 
             if model_name != "":
