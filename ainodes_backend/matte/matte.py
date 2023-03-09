@@ -30,7 +30,7 @@ class MatteInference:
                 print("https://github.com/PeterL1n/RobustVideoMatting/releases/download/v1.0.0/rvm_resnet50.pth")
                 print("And place it in models/other")
                 print(e)
-        
+
 
         self.model.load_state_dict(torch.load("models/other/rvm_resnet50.pth"))
         self.model = torch.jit.script(self.model)

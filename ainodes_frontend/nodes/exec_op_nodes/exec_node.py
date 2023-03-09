@@ -1,10 +1,11 @@
+import threading
 import time
 
 import numpy as np
 
 import torch
 #from qtpy.QtWidgets import QLineEdit, QLabel, QPushButton, QFileDialog, QVBoxLayout
-from qtpy import QtWidgets, QtCore
+from qtpy import QtWidgets, QtCore, QtGui
 
 from ainodes_backend.torch_gc import torch_gc
 from ainodes_backend.worker.worker import Worker
@@ -23,9 +24,18 @@ SAMPLERS = ["euler", "euler_ancestral", "heun", "dpm_2", "dpm_2_ancestral",
 class ExecWidget(QDMNodeContentWidget):
     def initUI(self):
         self.button = QtWidgets.QPushButton("Run")
+        palette = QtGui.QPalette()
+        palette.setColor(QtGui.QPalette.WindowText, QtGui.QColor("white"))
+        palette.setColor(QtGui.QPalette.Disabled, QtGui.QPalette.WindowText, QtGui.QColor("black"))
+
+
+        self.checkbox = QtWidgets.QCheckBox("Run in thread")
+        self.checkbox.setPalette(palette)
+
         layout = QtWidgets.QVBoxLayout(self)
         layout.setContentsMargins(15,15,15,25)
         layout.addWidget(self.button)
+        layout.addWidget(self.checkbox)
         self.setLayout(layout)
 
 
@@ -58,7 +68,7 @@ class ExecNode(CalcNode):
     def initInnerClasses(self):
         self.content = ExecWidget(self)
         self.grNode = CalcGraphicsNode(self)
-        self.grNode.height = 160
+        self.grNode.height = 200
         self.grNode.width = 256
         self.content.setMinimumWidth(256)
         self.content.setMinimumHeight(160)
@@ -74,7 +84,11 @@ class ExecNode(CalcNode):
         self.markInvalid(True)
         self.busy = False
         if len(self.getOutputs(0)) > 0:
-            self.executeChild(0)
+            if self.content.checkbox.isChecked() == True:
+                thread0 = threading.Thread(target=self.executeChild, args=(0,))
+                thread0.start()
+            else:
+                self.executeChild(0)
         return None
     def onMarkedDirty(self):
         self.value = None
