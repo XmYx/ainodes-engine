@@ -138,7 +138,7 @@ class CalcNode(Node):
     def onInputChanged(self, socket=None):
         print("%s::__onInputChanged" % self.__class__.__name__)
         self.markDirty(True)
-        self.content.eval_signal.emit(0)
+        #self.content.eval_signal.emit(0)
 
 
     def serialize(self):

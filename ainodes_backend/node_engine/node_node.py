@@ -214,7 +214,7 @@ class Node(Serializable):
         :type socket: :class:`~nodeeditor.node_socket.Socket`
         """
         self.markDirty()
-        self.markDescendantsDirty()
+        #self.markDescendantsDirty()
 
     def onDeserialized(self, data: dict):
         """Event manually called when this node was deserialized. Currently called when node is deserialized from scene

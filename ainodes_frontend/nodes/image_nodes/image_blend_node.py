@@ -92,17 +92,16 @@ class BlendNode(CalcNode):
             self.setOutput(0, self.value)
             self.markDirty(False)
             self.markInvalid(False)
-        if pixmap1 != None:
-            try:
-                self.setOutput(0, pixmap2)
-                print(f"BLEND NODE: Using only Second input")
-
-            except:
-                pass
         elif pixmap2 != None:
             try:
-                self.setOutput(0, pixmap1)
+                self.setOutput(0, pixmap2)
                 print(f"BLEND NODE: Using only First input")
+            except:
+                pass
+        elif pixmap1 != None:
+            try:
+                self.setOutput(0, pixmap1)
+                print(f"BLEND NODE: Using only Second input")
             except:
                 pass
         if len(self.getOutputs(1)) > 0:
