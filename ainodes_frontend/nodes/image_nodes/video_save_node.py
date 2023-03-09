@@ -21,8 +21,8 @@ class VideoOutputWidget(QDMNodeContentWidget):
         self.video = GifRecorder()
         self.current_frame = 0
 
-        self.save_button = QPushButton("Save Video", self)
-        self.new_button = QPushButton("New Video", self)
+        self.save_button = QPushButton("Save buffer to GIF", self)
+        #self.new_button = QPushButton("New Video", self)
         #self.save_button.clicked.connect(self.loadVideo)
 
         self.width_value = QtWidgets.QSpinBox()
@@ -45,26 +45,22 @@ class VideoOutputWidget(QDMNodeContentWidget):
 
 
         layout = QVBoxLayout()
-        layout.addWidget(self.new_button)
-        #layout.addWidget(self.save_button)
-        layout.addWidget(self.width_value)
-        layout.addWidget(self.height_value)
+        #layout.addWidget(self.new_button)
+        layout.addWidget(self.save_button)
+        #layout.addWidget(self.width_value)
+        #layout.addWidget(self.height_value)
         layout.addWidget(self.fps)
 
         self.setLayout(layout)
 
     def serialize(self):
         res = super().serialize()
-        res['w'] = self.width_value.value()
-        res['h'] = self.height_value.value()
         res['fps'] = self.fps.value()
         return res
 
     def deserialize(self, data, hashmap={}):
         res = super().deserialize(data, hashmap)
         try:
-            self.height_value.setValue(int(data['h']))
-            self.width_value.setValue(int(data['w']))
             self.fps.setValue(int(data['fps']))
             #self.image.setPixmap(value)
             return True & res
@@ -93,11 +89,11 @@ class VideoOutputNode(CalcNode):
     def initInnerClasses(self):
         self.content = VideoOutputWidget(self)
         self.grNode = CalcGraphicsNode(self)
-        self.content.new_button.clicked.connect(self.start_new_video)
-        self.content.save_button.clicked.connect(self.close)
-        self.grNode.height = 512
-        self.grNode.width = 512
-        self.content.setGeometry(0, 0, 512, 512)
+        self.content.save_button.clicked.connect(self.start_new_video)
+        self.grNode.height = 300
+        self.grNode.width = 260
+
+        self.content.setGeometry(0, 0, 260, 230)
         self.markInvalid(True)
     def evalImplementation(self, index=0):
         if self.getInput(0) is not None:
@@ -138,19 +134,12 @@ class VideoOutputNode(CalcNode):
         self.evalImplementation()
 
     def start_new_video(self):
-        try:
-            self.content.video.close()
-            self.markDirty(True)
-        except:
-            pass
         self.markDirty(True)
         timestamp = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
         self.filename = f"{timestamp}.gif"
         fps = self.content.fps.value()
-        width = self.content.width_value.value()
-        height = self.content.height_value.value()
-        self.content.video.start_recording(self.filename, fps, width, height)
-        print(f"VIDEO SAVE NODE: New video stream started as as {self.filename}")
+        self.content.video.close(self.filename, fps)
+        print(f"VIDEO SAVE NODE: Done. The frame buffer is now empty.")
 
 class VideoRecorder:
 
@@ -183,8 +172,11 @@ class GifRecorder:
 
     def add_frame(self, frame):
         self.frames.append(frame)
-        print("VIDEO SAVE NODE: New frame added to video stream")
+        print(f"VIDEO SAVE NODE: Image added to frame buffer, current frames: {len(self.frames)}")
 
-    def close(self):
+    def close(self, filename, fps):
+        self.filename = filename
+        self.fps = fps
+        print(f"VIDEO SAVE NODE: Video saving {len(self.frames)} frames at {self.fps}fps as {self.filename}")
         imageio.mimsave(self.filename, self.frames, fps=self.fps)
-        print(f"VIDEO SAVE NODE: Video saved as {self.filename}")
+        self.frames = []

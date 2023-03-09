@@ -171,3 +171,7 @@ torch2.json
 torch3.json
 semseg/
 *.pt
+*.mp4
+*.gif
+*.avi
+*.mov
