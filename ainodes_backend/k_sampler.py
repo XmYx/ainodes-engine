@@ -6,7 +6,7 @@ from ainodes_backend.torch_gc import torch_gc
 
 
 def common_ksampler(device, seed, steps, cfg, sampler_name, scheduler, positive, negative, latent, denoise=1.0, disable_noise=False, start_step=None, last_step=None, force_full_denoise=False):
-    latent_image = latent.cuda()
+    latent_image = latent
     noise_mask = None
 
     if disable_noise:
