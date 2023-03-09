@@ -7,12 +7,13 @@ from ainodes_frontend.nodes.base.node_config import register_node, OP_NODE_IMG_P
 from ainodes_frontend.nodes.base.ai_node_base import CalcNode, CalcGraphicsNode
 from ainodes_backend.node_engine.node_content_widget import QDMNodeContentWidget
 from ainodes_backend.node_engine.utils import dumpException
-from qtpy import QtWidgets, QtGui
+from qtpy import QtWidgets, QtGui, QtCore
 
 from ainodes_frontend.nodes.qops.qimage_ops import pixmap_to_pil_image
 
 
 class ImageOutputWidget(QDMNodeContentWidget):
+    eval_signal = QtCore.Signal()
     def initUI(self):
         self.image = QLabel(self)
         self.image.setAlignment(Qt.AlignRight)
@@ -62,7 +63,7 @@ class ImagePreviewWidget(CalcNode):
     def __init__(self, scene):
         super().__init__(scene, inputs=[5,1], outputs=[5,1])
         #self.eval()
-        #self.content.eval_signal.connect(self.evalImplementation)
+        self.content.eval_signal.connect(self.evalImplementation)
         self.content.button.clicked.connect(self.save_image)
 
     def initInnerClasses(self):
@@ -127,3 +128,5 @@ class ImagePreviewWidget(CalcNode):
         self.markDirty(True)
         self.markInvalid(True)
         #self.eval()
+    def eval(self):
+        self.content.eval_signal.emit()

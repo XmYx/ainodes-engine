@@ -309,6 +309,7 @@ class Node(Serializable):
         """
         Safely remove this Node
         """
+
         if DEBUG: print("> Removing Node", self)
         if DEBUG: print(" - remove all edges from sockets")
         for socket in (self.inputs+self.outputs):

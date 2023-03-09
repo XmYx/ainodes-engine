@@ -1,3 +1,5 @@
+import copy
+
 from qtpy.QtGui import QImage
 from qtpy.QtCore import QRectF
 from qtpy.QtWidgets import QLabel
@@ -7,9 +9,8 @@ from ainodes_backend.node_engine.node_content_widget import QDMNodeContentWidget
 from ainodes_backend.node_engine.node_graphics_node import QDMGraphicsNode
 from ainodes_backend.node_engine.node_node import LEFT_BOTTOM, RIGHT_BOTTOM
 from ainodes_backend.node_engine.utils import dumpException
-from ainodes_backend.singleton import Singleton
+from ainodes_backend import singleton as gs
 
-gs = Singleton()
 
 class CalcGraphicsNode(QDMGraphicsNode):
     def initSizes(self):
@@ -70,16 +71,23 @@ class CalcNode(Node):
         self.markDirty()
         self.values = {}
         #self.content.mark_dirty_signal.connect(self.markDirty)
-
     def getID(self, index):
         return f"{id(self)}_output_{index}"
     def setOutput(self, index, value):
         object_name = self.getID(index)
-        self.values[object_name] = value
+        try:
+            value_copy = copy.deepcopy(value)
+        except:
+            try:
+                value_copy = value.copy()
+            except:
+                value_copy = value
+
+        gs.values[object_name] = value_copy
     def getOutput(self, index):
         object_name = self.getID(index)
         try:
-            value = self.values[object_name]
+            value = gs.values[object_name]
         except:
             print(f"Value doesnt exist yet, make sure to validate the node: {self.content_label_objname}")
             value = None
@@ -98,7 +106,7 @@ class CalcNode(Node):
 
         if i1 is None or i2 is None:
             self.markInvalid()
-            self.markDescendantsDirty()
+            #self.markDescendantsDirty()
             self.grNode.setToolTip("Connect all inputs")
             return None
 
@@ -109,8 +117,8 @@ class CalcNode(Node):
             self.markInvalid(False)
             self.grNode.setToolTip("")
 
-            self.markDescendantsDirty()
-            self.evalChildren()
+            #self.markDescendantsDirty()
+            #self.evalChildren()
 
             return val
 
@@ -119,12 +127,12 @@ class CalcNode(Node):
             print(" _> returning cached %s value:" % self.__class__.__name__, self.value)
             return self.value
         try:
-            val = self.evalImplementation(index)
-            return val
+            self.evalImplementation(index)
+            return None
         except ValueError as e:
             self.markInvalid()
             self.grNode.setToolTip(str(e))
-            self.markDescendantsDirty()
+            #self.markDescendantsDirty()
         except Exception as e:
             self.markInvalid()
             self.grNode.setToolTip(str(e))
@@ -156,3 +164,10 @@ class CalcNode(Node):
         res = super().deserialize(data, hashmap, restore_id)
         print("Deserialized CalcNode '%s'" % self.__class__.__name__, "res:", res)
         return res
+    def remove(self):
+        x = 0
+        for i in self.outputs:
+            object_name = self.getID(x)
+            gs.values[object_name] = None
+            x += 1
+        super().remove()

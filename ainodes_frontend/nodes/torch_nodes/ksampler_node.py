@@ -223,34 +223,39 @@ class KSamplerNode(CalcNode):
             self.seed = int(self.seed)
         except:
             self.seed = secrets.randbelow(99999999)
-        last_step = self.content.steps.value() if self.content.stop_early.isChecked() == False else self.content.last_step.value()
-        sample = common_ksampler(device="cuda",
-                                 seed=self.seed,
-                                 steps=self.content.steps.value(),
-                                 start_step=self.content.start_step.value(),
-                                 last_step=last_step,
-                                 cfg=self.content.guidance_scale.value(),
-                                 sampler_name=self.content.sampler.currentText(),
-                                 scheduler=self.content.schedulers.currentText(),
-                                 positive=cond,
-                                 negative=n_cond,
-                                 latent=latent)
+        try:
+            last_step = self.content.steps.value() if self.content.stop_early.isChecked() == False else self.content.last_step.value()
+            sample = common_ksampler(device="cuda",
+                                     seed=self.seed,
+                                     steps=self.content.steps.value(),
+                                     start_step=self.content.start_step.value(),
+                                     last_step=last_step,
+                                     cfg=self.content.guidance_scale.value(),
+                                     sampler_name=self.content.sampler.currentText(),
+                                     scheduler=self.content.schedulers.currentText(),
+                                     positive=cond,
+                                     negative=n_cond,
+                                     latent=latent)
 
-        return_sample = sample.cpu().half()
+            return_sample = sample.cpu().half()
 
-        x_samples = gs.models["sd"].decode_first_stage(sample.half())
-        x_samples = torch.clamp((x_samples + 1.0) / 2.0, min=0.0, max=1.0)
-        x_sample = 255. * rearrange(x_samples[0].cpu().numpy(), 'c h w -> h w c')
-        image = Image.fromarray(x_sample.astype(np.uint8))
-        qimage = ImageQt(image)
-        pixmap = QPixmap().fromImage(qimage)
-        self.value = pixmap
-        del sample
-        del x_samples
-        x_samples = None
-        sample = None
-        torch_gc()
-        self.onWorkerFinished([pixmap, return_sample])
+            x_samples = gs.models["sd"].decode_first_stage(sample.half())
+            x_samples = torch.clamp((x_samples + 1.0) / 2.0, min=0.0, max=1.0)
+            x_sample = 255. * rearrange(x_samples[0].cpu().numpy(), 'c h w -> h w c')
+            image = Image.fromarray(x_sample.astype(np.uint8))
+            qimage = ImageQt(image)
+            pixmap = QPixmap().fromImage(qimage)
+            self.value = pixmap
+            del sample
+            del x_samples
+            x_samples = None
+            sample = None
+            torch_gc()
+            self.onWorkerFinished([pixmap, return_sample])
+        except:
+            self.busy = False
+            if len(self.getOutputs(2)) > 0:
+                self.executeChild(output_index=2)
         return [pixmap, return_sample]
     @QtCore.Slot(object)
     def onWorkerFinished(self, result):

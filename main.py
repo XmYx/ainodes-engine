@@ -9,9 +9,8 @@ if "Linux" in platform.platform():
 
 from qtpy import QtOpenGL, QtGui
 from qtpy.QtWidgets import QApplication
-from ainodes_backend.singleton import Singleton
+from ainodes_backend import singleton as gs
 
-gs = Singleton()
 gs.obj = {}
 gs.values = {}
 
