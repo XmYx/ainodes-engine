@@ -176,7 +176,7 @@ class KSamplerNode(CalcNode):
 
         self.markDirty(True)
         #self.markInvalid(True)
-        self.busy = False
+        #self.busy = False
         if self.value is None:
             # Start the worker thread
             if self.busy == False:

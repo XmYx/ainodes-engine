@@ -93,9 +93,9 @@ class QDMGraphicsView(QGraphicsView):
 
         self.last_scene_mouse_position = QPoint(0,0)
         self.zoomInFactor = 1.25
-        self.zoomClamp = True
+        self.zoomClamp = False
         self.zoom = 10
-        self.zoomStep = 1
+        self.zoomStep = 0.1
         self.zoomRange = [0, 10]
 
         # listeners

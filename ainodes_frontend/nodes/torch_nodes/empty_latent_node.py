@@ -3,7 +3,9 @@ import requests
 import torch
 from PIL import Image
 #from qtpy.QtWidgets import QLineEdit, QLabel, QPushButton, QFileDialog, QVBoxLayout
-from qtpy import QtWidgets, QtCore
+from qtpy import QtWidgets, QtCore, QtGui
+
+from ainodes_backend.resizeRight import interp_methods, resizeright
 from ainodes_frontend.nodes.base.node_config import register_node, OP_NODE_LATENT,OP_NODE_LATENT_COMPOSITE
 from ainodes_frontend.nodes.base.ai_node_base import CalcNode, CalcGraphicsNode
 from ainodes_backend.node_engine.node_content_widget import QDMNodeContentWidget
@@ -26,12 +28,21 @@ class LatentWidget(QDMNodeContentWidget):
         self.height.setMaximum(4096)
         self.height.setValue(512)
         self.height.setSingleStep(64)
+        palette = QtGui.QPalette()
+        palette.setColor(QtGui.QPalette.WindowText, QtGui.QColor("white"))
+        palette.setColor(QtGui.QPalette.Disabled, QtGui.QPalette.WindowText, QtGui.QColor("black"))
+
+
+        self.rescale_latent = QtWidgets.QCheckBox("Latent Rescale")
+        self.rescale_latent.setPalette(palette)
 
         layout = QtWidgets.QVBoxLayout(self)
         layout.setContentsMargins(15,15,15,20)
         layout.setSpacing(10)
         layout.addWidget(self.width)
         layout.addWidget(self.height)
+        layout.addWidget(self.rescale_latent)
+
         self.setLayout(layout)
 
     def serialize(self):
@@ -70,7 +81,7 @@ class LatentNode(CalcNode):
         self.grNode = CalcGraphicsNode(self)
         self.input_socket_name = ["EXEC", "IMAGE", "LATENT"]
         self.output_socket_name = ["EXEC", "LATENT"]
-        self.grNode.height = 180
+        self.grNode.height = 210
         self.grNode.width = 200
     @QtCore.Slot(int)
     def evalImplementation(self, index=0):
@@ -88,11 +99,9 @@ class LatentNode(CalcNode):
                 print(f"EMPTY LATENT NODE: Tried using Latent input, but found an invalid value, generating latent with parameters: {self.content.width.value(), self.content.height.value()}")
                 self.value = self.generate_latent()
 
-            self.setOutput(0, self.value)
+
             self.markDirty(False)
             self.markInvalid(False)
-            if len(self.getOutputs(1)) > 0:
-                self.executeChild(output_index=1)
         elif self.getInput(1) != None:
             try:
                 node, index = self.getInput(1)
@@ -106,21 +115,26 @@ class LatentNode(CalcNode):
                 image = image.to("cuda")
                 image = repeat(image, '1 ... -> b ...', b=1)
 
-                latent = self.encode_image(image)
+                self.value = self.encode_image(image)
                 print(f"EMPTY LATENT NODE: Using Image input, encoding to Latent with parameters: {latent.shape}")
-                self.setOutput(0, latent)
-                if len(self.getOutputs(1)) > 0:
-                    self.executeChild(output_index=1)
             except Exception as e:
                 print(e)
         else:
             self.value = self.generate_latent()
+        if self.content.rescale_latent.isChecked() == True:
+            self.value = resizeright.resize(self.value, scale_factors=None,
+                                         out_shape=[self.value.shape[0], self.value.shape[1], int(self.content.height.value() // 8),
+                                                    int(self.content.width.value() // 8)],
+                                         interp_method=interp_methods.lanczos3, support_sz=None,
+                                         antialiasing=True, by_convs=True, scale_tolerance=None,
+                                         max_numerator=10, pad_mode='reflect')
+            print(f"Latent rescaled to: {self.value.shape}")
 
-            self.setOutput(0, self.value)
-            self.markDirty(False)
-            self.markInvalid(False)
-            if len(self.getOutputs(1)) > 0:
-                self.executeChild(output_index=1    )
+        self.setOutput(0, self.value)
+        self.markDirty(False)
+        self.markInvalid(False)
+        if len(self.getOutputs(1)) > 0:
+            self.executeChild(output_index=1    )
         return None
             #return self.value
 
@@ -129,12 +143,6 @@ class LatentNode(CalcNode):
     def encode_image(self, init_image=None):
         init_latent = gs.models["sd"].get_first_stage_encoding(
             gs.models["sd"].encode_first_stage(init_image))  # move to latent space
-        """init_latent = resizeright.resize(init_latent, scale_factors=None,
-                                         out_shape=[init_latent.shape[0], init_latent.shape[1], args.H // 8,
-                                                    args.W // 8],
-                                         interp_method=interp_methods.lanczos3, support_sz=None,
-                                         antialiasing=True, by_convs=True, scale_tolerance=None,
-                                         max_numerator=10, pad_mode='reflect')"""
         return init_latent
 
     def generate_latent(self):
