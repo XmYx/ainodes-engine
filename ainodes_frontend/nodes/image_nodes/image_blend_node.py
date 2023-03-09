@@ -85,14 +85,26 @@ class BlendNode(CalcNode):
             pixmap2 = None
 
         if pixmap1 != None and pixmap2 != None:
-            #print("BLENDING")
             blend = self.content.blend.value()
-
-
             self.value = self.image_op(pixmap1, pixmap2, blend)
+            print(f"BLEND NODE: Using both inputs with a blend value: {blend}")
+
             self.setOutput(0, self.value)
             self.markDirty(False)
             self.markInvalid(False)
+        if pixmap1 != None:
+            try:
+                self.setOutput(0, pixmap2)
+                print(f"BLEND NODE: Using only Second input")
+
+            except:
+                pass
+        elif pixmap2 != None:
+            try:
+                self.setOutput(0, pixmap1)
+                print(f"BLEND NODE: Using only First input")
+            except:
+                pass
         if len(self.getOutputs(1)) > 0:
             self.executeChild(output_index=1)
         return self.value

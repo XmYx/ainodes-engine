@@ -46,7 +46,7 @@ class VideoOutputWidget(QDMNodeContentWidget):
 
         layout = QVBoxLayout()
         layout.addWidget(self.new_button)
-        layout.addWidget(self.save_button)
+        #layout.addWidget(self.save_button)
         layout.addWidget(self.width_value)
         layout.addWidget(self.height_value)
         layout.addWidget(self.fps)
