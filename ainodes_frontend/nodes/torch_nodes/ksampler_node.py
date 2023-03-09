@@ -161,10 +161,9 @@ class KSamplerNode(CalcNode):
     def k_sampling(self, progress_callback=None):
         try:
             cond_node, index = self.getInput(2)
-            #print("cond:", cond_node, index)
             cond = cond_node.getOutput(index)
-            #print("cond value", cond)
-        except:
+        except Exception as e:
+            print(e)
             cond = None
         try:
             n_cond_node, index = self.getInput(1)

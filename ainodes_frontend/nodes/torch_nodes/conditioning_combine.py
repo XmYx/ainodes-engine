@@ -131,12 +131,9 @@ class ConditioningCombineNode(CalcNode):
         self.markDirty(False)
         self.markInvalid(False)
         self.setOutput(0, self.value)
+        print(self.value)
         if len(self.getOutputs(1)) > 0:
             self.executeChild(output_index=1)
-
-        #self.scene.queue.add_task(self.combine_conditioning)
-        #self.scene.queue.task_finished.connect(self.onWorkerFinished)
-        #self.busy = True
         return self.value
 
     def onMarkedDirty(self):

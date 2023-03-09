@@ -6,7 +6,7 @@ from ainodes_backend.torch_gc import torch_gc
 
 
 def common_ksampler(device, seed, steps, cfg, sampler_name, scheduler, positive, negative, latent, denoise=1.0, disable_noise=False, start_step=None, last_step=None, force_full_denoise=False):
-    latent_image = latent
+    latent_image = latent.cuda()
     noise_mask = None
 
     if disable_noise:
@@ -52,7 +52,8 @@ def common_ksampler(device, seed, steps, cfg, sampler_name, scheduler, positive,
     control_net_models = []
     for x in control_nets:
         control_net_models += x.get_control_models()
-    #load_controlnet_gpu(control_net_models)
+        for i in control_net_models:
+            i.cuda()
     if "controlnet" in gs.models:
         gs.models["controlnet"].control_model.cuda()
     if sampler_name in samplers.KSampler.SAMPLERS:
