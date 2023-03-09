@@ -107,8 +107,8 @@ class VideoInputNode(CalcNode):
         self.content = VideoInputWidget(self)
         self.grNode = CalcGraphicsNode(self)
         #self.resize()
-        #self.grNode.height = 512
-        #self.grNode.width = 512
+        self.grNode.height = 200
+        self.grNode.width = 200
 
         #self.content.setGeometry(0, 0, 512, 512)
         self.content.stop_button.clicked.connect(self.content.video.reset)

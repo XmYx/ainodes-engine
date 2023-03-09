@@ -70,7 +70,7 @@ class LatentNode(CalcNode):
         self.grNode = CalcGraphicsNode(self)
         self.input_socket_name = ["EXEC", "IMAGE", "LATENT"]
         self.output_socket_name = ["EXEC", "LATENT"]
-        self.grNode.height = 160
+        self.grNode.height = 180
         self.grNode.width = 200
     @QtCore.Slot(int)
     def evalImplementation(self, index=0):
@@ -201,7 +201,7 @@ class LatentCompositeNode(CalcNode):
     category = "latent"
 
     def __init__(self, scene):
-        super().__init__(scene, inputs=[3,3,3], outputs=[3,3])
+        super().__init__(scene, inputs=[2,2,3], outputs=[2,3])
     def initInnerClasses(self):
         self.content = LatentCompositeWidget(self)
         self.grNode = CalcGraphicsNode(self)

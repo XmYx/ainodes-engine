@@ -101,7 +101,9 @@ class KSamplerWidget(QDMNodeContentWidget):
 
         self.button_layout = QtWidgets.QHBoxLayout()
         self.button = QtWidgets.QPushButton("Run")
+        self.fix_seed_button = QtWidgets.QPushButton("Fix Seed")
         self.button_layout.addWidget(self.button)
+        self.button_layout.addWidget(self.fix_seed_button)
 
         layout = QtWidgets.QVBoxLayout(self)
         layout.setContentsMargins(15,15,15,25)
@@ -162,13 +164,15 @@ class KSamplerNode(CalcNode):
         self.content.setMinimumHeight(256)
         self.input_socket_name = ["EXEC", "COND", "N COND", "LATENT"]
         self.output_socket_name = ["EXEC", "LATENT", "IMAGE"]
-
+        self.seed = ""
+        self.content.fix_seed_button.clicked.connect(self.setSeed)
         #self.content.setMinimumHeight(400)
         #self.content.setMinimumWidth(256)
         #self.content.image.changeEvent.connect(self.onInputChanged)
 
     def evalImplementation(self, index=0):
-        print("K SAMPLER:", self.content.steps.value(), "steps,", self.content.sampler.currentText())
+
+
         self.markDirty(True)
         #self.markInvalid(True)
         self.busy = False
@@ -209,14 +213,14 @@ class KSamplerNode(CalcNode):
             latent = latent_node.getOutput(index)
         except:
             latent = torch.zeros([1, 4, 512 // 8, 512 // 8])
-        seed = self.content.seed.text()
+        self.seed = self.content.seed.text()
         try:
-            seed = int(seed)
+            self.seed = int(self.seed)
         except:
-            seed = secrets.randbelow(99999999)
+            self.seed = secrets.randbelow(99999999)
         last_step = self.content.steps.value() if self.content.stop_early.isChecked() == False else self.content.last_step.value()
         sample = common_ksampler(device="cuda",
-                                 seed=seed,
+                                 seed=self.seed,
                                  steps=self.content.steps.value(),
                                  start_step=self.content.start_step.value(),
                                  last_step=last_step,
@@ -246,6 +250,7 @@ class KSamplerNode(CalcNode):
     def onWorkerFinished(self, result):
         # Update the node value and mark it as dirty
         #self.value = result[0]
+        print("K SAMPLER:", self.content.steps.value(), "steps,", self.content.sampler.currentText(), " seed: ", self.seed)
         self.markDirty(False)
         self.markInvalid(False)
         self.setOutput(0, result[0])
@@ -258,7 +263,8 @@ class KSamplerNode(CalcNode):
         return
         #self.markDescendantsDirty()
         #self.evalChildren()
-
+    def setSeed(self):
+        self.content.seed.setText(str(self.seed))
     def onInputChanged(self, socket=None):
         pass
         #self.eval()

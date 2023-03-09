@@ -58,10 +58,10 @@ class ExecNode(CalcNode):
     def initInnerClasses(self):
         self.content = ExecWidget(self)
         self.grNode = CalcGraphicsNode(self)
-        self.grNode.height = 300
+        self.grNode.height = 160
         self.grNode.width = 256
         self.content.setMinimumWidth(256)
-        self.content.setMinimumHeight(256)
+        self.content.setMinimumHeight(160)
         self.input_socket_name = ["EXEC"]
         self.output_socket_name = ["EXEC"]
 

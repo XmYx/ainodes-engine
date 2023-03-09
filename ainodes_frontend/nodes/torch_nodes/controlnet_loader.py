@@ -78,7 +78,8 @@ class ControlnetLoaderNode(CalcNode):
     def initInnerClasses(self):
         self.content = ControlnetLoaderWidget(self)
         self.grNode = CalcGraphicsNode(self)
-        self.grNode.width = 260
+        self.grNode.width = 280
+        self.grNode.height = 100
 
     def evalImplementation(self, index=0):
         #self.executeChild()

@@ -77,7 +77,7 @@ class VideoOutputNode(CalcNode):
     content_label_objname = "video_output_node"
     category = "debug"
     input_socket_name = ["EXEC", "IMAGE"]
-    output_socket_name = ["EXEC"]
+    output_socket_name = ["EXEC", "IMAGE"]
 
 
     def __init__(self, scene):
@@ -136,7 +136,9 @@ class VideoOutputNode(CalcNode):
     def start_new_video(self):
         self.markDirty(True)
         timestamp = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
-        self.filename = f"{timestamp}.gif"
+        os.makedirs("output/gifs", exist_ok=True)
+
+        self.filename = f"output/gifs/{timestamp}.gif"
         fps = self.content.fps.value()
         self.content.video.close(self.filename, fps)
         print(f"VIDEO SAVE NODE: Done. The frame buffer is now empty.")
