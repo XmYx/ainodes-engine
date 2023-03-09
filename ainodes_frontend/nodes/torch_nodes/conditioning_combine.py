@@ -199,16 +199,20 @@ class ConditioningAreaNode(CalcNode):
         #self.content.image.changeEvent.connect(self.onInputChanged)
 
     def evalImplementation(self, index=0):
-        if self.value is None:
-            self.scene.queue.add_task(self.append_conditioning)
-            self.scene.queue.task_finished.connect(self.onWorkerFinished)
-            self.busy = True
+        try:
+            cond = self.append_conditioning
+            self.setOutput(0, cond)
+            print("COND COMBINE NODE: Conditionings combined.")
+            if len(self.getOutputs(1)) > 0:
+                self.executeChild(output_index=1)
+            return cond
+
+        except:
+            print("COND COMBINE NODE: Failed, please make sure both inputs are valid conditionings.")
+            if len(self.getOutputs(1)) > 0:
+                self.executeChild(output_index=1)
             return None
-        else:
-            self.markDirty(False)
-            self.markInvalid(False)
-            self.executeChild()
-            return self.value
+
 
     def onMarkedDirty(self):
         self.value = None

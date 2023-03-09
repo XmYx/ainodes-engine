@@ -96,4 +96,4 @@ class ImagePreviewWidget(CalcNode):
         #super().onInputChanged(socket=socket)
         self.markDirty(True)
         self.markInvalid(True)
-        self.eval()
+        #self.eval()

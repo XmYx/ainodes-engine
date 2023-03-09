@@ -77,7 +77,11 @@ class CalcNode(Node):
         self.values[object_name] = value
     def getOutput(self, index):
         object_name = self.getID(index)
-        value = self.values[object_name]
+        try:
+            value = self.values[object_name]
+        except:
+            print(f"Value doesnt exist yet, make sure to validate the node: {self.content_label_objname}")
+            value = None
         return value
     def initSettings(self):
         super().initSettings()

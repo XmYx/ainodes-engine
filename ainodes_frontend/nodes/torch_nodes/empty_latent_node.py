@@ -61,7 +61,7 @@ class LatentNode(CalcNode):
     category = "latent"
 
     def __init__(self, scene):
-        super().__init__(scene, inputs=[3,5,1], outputs=[3,1])
+        super().__init__(scene, inputs=[2,5,1], outputs=[2,1])
         #self.eval()
         #self.content.eval_signal.connect(self.eval)
 
