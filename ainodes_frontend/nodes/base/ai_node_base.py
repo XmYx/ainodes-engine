@@ -47,6 +47,7 @@ class CalcContent(QDMNodeContentWidget):
         lbl.setObjectName(self.node.content_label_objname)
 
 
+
 class CalcNode(Node):
     icon = ""
     op_code = 0

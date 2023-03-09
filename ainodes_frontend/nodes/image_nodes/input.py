@@ -13,15 +13,14 @@ class ImageInputWidget(QDMNodeContentWidget):
     fileName = None
     parent_resize_signal = QtCore.Signal()
     def initUI(self):
-        # Create a label to display the image
 
+        # Create a label to display the image
         self.image = QLabel(self)
         self.image.setObjectName(self.node.content_label_objname)
         self.firstRun_done = None
         # Create a layout to place the label and button
         layout = QVBoxLayout(self)
         layout.setContentsMargins(25, 25, 25, 25)
-
         layout.addWidget(self.image)
         self.setLayout(layout)
 
@@ -46,7 +45,7 @@ class ImageInputWidget(QDMNodeContentWidget):
         res['filename'] = self.fileName
         return res
 
-    def deserialize(self, data, hashmap={}):
+    def deserialize(self, data, hashmap={}, restore_id=False):
         res = super().deserialize(data, hashmap)
         try:
             #value = data['value']
@@ -78,10 +77,11 @@ class ImageInputNode(CalcNode):
     op_title = "Input"
     content_label_objname = "image_input_node"
     category = "image"
+    input_socket_name = ["EXEC"]
     output_socket_name = ["EXEC", "IMAGE"]
 
     def __init__(self, scene):
-        super().__init__(scene, inputs=[], outputs=[5,1])
+        super().__init__(scene, inputs=[1], outputs=[5,1])
         #self.eval()
         self.content.eval_signal.connect(self.eval)
         #print(self.content.firstRun_done)
@@ -124,34 +124,23 @@ class ImageInputNode(CalcNode):
         #self.content.image.changeEvent.connect(self.onInputChanged)
 
     def evalImplementation(self, index=0):
-
         self.init_image()
-
-        u_value = self.content.image.pixmap()
-        s_value = u_value
-        self.value = s_value
         self.markDirty(False)
         self.markInvalid(False)
-
-        self.markDescendantsInvalid(False)
-        self.markDescendantsDirty()
-
         self.grNode.setToolTip("")
         self.setOutput(0, self.content.image.pixmap())
         if len(self.getOutputs(1)) > 0:
             self.executeChild(output_index=1)
-
         return self.content.image.pixmap()
 
     def openFileDialog(self):
         # Open the file dialog to select a PNG file
         options = QFileDialog.Options()
         options |= QFileDialog.DontUseNativeDialog
-        fileName, _ = QFileDialog.getOpenFileName(None, "Select Image", "",
+        file_name, _ = QFileDialog.getOpenFileName(None, "Select Image", "",
                                                   "PNG Files (*.png);JPEG Files (*.jpeg *.jpg);All Files(*)",
                                                   options=options)
         # If a file is selected, display the image in the label
-        if fileName:
-            return fileName
-        else:
-            return None
+        if file_name:
+            return file_name
+        return None
