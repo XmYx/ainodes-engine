@@ -137,9 +137,10 @@ class CalcNode(Node):
                 node = self.getOutputs(output_index)[0]
                 node.markDirty(True)
                 node.eval()
+                return None
             except Exception as e:
-                #print("Skipping execution:", e)
-                pass
+                print("Skipping execution:", e)
+                return None
     def onInputChanged(self, socket=None):
         print("%s::__onInputChanged" % self.__class__.__name__)
         self.markDirty(True)

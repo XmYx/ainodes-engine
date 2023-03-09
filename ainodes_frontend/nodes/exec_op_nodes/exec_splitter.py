@@ -1,3 +1,4 @@
+import threading
 import time
 
 import numpy as np
@@ -52,7 +53,7 @@ class ExecSplitterNode(CalcNode):
 
     def __init__(self, scene):
         super().__init__(scene, inputs=[1], outputs=[1,1])
-        self.content.button.clicked.connect(self.evalImplementation)
+        #self.content.button.clicked.connect(self.evalImplementation)
         self.busy = False
         # Create a worker object
     def initInnerClasses(self):
@@ -75,9 +76,16 @@ class ExecSplitterNode(CalcNode):
         self.busy = False
         if len(self.getOutputs(1)) > 0:
             self.executeChild(1)
+            #thread1 = threading.Thread(target=self.getOutputs(1)[0].eval)
+            #thread1.start()
+            #thread1.join()
         if len(self.getOutputs(0)) > 0:
             self.executeChild(0)
+            #thread0 = threading.Thread(target=self.getOutputs(0)[0].eval)
+            #thread0.start()
+            #thread0.join()
         return None
+
     def onMarkedDirty(self):
         self.value = None
 

@@ -1,4 +1,5 @@
 import secrets
+import threading
 
 import numpy as np
 from einops import rearrange
@@ -179,13 +180,17 @@ class KSamplerNode(CalcNode):
         if self.value is None:
             # Start the worker thread
             if self.busy == False:
-                self.worker = Worker(self.k_sampling)
+                #self.worker = Worker(self.k_sampling)
                 # Connect the worker's finished signal to a slot that updates the node value
-                self.worker.signals.result.connect(self.onWorkerFinished)
+                #self.worker.signals.result.connect(self.onWorkerFinished)
                 #self.scene.queue.add_task(self.k_sampling)
                 #self.scene.queue.task_finished.connect(self.onWorkerFinished)
                 self.busy = True
-                self.scene.threadpool.start(self.worker)
+                #self.scene.threadpool.start(self.worker)
+                thread0 = threading.Thread(target=self.k_sampling)
+                thread0.start()
+
+
             return None
         else:
             self.markDirty(False)
@@ -245,6 +250,7 @@ class KSamplerNode(CalcNode):
         x_samples = None
         sample = None
         torch_gc()
+        self.onWorkerFinished([pixmap, return_sample])
         return [pixmap, return_sample]
     @QtCore.Slot(object)
     def onWorkerFinished(self, result):
