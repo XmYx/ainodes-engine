@@ -5,6 +5,7 @@ from collections import OrderedDict
 from ainodes_backend.node_engine.node_serializable import Serializable
 from qtpy.QtWidgets import QWidget, QLabel, QVBoxLayout, QTextEdit
 from qtpy import QtCore, QtWidgets
+from qtpy.QtCore import Signal, QPoint, Qt
 
 
 class QDMNodeContentWidget(QWidget, Serializable):
@@ -98,6 +99,14 @@ class QDMNodeContentWidget(QWidget, Serializable):
 
     def deserialize(self, data:dict, hashmap:dict={}, restore_id:bool=True) -> bool:
         return True
+
+
+    def keyPressEvent(self, event):
+        if event.key() == Qt.Key_E:
+            print("TRIGGER")
+            self.node.markDirty(True)
+            self.node.eval()
+
 
 class QDMTextEdit(QTextEdit):
     """

@@ -1,0 +1,1574 @@
+{
+    "id": 139916504311936,
+    "scene_width": 64000,
+    "scene_height": 64000,
+    "nodes": [
+        {
+            "id": 140122502985040,
+            "title": "Execute",
+            "pos_x": -4760.0,
+            "pos_y": -2246.25,
+            "inputs": [
+                {
+                    "id": 140122502794256,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 1
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 140122502792528,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 1
+                }
+            ],
+            "content": {},
+            "op_code": 19
+        },
+        {
+            "id": 140134668591696,
+            "title": "Torch Loader",
+            "pos_x": -4440.0,
+            "pos_y": -2106.25,
+            "inputs": [
+                {
+                    "id": 140135272732128,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 1
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 140135269516048,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 1
+                }
+            ],
+            "content": {
+                "model": "model.ckpt",
+                "config": "v1-inference_fp16.yaml"
+            },
+            "op_code": 9
+        },
+        {
+            "id": 140122502792672,
+            "title": "ControlNet Loader",
+            "pos_x": -4056.25,
+            "pos_y": -2020.0,
+            "inputs": [
+                {
+                    "id": 140134674388688,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 1
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 140134674388112,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 1
+                }
+            ],
+            "content": {
+                "cn": "control_sd15_depth.pth"
+            },
+            "op_code": 13
+        },
+        {
+            "id": 140134674435472,
+            "title": "Conditioning",
+            "pos_x": -4079.5898437499986,
+            "pos_y": -1896.9726562499993,
+            "inputs": [
+                {
+                    "id": 140134674434416,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 1
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 140134674434128,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 3
+                },
+                {
+                    "id": 140134674434896,
+                    "index": 1,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 1
+                }
+            ],
+            "content": {
+                "prompt": "boxes, 3d render"
+            },
+            "op_code": 10
+        },
+        {
+            "id": 140134674434992,
+            "title": "Conditioning",
+            "pos_x": -4070.3124999999995,
+            "pos_y": -1609.3749999999998,
+            "inputs": [
+                {
+                    "id": 140134674434512,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 1
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 140134673635456,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 3
+                },
+                {
+                    "id": 140134673634496,
+                    "index": 1,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 1
+                }
+            ],
+            "content": {
+                "prompt": ""
+            },
+            "op_code": 10
+        },
+        {
+            "id": 140134673636848,
+            "title": "K Sampler",
+            "pos_x": -3518.0664062499986,
+            "pos_y": -1857.9101562499993,
+            "inputs": [
+                {
+                    "id": 140134673636176,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 2
+                },
+                {
+                    "id": 140134673634256,
+                    "index": 1,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 3
+                },
+                {
+                    "id": 140134673636224,
+                    "index": 2,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 3
+                },
+                {
+                    "id": 140134673637184,
+                    "index": 3,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 1
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 140134673633584,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 5
+                },
+                {
+                    "id": 140134673636896,
+                    "index": 1,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 2
+                },
+                {
+                    "id": 140134673635696,
+                    "index": 2,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 1
+                }
+            ],
+            "content": {
+                "scheduler": "karras",
+                "sampler": "euler",
+                "seed": "",
+                "steps": 10,
+                "guidance_scale": 7.5
+            },
+            "op_code": 11
+        },
+        {
+            "id": 140134673633872,
+            "title": "Image Preview",
+            "pos_x": -3182.006835937499,
+            "pos_y": -2052.246093749999,
+            "inputs": [
+                {
+                    "id": 140134673634592,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 5
+                },
+                {
+                    "id": 140134673636320,
+                    "index": 1,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 1
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 140134673634448,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 5
+                },
+                {
+                    "id": 140134673634688,
+                    "index": 1,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 1
+                }
+            ],
+            "content": {},
+            "op_code": 2
+        },
+        {
+            "id": 140134673637040,
+            "title": "Image Operators",
+            "pos_x": -2559.814453125,
+            "pos_y": -1647.3388671874995,
+            "inputs": [
+                {
+                    "id": 140134673633392,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 5
+                },
+                {
+                    "id": 140134673635792,
+                    "index": 1,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 1
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 140134673634064,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 5
+                },
+                {
+                    "id": 140134673634928,
+                    "index": 1,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 1
+                }
+            ],
+            "content": {
+                "dropdown": "depth",
+                "w": 512,
+                "h": 512,
+                "canny_high": 100,
+                "canny_low": 100,
+                "midas_a": 6.28,
+                "midas_bg": 0.01
+            },
+            "op_code": 7
+        },
+        {
+            "id": 140134673633776,
+            "title": "Image Preview",
+            "pos_x": -2326.5380859375,
+            "pos_y": -2049.926757812499,
+            "inputs": [
+                {
+                    "id": 140134673662256,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 5
+                },
+                {
+                    "id": 140134673665328,
+                    "index": 1,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 1
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 140134673662928,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 5
+                },
+                {
+                    "id": 140134673664368,
+                    "index": 1,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 1
+                }
+            ],
+            "content": {},
+            "op_code": 2
+        },
+        {
+            "id": 140134674388304,
+            "title": "Conditioning",
+            "pos_x": -1692.5048828124993,
+            "pos_y": -2056.274414062499,
+            "inputs": [
+                {
+                    "id": 140134673635168,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 1
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 140134673665280,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 3
+                },
+                {
+                    "id": 140134673663024,
+                    "index": 1,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 1
+                }
+            ],
+            "content": {
+                "prompt": "futuristic city, cyberpunk style"
+            },
+            "op_code": 10
+        },
+        {
+            "id": 140134673636608,
+            "title": "Conditioning",
+            "pos_x": -1690.673828125,
+            "pos_y": -1712.036132812499,
+            "inputs": [
+                {
+                    "id": 140134673663840,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 1
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 140134673662592,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 3
+                },
+                {
+                    "id": 140134673663696,
+                    "index": 1,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 1
+                }
+            ],
+            "content": {
+                "prompt": ""
+            },
+            "op_code": 10
+        },
+        {
+            "id": 140134673665808,
+            "title": "Apply ControlNet",
+            "pos_x": -1195.6787109374993,
+            "pos_y": -1859.7412109374995,
+            "inputs": [
+                {
+                    "id": 140134673664608,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 5
+                },
+                {
+                    "id": 140134673663312,
+                    "index": 1,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 3
+                },
+                {
+                    "id": 140134673663552,
+                    "index": 2,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 1
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 140134673663792,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 3
+                },
+                {
+                    "id": 140134673664464,
+                    "index": 1,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 1
+                }
+            ],
+            "content": {
+                "strength": 1.0
+            },
+            "op_code": 14
+        },
+        {
+            "id": 140134673662736,
+            "title": "K Sampler",
+            "pos_x": -822.1923828125005,
+            "pos_y": -1786.7675781249995,
+            "inputs": [
+                {
+                    "id": 140134673662352,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 2
+                },
+                {
+                    "id": 140134673662208,
+                    "index": 1,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 3
+                },
+                {
+                    "id": 140134673662784,
+                    "index": 2,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 3
+                },
+                {
+                    "id": 140134673665232,
+                    "index": 3,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 1
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 140134673664800,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 5
+                },
+                {
+                    "id": 140134673664704,
+                    "index": 1,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 2
+                },
+                {
+                    "id": 140134673665376,
+                    "index": 2,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 1
+                }
+            ],
+            "content": {
+                "scheduler": "karras",
+                "sampler": "euler",
+                "seed": "",
+                "steps": 10,
+                "guidance_scale": 7.5
+            },
+            "op_code": 11
+        },
+        {
+            "id": 140134673665952,
+            "title": "Image Preview",
+            "pos_x": -471.89941406249994,
+            "pos_y": -2087.6464843749977,
+            "inputs": [
+                {
+                    "id": 140134673664944,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 5
+                },
+                {
+                    "id": 140134673664896,
+                    "index": 1,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 1
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 140134673664176,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 5
+                },
+                {
+                    "id": 140134673661712,
+                    "index": 1,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 1
+                }
+            ],
+            "content": {},
+            "op_code": 2
+        },
+        {
+            "id": 140134673255968,
+            "title": "Conditioning",
+            "pos_x": -4057.1899414062445,
+            "pos_y": -788.2080078125005,
+            "inputs": [
+                {
+                    "id": 140134673255152,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 1
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 140134673253328,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 3
+                },
+                {
+                    "id": 140134673256400,
+                    "index": 1,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 1
+                }
+            ],
+            "content": {
+                "prompt": ""
+            },
+            "op_code": 10
+        },
+        {
+            "id": 140134673253424,
+            "title": "Image Operators",
+            "pos_x": -2546.691894531246,
+            "pos_y": -826.1718750000005,
+            "inputs": [
+                {
+                    "id": 140134673256160,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 5
+                },
+                {
+                    "id": 140134673254048,
+                    "index": 1,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 1
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 140134673253856,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 5
+                },
+                {
+                    "id": 140134673253280,
+                    "index": 1,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 1
+                }
+            ],
+            "content": {
+                "dropdown": "fake_scribble",
+                "w": 512,
+                "h": 512,
+                "canny_high": 100,
+                "canny_low": 100,
+                "midas_a": 6.28,
+                "midas_bg": 0.01
+            },
+            "op_code": 7
+        },
+        {
+            "id": 140134673253664,
+            "title": "ControlNet Loader",
+            "pos_x": -4043.1274414062464,
+            "pos_y": -1198.8330078125007,
+            "inputs": [
+                {
+                    "id": 140134673254768,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 1
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 140134673252704,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 1
+                }
+            ],
+            "content": {
+                "cn": "control_sd15_scribble.pth"
+            },
+            "op_code": 13
+        },
+        {
+            "id": 140134673254528,
+            "title": "Image Preview",
+            "pos_x": -2313.415527343746,
+            "pos_y": -1228.7597656249998,
+            "inputs": [
+                {
+                    "id": 140134673254336,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 5
+                },
+                {
+                    "id": 140134673256256,
+                    "index": 1,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 1
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 140134673255200,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 5
+                },
+                {
+                    "id": 140134673255296,
+                    "index": 1,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 1
+                }
+            ],
+            "content": {},
+            "op_code": 2
+        },
+        {
+            "id": 140134673254480,
+            "title": "Image Preview",
+            "pos_x": -3168.8842773437445,
+            "pos_y": -1231.0791015624998,
+            "inputs": [
+                {
+                    "id": 140134673251632,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 5
+                },
+                {
+                    "id": 140134673250096,
+                    "index": 1,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 1
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 140134673250768,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 5
+                },
+                {
+                    "id": 140134673252016,
+                    "index": 1,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 1
+                }
+            ],
+            "content": {},
+            "op_code": 2
+        },
+        {
+            "id": 140134673255536,
+            "title": "Image Preview",
+            "pos_x": -458.77685546874545,
+            "pos_y": -1266.4794921874989,
+            "inputs": [
+                {
+                    "id": 140134673251488,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 5
+                },
+                {
+                    "id": 140134673251392,
+                    "index": 1,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 1
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 140134673250048,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 5
+                },
+                {
+                    "id": 140134673250192,
+                    "index": 1,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 1
+                }
+            ],
+            "content": {},
+            "op_code": 2
+        },
+        {
+            "id": 140134673251056,
+            "title": "Conditioning",
+            "pos_x": -1677.551269531246,
+            "pos_y": -890.8691406249995,
+            "inputs": [
+                {
+                    "id": 140134673253520,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 1
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 140134673253088,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 3
+                },
+                {
+                    "id": 140134673253376,
+                    "index": 1,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 1
+                }
+            ],
+            "content": {
+                "prompt": ""
+            },
+            "op_code": 10
+        },
+        {
+            "id": 140134673252608,
+            "title": "Conditioning",
+            "pos_x": -1679.382324218745,
+            "pos_y": -1235.1074218749998,
+            "inputs": [
+                {
+                    "id": 140134673252944,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 1
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 140134673252800,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 3
+                },
+                {
+                    "id": 140134673255824,
+                    "index": 1,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 1
+                }
+            ],
+            "content": {
+                "prompt": "futuristic city, cyberpunk style"
+            },
+            "op_code": 10
+        },
+        {
+            "id": 140134673254720,
+            "title": "Conditioning",
+            "pos_x": -4066.4672851562445,
+            "pos_y": -1075.8056640624998,
+            "inputs": [
+                {
+                    "id": 140134673253712,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 1
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 140134673254432,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 3
+                },
+                {
+                    "id": 140134673254672,
+                    "index": 1,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 1
+                }
+            ],
+            "content": {
+                "prompt": "boxes, 3d render"
+            },
+            "op_code": 10
+        },
+        {
+            "id": 140134673254240,
+            "title": "K Sampler",
+            "pos_x": -3504.9438476562445,
+            "pos_y": -1036.7431640624998,
+            "inputs": [
+                {
+                    "id": 140134673253616,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 2
+                },
+                {
+                    "id": 140134673253040,
+                    "index": 1,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 3
+                },
+                {
+                    "id": 140134673252416,
+                    "index": 2,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 3
+                },
+                {
+                    "id": 140134673254960,
+                    "index": 3,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 1
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 140134673253904,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 5
+                },
+                {
+                    "id": 140134673253184,
+                    "index": 1,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 2
+                },
+                {
+                    "id": 140129719196880,
+                    "index": 2,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 1
+                }
+            ],
+            "content": {
+                "scheduler": "karras",
+                "sampler": "euler",
+                "seed": "",
+                "steps": 10,
+                "guidance_scale": 7.5
+            },
+            "op_code": 11
+        },
+        {
+            "id": 140134673252464,
+            "title": "Apply ControlNet",
+            "pos_x": -1182.556152343745,
+            "pos_y": -1038.5742187500007,
+            "inputs": [
+                {
+                    "id": 140134673250912,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 5
+                },
+                {
+                    "id": 140134673250384,
+                    "index": 1,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 3
+                },
+                {
+                    "id": 140134673249760,
+                    "index": 2,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 1
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 140134673249616,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 3
+                },
+                {
+                    "id": 140134673249376,
+                    "index": 1,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 1
+                }
+            ],
+            "content": {
+                "strength": 1.0
+            },
+            "op_code": 14
+        },
+        {
+            "id": 140134673251776,
+            "title": "K Sampler",
+            "pos_x": -809.0698242187459,
+            "pos_y": -965.6005859375007,
+            "inputs": [
+                {
+                    "id": 140134673249568,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 2
+                },
+                {
+                    "id": 140134673249520,
+                    "index": 1,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 3
+                },
+                {
+                    "id": 140134673249472,
+                    "index": 2,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 3
+                },
+                {
+                    "id": 140134673251920,
+                    "index": 3,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 1
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 140134673251152,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 5
+                },
+                {
+                    "id": 140134673248464,
+                    "index": 1,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 2
+                },
+                {
+                    "id": 140134673248704,
+                    "index": 2,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 1
+                }
+            ],
+            "content": {
+                "scheduler": "karras",
+                "sampler": "euler",
+                "seed": "",
+                "steps": 10,
+                "guidance_scale": 7.5
+            },
+            "op_code": 11
+        },
+        {
+            "id": 140130749758096,
+            "title": "Combine Conditioning",
+            "pos_x": 272.36938476562466,
+            "pos_y": -1380.1574707031234,
+            "inputs": [
+                {
+                    "id": 140130749758432,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 3
+                },
+                {
+                    "id": 140130749758624,
+                    "index": 1,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 3
+                },
+                {
+                    "id": 140130749759248,
+                    "index": 2,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 1
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 140130749755840,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 3
+                },
+                {
+                    "id": 140130749755696,
+                    "index": 1,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 1
+                }
+            ],
+            "content": {},
+            "op_code": 15
+        },
+        {
+            "id": 140130749759200,
+            "title": "K Sampler",
+            "pos_x": 739.135742187499,
+            "pos_y": -1303.7109374999982,
+            "inputs": [
+                {
+                    "id": 140130749759056,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 2
+                },
+                {
+                    "id": 140130749756944,
+                    "index": 1,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 3
+                },
+                {
+                    "id": 140130749755648,
+                    "index": 2,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 3
+                },
+                {
+                    "id": 140130749758672,
+                    "index": 3,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 1
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 140130750199312,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 5
+                },
+                {
+                    "id": 140130750199456,
+                    "index": 1,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 2
+                },
+                {
+                    "id": 140130750200080,
+                    "index": 2,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 1
+                }
+            ],
+            "content": {
+                "scheduler": "karras",
+                "sampler": "euler",
+                "seed": "",
+                "steps": 10,
+                "guidance_scale": 7.5
+            },
+            "op_code": 11
+        },
+        {
+            "id": 140130749758048,
+            "title": "Image Preview",
+            "pos_x": 1131.3247680664047,
+            "pos_y": -1310.2722167968734,
+            "inputs": [
+                {
+                    "id": 140130750200752,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 5
+                },
+                {
+                    "id": 140130750198928,
+                    "index": 1,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 1
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 140130750201040,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 5
+                },
+                {
+                    "id": 140130750201232,
+                    "index": 1,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 1
+                }
+            ],
+            "content": {},
+            "op_code": 2
+        }
+    ],
+    "edges": [
+        {
+            "id": 140135296749280,
+            "edge_type": 2,
+            "start": 140122502792528,
+            "end": 140135272732128
+        },
+        {
+            "id": 140134674435280,
+            "edge_type": 2,
+            "start": 140135269516048,
+            "end": 140134674388688
+        },
+        {
+            "id": 140134674434032,
+            "edge_type": 2,
+            "start": 140134674388112,
+            "end": 140134674434416
+        },
+        {
+            "id": 140134673635504,
+            "edge_type": 2,
+            "start": 140134674434896,
+            "end": 140134674434512
+        },
+        {
+            "id": 140134673633920,
+            "edge_type": 2,
+            "start": 140134673635456,
+            "end": 140134673634256
+        },
+        {
+            "id": 140134673637136,
+            "edge_type": 2,
+            "start": 140134674434128,
+            "end": 140134673636224
+        },
+        {
+            "id": 140134673635840,
+            "edge_type": 2,
+            "start": 140134673634496,
+            "end": 140134673637184
+        },
+        {
+            "id": 140134674434080,
+            "edge_type": 2,
+            "start": 140134673633584,
+            "end": 140134673634592
+        },
+        {
+            "id": 140135272007520,
+            "edge_type": 2,
+            "start": 140134673635696,
+            "end": 140134673636320
+        },
+        {
+            "id": 140134674435232,
+            "edge_type": 2,
+            "start": 140134673634448,
+            "end": 140134673633392
+        },
+        {
+            "id": 140134673636944,
+            "edge_type": 2,
+            "start": 140134673634688,
+            "end": 140134673635792
+        },
+        {
+            "id": 140135269359184,
+            "edge_type": 2,
+            "start": 140134673634064,
+            "end": 140134673662256
+        },
+        {
+            "id": 140134673665904,
+            "edge_type": 2,
+            "start": 140134673634928,
+            "end": 140134673665328
+        },
+        {
+            "id": 140134673665856,
+            "edge_type": 2,
+            "start": 140134673665280,
+            "end": 140134673663312
+        },
+        {
+            "id": 140134673664080,
+            "edge_type": 2,
+            "start": 140134673664368,
+            "end": 140134673635168
+        },
+        {
+            "id": 140134673662640,
+            "edge_type": 2,
+            "start": 140134673663024,
+            "end": 140134673663840
+        },
+        {
+            "id": 140134673663600,
+            "edge_type": 2,
+            "start": 140134673663696,
+            "end": 140134673663552
+        },
+        {
+            "id": 140134673663744,
+            "edge_type": 2,
+            "start": 140134673663792,
+            "end": 140134673662784
+        },
+        {
+            "id": 140134673661040,
+            "edge_type": 2,
+            "start": 140134673662592,
+            "end": 140134673662208
+        },
+        {
+            "id": 140134673658256,
+            "edge_type": 2,
+            "start": 140134673664464,
+            "end": 140134673665232
+        },
+        {
+            "id": 140134673660752,
+            "edge_type": 2,
+            "start": 140134673665376,
+            "end": 140134673664896
+        },
+        {
+            "id": 140134673661520,
+            "edge_type": 2,
+            "start": 140134673664800,
+            "end": 140134673664944
+        },
+        {
+            "id": 140133420294592,
+            "edge_type": 2,
+            "start": 140134673664608,
+            "end": 140134673662928
+        },
+        {
+            "id": 140134673249664,
+            "edge_type": 2,
+            "start": 140134673252704,
+            "end": 140134673253712
+        },
+        {
+            "id": 140134673250864,
+            "edge_type": 2,
+            "start": 140134673253280,
+            "end": 140134673256256
+        },
+        {
+            "id": 140134673252304,
+            "edge_type": 2,
+            "start": 140134673250912,
+            "end": 140134673255200
+        },
+        {
+            "id": 140134673248416,
+            "edge_type": 2,
+            "start": 140134673253856,
+            "end": 140134673254336
+        },
+        {
+            "id": 140134673249136,
+            "edge_type": 2,
+            "start": 140134673248704,
+            "end": 140134673251392
+        },
+        {
+            "id": 140134673243968,
+            "edge_type": 2,
+            "start": 140134673250768,
+            "end": 140134673256160
+        },
+        {
+            "id": 140134673242048,
+            "edge_type": 2,
+            "start": 140134673253088,
+            "end": 140134673249520
+        },
+        {
+            "id": 140134673243296,
+            "edge_type": 2,
+            "start": 140134673253328,
+            "end": 140134673253040
+        },
+        {
+            "id": 140134673242864,
+            "edge_type": 2,
+            "start": 140134673253904,
+            "end": 140134673251632
+        },
+        {
+            "id": 140134673240224,
+            "edge_type": 2,
+            "start": 140134673255824,
+            "end": 140134673253520
+        },
+        {
+            "id": 140134673241472,
+            "edge_type": 2,
+            "start": 140134673252800,
+            "end": 140134673250384
+        },
+        {
+            "id": 140134673241616,
+            "edge_type": 2,
+            "start": 140134673249376,
+            "end": 140134673251920
+        },
+        {
+            "id": 140134673242576,
+            "edge_type": 2,
+            "start": 140134673249616,
+            "end": 140134673249472
+        },
+        {
+            "id": 140134673243152,
+            "edge_type": 2,
+            "start": 140134673254432,
+            "end": 140134673252416
+        },
+        {
+            "id": 140134673243200,
+            "edge_type": 2,
+            "start": 140134673252016,
+            "end": 140134673254048
+        },
+        {
+            "id": 140134673243536,
+            "edge_type": 2,
+            "start": 140134673256400,
+            "end": 140134673254960
+        },
+        {
+            "id": 140134673240128,
+            "edge_type": 2,
+            "start": 140134673254672,
+            "end": 140134673255152
+        },
+        {
+            "id": 140134673240176,
+            "edge_type": 2,
+            "start": 140134673255296,
+            "end": 140134673252944
+        },
+        {
+            "id": 140134673240608,
+            "edge_type": 2,
+            "start": 140129719196880,
+            "end": 140134673250096
+        },
+        {
+            "id": 140134673241136,
+            "edge_type": 2,
+            "start": 140134673253376,
+            "end": 140134673249760
+        },
+        {
+            "id": 140134673241232,
+            "edge_type": 2,
+            "start": 140134673251152,
+            "end": 140134673251488
+        },
+        {
+            "id": 140134673243728,
+            "edge_type": 2,
+            "start": 140134673661712,
+            "end": 140134673254768
+        },
+        {
+            "id": 140130749758816,
+            "edge_type": 2,
+            "start": 140134673663792,
+            "end": 140130749758624
+        },
+        {
+            "id": 140130749755888,
+            "edge_type": 2,
+            "start": 140134673249616,
+            "end": 140130749758432
+        },
+        {
+            "id": 140130749756896,
+            "edge_type": 2,
+            "start": 140134673250192,
+            "end": 140130749759248
+        },
+        {
+            "id": 140130750199504,
+            "edge_type": 2,
+            "start": 140134673253088,
+            "end": 140130749756944
+        },
+        {
+            "id": 140130750200032,
+            "edge_type": 2,
+            "start": 140130749755840,
+            "end": 140130749755648
+        },
+        {
+            "id": 140130750198352,
+            "edge_type": 2,
+            "start": 140130749755696,
+            "end": 140130749758672
+        },
+        {
+            "id": 140130750198736,
+            "edge_type": 2,
+            "start": 140130750199312,
+            "end": 140130750200752
+        },
+        {
+            "id": 140130750201712,
+            "edge_type": 2,
+            "start": 140130750200080,
+            "end": 140130750198928
+        }
+    ]
+}
