@@ -9,6 +9,8 @@ def common_ksampler(device, seed, steps, cfg, sampler_name, scheduler, positive,
     latent_image = latent
     noise_mask = None
 
+    print(latent_image.shape[2])
+
     if disable_noise:
         noise = torch.zeros(latent_image.size(), dtype=latent_image.dtype, layout=latent_image.layout, device="cpu")
     else:

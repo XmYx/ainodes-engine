@@ -96,7 +96,7 @@ def load_lora_for_models(lora_path, strength_model, strength_clip):
             print("NOT LOADED", x)
         else:
             print("LOADED")
-    #gs.models["sd"] = model
+    gs.models["sd"].model = model.model
 
 def model_lora_keys(model, key_map={}):
     sdk = model.state_dict().keys()

@@ -87,14 +87,16 @@ class TorchLoaderNode(CalcNode):
         model_name = self.content.dropdown.currentText()
         config_name = self.content.config_dropdown.currentText()
         print("TORCH LOADER:", gs.loaded_models["loaded"])
-        print(gs.loaded_models["loaded"])
+        print(gs.current["sd_model"])
         if model_name not in gs.loaded_models["loaded"]:
             if model_name != "" and "inpaint" not in model_name:
 
-                if gs.current["sd_model"] == model_name:
+
+
+                if gs.current["sd_model"] != model_name:
                     for i in gs.loaded_models["loaded"]:
                         if i == gs.current["sd_model"]:
-                            gs.loaded_models["loaded"].pop(i)
+                            gs.loaded_models["loaded"].remove(i)
                     gs.current["sd_model"] = model_name
                 if "sd" in gs.models:
                     try:
@@ -108,10 +110,10 @@ class TorchLoaderNode(CalcNode):
                 self.value = model_name
                 self.loader.load_model(model_name, config_name, inpaint)
             elif model_name != "" and "inpaint" in model_name:
-                if gs.current["inpaint_model"] == model_name:
+                if gs.current["inpaint_model"] != model_name:
                     for i in gs.loaded_models["loaded"]:
                         if i == gs.current["inpaint_model"]:
-                            gs.loaded_models["loaded"].pop(i)
+                            gs.loaded_models["loaded"].remove(i)
                     gs.current["inpaint_model"] = model_name
 
                 if "inpaint" in gs.models:
