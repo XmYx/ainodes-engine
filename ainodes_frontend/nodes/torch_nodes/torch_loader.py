@@ -90,6 +90,12 @@ class TorchLoaderNode(CalcNode):
         print(gs.loaded_models["loaded"])
         if model_name not in gs.loaded_models["loaded"]:
             if model_name != "" and "inpaint" not in model_name:
+
+                if gs.current["sd_model"] == model_name:
+                    for i in gs.loaded_models["loaded"]:
+                        if i == gs.current["sd_model"]:
+                            gs.loaded_models["loaded"].pop(i)
+                    gs.current["sd_model"] = model_name
                 if "sd" in gs.models:
                     try:
                         gs.models["sd"].cpu()
@@ -102,6 +108,12 @@ class TorchLoaderNode(CalcNode):
                 self.value = model_name
                 self.loader.load_model(model_name, config_name, inpaint)
             elif model_name != "" and "inpaint" in model_name:
+                if gs.current["inpaint_model"] == model_name:
+                    for i in gs.loaded_models["loaded"]:
+                        if i == gs.current["inpaint_model"]:
+                            gs.loaded_models["loaded"].pop(i)
+                    gs.current["inpaint_model"] = model_name
+
                 if "inpaint" in gs.models:
                     try:
                         gs.models["inpaint"].cpu()

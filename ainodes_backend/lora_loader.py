@@ -1,5 +1,7 @@
 import os
 
+import torch
+
 from ainodes_backend.controlnet_loader import load_torch_file
 from ainodes_backend import singleton as gs
 
@@ -27,17 +29,66 @@ LORA_UNET_MAP = {
     "transformer_blocks.0.ff.net.2": "transformer_blocks_0_ff_net_2",
 }
 
+class ModelPatcher:
+    def __init__(self, model):
+        self.model = model
+        self.patches = []
+        self.backup = {}
+
+    def clone(self):
+        n = ModelPatcher(self.model)
+        n.patches = self.patches[:]
+        return n
+
+    def add_patches(self, patches, strength=1.0):
+        p = {}
+        model_sd = self.model.state_dict()
+        for k in patches:
+            if k in model_sd:
+                p[k] = patches[k]
+        self.patches += [(strength, p)]
+        return p.keys()
+
+    def patch_model(self):
+        model_sd = self.model.state_dict()
+        for p in self.patches:
+            for k in p[1]:
+                v = p[1][k]
+                key = k
+                if key not in model_sd:
+                    print("could not patch. key doesn't exist in model:", k)
+                    continue
+
+                weight = model_sd[key]
+                if key not in self.backup:
+                    self.backup[key] = weight.clone()
+
+                alpha = p[0]
+                mat1 = v[0]
+                mat2 = v[1]
+                if v[2] is not None:
+                    alpha *= v[2] / mat2.shape[0]
+                weight += (alpha * torch.mm(mat1.flatten(start_dim=1).float(), mat2.flatten(start_dim=1).float())).reshape(weight.shape).type(weight.dtype).to(weight.device)
+        return self.model
+    def unpatch_model(self):
+        model_sd = self.model.state_dict()
+        keys = list(self.backup.keys())
+        for k in keys:
+            model_sd[k][:] = self.backup[k]
+            del self.backup[k]
+
+        self.backup = {}
 
 
-
-def load_lora_for_models(model, clip, lora_path, strength_model, strength_clip):
+def load_lora_for_models(lora_path, strength_model, strength_clip):
     key_map = model_lora_keys(gs.models["sd"].model)
-    key_map = model_lora_keys(gs.models["sd"].cond_stage_model, key_map)
+    #key_map = model_lora_keys(gs.models["sd"].cond_stage_model, key_map)
     loaded = load_lora(lora_path, key_map)
-    #new_modelpatcher = model.clone()
-    k = gs.models["sd"].add_patches(loaded, strength_model)
-    #new_clip = clip.clone()
-    k1 = gs.models["sd"].add_patches(loaded, strength_clip)
+
+    model = gs.models["sd"].clone()
+    k = model.add_patches(loaded, strength_model)
+
+    k1 = model.add_patches(loaded, strength_clip)
     k = set(k)
     k1 = set(k1)
     for x in loaded:
@@ -45,9 +96,11 @@ def load_lora_for_models(model, clip, lora_path, strength_model, strength_clip):
             print("NOT LOADED", x)
         else:
             print("LOADED")
+    #gs.models["sd"] = model
 
 def model_lora_keys(model, key_map={}):
     sdk = model.state_dict().keys()
+
 
     counter = 0
     for b in range(12):

@@ -33,14 +33,12 @@ class LoraLoaderWidget(QDMNodeContentWidget):
     def serialize(self):
         res = super().serialize()
         res["model"] = self.dropdown.currentText()
-        res["config"] = self.config_dropdown.currentText()
         return res
 
     def deserialize(self, data, hashmap={}):
         res = super().deserialize(data, hashmap)
         try:
             self.dropdown.setCurrentText(data["model"])
-            self.config_dropdown.setCurrentText(data["config"])
             return True & res
         except Exception as e:
             dumpException(e)
@@ -90,7 +88,7 @@ class TorchLoaderNode(CalcNode):
         pass
 
     def load_lora_to_ckpt(self, lora_name):
-        lora_path = os.path.join(self.lora_dir, lora_name)
+        lora_path = os.path.join("models/loras", lora_name)
         strength_model = 1.0
         strength_clip = 1.0
         load_lora_for_models(lora_path, strength_model, strength_clip)

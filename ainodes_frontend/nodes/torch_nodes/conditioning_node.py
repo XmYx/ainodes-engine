@@ -113,7 +113,7 @@ class ConditioningNode(CalcNode):
                     node.evalImplementation()
                     #print("Node found")
 
-        c = gs.models["sd"].cond_stage_model.encode([prompt])
+        c = gs.models["sd"].model.cond_stage_model.encode([prompt])
         uc = {}
         return [[c, uc]]
     @QtCore.Slot(object)

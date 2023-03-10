@@ -14,6 +14,10 @@ from ainodes_backend import singleton as gs
 gs.obj = {}
 gs.values = {}
 
+gs.current = {}
+gs.current["sd_model"] = None
+gs.current["inpaint_model"] = None
+
 sys.path.insert(0, os.path.join( os.path.dirname(__file__), "..", ".." ))
 os.makedirs('hf_cache', exist_ok=True)
 os.environ['HF_HOME'] = 'hf_cache'

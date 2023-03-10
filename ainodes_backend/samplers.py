@@ -357,12 +357,12 @@ class KSampler:
 
     def __init__(self, steps, device, sampler=None, scheduler=None, denoise=None):
         #self.model = model
-        self.model_denoise = CFGNoisePredictor(gs.models["sd"])
-        if gs.models["sd"].parameterization == "v":
+        self.model_denoise = CFGNoisePredictor(gs.models["sd"].model)
+        if gs.models["sd"].model.parameterization == "v":
             self.model_wrap = CompVisVDenoiser(self.model_denoise, quantize=True)
         else:
             self.model_wrap = k_diffusion_external.CompVisDenoiser(self.model_denoise, quantize=True)
-        self.model_wrap.parameterization = gs.models["sd"].parameterization
+        self.model_wrap.parameterization = gs.models["sd"].model.parameterization
         self.model_k = KSamplerX0Inpaint(self.model_wrap)
         self.device = device
         if scheduler not in self.SCHEDULERS:
@@ -438,7 +438,7 @@ class KSampler:
 
         apply_control_net_to_equal_area(positive, negative)
 
-        if gs.models["sd"].model.diffusion_model.dtype == torch.float16:
+        if gs.models["sd"].model.model.diffusion_model.dtype == torch.float16:
             precision_scope = torch.autocast
         else:
             precision_scope = contextlib.nullcontext
@@ -446,9 +446,9 @@ class KSampler:
         extra_args = {"cond":positive, "uncond":negative, "cond_scale": cfg}
 
         cond_concat = None
-        if hasattr(gs.models["sd"], 'concat_keys'):
+        if hasattr(gs.models["sd"].model.model, 'concat_keys'):
             cond_concat = []
-            for ck in gs.models["sd"].concat_keys:
+            for ck in gs.models["sd"].model.model.concat_keys:
                 if denoise_mask is not None:
                     if ck == "mask":
                         cond_concat.append(denoise_mask[:,:1])
@@ -478,7 +478,7 @@ class KSampler:
                 noise_mask = None
                 if denoise_mask is not None:
                     noise_mask = 1.0 - denoise_mask
-                sampler = DDIMSampler(gs.models["sd"])
+                sampler = DDIMSampler(gs.models["sd"].model)
                 sampler.make_schedule_timesteps(ddim_timesteps=timesteps, verbose=True)
                 z_enc = sampler.stochastic_encode(latent_image, torch.tensor([len(timesteps) - 1] * noise.shape[0]).to(self.device), noise=noise, max_denoise=max_denoise)
                 samples, _ = sampler.sample_custom(ddim_timesteps=timesteps,

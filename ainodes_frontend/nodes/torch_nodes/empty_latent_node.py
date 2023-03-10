@@ -141,8 +141,8 @@ class LatentNode(CalcNode):
     def onMarkedDirty(self):
         self.value = None
     def encode_image(self, init_image=None):
-        init_latent = gs.models["sd"].get_first_stage_encoding(
-            gs.models["sd"].encode_first_stage(init_image))  # move to latent space
+        init_latent = gs.models["sd"].model.get_first_stage_encoding(
+            gs.models["sd"].model.encode_first_stage(init_image))  # move to latent space
         return init_latent
 
     def generate_latent(self):

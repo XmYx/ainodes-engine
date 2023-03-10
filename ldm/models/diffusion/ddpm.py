@@ -79,6 +79,10 @@ class DDPM(torch.nn.Module):
                  reset_num_ema_updates=False,
                  ):
         super().__init__()
+
+        self.patches = []
+        self.backup = {}
+
         assert parameterization in ["eps", "x0", "v"], 'currently only supporting "eps" and "x0" and "v"'
         self.parameterization = parameterization
         print(f"{self.__class__.__name__}: Running in {self.parameterization}-prediction mode")

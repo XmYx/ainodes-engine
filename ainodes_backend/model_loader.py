@@ -11,6 +11,7 @@ import os
 
 from omegaconf import OmegaConf
 
+from ainodes_backend.lora_loader import ModelPatcher
 from ainodes_backend.torch_gc import torch_gc
 from ldm.util import instantiate_from_config
 from ainodes_backend import singleton as gs
@@ -78,6 +79,62 @@ class ModelLoader(torch.nn.Module):
             sd = self.get_state_dict_from_checkpoint(pl_sd)
             model = instantiate_from_config(config.model)
             m, u = model.load_state_dict(sd, strict=False)
+
+            k = list(sd.keys())
+            for x in k:
+                # print(x)
+                if x.startswith("cond_stage_model.transformer.") and not x.startswith(
+                        "cond_stage_model.transformer.text_model."):
+                    y = x.replace("cond_stage_model.transformer.", "cond_stage_model.transformer.text_model.")
+                    sd[y] = sd.pop(x)
+
+            if 'cond_stage_model.transformer.text_model.embeddings.position_ids' in sd:
+                ids = sd['cond_stage_model.transformer.text_model.embeddings.position_ids']
+                if ids.dtype == torch.float32:
+                    sd['cond_stage_model.transformer.text_model.embeddings.position_ids'] = ids.round()
+
+            keys_to_replace = {
+                "cond_stage_model.model.positional_embedding": "cond_stage_model.transformer.text_model.embeddings.position_embedding.weight",
+                "cond_stage_model.model.token_embedding.weight": "cond_stage_model.transformer.text_model.embeddings.token_embedding.weight",
+                "cond_stage_model.model.ln_final.weight": "cond_stage_model.transformer.text_model.final_layer_norm.weight",
+                "cond_stage_model.model.ln_final.bias": "cond_stage_model.transformer.text_model.final_layer_norm.bias",
+            }
+
+            for x in keys_to_replace:
+                if x in sd:
+                    sd[keys_to_replace[x]] = sd.pop(x)
+
+            resblock_to_replace = {
+                "ln_1": "layer_norm1",
+                "ln_2": "layer_norm2",
+                "mlp.c_fc": "mlp.fc1",
+                "mlp.c_proj": "mlp.fc2",
+                "attn.out_proj": "self_attn.out_proj",
+            }
+
+            for resblock in range(24):
+                for x in resblock_to_replace:
+                    for y in ["weight", "bias"]:
+                        k = "cond_stage_model.model.transformer.resblocks.{}.{}.{}".format(resblock, x, y)
+                        k_to = "cond_stage_model.transformer.text_model.encoder.layers.{}.{}.{}".format(resblock,
+                                                                                                        resblock_to_replace[
+                                                                                                            x], y)
+                        if k in sd:
+                            sd[k_to] = sd.pop(k)
+
+                for y in ["weight", "bias"]:
+                    k_from = "cond_stage_model.model.transformer.resblocks.{}.attn.in_proj_{}".format(resblock, y)
+                    if k_from in sd:
+                        weights = sd.pop(k_from)
+                        for x in range(3):
+                            p = ["self_attn.q_proj", "self_attn.k_proj", "self_attn.v_proj"]
+                            k_to = "cond_stage_model.transformer.text_model.encoder.layers.{}.{}.{}".format(resblock,
+                                                                                                            p[x], y)
+                            sd[k_to] = weights[1024 * x:1024 * (x + 1)]
+
+            for x in []:
+                x.load_state_dict(sd, strict=False)
+
             if len(m) > 0 and verbose:
                 print("missing keys:")
                 print(m)
@@ -86,11 +143,13 @@ class ModelLoader(torch.nn.Module):
                 print(u)
             model.half()
 
+            model = ModelPatcher(model)
+
             value = "sd" if inpaint == False else "inpaint"
 
             gs.models[value] = model
             #gs.models["sd"].cond_stage_model.device = self.device
-            for m in gs.models[value].modules():
+            for m in gs.models[value].model.modules():
                 if isinstance(m, (nn.Conv2d, nn.ConvTranspose2d)):
                     m._orig_padding_mode = m.padding_mode
 
@@ -106,10 +165,12 @@ class ModelLoader(torch.nn.Module):
             #if gs.model_version == '1.5' and not 'Inpaint' in version:
             #    self.run_post_load_model_generation_specifics()
 
-            gs.models[value].eval()
+            gs.models[value].model.eval()
 
             # todo make this 'cuda' a parameter
-            gs.models[value].to(self.device)
+            gs.models[value].model.to(self.device)
+
+
 
         return ckpt
     def return_model_version(self, model):

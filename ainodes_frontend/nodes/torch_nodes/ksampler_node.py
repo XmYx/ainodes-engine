@@ -258,7 +258,7 @@ class KSamplerNode(CalcNode):
 
             return_sample = sample.cpu().half()
 
-            x_samples = gs.models["sd"].decode_first_stage(sample.half())
+            x_samples = gs.models["sd"].model.decode_first_stage(sample.half())
             x_samples = torch.clamp((x_samples + 1.0) / 2.0, min=0.0, max=1.0)
             x_sample = 255. * rearrange(x_samples[0].cpu().numpy(), 'c h w -> h w c')
             image = Image.fromarray(x_sample.astype(np.uint8))

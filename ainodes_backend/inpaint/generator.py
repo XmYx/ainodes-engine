@@ -12,7 +12,7 @@ from ainodes_backend.inpaint.ddim_sampler import DDIMSampler
 def run_inpaint(init_image, mask_img, prompt, seed, scale, steps, blend_mask, mask_blur, recons_blur):
     #print(gs.models)
     torch_gc()
-    sampler = DDIMSampler(gs.models["inpaint"])
+    sampler = DDIMSampler(gs.models["inpaint"].model)
     image_guide = image_to_torch(init_image, "cuda")[0]
     mask = mask_img
     # Convert the image to grayscale
@@ -66,16 +66,16 @@ def inpaint(sampler, image, mask, prompt, seed, scale, ddim_steps, device, mask_
         with torch.autocast("cuda"):
             batch = make_batch_sd(image, mask, txt=prompt, device=device, num_samples=num_samples)
 
-            c = gs.models["inpaint"].cond_stage_model.encode(batch["txt"])
+            c = gs.models["inpaint"].model.cond_stage_model.encode(batch["txt"])
 
             c_cat = list()
-            for ck in gs.models["inpaint"].concat_keys:
+            for ck in gs.models["inpaint"].model.concat_keys:
                 cc = batch[ck].float()
-                if ck != gs.models["inpaint"].masked_image_key:
+                if ck != gs.models["inpaint"].model.masked_image_key:
                     bchw = [num_samples, 4, h // 8, w // 8]
                     cc = torch.nn.functional.interpolate(cc, size=bchw[-2:])
                 else:
-                    cc = gs.models["inpaint"].get_first_stage_encoding(gs.models["inpaint"].encode_first_stage(cc))
+                    cc = gs.models["inpaint"].model.get_first_stage_encoding(gs.models["inpaint"].model.encode_first_stage(cc))
                 c_cat.append(cc)
             c_cat = torch.cat(c_cat, dim=1)
 
@@ -83,10 +83,10 @@ def inpaint(sampler, image, mask, prompt, seed, scale, ddim_steps, device, mask_
             cond = {"c_concat": [c_cat], "c_crossattn": [c]}
 
             # uncond cond
-            uc_cross = gs.models["inpaint"].get_unconditional_conditioning(num_samples, "")
+            uc_cross = gs.models["inpaint"].model.get_unconditional_conditioning(num_samples, "")
             uc_full = {"c_concat": [c_cat], "c_crossattn": [uc_cross]}
 
-            shape = [gs.models["inpaint"].channels, h // 8, w // 8]
+            shape = [gs.models["inpaint"].model.channels, h // 8, w // 8]
             samples_cfg, intermediates = sampler.sample(
                 ddim_steps,
                 num_samples,
@@ -100,7 +100,7 @@ def inpaint(sampler, image, mask, prompt, seed, scale, ddim_steps, device, mask_
                 img_callback=callback,
             )
             x_samples = encoded_to_torch_image(
-                gs.models["inpaint"], samples_cfg)  # [1, 3, 512, 512]
+                gs.models["inpaint"].model, samples_cfg)  # [1, 3, 512, 512]
             all_samples = []
             if masked_image_for_blend is not None:
                 x_samples = mask_for_reconstruction * x_samples + masked_image_for_blend
