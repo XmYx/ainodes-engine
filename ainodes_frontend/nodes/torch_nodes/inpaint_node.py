@@ -33,25 +33,14 @@ class InpaintWidget(QDMNodeContentWidget):
         # Create a label to display the image
         #self.text_label = QtWidgets.QLabel("K Sampler")
 
-        self.schedulers_layout = QtWidgets.QHBoxLayout()
-        self.schedulers_label = QtWidgets.QLabel("Scheduler:")
-        self.schedulers = QtWidgets.QComboBox()
-        self.schedulers.addItems(SCHEDULERS)
-        self.schedulers_layout.addWidget(self.schedulers_label)
-        self.schedulers_layout.addWidget(self.schedulers)
-
-        self.sampler_layout = QtWidgets.QHBoxLayout()
-        self.sampler_label = QtWidgets.QLabel("Sampler:")
-        self.sampler = QtWidgets.QComboBox()
-        self.sampler.addItems(SAMPLERS)
-        self.sampler_layout.addWidget(self.sampler_label)
-        self.sampler_layout.addWidget(self.sampler)
 
         self.seed_layout = QtWidgets.QHBoxLayout()
         self.seed_label = QtWidgets.QLabel("Seed:")
         self.seed = QtWidgets.QLineEdit()
         self.seed_layout.addWidget(self.seed_label)
         self.seed_layout.addWidget(self.seed)
+
+        self.prompt = QtWidgets.QTextEdit()
 
         self.steps_layout = QtWidgets.QHBoxLayout()
         self.steps_label = QtWidgets.QLabel("Steps:")
@@ -62,51 +51,6 @@ class InpaintWidget(QDMNodeContentWidget):
         self.steps_layout.addWidget(self.steps_label)
         self.steps_layout.addWidget(self.steps)
 
-        self.start_step_layout = QtWidgets.QHBoxLayout()
-        self.start_step_label = QtWidgets.QLabel("Start Step:")
-        self.start_step = QtWidgets.QSpinBox()
-        self.start_step.setMinimum(0)
-        self.start_step.setMaximum(1000)
-        self.start_step.setValue(0)
-        self.start_step_layout.addWidget(self.start_step_label)
-        self.start_step_layout.addWidget(self.start_step)
-
-        self.last_step_layout = QtWidgets.QHBoxLayout()
-        self.last_step_label = QtWidgets.QLabel("Last Step:")
-        self.last_step = QtWidgets.QSpinBox()
-        self.last_step.setMinimum(1)
-        self.last_step.setMaximum(1000)
-        self.last_step.setValue(5)
-        self.last_step_layout.addWidget(self.last_step_label)
-        self.last_step_layout.addWidget(self.last_step)
-
-        self.stop_early_layout = QtWidgets.QVBoxLayout()
-        self.stop_early = QtWidgets.QCheckBox("Stop Sampling Early")
-        self.stop_early_label = QtWidgets.QLabel()
-
-        #self.stop_early_layout.addWidget(self.stop_early_label)
-
-        self.force_denoise = QtWidgets.QCheckBox("Force full denoise")
-        self.force_denoise.setChecked(True)
-        self.disable_noise = QtWidgets.QCheckBox("Disable noise generation")
-        self.denoise = QtWidgets.QDoubleSpinBox()
-        self.denoise.setMinimum(0.00)
-        self.denoise.setMaximum(2.00)
-        self.denoise.setSingleStep(0.01)
-        self.denoise.setValue(1.00)
-        self.stop_early_layout.addWidget(self.stop_early)
-        self.stop_early_layout.addWidget(self.force_denoise)
-        self.stop_early_layout.addWidget(self.disable_noise)
-        self.stop_early_layout.addWidget(self.denoise)
-
-
-        palette = QtGui.QPalette()
-        palette.setColor(QtGui.QPalette.WindowText, QtGui.QColor("white"))
-        palette.setColor(QtGui.QPalette.Disabled, QtGui.QPalette.WindowText, QtGui.QColor("black"))
-
-        self.stop_early.setPalette(palette)
-        self.force_denoise.setPalette(palette)
-        self.disable_noise.setPalette(palette)
 
         self.guidance_scale_layout = QtWidgets.QHBoxLayout()
         self.guidance_scale_label = QtWidgets.QLabel("Guidance Scale:")
@@ -126,13 +70,9 @@ class InpaintWidget(QDMNodeContentWidget):
 
         layout = QtWidgets.QVBoxLayout(self)
         layout.setContentsMargins(15,15,15,25)
-        layout.addLayout(self.schedulers_layout)
-        layout.addLayout(self.sampler_layout)
         layout.addLayout(self.seed_layout)
+        layout.addWidget(self.prompt)
         layout.addLayout(self.steps_layout)
-        layout.addLayout(self.start_step_layout)
-        layout.addLayout(self.last_step_layout)
-        layout.addLayout(self.stop_early_layout)
         layout.addLayout(self.guidance_scale_layout)
         layout.addLayout(self.button_layout)
 
@@ -141,8 +81,6 @@ class InpaintWidget(QDMNodeContentWidget):
 
     def serialize(self):
         res = super().serialize()
-        res['scheduler'] = self.schedulers.currentText()
-        res['sampler'] = self.sampler.currentText()
         res['seed'] = self.seed.text()
         res['steps'] = self.steps.value()
         res['guidance_scale'] = self.guidance_scale.value()
@@ -151,8 +89,6 @@ class InpaintWidget(QDMNodeContentWidget):
     def deserialize(self, data, hashmap={}):
         res = super().deserialize(data, hashmap)
         try:
-            self.schedulers.setCurrentText(data['scheduler'])
-            self.sampler.setCurrentText(data['sampler'])
             self.seed.setText(data['seed'])
             self.steps.setValue(data['steps'])
             self.guidance_scale.setValue(data['guidance_scale'])
@@ -166,7 +102,7 @@ class InpaintWidget(QDMNodeContentWidget):
 class InpaintNode(CalcNode):
     icon = "icons/in.png"
     op_code = OP_NODE_INPAINT
-    op_title = "K Sampler"
+    op_title = "InPaint Alpha"
     content_label_objname = "K_sampling_node"
     category = "sampling"
     def __init__(self, scene):
@@ -226,10 +162,14 @@ class InpaintNode(CalcNode):
         init_image = pixmap_to_pil_image(image_pixmap)
         mask_image = pixmap_to_pil_image(mask_pixmap)
 
-        prompt = "test"
-        seed = 1
-        scale = 7.5
-        steps = 10
+        prompt = self.content.prompt.toPlainText()
+        try:
+            seed = self.content.seed.text()
+            seed = int(seed)
+        except:
+            seed = secrets.randbelow(99999999)
+        scale = self.content.guidance_scale.value()
+        steps = self.content.steps.value()
         blend_mask = 5
         mask_blur = 5
         recons_blur = 5
