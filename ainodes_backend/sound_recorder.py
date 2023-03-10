@@ -1,20 +1,17 @@
+import wavio as wv
 import sounddevice as sd
 from pydub import AudioSegment
-import wavio as wv
+
 class AudioRecorder:
     def __init__(self):
         self.duration = 5
         self.sample_rate = int(sd.query_devices('default')['default_samplerate'])
-
-        print(self.sample_rate)
-
+        self.frames = int(self.duration * self.sample_rate)
         self.channels = 2
 
     def record(self):
         print(f"Recording {self.duration} seconds of audio...")
-        frames = int(self.duration * self.sample_rate)
-        self.recording = sd.rec(int(self.duration * self.sample_rate),
-                           samplerate=self.sample_rate, channels=2)
+        self.recording = sd.rec(self.frames,samplerate=self.sample_rate, channels=self.channels)
         sd.wait()
         #write("recording0.wav", self.sample_rate, self.recording)
 
@@ -23,7 +20,6 @@ class AudioRecorder:
         #self.save_to_file()
 
     def save_to_file(self):
-
         filename = "audio.mp3"
         sound = AudioSegment(
             self.recording.tobytes(),
