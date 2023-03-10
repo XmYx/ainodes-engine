@@ -1,3 +1,4 @@
+import copy
 import os.path
 import subprocess
 
@@ -40,26 +41,29 @@ class MatteInference:
         # bgr = torch.tensor([.40, 1, .6]).view(3, 1, 1).cuda()  # Green background.
         rec = [None] * 4  # Initial recurrent states.
         downsample_ratio = 1.0  # Adjust based on your video.
-        img = (frame.astype(np.float32) / 255).transpose(2, 0, 1)[None, ...]
+        np_input = copy.deepcopy(frame)
+        img = (np_input.astype(np.float32) / 255).transpose(2, 0, 1)[None, ...]
         img = torch.from_numpy(img).to("cuda")
         with torch.no_grad():
             # for src in DataLoader(frame):
             # print(img.shape)
             fgr, pha, *rec = self.model(img.to("cuda"), *rec, downsample_ratio)
+
+            #Full image is torch.Tensor: img
             fgr = fgr * pha.gt(0)
-            # com = torch.cat([fgr, pha], dim=-3)
+            com = torch.cat([fgr, pha], dim=-3)
+            com = com.mul(255).byte().cpu().permute(0, 2, 3, 1).numpy()
+            pha = 1 - pha
+            bgr = img / pha.gt(0)
+
+            com2 = torch.cat([bgr, pha], dim=-3)
+            com2 = com2.mul(255).byte().cpu().permute(0, 2, 3, 1).numpy()
+
             fgr = fgr.mul(255).byte().cpu().permute(0, 2, 3, 1).numpy()
             pha = pha.mul(255).byte().cpu().permute(0, 2, 3, 1).numpy()
-        return pha[0], fgr[0]
+
+
+        return pha[0], fgr[0], com[0], com2[0]
         # writer.write(com)  # Write frame.
 
 
-
-"""import subprocess
-
-# Install wget using pip
-subprocess.run(["pip", "install", "wget"])
-
-# Download the file using wget
-subprocess.run(["wget", "-P", "models/other", "https://github.com/PeterL1n/RobustVideoMatting/releases/download/v1.0.0/rvm_resnet50.pth"])
-"""

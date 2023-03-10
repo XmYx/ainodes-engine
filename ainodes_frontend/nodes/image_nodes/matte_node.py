@@ -75,17 +75,29 @@ class MatteNode(CalcNode):
             self.load_matte()
             image = pixmap_to_pil_image(pixmap1)
             np_image = np.array(image)
-            bg_mask, fg = gs.models["matte"].infer(np_image)
+            bg_mask, fg, fg_alpha, bg_alpha = gs.models["matte"].infer(np_image)
+            x = 0
+            for i in bg_mask:
+                #print(i)
+                if i[0] > 1:
+                    bg_mask[x] = [255]
 
-            fg_image = Image.fromarray(fg)
+
+            bg_mask = cv2.GaussianBlur(bg_mask, (5, 5), 0)
+            bg_mask = bg_mask.reshape(*bg_mask.shape, 1)
+            #test_np_image = (bg_mask) * np_image
+            #print(test_np_image.shape)
+            fg_with_alpha = Image.fromarray(fg_alpha)
+            bg_with_alpha = Image.fromarray(bg_alpha)
+            fg_with_black_bg_image = Image.fromarray(fg)
 
             np_bg_image = np_image * (1 - bg_mask / 255)
             np_bg_image = np_bg_image.astype(np_image.dtype)
-            print(np_bg_image.shape)
+            #print(np_bg_image.shape)
 
             bg_image = Image.fromarray(np_bg_image)
-            bg_pixmap = pil_image_to_pixmap(bg_image)
-            fg_pixmap = pil_image_to_pixmap(fg_image)
+            bg_pixmap = pil_image_to_pixmap(bg_with_alpha)
+            fg_pixmap = pil_image_to_pixmap(fg_with_alpha)
 
             self.setOutput(0, bg_pixmap)
             self.setOutput(1, fg_pixmap)

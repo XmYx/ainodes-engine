@@ -23,7 +23,8 @@ SAMPLERS = ["euler", "euler_ancestral", "heun", "dpm_2", "dpm_2_ancestral",
 
 class ExecWidget(QDMNodeContentWidget):
     def initUI(self):
-        self.button = QtWidgets.QPushButton("Run")
+        self.run_button = QtWidgets.QPushButton("Run")
+        self.stop_button = QtWidgets.QPushButton("Stop")
         palette = QtGui.QPalette()
         palette.setColor(QtGui.QPalette.WindowText, QtGui.QColor("white"))
         palette.setColor(QtGui.QPalette.Disabled, QtGui.QPalette.WindowText, QtGui.QColor("black"))
@@ -34,7 +35,8 @@ class ExecWidget(QDMNodeContentWidget):
 
         layout = QtWidgets.QVBoxLayout(self)
         layout.setContentsMargins(15,15,15,25)
-        layout.addWidget(self.button)
+        layout.addWidget(self.run_button)
+        layout.addWidget(self.stop_button)
         layout.addWidget(self.checkbox)
         self.setLayout(layout)
 
@@ -62,8 +64,10 @@ class ExecNode(CalcNode):
 
     def __init__(self, scene):
         super().__init__(scene, inputs=[1], outputs=[1])
-        self.content.button.clicked.connect(self.evalImplementation)
-        self.busy = False
+        self.content.run_button.clicked.connect(self.start)
+        self.content.stop_button.clicked.connect(self.stop)
+
+        self.interrupt = False
         # Create a worker object
     def initInnerClasses(self):
         self.content = ExecWidget(self)
@@ -82,16 +86,23 @@ class ExecNode(CalcNode):
     def evalImplementation(self, index=0):
         self.markDirty(True)
         self.markInvalid(True)
-        self.busy = False
-        if len(self.getOutputs(0)) > 0:
-            if self.content.checkbox.isChecked() == True:
-                thread0 = threading.Thread(target=self.executeChild, args=(0,))
-                thread0.start()
-            else:
-                self.executeChild(0)
+        if not self.interrupt:
+            if len(self.getOutputs(0)) > 0:
+                if self.content.checkbox.isChecked() == True:
+                    thread0 = threading.Thread(target=self.executeChild, args=(0,))
+                    thread0.start()
+                else:
+                    self.executeChild(0)
         return None
     def onMarkedDirty(self):
         self.value = None
+
+    def stop(self):
+        self.interrupt = True
+        return
+    def start(self):
+        self.interrupt = False
+        self.evalImplementation(0)
 
 
 

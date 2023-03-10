@@ -1,6 +1,4 @@
 import os
-
-#from qtpy.QtWidgets import QLineEdit, QLabel, QPushButton, QFileDialog, QVBoxLayout
 from qtpy import QtWidgets
 
 from ainodes_backend.model_loader import ModelLoader
@@ -9,10 +7,6 @@ from ainodes_frontend.nodes.base.node_config import register_node, OP_NODE_TORCH
 from ainodes_frontend.nodes.base.ai_node_base import CalcNode, CalcGraphicsNode
 from ainodes_backend.node_engine.node_content_widget import QDMNodeContentWidget
 from ainodes_backend.node_engine.utils import dumpException
-#from singleton import Singleton
-
-#gs = Singleton()
-
 from ainodes_backend import singleton as gs
 
 class TorchLoaderWidget(QDMNodeContentWidget):
@@ -25,6 +19,10 @@ class TorchLoaderWidget(QDMNodeContentWidget):
         # Populate the dropdown with .ckpt and .safetensors files in the checkpoints folder
         checkpoint_folder = "models/checkpoints"
         checkpoint_files = [f for f in os.listdir(checkpoint_folder) if f.endswith((".ckpt", ".safetensors"))]
+        if checkpoint_files == []:
+            self.dropdown.addItem("Please place a model in models/checkpoints")
+            print(f"TORCH LOADER NODE: No model file found at {os.getcwd()}/models/checkpoints,")
+            print(f"TORCH LOADER NODE: please download your favorite ckpt before Evaluating this node.")
         self.dropdown.addItems(checkpoint_files)
         config_folder = "models/configs"
         config_files = [f for f in os.listdir(config_folder) if f.endswith((".yaml"))]
@@ -81,7 +79,7 @@ class TorchLoaderNode(CalcNode):
     def initInnerClasses(self):
         self.content = TorchLoaderWidget(self)
         self.grNode = CalcGraphicsNode(self)
-        self.grNode.width = 300
+        self.grNode.width = 340
         self.grNode.height = 160
 
     def evalImplementation(self, index=0):

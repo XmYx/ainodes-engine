@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 from PIL import ImageOps, Image
 #from qtpy.QtWidgets import QLineEdit, QLabel, QPushButton, QFileDialog, QVBoxLayout
-from qtpy import QtWidgets, QtCore
+from qtpy import QtWidgets, QtCore, QtGui
 
 from ainodes_backend.cnet_preprocessors import hed
 from ainodes_backend.cnet_preprocessors.mlsd import MLSDdetector
@@ -13,7 +13,9 @@ from ainodes_frontend.nodes.base.node_config import register_node, OP_NODE_IMAGE
 from ainodes_frontend.nodes.base.ai_node_base import CalcNode, CalcGraphicsNode
 from ainodes_backend.node_engine.node_content_widget import QDMNodeContentWidget
 from ainodes_backend.node_engine.utils import dumpException
-from ainodes_frontend.nodes.qops.qimage_ops import pixmap_to_pil_image, pil_image_to_pixmap
+from ainodes_frontend.nodes.qops.qimage_ops import pixmap_to_pil_image, pil_image_to_pixmap, \
+    pixmap_composite_method_list
+
 
 class BlendWidget(QDMNodeContentWidget):
     def initUI(self):
@@ -26,9 +28,12 @@ class BlendWidget(QDMNodeContentWidget):
         self.blend.setMaximum(1.00)
         self.blend.setValue(0.00)
 
+        self.composite_method = QtWidgets.QComboBox()
+        self.composite_method.addItems(pixmap_composite_method_list)
 
         layout = QtWidgets.QVBoxLayout(self)
         layout.setContentsMargins(0,0,0,0)
+        layout.addWidget(self.composite_method)
         layout.addWidget(self.blend)
 
         self.setLayout(layout)
@@ -61,6 +66,7 @@ class BlendNode(CalcNode):
 
     def __init__(self, scene):
         super().__init__(scene, inputs=[5,5,1], outputs=[5,1])
+        self.painter = QtGui.QPainter()
         #self.eval()
         #self.content.eval_signal.connect(self.eval)
 
@@ -70,7 +76,7 @@ class BlendNode(CalcNode):
         self.output_socket_name = ["EXEC", "IMAGE"]
         self.input_socket_name = ["EXEC", "IMAGE1", "IMAGE2"]
 
-        self.grNode.height = 200
+        self.grNode.height = 220
     @QtCore.Slot(int)
     def evalImplementation(self, index=0):
         if self.getInput(1) != None:
@@ -85,11 +91,15 @@ class BlendNode(CalcNode):
             pixmap2 = None
 
         if pixmap1 != None and pixmap2 != None:
-            blend = self.content.blend.value()
-            self.value = self.image_op(pixmap1, pixmap2, blend)
-            print(f"BLEND NODE: Using both inputs with a blend value: {blend}")
-
-            self.setOutput(0, self.value)
+            method = self.content.composite_method.currentText()
+            if method == 'blend':
+                blend = self.content.blend.value()
+                value = self.image_op(pixmap1, pixmap2, blend)
+                print(f"BLEND NODE: Using both inputs with a blend value: {blend}")
+            elif method in pixmap_composite_method_list:
+                value = self.composite_pixmaps(pixmap1, pixmap2, method)
+                #print(self.value)
+            self.setOutput(0, value)
             self.markDirty(False)
             self.markInvalid(False)
         elif pixmap2 != None:
@@ -106,7 +116,7 @@ class BlendNode(CalcNode):
                 pass
         if len(self.getOutputs(1)) > 0:
             self.executeChild(output_index=1)
-        return self.value
+        return None
     def onMarkedDirty(self):
         self.value = None
     def eval(self):
@@ -125,3 +135,83 @@ class BlendNode(CalcNode):
 
         return pixmap
 
+    def composite_pixmaps(self, pixmap1, pixmap2, method):
+        """
+        Composite two pixmaps using a specified compositing method.
+
+        :param pixmap1: First pixmap to composite
+        :type pixmap1: QPixmap
+        :param pixmap2: Second pixmap to composite
+        :type pixmap2: QPixmap
+        :param method: Compositing method to use
+        :type method: str
+        :return: Composite pixmap
+        :rtype: QPixmap
+        """
+        method_valid = True
+        #self.result_pixmap = None
+        # Create a new pixmap to store the composite
+        # Create a QPainter object to draw on the result pixmap
+        #self.setOutput(0, self.result_pixmap)
+        #self.result_pixmap = QtGui.QPixmap(pixmap1.size())
+
+        self.painter.begin(pixmap2)
+
+        # Set the compositing mode based on the specified method
+        if method == 'source_over':
+            self.painter.setCompositionMode(QtGui.QPainter.CompositionMode_SourceOver)
+        elif method == 'destination_over':
+            self.painter.setCompositionMode(QtGui.QPainter.CompositionMode_DestinationOver)
+        elif method == 'clear':
+            self.painter.setCompositionMode(QtGui.QPainter.CompositionMode_Clear)
+        elif method == 'source':
+            self.painter.setCompositionMode(QtGui.QPainter.CompositionMode_Source)
+        elif method == 'destination':
+            self.painter.setCompositionMode(QtGui.QPainter.CompositionMode_Destination)
+        elif method == 'source_in':
+            self.painter.setCompositionMode(QtGui.QPainter.CompositionMode_SourceIn)
+        elif method == 'destination_in':
+            self.painter.setCompositionMode(QtGui.QPainter.CompositionMode_DestinationIn)
+        elif method == 'source_out':
+            self.painter.setCompositionMode(QtGui.QPainter.CompositionMode_SourceOut)
+        elif method == 'destination_out':
+            self.painter.setCompositionMode(QtGui.QPainter.CompositionMode_DestinationOut)
+        elif method == 'source_atop':
+            self.painter.setCompositionMode(QtGui.QPainter.CompositionMode_SourceAtop)
+        elif method == 'destination_atop':
+            self.painter.setCompositionMode(QtGui.QPainter.CompositionMode_DestinationAtop)
+        elif method == 'xor':
+            self.painter.setCompositionMode(QtGui.QPainter.CompositionMode_Xor)
+        elif method == 'overlay':
+            self.painter.setCompositionMode(QtGui.QPainter.CompositionMode_Overlay)
+        elif method == 'screen':
+            self.painter.setCompositionMode(QtGui.QPainter.CompositionMode_Screen)
+        elif method == 'soft_light':
+            self.painter.setCompositionMode(QtGui.QPainter.CompositionMode_SoftLight)
+        elif method == 'hard_light':
+            self.painter.setCompositionMode(QtGui.QPainter.CompositionMode_HardLight)
+        elif method == 'color_dodge':
+            self.painter.setCompositionMode(QtGui.QPainter.CompositionMode_ColorDodge)
+        elif method == 'color_burn':
+            self.painter.setCompositionMode(QtGui.QPainter.CompositionMode_ColorBurn)
+        elif method == 'darken':
+            self.painter.setCompositionMode(QtGui.QPainter.CompositionMode_Darken)
+        elif method == 'lighten':
+            self.painter.setCompositionMode(QtGui.QPainter.CompositionMode_Lighten)
+        elif method == 'exclusion':
+            self.painter.setCompositionMode(QtGui.QPainter.CompositionMode_Exclusion)
+        else:
+            method_valid = False
+
+        if method_valid == True:
+
+            # Draw the first pixmap onto the result pixmap
+            #self.painter.drawPixmap(0, 0, pixmap1)
+
+            # Composite the second pixmap onto the result pixmap using the specified compositing method
+            self.painter.drawPixmap(0, 0, pixmap1)
+
+            # End painting
+            self.painter.end()
+
+        return pixmap2
