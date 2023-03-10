@@ -32,9 +32,11 @@ class ModelLoader(torch.nn.Module):
         print("PyTorch model loader")
 
 
-    def load_model(self, file=None, config=None, verbose=False):
-        if gs.loaded_models["loaded"] != file:
-            gs.loaded_models["loaded"] = file
+    def load_model(self, file=None, config=None, inpaint=False, verbose=False):
+
+
+        if file not in gs.loaded_models["loaded"]:
+            gs.loaded_models["loaded"].append(file)
             ckpt = f"models/checkpoints/{file}"
             gs.force_inpaint = False
             ckpt_print = ckpt.replace('\\', '/')
@@ -44,9 +46,6 @@ class ModelLoader(torch.nn.Module):
             #    print("Forcing Inpaint")
 
             config = os.path.join('models/configs', config)
-
-
-
             self.prev_seamless = False
             if verbose:
                 print(f"Loading model from {ckpt} with config {config}")
@@ -86,15 +85,18 @@ class ModelLoader(torch.nn.Module):
                 print("unexpected keys:")
                 print(u)
             model.half()
-            gs.models["sd"] = model
+
+            value = "sd" if inpaint == False else "inpaint"
+
+            gs.models[value] = model
             #gs.models["sd"].cond_stage_model.device = self.device
-            for m in gs.models["sd"].modules():
+            for m in gs.models[value].modules():
                 if isinstance(m, (nn.Conv2d, nn.ConvTranspose2d)):
                     m._orig_padding_mode = m.padding_mode
 
             autoencoder_version = self.get_autoencoder_version()
 
-            gs.models["sd"].linear_decode = make_linear_decode(autoencoder_version, self.device)
+            gs.models[value].linear_decode = make_linear_decode(autoencoder_version, self.device)
             del pl_sd
             del sd
             del m, u
@@ -104,10 +106,10 @@ class ModelLoader(torch.nn.Module):
             #if gs.model_version == '1.5' and not 'Inpaint' in version:
             #    self.run_post_load_model_generation_specifics()
 
-            gs.models["sd"].eval()
+            gs.models[value].eval()
 
             # todo make this 'cuda' a parameter
-            gs.models["sd"].to(self.device)
+            gs.models[value].to(self.device)
 
         return ckpt
     def return_model_version(self, model):
@@ -176,6 +178,39 @@ class ModelLoader(torch.nn.Module):
                 k = replacement + k[len(text):]
 
         return k
+    def load_inpaint_model(self, modelname):
+
+        """if inpaint in model name: force inpaint
+        else
+        try load normal
+        except error
+            load inpaint"""
+
+
+
+        """if "sd" in gs.models:
+            gs.models["sd"].to('cpu')
+            del gs.models["sd"]
+            torch_gc()
+        if "custom_model_name" in gs.models:
+            del gs.models["custom_model_name"]
+            torch_gc()"""
+        """Load and initialize the model from configuration variables passed at object creation time"""
+        if "inpaint" not in gs.models:
+            weights = modelname
+            config = 'models/configs/v1-inpainting-inference.yaml'
+            embedding_path = None
+
+            config = OmegaConf.load(config)
+
+            model = instantiate_from_config(config.model)
+
+            model.load_state_dict(torch.load(weights)["state_dict"], strict=False)
+
+            device = self.device
+            gs.models["inpaint"] = model.half().to(device)
+            del model
+            return
 
 # Decodes the image without passing through the upscaler. The resulting image will be the same size as the latent
 # Thanks to Kevin Turner (https://github.com/keturn) we have a shortcut to look at the decoded image!

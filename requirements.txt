@@ -19,7 +19,7 @@ scipy
 torchdiffeq
 torchsde
 opencv-contrib-python
-
+https://github.com/CompVis/taming-transformers.git
 
 # Semseg Requirements:
 tqdm

@@ -4,6 +4,7 @@ import threading
 import numpy as np
 from einops import rearrange
 
+from ainodes_backend.inpaint.generator import run_inpaint
 from ainodes_backend.k_sampler import common_ksampler
 
 import torch
@@ -14,19 +15,20 @@ from qtpy import QtWidgets, QtCore, QtGui
 from qtpy.QtGui import QPixmap
 
 from ainodes_backend.torch_gc import torch_gc
-from ainodes_frontend.nodes.base.node_config import register_node, OP_NODE_K_SAMPLER
+from ainodes_frontend.nodes.base.node_config import register_node, OP_NODE_INPAINT
 from ainodes_frontend.nodes.base.ai_node_base import CalcNode, CalcGraphicsNode
 from ainodes_backend.node_engine.node_content_widget import QDMNodeContentWidget
 from ainodes_backend.node_engine.utils import dumpException
 from ainodes_backend import singleton as gs
 from ainodes_backend.worker.worker import Worker
+from ainodes_frontend.nodes.qops.qimage_ops import pixmap_to_pil_image, pil_image_to_pixmap
 
 SCHEDULERS = ["karras", "normal", "simple", "ddim_uniform"]
 SAMPLERS = ["euler", "euler_ancestral", "heun", "dpm_2", "dpm_2_ancestral",
             "lms", "dpm_fast", "dpm_adaptive", "dpmpp_2s_ancestral", "dpmpp_sde",
             "dpmpp_2m", "ddim", "uni_pc", "uni_pc_bh2"]
 
-class KSamplerWidget(QDMNodeContentWidget):
+class InpaintWidget(QDMNodeContentWidget):
     def initUI(self):
         # Create a label to display the image
         #self.text_label = QtWidgets.QLabel("K Sampler")
@@ -160,27 +162,27 @@ class KSamplerWidget(QDMNodeContentWidget):
         return res
 
 
-@register_node(OP_NODE_K_SAMPLER)
-class KSamplerNode(CalcNode):
+@register_node(OP_NODE_INPAINT)
+class InpaintNode(CalcNode):
     icon = "icons/in.png"
-    op_code = OP_NODE_K_SAMPLER
+    op_code = OP_NODE_INPAINT
     op_title = "K Sampler"
     content_label_objname = "K_sampling_node"
     category = "sampling"
     def __init__(self, scene):
-        super().__init__(scene, inputs=[2,3,3,1], outputs=[5,2,1])
+        super().__init__(scene, inputs=[5,5,1], outputs=[5,1])
         self.content.button.clicked.connect(self.evalImplementation)
         self.busy = False
         # Create a worker object
     def initInnerClasses(self):
-        self.content = KSamplerWidget(self)
+        self.content = InpaintWidget(self)
         self.grNode = CalcGraphicsNode(self)
         self.grNode.height = 500
         self.grNode.width = 256
         self.content.setMinimumWidth(256)
         self.content.setMinimumHeight(256)
-        self.input_socket_name = ["EXEC", "COND", "N COND", "LATENT"]
-        self.output_socket_name = ["EXEC", "LATENT", "IMAGE"]
+        self.input_socket_name = ["EXEC", "IMAGE", "IMAGE"]
+        self.output_socket_name = ["EXEC", "IMAGE"]
         self.seed = ""
         self.content.fix_seed_button.clicked.connect(self.setSeed)
         #self.content.setMinimumHeight(400)
@@ -193,30 +195,52 @@ class KSamplerNode(CalcNode):
         self.markDirty(True)
         #self.markInvalid(True)
         #self.busy = False
-        if self.value is None:
-            # Start the worker thread
-            if self.busy == False:
-                #self.worker = Worker(self.k_sampling)
-                # Connect the worker's finished signal to a slot that updates the node value
-                #self.worker.signals.result.connect(self.onWorkerFinished)
-                #self.scene.queue.add_task(self.k_sampling)
-                #self.scene.queue.task_finished.connect(self.onWorkerFinished)
-                self.busy = True
-                #self.scene.threadpool.start(self.worker)
-                thread0 = threading.Thread(target=self.k_sampling)
-                thread0.start()
+        #self.worker = Worker(self.k_sampling)
+        # Connect the worker's finished signal to a slot that updates the node value
+        #self.worker.signals.result.connect(self.onWorkerFinished)
+        #self.scene.queue.add_task(self.k_sampling)
+        #self.scene.queue.task_finished.connect(self.onWorkerFinished)
+        self.busy = True
+        #self.scene.threadpool.start(self.worker)
+        thread0 = threading.Thread(target=self.inpainting)
+        thread0.start()
 
 
-            return None
-        else:
-            self.markDirty(False)
-            self.markInvalid(False)
-            #self.markDescendantsDirty()
-            #self.evalChildren()
-            return self.value
+        return None
 
     def onMarkedDirty(self):
         self.value = None
+
+    def inpainting(self):
+        try:
+            image_input_node, index = self.getInput(1)
+            image_pixmap = image_input_node.getOutput(index)
+        except Exception as e:
+            print(e)
+        try:
+            mask_input_node, index = self.getInput(0)
+            mask_pixmap = mask_input_node.getOutput(index)
+        except Exception as e:
+            print(e)
+
+        init_image = pixmap_to_pil_image(image_pixmap)
+        mask_image = pixmap_to_pil_image(mask_pixmap)
+
+        prompt = "test"
+        seed = 1
+        scale = 7.5
+        steps = 10
+        blend_mask = 5
+        mask_blur = 5
+        recons_blur = 5
+
+        result = run_inpaint(init_image, mask_image, prompt, seed, scale, steps, blend_mask, mask_blur, recons_blur)
+        pixmap = pil_image_to_pixmap(result)
+        self.setOutput(0, pixmap)
+        if len(self.getOutputs(1)) > 0:
+            self.executeChild(output_index=1)
+
+
     def k_sampling(self, progress_callback=None):
         try:
             cond_node, index = self.getInput(2)

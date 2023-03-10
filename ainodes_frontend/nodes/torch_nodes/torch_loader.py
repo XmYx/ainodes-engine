@@ -83,13 +83,13 @@ class TorchLoaderNode(CalcNode):
         self.grNode.height = 160
 
     def evalImplementation(self, index=0):
-
+        #print(gs.models)
         model_name = self.content.dropdown.currentText()
         config_name = self.content.config_dropdown.currentText()
         print("TORCH LOADER:", gs.loaded_models["loaded"])
-        if gs.loaded_models["loaded"] != model_name:
-
-            if model_name != "":
+        print(gs.loaded_models["loaded"])
+        if model_name not in gs.loaded_models["loaded"]:
+            if model_name != "" and "inpaint" not in model_name:
                 if "sd" in gs.models:
                     try:
                         gs.models["sd"].cpu()
@@ -98,10 +98,23 @@ class TorchLoaderNode(CalcNode):
                     del gs.models["sd"]
                     gs.models["sd"] = None
                     torch_gc()
+                inpaint = False
                 self.value = model_name
-                self.loader.load_model(model_name, config_name)
-                self.setOutput(0, model_name)
+                self.loader.load_model(model_name, config_name, inpaint)
+            elif model_name != "" and "inpaint" in model_name:
+                if "inpaint" in gs.models:
+                    try:
+                        gs.models["inpaint"].cpu()
+                    except:
+                        pass
+                    del gs.models["inpaint"]
+                    gs.models["inpaint"] = None
+                    torch_gc()
+                inpaint = True
+                self.value = model_name
+                self.loader.load_model(model_name, config_name, inpaint)
 
+                self.setOutput(0, model_name)
                 self.markDirty(False)
                 self.markInvalid(False)
         else:

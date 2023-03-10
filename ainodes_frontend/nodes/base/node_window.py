@@ -39,7 +39,7 @@ class CalculatorWindow(NodeEditorWindow):
     def initUI(self):
         self.name_company = 'aiNodes'
         self.name_product = 'AI Node Editos'
-        gs.loaded_models["loaded"] = "Empty"
+        gs.loaded_models["loaded"] = []
         #print(gs.loaded_models)
         #print(gs.loaded_models["loaded"])
 

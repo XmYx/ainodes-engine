@@ -107,7 +107,7 @@ class ConditioningNode(CalcNode):
         #print("Getting Conditioning on ", id(self))
         prompt = self.content.prompt.toPlainText()
 
-        if gs.loaded_models["loaded"] == "Empty":
+        if gs.loaded_models["loaded"] == []:
             for node in self.scene.nodes:
                 if isinstance(node, TorchLoaderNode):
                     node.evalImplementation()
