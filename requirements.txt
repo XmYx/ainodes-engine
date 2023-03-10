@@ -19,7 +19,7 @@ scipy
 torchdiffeq
 torchsde
 opencv-contrib-python
-https://github.com/CompVis/taming-transformers.git
+
 
 # Semseg Requirements:
 tqdm
@@ -35,3 +35,9 @@ rich
 basicsr
 
 #triton==2.0.0
+openai-whisper
+sounddevice
+soundfile
+pydub
+ffmpeg-python
+wavio
