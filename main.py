@@ -19,8 +19,19 @@ gs.current["sd_model"] = None
 gs.current["inpaint_model"] = None
 
 sys.path.insert(0, os.path.join( os.path.dirname(__file__), "..", ".." ))
-os.makedirs('hf_cache', exist_ok=True)
-os.environ['HF_HOME'] = 'hf_cache'
+import argparse
+
+parser = argparse.ArgumentParser()
+
+
+parser.add_argument("--local_hf", action="store_true")
+
+args = parser.parse_args()
+if not args.local_hf:
+    print("Using HF Cache in app dir")
+    os.makedirs('hf_cache', exist_ok=True)
+    os.environ['HF_HOME'] = 'hf_cache'
+
 from ainodes_frontend.nodes.base.node_window import CalculatorWindow
 # Create a high-quality QSurfaceFormat object with OpenGL 3.3 and 8x antialiasing
 format = QtGui.QSurfaceFormat()

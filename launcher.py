@@ -1,8 +1,18 @@
 import os, sys
 import subprocess
-
 from platform import platform
-# Determine the location of the executable
+import argparse
+
+parser = argparse.ArgumentParser()
+
+
+parser.add_argument("--local_hf", action="store_true")
+
+args = parser.parse_args()
+if not args.local_hf:
+    print("Using HF Cache in app dir")
+    #os.makedirs('hf_cache', exist_ok=True)
+    #os.environ['HF_HOME'] = 'hf_cache'
 
 def create_venv(venv_path):
     try:
@@ -43,4 +53,7 @@ if __name__ == "__main__":
     exec(open(activate_this).read(), {'__file__': activate_this})
     subprocess.run(["pip", "install", "-r", "requirements.txt"])
     subprocess.run(["git", "pull"])
-    subprocess.run([python, "main.py"])
+    if not args.local_hf:
+        subprocess.run([python, "main.py"])
+    else:
+        subprocess.run([python, "main.py", "--local_hf"])
