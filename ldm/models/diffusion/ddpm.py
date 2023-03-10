@@ -1142,7 +1142,7 @@ class LatentDiffusion(DDPM):
             for i in range(len(c)):
                 c[i] = repeat(c[i], '1 ... -> b ...', b=batch_size).to(self.device)
         else:
-            c = repeat(c, '1 ... -> b ...', b=batch_size).to(self.device)
+            c = repeat(c, '1 ... -> b ...', b=batch_size).to("cuda")
         return c
 
     @torch.no_grad()
