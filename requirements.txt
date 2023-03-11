@@ -41,3 +41,4 @@ soundfile
 pydub
 ffmpeg-python
 wavio
+pyqtgraph

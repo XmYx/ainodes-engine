@@ -29,6 +29,8 @@ Edge.registerEdgeValidator(edge_cannot_connect_input_and_output_of_same_node)
 Edge.registerEdgeValidator(edge_cannot_connect_input_and_output_of_different_type)
 
 
+from pyqtgraph.console import ConsoleWidget
+
 # images for the dark skin
 DEBUG = False
 from ainodes_backend import singleton as gs
@@ -72,17 +74,24 @@ class CalculatorWindow(NodeEditorWindow):
         super().__init__()
 
         # Create a text widget for stdout and stderr
-        self.text_widget = StdoutTextEdit()
+        self.text_widget = ConsoleWidget()
+        #self.text_widget2 = ConsoleWidget()
+
 
         # Create a dock widget for the text widget and add it to the main window
         self.dock_widget = QDockWidget('Output', self)
         self.dock_widget.setAllowedAreas(Qt.BottomDockWidgetArea)
+        self.layout = QtWidgets.QHBoxLayout()
+        self.layout.setContentsMargins(5,5,5,5)
+
+        #layout.addWidget(self.text_widget2)
         self.dock_widget.setWidget(self.text_widget)
         self.addDockWidget(Qt.BottomDockWidgetArea, self.dock_widget)
 
         # Redirect stdout and stderr to the text widget
         sys.stdout = self.text_widget
         sys.stderr = self.text_widget
+        sys.stdin = self.text_widget
 
     def initUI(self):
 

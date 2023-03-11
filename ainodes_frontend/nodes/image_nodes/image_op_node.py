@@ -68,6 +68,8 @@ class ImageOpsWidget(QDMNodeContentWidget):
         self.height_value.setMaximum(4096)
         self.height_value.setValue(512)
 
+        self.resize_ratio_label = QtWidgets.QLabel("Resize Ratio")
+
         self.canny_low = QtWidgets.QSpinBox()
         self.canny_low.setMinimum(0)
         self.canny_low.setSingleStep(1)
@@ -101,6 +103,7 @@ class ImageOpsWidget(QDMNodeContentWidget):
         layout.addWidget(self.dropdown)
         layout.addWidget(self.width_value)
         layout.addWidget(self.height_value)
+        layout.addWidget(self.resize_ratio_label)
         layout.addWidget(self.canny_low)
         layout.addWidget(self.canny_high)
         layout.addWidget(self.midas_a)
@@ -108,19 +111,23 @@ class ImageOpsWidget(QDMNodeContentWidget):
 
         self.setLayout(layout)
 
+        self.height_value.valueChanged.connect(self.calculate_image_ratio)
+        self.width_value.valueChanged.connect(self.calculate_image_ratio)
+
     def dropdownChanged(self, event):
         value = self.dropdown.currentText()
         if value == 'resize':
             self.width_value.setVisible(True)
             self.height_value.setVisible(True)
+            self.resize_ratio_label.setVisible(True)
             self.canny_high.setVisible(False)
             self.canny_low.setVisible(False)
             self.midas_a.setVisible(False)
             self.midas_bg.setVisible(False)
-
         elif value == 'canny':
             self.width_value.setVisible(False)
             self.height_value.setVisible(False)
+            self.resize_ratio_label.setVisible(False)
             self.canny_high.setVisible(True)
             self.canny_low.setVisible(True)
             self.midas_a.setVisible(False)
@@ -128,6 +135,7 @@ class ImageOpsWidget(QDMNodeContentWidget):
         elif value in ['depth', 'normal', 'mlsd']:
             self.width_value.setVisible(False)
             self.height_value.setVisible(False)
+            self.resize_ratio_label.setVisible(False)
             self.canny_high.setVisible(False)
             self.canny_low.setVisible(False)
             self.midas_a.setVisible(True)
@@ -136,10 +144,17 @@ class ImageOpsWidget(QDMNodeContentWidget):
         else:
             self.width_value.setVisible(False)
             self.height_value.setVisible(False)
+            self.resize_ratio_label.setVisible(False)
             self.canny_high.setVisible(False)
             self.canny_low.setVisible(False)
             self.midas_a.setVisible(False)
             self.midas_bg.setVisible(False)
+    def calculate_image_ratio(self):
+        width = self.width_value.value()
+        height = self.height_value.value()
+        ratio = width / height
+        text = return_ratio_string(ratio, width, height)
+        self.resize_ratio_label.setText(text)
 
     def serialize(self):
         res = super().serialize()
@@ -191,9 +206,10 @@ class ImageOpNode(CalcNode):
         self.input_socket_name = ["EXEC", "IMAGE"]
 
         self.grNode.height = 200
-        #self.grNode.width = 256
-        #self.content.setMinimumHeight(400)
-        #self.content.setMinimumWidth(256)
+        self.grNode.width = 260
+
+        self.content.setMinimumHeight(130)
+        self.content.setMinimumWidth(260)
 
         #self.content.image.changeEvent.connect(self.onInputChanged)
     @QtCore.Slot(int)
@@ -341,3 +357,152 @@ def HWC3(x):
         y = color * alpha + 255.0 * (1.0 - alpha)
         y = y.clip(0, 255).astype(np.uint8)
         return y
+
+
+def return_ratio_string(ratio, width, height):
+    if ratio == 1:
+        return f"{width}x{height} (Square)"
+    elif ratio == 1.25:
+        return f"{width}x{height} (5:4, Classic Medium Format)"
+    elif ratio == 1.33:
+        return f"{width}x{height} (4:3, Classic Standard Format)"
+    elif ratio == 1.4:
+        return f"{width}x{height} (7:5, Modern Medium Format)"
+    elif ratio == 1.5:
+        return f"{width}x{height} (3:2, Classic 35mm Format)"
+    elif ratio == 1.6:
+        return f"{width}x{height} (16:10, Widescreen)"
+    elif ratio == 1.66:
+        return f"{width}x{height} (5:3, European Widescreen)"
+    elif ratio == 1.77:
+        return f"{width}x{height} (16:9, HDTV)"
+    elif ratio == 1.85:
+        return f"{width}x{height} (1.85:1, Widescreen Film)"
+    elif ratio == 2:
+        return f"{width}x{height} (2:1, Panavision)"
+    elif ratio == 2.2:
+        return f"{width}x{height} (11:5, IMAX)"
+    elif ratio == 2.35:
+        return f"{width}x{height} (2.35:1, Cinemascope)"
+    elif ratio == 2.39:
+        return f"{width}x{height} (2.39:1, Anamorphic)"
+    elif ratio == 2.4:
+        return f"{width}x{height} (12:5, Ultrawide)"
+    elif ratio == 2.55:
+        return f"{width}x{height} (17:7, Univisium)"
+    elif ratio == 2.76:
+        return f"{width}x{height} (2.76:1, Ultra Panavision)"
+    elif ratio == 3:
+        return f"{width}x{height} (3:1, Triptych)"
+    elif ratio == 3.25:
+        return f"{width}x{height} (13:4, Triplewide)"
+    elif ratio == 3.5:
+        return f"{width}x{height} (7:2, Triplewide)"
+    elif ratio == 4/3.:
+        return f"{width}x{height} (1.33:1, Classic Standard Format)"
+    elif ratio == 3/2.:
+        return f"{width}x{height} (1.5:1, Classic 35mm Format)"
+    elif ratio == 4/5.:
+        return f"{width}x{height} (4:5, Portrait Format)"
+    elif ratio == 5/4.:
+        return f"{width}x{height} (5:4, Classic Medium Format)"
+    elif ratio == 6/5.:
+        return f"{width}x{height} (6:5, Antique Format)"
+    elif ratio == 5/6.:
+        return f"{width}x{height} (5:6, Portrait Format)"
+    elif ratio == 9/16.:
+        return f"{width}x{height} (9:16, HDTV Portrait)"
+    elif ratio == 10/16.:
+        return f"{width}x{height} (10:16, Widescreen Portrait)"
+    elif ratio == 1.6/1.33:
+        return f"{width}x{height} (4:3 Anamorphic)"
+    elif ratio == 1.85/1.33:
+        return f"{width}x{height} (4:3 Widescreen Film)"
+    elif ratio == 1.85/1.5:
+        return f"{width}x{height} (3:2 Widescreen Film)"
+    elif ratio == 2.2/1.33:
+        return f"{width}x{height} (4:3 IMAX)"
+    elif ratio == 2.35/1.33:
+        return f"{width}x{height} (4:3 Cinemascope)"
+    elif ratio == 2.39/1.33:
+        return f"{width}x{height} (4:3 Anamorphic)"
+    elif ratio == 2.76/1.33:
+        return f"{width}x{height} (4:3 Ultra Panavision)"
+    elif ratio == 1/1.414:
+        return f"{width}x{height} (1:√2, ISO A Paper)"
+    elif ratio == 1.414/1:
+        return f"{width}x{height} (√2:1, ISO B Paper)"
+    elif ratio == 1/1.732:
+        return f"{width}x{height} (1:√3, ISO C Paper)"
+    elif ratio == 1.732/1:
+        return f"{width}x{height} (√3:1, ISO D Paper)"
+    elif ratio == 1/2.414:
+        return f"{width}x{height} (1:√6, ISO E Paper)"
+    elif ratio == 2.414/1:
+        return f"{width}x{height} (√6:1, ISO F Paper)"
+    elif ratio == 1/1.618:
+        return f"{width}x{height} (1:φ, Golden Ratio)"
+    elif ratio == 1.618/1:
+        return f"{width}x{height} (φ:1, Reverse Golden Ratio)"
+    elif ratio == 1.33/1:
+        return f"{width}x{height} (4:3, Standard 8mm and 16mm Film)"
+    elif ratio == 1.37/1:
+        return f"{width}x{height} (Academy Ratio, 35mm Film)"
+    elif ratio == 1.66/1:
+        return f"{width}x{height} (5:3, Super 16mm Film)"
+    elif ratio == 1.85/1:
+        return f"{width}x{height} (Widescreen, 35mm Film)"
+    elif ratio == 2.35/1:
+        return f"{width}x{height} (2.35:1, CinemaScope, 35mm Film)"
+    elif ratio == 2.39/1:
+        return f"{width}x{height} (2.39:1, Anamorphic, 35mm Film)"
+    elif ratio == 3/1.33:
+        return f"{width}x{height} (4:3, Standard 8mm Film)"
+    elif ratio == 3/1.37:
+        return f"{width}x{height} (Academy Ratio, 8mm Film)"
+    elif ratio == 3/1.66:
+        return f"{width}x{height} (5:3, Super 8mm Film)"
+    elif ratio == 3/1.85:
+        return f"{width}x{height} (Widescreen, 8mm Film)"
+    elif ratio == 3/2.35:
+        return f"{width}x{height} (2.35:1, CinemaScope, 8mm Film)"
+    elif ratio == 3/2.39:
+        return f"{width}x{height} (2.39:1, Anamorphic, 8mm Film)"
+    elif ratio == 3.15/2:
+        return f"{width}x{height} (1.575:1, Polavision)"
+    elif ratio == 4/2.75:
+        return f"{width}x{height} (1.45:1, Instamatic)"
+    elif ratio == 1.8/1:
+        return f"{width}x{height} (16:9, HDV)"
+    elif ratio == 1.458/1:
+        return f"{width}x{height} (Dutch Angle)"
+    elif ratio == 1/1.17:
+        return f"{width}x{height} (1:1.17, VistaVision)"
+    elif ratio == 1/1.33:
+        return f"{width}x{height} (4:3, Standard Television)"
+    elif ratio == 1.78/1:
+        return f"{width}x{height} (16:9, HDTV)"
+    elif ratio == 1.6/1:
+        return f"{width}x{height} (16:10, Widescreen Computer)"
+    elif ratio == 1.25/1:
+        return f"{width}x{height} (5:4, Computer Monitor)"
+    elif ratio == 1.33/1:
+        return f"{width}x{height} (4:3, Computer Monitor)"
+    elif ratio == 1.43/1:
+        return f"{width}x{height} (7:5, Computer Monitor)"
+    elif ratio == 1.6/0.9:
+        return f"{width}x{height} (16:9, Widescreen Monitor)"
+    elif ratio == 1.78/1.33:
+        return f"{width}x{height} (4:3, Standard Def Letterbox)"
+    elif ratio == 1.78/1.5:
+        return f"{width}x{height} (3:2, HD Letterbox)"
+    elif ratio == 1.85/1.33:
+        return f"{width}x{height} (4:3, Film Letterbox)"
+    elif ratio == 2.35/1.33:
+        return f"{width}x{height} (4:3, Film Pan-Scan)"
+    elif ratio == 2.76/1.33:
+        return f"{width}x{height} (4:3, Ultra Panavision Letterbox)"
+    elif ratio == 1/1.29:
+        return f"{width}x{height} (1:1.29, Two-Perf Techniscope)"
+    else:
+        return f"{width}x{height} ({ratio:.2f}:1)"
