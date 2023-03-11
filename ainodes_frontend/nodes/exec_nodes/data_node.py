@@ -1,20 +1,11 @@
-import threading
-import time
-
-import numpy as np
-
-import torch
 #from qtpy.QtWidgets import QLineEdit, QLabel, QPushButton, QFileDialog, QVBoxLayout
-from qtpy import QtWidgets, QtCore, QtGui
+from qtpy import QtWidgets, QtCore
 
-from ainodes_backend.torch_gc import torch_gc
-from ainodes_backend.worker.worker import Worker
 from ainodes_frontend.nodes.base.node_config import register_node, OP_NODE_DATA
 from ainodes_frontend.nodes.base.ai_node_base import CalcNode, CalcGraphicsNode
 from ainodes_backend.node_engine.node_content_widget import QDMNodeContentWidget
 from ainodes_backend.node_engine.utils import dumpException
-from ainodes_backend import singleton as gs
-from ainodes_frontend.nodes.qops.qimage_ops import pixmap_to_pil_image
+
 
 class DataWidget(QDMNodeContentWidget):
     resize_signal = QtCore.Signal()
@@ -80,7 +71,7 @@ class DataWidget(QDMNodeContentWidget):
             hbox.addWidget(delete_button)
             self.layout.addLayout(hbox)
         self.node.resize()
-    def get_widget_values(self):
+    """def get_widget_values(self):
         widget_values = {}
         for i in range(self.layout.count()):
             item = self.layout.itemAt(i)
@@ -102,8 +93,7 @@ class DataWidget(QDMNodeContentWidget):
                                     widget_values[(node_type, data_type)] = widget.value()
                         except:
                             pass
-        #print(widget_values)
-        return widget_values
+        return widget_values"""
 
     def update_data_types(self):
         node_type = self.node_types.currentText()

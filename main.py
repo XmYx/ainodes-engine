@@ -9,6 +9,7 @@ import argparse
 from qtpy import QtGui
 from qtpy.QtWidgets import QApplication
 from ainodes_backend import singleton as gs
+from ainodes_frontend.nodes.base.node_config import import_nodes_from_directory
 from ainodes_frontend.nodes.base.node_window import CalculatorWindow
 
 # Set environment variable QT_API to use PySide6
@@ -57,5 +58,15 @@ app.setApplicationName("aiNodes - engine")
 # Create and show the main window
 wnd = CalculatorWindow()
 wnd.show()
+
+import_nodes_from_directory("ainodes_frontend/nodes/audio_nodes")
+import_nodes_from_directory("ainodes_frontend/nodes/exec_nodes")
+import_nodes_from_directory("ainodes_frontend/nodes/image_nodes")
+import_nodes_from_directory("ainodes_frontend/nodes/torch_nodes")
+import_nodes_from_directory("ainodes_frontend/nodes/video_nodes")
+
+wnd.nodesListWidget.addMyItems()
+
+
 wnd.setStyleSheet(style_sheet)
 sys.exit(app.exec_())

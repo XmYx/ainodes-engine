@@ -13,7 +13,7 @@ from ainodes_frontend.nodes.base.node_config import register_node, OP_NODE_IMAGE
 from ainodes_frontend.nodes.base.ai_node_base import CalcNode, CalcGraphicsNode
 from ainodes_backend.node_engine.node_content_widget import QDMNodeContentWidget
 from ainodes_backend.node_engine.utils import dumpException
-from ainodes_frontend.nodes.qops.qimage_ops import pixmap_to_pil_image, pil_image_to_pixmap
+from ainodes_backend.qops import pixmap_to_pil_image, pil_image_to_pixmap
 
 image_ops_methods = [
     "resize",

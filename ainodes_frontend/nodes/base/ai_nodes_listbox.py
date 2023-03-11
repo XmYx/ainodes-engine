@@ -97,7 +97,7 @@ class QDMDragListbox(QtWidgets.QTreeWidget):
 
     def addMyItems(self):
 
-
+        self.clear()
         categories = {category: [] for category in node_categories}
 
         keys = list(CALC_NODES.keys())

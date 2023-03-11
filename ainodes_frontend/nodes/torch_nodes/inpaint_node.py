@@ -11,7 +11,7 @@ import torch
 from PIL import Image
 from PIL.ImageQt import ImageQt
 #from qtpy.QtWidgets import QLineEdit, QLabel, QPushButton, QFileDialog, QVBoxLayout
-from qtpy import QtWidgets, QtCore, QtGui
+from qtpy import QtWidgets, QtCore
 from qtpy.QtGui import QPixmap
 
 from ainodes_backend.torch_gc import torch_gc
@@ -20,8 +20,7 @@ from ainodes_frontend.nodes.base.ai_node_base import CalcNode, CalcGraphicsNode
 from ainodes_backend.node_engine.node_content_widget import QDMNodeContentWidget
 from ainodes_backend.node_engine.utils import dumpException
 from ainodes_backend import singleton as gs
-from ainodes_backend.worker.worker import Worker
-from ainodes_frontend.nodes.qops.qimage_ops import pixmap_to_pil_image, pil_image_to_pixmap
+from ainodes_backend.qops import pixmap_to_pil_image, pil_image_to_pixmap
 
 SCHEDULERS = ["karras", "normal", "simple", "ddim_uniform"]
 SAMPLERS = ["euler", "euler_ancestral", "heun", "dpm_2", "dpm_2_ancestral",

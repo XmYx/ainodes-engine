@@ -1,3 +1,6 @@
+import glob
+import os
+
 LISTBOX_MIMETYPE = "application/x-item"
 
 """OP_NODE_INPUT = 1
@@ -70,12 +73,13 @@ def register_node(op_code):
 def get_class_from_opcode(op_code):
     if op_code not in CALC_NODES: raise OpCodeNotRegistered("OpCode '%d' is not registered" % op_code)
     return CALC_NODES[op_code]
+def import_nodes_from_directory(directory):
+    node_files = glob.glob(os.path.join(directory, "*.py"))
+    for node_file in node_files:
+        if os.path.basename(node_file) != "__init__.py":
+            module_name = os.path.basename(node_file)[:-3].replace('/', '.')
+            dir = directory.replace('/', '.')
+            exec(f"from {dir} import {module_name}")
 
 
 
-# import all nodes and register them
-from ainodes_frontend.nodes.image_nodes import image_op_node, input, output, video_input, video_save_node, image_blend_node, matte_node
-from ainodes_frontend.nodes.torch_nodes import conditioning_combine, conditioning_node,\
-                                                controlnet_loader, controlnet_apply, empty_latent_node, \
-                                                ksampler_node, inpaint_node, lora_loader_node
-from ainodes_frontend.nodes.exec_op_nodes import exec_node, exec_splitter, data_node, whisper_node

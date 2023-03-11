@@ -7,13 +7,12 @@ import torch
 from qtpy import QtWidgets, QtCore
 
 from ainodes_backend.torch_gc import torch_gc
-from ainodes_backend.worker.worker import Worker
 from ainodes_frontend.nodes.base.node_config import register_node, OP_NODE_CN_APPLY
 from ainodes_frontend.nodes.base.ai_node_base import CalcNode, CalcGraphicsNode
 from ainodes_backend.node_engine.node_content_widget import QDMNodeContentWidget
 from ainodes_backend.node_engine.utils import dumpException
 from ainodes_backend import singleton as gs
-from ainodes_frontend.nodes.qops.qimage_ops import pixmap_to_pil_image
+from ainodes_backend.qops import pixmap_to_pil_image
 
 SCHEDULERS = ["karras", "normal", "simple", "ddim_uniform"]
 SAMPLERS = ["euler", "euler_ancestral", "heun", "dpm_2", "dpm_2_ancestral",

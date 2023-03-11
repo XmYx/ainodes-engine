@@ -107,6 +107,29 @@ class QDMNodeContentWidget(QWidget, Serializable):
             self.node.markDirty(True)
             self.node.eval()
 
+    def get_widget_values(self):
+        widget_values = {}
+        for i in range(self.layout.count()):
+            item = self.layout.itemAt(i)
+            if isinstance(item, QtWidgets.QLayout):
+                for j in range(item.count()):
+                    sub_item = item.itemAt(j)
+                    if isinstance(sub_item, QtWidgets.QWidgetItem):
+                        widget = sub_item.widget()
+                        try:
+                            accessible_name = widget.accessibleName()
+                            print(accessible_name)
+                            if accessible_name:
+                                node_type, data_type = accessible_name.split("_")
+                                if isinstance(widget, QtWidgets.QLineEdit):
+                                    widget_values[(node_type, data_type)] = widget.text()
+                                elif isinstance(widget, QtWidgets.QSpinBox):
+                                    widget_values[(node_type, data_type)] = widget.value()
+                                elif isinstance(widget, QtWidgets.QDoubleSpinBox):
+                                    widget_values[(node_type, data_type)] = widget.value()
+                        except:
+                            pass
+        return widget_values
 
 class QDMTextEdit(QTextEdit):
     """

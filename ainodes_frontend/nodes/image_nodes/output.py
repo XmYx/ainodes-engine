@@ -9,7 +9,7 @@ from ainodes_backend.node_engine.node_content_widget import QDMNodeContentWidget
 from ainodes_backend.node_engine.utils import dumpException
 from qtpy import QtWidgets, QtGui, QtCore
 
-from ainodes_frontend.nodes.qops.qimage_ops import pixmap_to_pil_image
+from ainodes_backend.qops import pixmap_to_pil_image
 
 
 class ImageOutputWidget(QDMNodeContentWidget):

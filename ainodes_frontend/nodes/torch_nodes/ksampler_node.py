@@ -9,7 +9,6 @@ from ainodes_backend.k_sampler import common_ksampler
 import torch
 from PIL import Image
 from PIL.ImageQt import ImageQt
-#from qtpy.QtWidgets import QLineEdit, QLabel, QPushButton, QFileDialog, QVBoxLayout
 from qtpy import QtWidgets, QtCore, QtGui
 from qtpy.QtGui import QPixmap
 
@@ -19,7 +18,6 @@ from ainodes_frontend.nodes.base.ai_node_base import CalcNode, CalcGraphicsNode
 from ainodes_backend.node_engine.node_content_widget import QDMNodeContentWidget
 from ainodes_backend.node_engine.utils import dumpException
 from ainodes_backend import singleton as gs
-from ainodes_backend.worker.worker import Worker
 
 SCHEDULERS = ["karras", "normal", "simple", "ddim_uniform"]
 SAMPLERS = ["euler", "euler_ancestral", "heun", "dpm_2", "dpm_2_ancestral",
@@ -28,9 +26,6 @@ SAMPLERS = ["euler", "euler_ancestral", "heun", "dpm_2", "dpm_2_ancestral",
 
 class KSamplerWidget(QDMNodeContentWidget):
     def initUI(self):
-        # Create a label to display the image
-        #self.text_label = QtWidgets.QLabel("K Sampler")
-
         self.schedulers_layout = QtWidgets.QHBoxLayout()
         self.schedulers_label = QtWidgets.QLabel("Scheduler:")
         self.schedulers = QtWidgets.QComboBox()
@@ -81,8 +76,6 @@ class KSamplerWidget(QDMNodeContentWidget):
         self.stop_early_layout = QtWidgets.QVBoxLayout()
         self.stop_early = QtWidgets.QCheckBox("Stop Sampling Early")
         self.stop_early_label = QtWidgets.QLabel()
-
-        #self.stop_early_layout.addWidget(self.stop_early_label)
 
         self.force_denoise = QtWidgets.QCheckBox("Force full denoise")
         self.force_denoise.setChecked(True)
@@ -183,36 +176,21 @@ class KSamplerNode(CalcNode):
         self.output_socket_name = ["EXEC", "LATENT", "IMAGE"]
         self.seed = ""
         self.content.fix_seed_button.clicked.connect(self.setSeed)
-        #self.content.setMinimumHeight(400)
-        #self.content.setMinimumWidth(256)
-        #self.content.image.changeEvent.connect(self.onInputChanged)
 
     def evalImplementation(self, index=0):
 
 
         self.markDirty(True)
-        #self.markInvalid(True)
-        #self.busy = False
         if self.value is None:
             # Start the worker thread
             if self.busy == False:
-                #self.worker = Worker(self.k_sampling)
-                # Connect the worker's finished signal to a slot that updates the node value
-                #self.worker.signals.result.connect(self.onWorkerFinished)
-                #self.scene.queue.add_task(self.k_sampling)
-                #self.scene.queue.task_finished.connect(self.onWorkerFinished)
                 self.busy = True
-                #self.scene.threadpool.start(self.worker)
                 thread0 = threading.Thread(target=self.k_sampling)
                 thread0.start()
-
-
             return None
         else:
             self.markDirty(False)
             self.markInvalid(False)
-            #self.markDescendantsDirty()
-            #self.evalChildren()
             return self.value
 
     def onMarkedDirty(self):
@@ -278,24 +256,17 @@ class KSamplerNode(CalcNode):
         return [pixmap, return_sample]
     @QtCore.Slot(object)
     def onWorkerFinished(self, result):
-        # Update the node value and mark it as dirty
-        #self.value = result[0]
         print("K SAMPLER:", self.content.steps.value(), "steps,", self.content.sampler.currentText(), " seed: ", self.seed)
         self.markDirty(False)
         self.markInvalid(False)
         self.setOutput(0, result[0])
         self.setOutput(1, result[1])
         self.busy = False
-        #self.worker.autoDelete()
-        #self.scene.queue.task_finished.disconnect(self.onWorkerFinished)
         if len(self.getOutputs(2)) > 0:
             self.executeChild(output_index=2)
         return
-        #self.markDescendantsDirty()
-        #self.evalChildren()
     def setSeed(self):
         self.content.seed.setText(str(self.seed))
     def onInputChanged(self, socket=None):
         pass
-        #self.eval()
 
