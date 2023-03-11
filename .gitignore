@@ -175,3 +175,7 @@ semseg/
 *.gif
 *.avi
 *.mov
+
+
+# vscode
+.vscode

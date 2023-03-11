@@ -17,6 +17,8 @@
   <li>Once the app is up and running, you can start creating and managing your node graphs with ease.</li>
 </ol>
 
+<p>(Optional) create a virtual environment, install requirements, and run <code>python main.py</code>.</p>
+
 <h2>Contributing</h2>
 
 <p>Contributions to the Ainodes Engine are welcome and appreciated. If you find any bugs or issues with the app, please feel free to open an issue or submit a pull request.</p>
