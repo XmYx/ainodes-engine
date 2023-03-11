@@ -185,7 +185,7 @@ class NodeEditorWindow(QMainWindow):
     def onFileOpen(self):
         """Handle File Open operation"""
         if self.maybeSave():
-            fname, filter = QFileDialog.getOpenFileName(None, 'Open graph from file', self.getFileDialogDirectory(), self.getFileDialogFilter())
+            fname, filter = QFileDialog.getOpenFileName(None, 'Open graph from file', f"{self.getFileDialogDirectory()}/graphs", self.getFileDialogFilter())
             if fname != '' and os.path.isfile(fname):
                 self.getCurrentNodeEditorWidget().fileLoad(fname)
                 self.setTitle()
@@ -209,7 +209,7 @@ class NodeEditorWindow(QMainWindow):
         """Handle File Save As operation"""
         current_nodeeditor = self.getCurrentNodeEditorWidget()
         if current_nodeeditor is not None:
-            fname, filter = QFileDialog.getSaveFileName(self, 'Save graph to file', self.getFileDialogDirectory(), self.getFileDialogFilter())
+            fname, filter = QFileDialog.getSaveFileName(self, 'Save graph to file', f"{self.getFileDialogDirectory()}/graphs", self.getFileDialogFilter())
             if fname == '': return False
 
             self.onBeforeSaveAs(current_nodeeditor, fname)

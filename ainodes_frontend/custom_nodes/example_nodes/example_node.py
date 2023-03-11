@@ -15,7 +15,7 @@ from ainodes_backend import singleton as gs
 OP_NODE_EXAMPLE = get_next_opcode()
 
 
-class KSamplerWidget(QDMNodeContentWidget):
+class ExampleWidget(QDMNodeContentWidget):
     def initUI(self):
         self.label = QtWidgets.QLabel("Label:")
 
@@ -40,13 +40,13 @@ class KSamplerWidget(QDMNodeContentWidget):
             dumpException(e)
         return res
 
-@register_node(OP_NODE_K_SAMPLER)
+@register_node(OP_NODE_EXAMPLE)
 class ExampleNode(CalcNode):
     icon = "icons/in.png"
-    op_code = OP_NODE_K_SAMPLER
+    op_code = OP_NODE_EXAMPLE
     op_title = "Example"
     content_label_objname = "example_node"
-    category = "example"
+    category = "debug"
     def __init__(self, scene):
         super().__init__(scene, inputs=[2,3,3,1], outputs=[5,2,1])
         self.content.button.clicked.connect(self.evalImplementation)

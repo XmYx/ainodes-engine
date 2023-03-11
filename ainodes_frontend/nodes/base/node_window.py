@@ -172,7 +172,7 @@ class CalculatorWindow(NodeEditorWindow):
         return None
     def onNodeOpen(self):
         """Handle File Open operation"""
-        fname, filter = QFileDialog.getOpenFileName(None, 'Open graph from file', self.getFileDialogDirectory(), 'Python Files (*.py)')
+        fname, filter = QFileDialog.getOpenFileName(None, 'Open graph from file', f"{self.getFileDialogDirectory()}/ainodes_frontend/custom_nodes", 'Python Files (*.py)')
         if fname != '' and os.path.isfile(fname):
             import_nodes_from_file(fname)
             self.nodesListWidget.addMyItems()
@@ -186,7 +186,7 @@ class CalculatorWindow(NodeEditorWindow):
 
 
     def onFileOpen(self):
-        fnames, filter = QFileDialog.getOpenFileNames(self, 'Open graph from file', self.getFileDialogDirectory(), self.getFileDialogFilter())
+        fnames, filter = QFileDialog.getOpenFileNames(self, 'Open graph from file', f"{self.getFileDialogDirectory()}/graphs", self.getFileDialogFilter())
 
         try:
             for fname in fnames:
