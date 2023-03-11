@@ -55,7 +55,7 @@ class KSamplerWidget(QDMNodeContentWidget):
         self.steps_label = QtWidgets.QLabel("Steps:")
         self.steps = QtWidgets.QSpinBox()
         self.steps.setMinimum(1)
-        self.steps.setMaximum(1000)
+        self.steps.setMaximum(10000)
         self.steps.setValue(10)
         self.steps_layout.addWidget(self.steps_label)
         self.steps_layout.addWidget(self.steps)
