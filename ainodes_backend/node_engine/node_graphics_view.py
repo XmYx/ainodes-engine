@@ -27,7 +27,7 @@ STATE_STRING = ['', 'Noop', 'Edge Drag', 'Edge Cut', 'Edge Rerouting', 'Node Dra
 EDGE_DRAG_START_THRESHOLD = 50
 
 #: Enable UnrealEngine style rerouting
-EDGE_REROUTING_UE = False
+EDGE_REROUTING_UE = True
 
 #: Socket snapping distance
 EDGE_SNAPPING_RADIUS = 24

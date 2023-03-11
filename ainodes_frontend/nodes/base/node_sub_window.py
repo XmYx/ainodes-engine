@@ -18,14 +18,11 @@ DEBUG_CONTEXT = False
 class CalculatorSubWindow(NodeEditorWidget):
     def __init__(self):
         super().__init__()
-        # self.setAttribute(Qt.WA_DeleteOnClose)
+        self.setAttribute(Qt.WA_DeleteOnClose)
 
         self.setTitle()
 
         self.initNewNodeActions()
-
-        #self.scene.queue = QueueSystem()
-        #self.scene.queue.task_finished.connect(self.handle_task_finished)
         self.scene.threadpool = QThreadPool()
         self.scene.addHasBeenModifiedListener(self.setTitle)
         self.scene.history.addHistoryRestoredListener(self.onHistoryRestored)
