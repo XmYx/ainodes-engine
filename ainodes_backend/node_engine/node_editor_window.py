@@ -6,6 +6,7 @@ import os, json
 from qtpy.QtCore import QSize, QSettings, QPoint
 from qtpy.QtWidgets import QMainWindow, QLabel, QAction, QMessageBox, QFileDialog, QApplication
 from ainodes_backend.node_engine.node_editor_widget import NodeEditorWidget
+from ainodes_frontend.nodes.base.node_config import import_nodes_from_file
 
 
 class NodeEditorWindow(QMainWindow):
@@ -58,6 +59,7 @@ class NodeEditorWindow(QMainWindow):
         """Create basic `File` and `Edit` actions"""
         self.actNew = QAction('&New', self, shortcut='Ctrl+N', statusTip="Create new graph", triggered=self.onFileNew)
         self.actOpen = QAction('&Open', self, shortcut='Ctrl+O', statusTip="Open file", triggered=self.onFileOpen)
+
         self.actSave = QAction('&Save', self, shortcut='Ctrl+S', statusTip="Save file", triggered=self.onFileSave)
         self.actSaveAs = QAction('Save &As...', self, shortcut='Ctrl+Shift+S', statusTip="Save file as...", triggered=self.onFileSaveAs)
         self.actExit = QAction('E&xit', self, shortcut='Ctrl+Q', statusTip="Exit application", triggered=self.close)
@@ -187,6 +189,7 @@ class NodeEditorWindow(QMainWindow):
             if fname != '' and os.path.isfile(fname):
                 self.getCurrentNodeEditorWidget().fileLoad(fname)
                 self.setTitle()
+
 
     def onFileSave(self):
         """Handle File Save operation"""

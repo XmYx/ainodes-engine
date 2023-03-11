@@ -1,10 +1,10 @@
 from qtpy.QtWidgets import QVBoxLayout
-from ainodes_frontend.nodes.base.node_config import register_node, OP_NODE_DEBUG_MULTI_INPUT
+from ainodes_frontend.nodes.base.node_config import register_node, get_next_opcode
 from ainodes_frontend.nodes.base.ai_node_base import CalcNode, CalcGraphicsNode
 from ainodes_backend.node_engine.node_content_widget import QDMNodeContentWidget
 from ainodes_backend.node_engine.utils import dumpException
 
-
+OP_NODE_DEBUG_MULTI_INPUT = get_next_opcode()
 class ImageInputWidget(QDMNodeContentWidget):
     def initUI(self):
         # Create a label to display the image

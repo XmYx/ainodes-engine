@@ -1,4 +1,8 @@
 import os
+import sys
+import threading
+
+from qtpy import QtWidgets, QtCore, QtGui
 from qtpy.QtGui import QIcon, QKeySequence
 from qtpy.QtWidgets import QMdiArea, QDockWidget, QAction, QMessageBox, QFileDialog
 from qtpy.QtCore import Qt, QSignalMapper
@@ -8,7 +12,7 @@ from ainodes_backend.node_engine.node_editor_window import NodeEditorWindow
 from ainodes_frontend.nodes.base.node_sub_window import CalculatorSubWindow
 from ainodes_frontend.nodes.base.ai_nodes_listbox import QDMDragListbox
 from ainodes_backend.node_engine.utils_no_qt import dumpException, pp
-from ainodes_frontend.nodes.base.node_config import CALC_NODES
+from ainodes_frontend.nodes.base.node_config import CALC_NODES, import_nodes_from_file
 
 # Enabling edge validators
 from ainodes_backend.node_engine.node_edge import Edge
@@ -26,19 +30,64 @@ Edge.registerEdgeValidator(edge_cannot_connect_input_and_output_of_different_typ
 
 
 # images for the dark skin
-
-
 DEBUG = False
 from ainodes_backend import singleton as gs
 
 gs.loaded_models = {}
 gs.models = {}
 
+class StdoutTextEdit(QtWidgets.QPlainTextEdit):
+    signal = QtCore.Signal(str)
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+
+        # Set the maximum block count to 1000
+        self.setMaximumBlockCount(1000)
+        self.signal.connect(self.write_function)
+
+    def write(self, text):
+        self.signal.emit(text)
+
+    def flush(self):
+        pass  # no-op, since we're not buffering
+
+    @QtCore.Slot(str)
+    def write_function(self, text):
+        # Split the text into lines
+        lines = text.splitlines()
+
+        # Append the lines without adding extra line breaks
+        cursor = self.textCursor()
+        for line in lines:
+            cursor.movePosition(QtGui.QTextCursor.End)
+            cursor.insertText(line)
+            cursor.insertBlock()
+
+        # Scroll to the bottom
+        self.ensureCursorVisible()
 class CalculatorWindow(NodeEditorWindow):
 
+    def __init__(self):
+        super().__init__()
+
+        # Create a text widget for stdout and stderr
+        self.text_widget = StdoutTextEdit()
+
+        # Create a dock widget for the text widget and add it to the main window
+        self.dock_widget = QDockWidget('Output', self)
+        self.dock_widget.setAllowedAreas(Qt.BottomDockWidgetArea)
+        self.dock_widget.setWidget(self.text_widget)
+        self.addDockWidget(Qt.BottomDockWidgetArea, self.dock_widget)
+
+        # Redirect stdout and stderr to the text widget
+        sys.stdout = self.text_widget
+        sys.stderr = self.text_widget
+
     def initUI(self):
+
         self.name_company = 'aiNodes'
-        self.name_product = 'AI Node Editos'
+        self.name_product = 'AI Node Editor'
         gs.loaded_models["loaded"] = []
         #print(gs.loaded_models)
         #print(gs.loaded_models["loaded"])
@@ -84,6 +133,7 @@ class CalculatorWindow(NodeEditorWindow):
 
         self.setWindowTitle("aiNodes - Engine")
 
+
     def closeEvent(self, event):
         self.mdiArea.closeAllSubWindows()
         if self.mdiArea.currentSubWindow():
@@ -98,6 +148,8 @@ class CalculatorWindow(NodeEditorWindow):
 
     def createActions(self):
         super().createActions()
+        self.actNode = QAction('&Add Node', self, shortcut='Ctrl+L', statusTip="Open new node", triggered=self.onNodeOpen)
+
 
         self.actClose = QAction("Cl&ose", self, statusTip="Close the active window", triggered=self.mdiArea.closeActiveSubWindow)
         self.actCloseAll = QAction("Close &All", self, statusTip="Close all the windows", triggered=self.mdiArea.closeAllSubWindows)
@@ -118,6 +170,12 @@ class CalculatorWindow(NodeEditorWindow):
         if activeSubWindow:
             return activeSubWindow.widget()
         return None
+    def onNodeOpen(self):
+        """Handle File Open operation"""
+        fname, filter = QFileDialog.getOpenFileName(None, 'Open graph from file', self.getFileDialogDirectory(), 'Python Files (*.py)')
+        if fname != '' and os.path.isfile(fname):
+            import_nodes_from_file(fname)
+            self.nodesListWidget.addMyItems()
 
     def onFileNew(self):
         try:
@@ -169,6 +227,13 @@ class CalculatorWindow(NodeEditorWindow):
 
         self.editMenu.aboutToShow.connect(self.updateEditMenu)
 
+        self.fileMenu.addAction(self.actNode)
+        # Get the index of the action in the fileMenu
+        action_index = self.fileMenu.actions().index(self.actNode)
+
+        # Insert the action at the new index
+        new_index = max(0, action_index - 4)
+        self.fileMenu.insertAction(self.fileMenu.actions()[new_index], self.actNode)
     def updateMenus(self):
         # print("update Menus")
         active = self.getCurrentNodeEditorWidget()

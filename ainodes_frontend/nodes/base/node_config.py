@@ -1,4 +1,5 @@
 import glob
+import importlib
 import os
 import sys
 
@@ -98,3 +99,14 @@ def import_nodes_from_subdirectories(directory):
         if os.path.isdir(subdir_path) and subdir != "base":
             import_nodes_from_directory(subdir_path)
 
+def import_nodes_from_file(file_path):
+    if not os.path.isfile(file_path) or not file_path.endswith('.py'):
+        return
+
+    file_dir, file_name = os.path.split(file_path)
+    module_name = os.path.splitext(file_name)[0]
+
+    root_dir = os.getcwd()
+    rel_dir = os.path.relpath(file_dir, root_dir).replace(os.path.sep, '.')
+
+    exec(f"from {rel_dir} import {module_name}")
