@@ -220,28 +220,21 @@
             "op_code": 11
         },
         {
-            "id": 140628964320736,
-            "title": "Empty Latent Image",
-            "pos_x": 218.74999999999994,
-            "pos_y": 42.49999999999996,
+            "id": 140629709652848,
+            "title": "Image Preview",
+            "pos_x": 230.0,
+            "pos_y": -128.0,
             "inputs": [
                 {
-                    "id": 140629266202784,
+                    "id": 140629709653280,
                     "index": 0,
-                    "multi_edges": false,
-                    "position": 3,
-                    "socket_type": 2
-                },
-                {
-                    "id": 140629709654096,
-                    "index": 1,
                     "multi_edges": false,
                     "position": 3,
                     "socket_type": 5
                 },
                 {
-                    "id": 140629709653808,
-                    "index": 2,
+                    "id": 140622598312192,
+                    "index": 1,
                     "multi_edges": false,
                     "position": 3,
                     "socket_type": 1
@@ -249,25 +242,22 @@
             ],
             "outputs": [
                 {
-                    "id": 140629709654048,
+                    "id": 140629266203120,
                     "index": 0,
                     "multi_edges": true,
                     "position": 6,
-                    "socket_type": 2
+                    "socket_type": 5
                 },
                 {
-                    "id": 140629709653856,
+                    "id": 140622599051344,
                     "index": 1,
                     "multi_edges": true,
                     "position": 6,
                     "socket_type": 1
                 }
             ],
-            "content": {
-                "w": 512,
-                "h": 512
-            },
-            "op_code": 11
+            "content": {},
+            "op_code": 6
         }
     ],
     "edges": [
@@ -308,16 +298,22 @@
             "end": 140622799965200
         },
         {
-            "id": 140622800422656,
+            "id": 140629709652368,
             "edge_type": 2,
-            "start": 140622800422896,
-            "end": 140629709654096
+            "start": 140628964320784,
+            "end": 140622800340928
         },
         {
-            "id": 140629266124704,
+            "id": 140630178924624,
+            "edge_type": 2,
+            "start": 140622800422896,
+            "end": 140629709653280
+        },
+        {
+            "id": 140629711819392,
             "edge_type": 2,
             "start": 140622800422704,
-            "end": 140629709653808
+            "end": 140622598312192
         }
     ]
 }
