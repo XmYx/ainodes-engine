@@ -3,11 +3,12 @@ from PIL.ImageQt import ImageQt
 from qtpy import QtCore
 from qtpy.QtWidgets import QLabel, QFileDialog, QVBoxLayout
 from qtpy.QtGui import QPixmap
-from ainodes_frontend.nodes.base.node_config import register_node, OP_NODE_IMG_INPUT
+from ainodes_frontend.nodes.base.node_config import register_node, get_next_opcode
 from ainodes_frontend.nodes.base.ai_node_base import CalcNode, CalcGraphicsNode
 from ainodes_backend.node_engine.node_content_widget import QDMNodeContentWidget
 from ainodes_backend.node_engine.utils import dumpException
 
+OP_NODE_IMG_INPUT = get_next_opcode()
 
 class ImageInputWidget(QDMNodeContentWidget):
     fileName = None

@@ -3,7 +3,7 @@ import os
 
 from qtpy.QtWidgets import QLabel
 from qtpy.QtCore import Qt
-from ainodes_frontend.nodes.base.node_config import register_node, OP_NODE_IMG_PREVIEW
+from ainodes_frontend.nodes.base.node_config import register_node, get_next_opcode
 from ainodes_frontend.nodes.base.ai_node_base import CalcNode, CalcGraphicsNode
 from ainodes_backend.node_engine.node_content_widget import QDMNodeContentWidget
 from ainodes_backend.node_engine.utils import dumpException
@@ -11,6 +11,7 @@ from qtpy import QtWidgets, QtGui, QtCore
 
 from ainodes_backend.qops import pixmap_to_pil_image
 
+OP_NODE_IMG_PREVIEW = get_next_opcode()
 
 class ImageOutputWidget(QDMNodeContentWidget):
     eval_signal = QtCore.Signal()

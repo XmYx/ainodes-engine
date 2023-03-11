@@ -1,12 +1,12 @@
 #from qtpy.QtWidgets import QLineEdit, QLabel, QPushButton, QFileDialog, QVBoxLayout
 from qtpy import QtWidgets, QtCore
 
-from ainodes_frontend.nodes.base.node_config import register_node, OP_NODE_DATA
+from ainodes_frontend.nodes.base.node_config import register_node, get_next_opcode
 from ainodes_frontend.nodes.base.ai_node_base import CalcNode, CalcGraphicsNode
 from ainodes_backend.node_engine.node_content_widget import QDMNodeContentWidget
 from ainodes_backend.node_engine.utils import dumpException
 
-
+OP_NODE_DATA = get_next_opcode()
 class DataWidget(QDMNodeContentWidget):
     resize_signal = QtCore.Signal()
     def initUI(self):

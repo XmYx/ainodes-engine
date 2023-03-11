@@ -1,10 +1,12 @@
 from qtpy import QtWidgets, QtCore
 
-from ainodes_frontend.nodes.base.node_config import register_node, OP_NODE_CONDITIONING_COMBINE, OP_NODE_CONDITIONING_SET_AREA
+from ainodes_frontend.nodes.base.node_config import register_node, get_next_opcode
 from ainodes_frontend.nodes.base.ai_node_base import CalcNode, CalcGraphicsNode
 from ainodes_backend.node_engine.node_content_widget import QDMNodeContentWidget
 from ainodes_backend.node_engine.utils import dumpException
 
+OP_NODE_CONDITIONING_COMBINE = get_next_opcode()
+OP_NODE_CONDITIONING_SET_AREA = get_next_opcode()
 
 #from singleton import Singleton
 #gs = Singleton()

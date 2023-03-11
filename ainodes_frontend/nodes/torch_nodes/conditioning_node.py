@@ -1,6 +1,6 @@
 from qtpy import QtWidgets, QtCore
 
-from ainodes_frontend.nodes.base.node_config import register_node, OP_NODE_CONDITIONING
+from ainodes_frontend.nodes.base.node_config import register_node, get_next_opcode
 from ainodes_frontend.nodes.base.ai_node_base import CalcNode, CalcGraphicsNode
 from ainodes_backend.node_engine.node_content_widget import QDMNodeContentWidget
 from ainodes_backend.node_engine.utils import dumpException
@@ -11,7 +11,7 @@ from ainodes_backend.node_engine.utils import dumpException
 from ainodes_backend import singleton as gs
 from ainodes_frontend.nodes.torch_nodes.torch_loader import TorchLoaderNode
 
-
+OP_NODE_CONDITIONING = get_next_opcode()
 class ConditioningWidget(QDMNodeContentWidget):
     def initUI(self):
         # Create a label to display the image

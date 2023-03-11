@@ -1,15 +1,12 @@
 #from qtpy.QtWidgets import QLineEdit, QLabel, QPushButton, QFileDialog, QVBoxLayout
 from qtpy import QtWidgets
 
-from ainodes_frontend.nodes.base.node_config import register_node, OP_NODE_EXEC_SPLITTER
+from ainodes_frontend.nodes.base.node_config import register_node, get_next_opcode
 from ainodes_frontend.nodes.base.ai_node_base import CalcNode, CalcGraphicsNode
 from ainodes_backend.node_engine.node_content_widget import QDMNodeContentWidget
 from ainodes_backend.node_engine.utils import dumpException
 
-SCHEDULERS = ["karras", "normal", "simple", "ddim_uniform"]
-SAMPLERS = ["euler", "euler_ancestral", "heun", "dpm_2", "dpm_2_ancestral",
-            "lms", "dpm_fast", "dpm_adaptive", "dpmpp_2s_ancestral", "dpmpp_sde",
-            "dpmpp_2m", "ddim", "uni_pc", "uni_pc_bh2"]
+OP_NODE_EXEC_SPLITTER = get_next_opcode()
 
 class ExecSplitterWidget(QDMNodeContentWidget):
     def initUI(self):

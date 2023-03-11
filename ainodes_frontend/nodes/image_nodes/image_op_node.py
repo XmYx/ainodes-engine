@@ -9,11 +9,13 @@ from ainodes_backend.cnet_preprocessors.mlsd import MLSDdetector
 
 from ainodes_backend.cnet_preprocessors.midas import MidasDetector
 from ainodes_backend.cnet_preprocessors.openpose import OpenposeDetector
-from ainodes_frontend.nodes.base.node_config import register_node, OP_NODE_IMAGE_OPS
+from ainodes_frontend.nodes.base.node_config import register_node, get_next_opcode
 from ainodes_frontend.nodes.base.ai_node_base import CalcNode, CalcGraphicsNode
 from ainodes_backend.node_engine.node_content_widget import QDMNodeContentWidget
 from ainodes_backend.node_engine.utils import dumpException
 from ainodes_backend.qops import pixmap_to_pil_image, pil_image_to_pixmap
+
+OP_NODE_IMAGE_OPS = get_next_opcode()
 
 image_ops_methods = [
     "resize",

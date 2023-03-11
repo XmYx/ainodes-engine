@@ -5,12 +5,14 @@ from PIL import Image
 from qtpy import QtWidgets, QtCore
 
 from ainodes_backend.matte.matte import MatteInference
-from ainodes_frontend.nodes.base.node_config import register_node, OP_NODE_MATTE
+from ainodes_frontend.nodes.base.node_config import register_node, get_next_opcode
 from ainodes_frontend.nodes.base.ai_node_base import CalcNode, CalcGraphicsNode
 from ainodes_backend.node_engine.node_content_widget import QDMNodeContentWidget
 from ainodes_backend.node_engine.utils import dumpException
 from ainodes_backend.qops import pixmap_to_pil_image, pil_image_to_pixmap
 from ainodes_backend import singleton as gs
+
+OP_NODE_MATTE = get_next_opcode()
 class MatteWidget(QDMNodeContentWidget):
     def initUI(self):
         # Create a label to display the image

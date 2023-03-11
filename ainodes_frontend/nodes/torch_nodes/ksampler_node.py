@@ -13,11 +13,13 @@ from qtpy import QtWidgets, QtCore, QtGui
 from qtpy.QtGui import QPixmap
 
 from ainodes_backend.torch_gc import torch_gc
-from ainodes_frontend.nodes.base.node_config import register_node, OP_NODE_K_SAMPLER
+from ainodes_frontend.nodes.base.node_config import register_node, get_next_opcode
 from ainodes_frontend.nodes.base.ai_node_base import CalcNode, CalcGraphicsNode
 from ainodes_backend.node_engine.node_content_widget import QDMNodeContentWidget
 from ainodes_backend.node_engine.utils import dumpException
 from ainodes_backend import singleton as gs
+
+OP_NODE_K_SAMPLER = get_next_opcode()
 
 SCHEDULERS = ["karras", "normal", "simple", "ddim_uniform"]
 SAMPLERS = ["euler", "euler_ancestral", "heun", "dpm_2", "dpm_2_ancestral",

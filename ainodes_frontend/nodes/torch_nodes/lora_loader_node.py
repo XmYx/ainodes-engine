@@ -4,12 +4,13 @@ from qtpy import QtWidgets
 from ainodes_backend.lora_loader import load_lora_for_models
 from ainodes_backend.model_loader import ModelLoader
 from ainodes_backend.torch_gc import torch_gc
-from ainodes_frontend.nodes.base.node_config import register_node, OP_NODE_LORA_LOADER
+from ainodes_frontend.nodes.base.node_config import register_node, get_next_opcode
 from ainodes_frontend.nodes.base.ai_node_base import CalcNode, CalcGraphicsNode
 from ainodes_backend.node_engine.node_content_widget import QDMNodeContentWidget
 from ainodes_backend.node_engine.utils import dumpException
 from ainodes_backend import singleton as gs
 
+OP_NODE_LORA_LOADER = get_next_opcode()
 class LoraLoaderWidget(QDMNodeContentWidget):
     def initUI(self):
         # Create a label to display the image

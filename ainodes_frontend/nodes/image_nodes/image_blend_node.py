@@ -2,13 +2,14 @@ from PIL import Image
 #from qtpy.QtWidgets import QLineEdit, QLabel, QPushButton, QFileDialog, QVBoxLayout
 from qtpy import QtWidgets, QtCore, QtGui
 
-from ainodes_frontend.nodes.base.node_config import register_node, OP_NODE_IMAGE_BLEND
+from ainodes_frontend.nodes.base.node_config import register_node, get_next_opcode
 from ainodes_frontend.nodes.base.ai_node_base import CalcNode, CalcGraphicsNode
 from ainodes_backend.node_engine.node_content_widget import QDMNodeContentWidget
 from ainodes_backend.node_engine.utils import dumpException
 from ainodes_backend.qops.qimage_ops import pixmap_to_pil_image, pil_image_to_pixmap, \
     pixmap_composite_method_list
 
+OP_NODE_IMAGE_BLEND = get_next_opcode()
 
 class BlendWidget(QDMNodeContentWidget):
     def initUI(self):

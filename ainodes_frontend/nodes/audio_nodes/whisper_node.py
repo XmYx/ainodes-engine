@@ -4,7 +4,7 @@ import threading
 from qtpy import QtWidgets, QtCore
 
 from ainodes_backend.sound_recorder import AudioRecorder
-from ainodes_frontend.nodes.base.node_config import register_node, OP_NODE_WHISPER
+from ainodes_frontend.nodes.base.node_config import register_node, get_next_opcode
 from ainodes_frontend.nodes.base.ai_node_base import CalcNode, CalcGraphicsNode
 from ainodes_backend.node_engine.node_content_widget import QDMNodeContentWidget
 from ainodes_backend.node_engine.utils import dumpException
@@ -16,6 +16,7 @@ SAMPLERS = ["euler", "euler_ancestral", "heun", "dpm_2", "dpm_2_ancestral",
             "lms", "dpm_fast", "dpm_adaptive", "dpmpp_2s_ancestral", "dpmpp_sde",
             "dpmpp_2m", "ddim", "uni_pc", "uni_pc_bh2"]
 
+OP_CODE = get_next_opcode()
 class Whisper():
 
     def __init__(self):
@@ -76,10 +77,10 @@ class WhisperWidget(QDMNodeContentWidget):
         return res
 
 
-@register_node(OP_NODE_WHISPER)
+@register_node(OP_CODE)
 class WhisperNode(CalcNode):
     icon = "icons/in.png"
-    op_code = OP_NODE_WHISPER
+    op_code = OP_CODE
     op_title = "Whisper"
     content_label_objname = "whisper_node"
     category = "debug"

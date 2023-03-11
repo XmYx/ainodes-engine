@@ -5,7 +5,7 @@ from PIL import Image
 from qtpy import QtWidgets, QtCore, QtGui
 
 from ainodes_backend.resizeRight import interp_methods, resizeright
-from ainodes_frontend.nodes.base.node_config import register_node, OP_NODE_LATENT,OP_NODE_LATENT_COMPOSITE
+from ainodes_frontend.nodes.base.node_config import register_node, get_next_opcode
 from ainodes_frontend.nodes.base.ai_node_base import CalcNode, CalcGraphicsNode
 from ainodes_backend.node_engine.node_content_widget import QDMNodeContentWidget
 from ainodes_backend.node_engine.utils import dumpException
@@ -13,6 +13,8 @@ from ainodes_backend import singleton as gs
 from ainodes_backend.qops import pixmap_to_pil_image
 from einops import repeat
 
+OP_NODE_LATENT = get_next_opcode()
+OP_NODE_LATENT_COMPOSITE = get_next_opcode()
 class LatentWidget(QDMNodeContentWidget):
     def initUI(self):
         # Create a label to display the image
