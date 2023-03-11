@@ -112,7 +112,7 @@ class ConditioningCombineNode(CalcNode):
     def __init__(self, scene):
         super().__init__(scene, inputs=[3,3,1], outputs=[3,1])
         #self.eval()
-        self.content.eval_signal.connect(self.evalImplementation)
+        #self.content.eval_signal.connect(self.evalImplementation)
         # Create a worker object
     def initInnerClasses(self):
         self.content = ConditioningCombineWidget(self)
@@ -147,6 +147,8 @@ class ConditioningCombineNode(CalcNode):
             cond_2_node, index = self.getInput(0)
             conditioning2 = cond_2_node.getOutput(index)
             c = conditioning1 + conditioning2
+            print("COND COMBINE NODE: Conditionings combined.")
+
             return c
         except:
             return None
@@ -165,11 +167,9 @@ class ConditioningCombineNode(CalcNode):
     def onInputChanged(self, socket=None):
         pass
 
-    def exec(self):
+    def eval(self):
         self.markDirty(True)
-        self.markInvalid(True)
-        self.value = None
-        self.content.eval_signal.emit(0)
+        self.evalImplementation()
 
     def combine(self, conditioning_1, conditioning_2):
         return [conditioning_1 + conditioning_2]
@@ -184,7 +184,7 @@ class ConditioningAreaNode(CalcNode):
     def __init__(self, scene):
         super().__init__(scene, inputs=[3,1], outputs=[3,1])
         self.eval()
-        self.content.eval_signal.connect(self.evalImplementation)
+        #self.content.eval_signal.connect(self.evalImplementation)
         # Create a worker object
     def initInnerClasses(self):
         self.content = ConditioningSetAreaWidget(self)
@@ -202,29 +202,38 @@ class ConditioningAreaNode(CalcNode):
 
     def evalImplementation(self, index=0):
         try:
-            cond = self.append_conditioning
+            cond = self.append_conditioning()
             self.setOutput(0, cond)
-            print("COND COMBINE NODE: Conditionings combined.")
+            print("COND AREA NODE: Conditionings Area Set.")
+            self.markDirty(False)
             if len(self.getOutputs(1)) > 0:
                 self.executeChild(output_index=1)
             return cond
 
         except:
-            print("COND COMBINE NODE: Failed, please make sure both inputs are valid conditionings.")
+            print("COND AREA NODE: Failed, please make sure that the conditioning is valid.")
+            self.markDirty(True)
+            return None
             if len(self.getOutputs(1)) > 0:
                 self.executeChild(output_index=1)
             return None
 
-
+    def eval(self):
+        self.markDirty(True)
+        self.evalImplementation()
     def onMarkedDirty(self):
         self.value = None
     def combine_conditioning(self, progress_callback=None):
         try:
             cond_1_node, index = self.getInput(1)
             conditioning1 = cond_1_node.getOutput(index)
+            print("cond1", conditioning1.shape)
             cond_2_node, index = self.getInput(0)
             conditioning2 = cond_2_node.getOutput(index)
+            print("cond2", conditioning2.shape)
+
             c = conditioning1 + conditioning2
+            print(c.shape)
             return c
         except:
             return None

@@ -179,3 +179,5 @@ semseg/
 
 # vscode
 .vscode
+models/checkpoints/22h02.safetensors
+*.safetensors
