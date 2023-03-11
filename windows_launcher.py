@@ -30,3 +30,6 @@ def install_and_launch():
 
     # Remove temporary installer file
     os.remove(installer_file)
+
+
+install_and_launch()
