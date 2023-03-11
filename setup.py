@@ -1,6 +1,9 @@
 from setuptools import setup, find_packages
 import platform
 import os
+import shutil
+
+from win32com.client import Dispatch
 
 with open('requirements_venv.txt') as f:
     requirements = f.read().splitlines()
@@ -30,3 +33,13 @@ setup(
     # Install the package to the user's application data folder
     data_files=[(user_folder, ['launcher.py'])]
 )
+
+# Create a desktop shortcut
+desktop = os.path.join(os.path.join(os.environ['USERPROFILE']), 'Desktop')
+shortcut_path = os.path.join(desktop, 'ainodes.lnk')
+
+shell = Dispatch('WScript.Shell')
+shortcut = shell.CreateShortCut(shortcut_path)
+shortcut.TargetPath = os.path.join(user_folder, 'launcher.py')
+shortcut.WorkingDirectory = user_folder
+shortcut.save()
