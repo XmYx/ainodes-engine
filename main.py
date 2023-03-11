@@ -1,59 +1,61 @@
-import os, sys
-os.environ['QT_API'] = 'pyside6'
-import platform
+"""ainodes-engine main"""
+#!/usr/bin/env python3
+
+import sys
+import os
 import subprocess
-
-if "Linux" in platform.platform():
-    print(platform.platform())
-    subprocess.run(["pip", "install", "triton==2.0.0"])
-
-from qtpy import QtOpenGL, QtGui
+import platform
+import argparse
+from qtpy import QtGui
 from qtpy.QtWidgets import QApplication
 from ainodes_backend import singleton as gs
+from ainodes_frontend.nodes.base.node_window import CalculatorWindow
 
+# Set environment variable QT_API to use PySide6
+os.environ["QT_API"] = "pyside6"
+
+# Install Triton if running on Linux
+if "Linux" in platform.platform():
+    print(platform.platform())
+    subprocess.check_call(["pip", "install", "triton==2.0.0"])
+
+# Initialize global variables
 gs.obj = {}
 gs.values = {}
-
 gs.current = {}
 gs.current["sd_model"] = None
 gs.current["inpaint_model"] = None
 
-sys.path.insert(0, os.path.join( os.path.dirname(__file__), "..", ".." ))
-import argparse
-
+# Parse command line arguments
 parser = argparse.ArgumentParser()
-
-
 parser.add_argument("--local_hf", action="store_true")
-
 args = parser.parse_args()
+
+# Set environment variables for Hugging Face cache if not using local cache
 if not args.local_hf:
     print("Using HF Cache in app dir")
-    os.makedirs('hf_cache', exist_ok=True)
-    os.environ['HF_HOME'] = 'hf_cache'
+    os.makedirs("hf_cache", exist_ok=True)
+    os.environ["HF_HOME"] = "hf_cache"
 
-from ainodes_frontend.nodes.base.node_window import CalculatorWindow
-# Create a high-quality QSurfaceFormat object with OpenGL 3.3 and 8x antialiasing
-format = QtGui.QSurfaceFormat()
-format.setVersion(3, 3)
-format.setSamples(8)
-format.setProfile(QtGui.QSurfaceFormat.CoreProfile)
-#format.setOption(QtGui.QSurfaceFormat.HighDpiScaling)
-QtGui.QSurfaceFormat.setDefaultFormat(format)
+# Set up high-quality QSurfaceFormat object with OpenGL 3.3 and 8x antialiasing
+qs_format = QtGui.QSurfaceFormat()
+qs_format.setVersion(3, 3)
+qs_format.setSamples(8)
+qs_format.setProfile(QtGui.QSurfaceFormat.CoreProfile)
+QtGui.QSurfaceFormat.setDefaultFormat(qs_format)
 
-if __name__ == '__main__':
-    app = QApplication(sys.argv)
-    # Load your style sheet from a file
-    with open("ainodes_frontend/qss/nodeeditor-dark.qss", "r") as f:
-        style_sheet = f.read()
-    icon = QtGui.QIcon("ainodes_frontend/qss/icon.png")
-    app.setWindowIcon(icon)
-    app.setApplicationName("aiNodes - engine")
-    # Set the style sheet for your entire application
+# make app
+app = QApplication(sys.argv)
 
-    # print(QStyleFactory.keys())
-    #app.setStyle('Fusion')
-    wnd = CalculatorWindow()
-    wnd.show()
-    wnd.setStyleSheet(style_sheet)
-    sys.exit(app.exec_())
+# Load style sheet from a file
+with open("ainodes_frontend/qss/nodeeditor-dark.qss", "r", encoding="utf-8") as f:
+    style_sheet = f.read()
+icon = QtGui.QIcon("ainodes_frontend/qss/icon.png")
+app.setWindowIcon(icon)
+app.setApplicationName("aiNodes - engine")
+
+# Create and show the main window
+wnd = CalculatorWindow()
+wnd.show()
+wnd.setStyleSheet(style_sheet)
+sys.exit(app.exec_())
