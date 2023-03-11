@@ -6,16 +6,16 @@ import numpy as np
 import torch
 
 from ainodes_backend.matte import MattingNetwork
+from ainodes_backend.poormans_wget import poorman_wget
 
-
-try:
+"""try:
     # Try to run wget with the --version option
     result = subprocess.run(['wget', '--version'], capture_output=True, check=True)
     print('wget is installed')
-except subprocess.CalledProcessError:
+except:
     # If wget is not found, subprocess.CalledProcessError is raised
     print('wget is not installed')
-    subprocess.run(["pip", "install", "wget"])
+    subprocess.run(["pip", "install", "wget"])"""
 
 class MatteInference:
     def __init__(self):
@@ -24,8 +24,9 @@ class MatteInference:
 
         if not os.path.isfile("models/other/rvm_resnet50.pth"):
             try:
-                subprocess.run(["wget", "-P", "models/other",
-                                "https://github.com/PeterL1n/RobustVideoMatting/releases/download/v1.0.0/rvm_resnet50.pth"])
+                poorman_wget("https://github.com/PeterL1n/RobustVideoMatting/releases/download/v1.0.0/rvm_resnet50.pth", "models/other/rvm_resnet50.pth")
+                #subprocess.run(["wget", "-P", "models/other",
+                #                "https://github.com/PeterL1n/RobustVideoMatting/releases/download/v1.0.0/rvm_resnet50.pth"])
             except Exception as e:
                 print("Could not load ResNet50 Matting model, please download it from:")
                 print("https://github.com/PeterL1n/RobustVideoMatting/releases/download/v1.0.0/rvm_resnet50.pth")
