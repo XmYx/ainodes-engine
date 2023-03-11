@@ -13,12 +13,12 @@ def install_and_launch():
         return
 
     # Download Python 3.8 x64 installer
-    url = 'https://www.python.org/ftp/python/3.8.12/python-3.8.12-amd64.exe'
+    url = 'https://www.python.org/ftp/python/3.8.10/python-3.8.10-amd64.exe'
     with urllib.request.urlopen(url) as response:
         installer_data = response.read()
 
     # Save installer to temporary file
-    installer_file = os.path.join(tempfile.gettempdir(), 'python-3.8.12-amd64.exe')
+    installer_file = os.path.join(tempfile.gettempdir(), 'python-3.8.10-amd64.exe')
     with open(installer_file, 'wb') as f:
         f.write(installer_data)
 
