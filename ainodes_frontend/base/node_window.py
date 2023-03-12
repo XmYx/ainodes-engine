@@ -7,6 +7,7 @@ from qtpy.QtGui import QIcon, QKeySequence
 from qtpy.QtWidgets import QMdiArea, QDockWidget, QAction, QMessageBox, QFileDialog
 from qtpy.QtCore import Qt, QSignalMapper
 
+from ainodes_frontend.base.worker import Worker
 from ainodes_frontend.node_engine.utils import loadStylesheets
 from ainodes_frontend.node_engine.node_editor_window import NodeEditorWindow
 from ainodes_frontend.base.node_sub_window import CalculatorSubWindow
@@ -68,19 +69,26 @@ class StdoutTextEdit(QtWidgets.QPlainTextEdit):
 
         # Scroll to the bottom
         self.ensureCursorVisible()
-class GitHubRepositoriesDialog(QtWidgets.QDialog):
+
+def remove_empty_lines(file_path):
+    with open(file_path, "r+") as f:
+        content = f.readlines()
+        f.seek(0)
+        f.writelines(line for line in content if line.strip())
+        f.truncate()
+class GitHubRepositoriesDialog(QtWidgets.QDockWidget):
     def __init__(self, parent=None):
         super().__init__(parent=parent)
         self.parent = parent
         self.initUI()
 
     def initUI(self):
-        self.setWindowTitle("GitHub Repositories")
+        self.setWindowTitle("Node Packages")
 
         main_widget = QtWidgets.QWidget(self)
 
-        layout = QtWidgets.QHBoxLayout()
-        self.setLayout(layout)
+        layout = QtWidgets.QHBoxLayout(main_widget)
+        self.setWidget(main_widget)
         self.list_widget = QtWidgets.QListWidget()
 
         layout.addWidget(self.list_widget)
@@ -119,8 +127,11 @@ class GitHubRepositoriesDialog(QtWidgets.QDialog):
         self.context_menu.addAction(self.delete_repository_action)
 
         self.repository_icon_label.setFixedSize(128, 128)
+        self.repolist = "repositories.txt"
+
 
     def load_repositories(self):
+        remove_empty_lines(self.repolist)
         with open("repositories.txt") as f:
             repositories = f.read().splitlines()
         for repository in repositories:
@@ -157,10 +168,19 @@ class GitHubRepositoriesDialog(QtWidgets.QDialog):
             self.download_button.show()
 
     def download_repository(self):
+        worker = Worker(self.download_repository_thread)
+        worker.signals.result.connect(self.download_repository_finished)
+        self.parent.threadpool.start(worker)
+    def download_repository_thread(self, progress_callback=None):
         repository = self.repository_name_label.text()
         folder = repository.split("/")[1]
         command = f"git clone https://github.com/{repository} ./custom_nodes/{folder} && pip install -r ./custom_nodes/{folder}/requirements.txt"
-        result = run(command, shell=True, stdout=PIPE, stderr=PIPE)
+        result = run(command, shell=True, stdout=self.parent.text_widget, stderr=self.parent.text_widget)
+        return result
+    @QtCore.Slot(object)
+    def download_repository_finished(self, result):
+        repository = self.repository_name_label.text()
+        folder = repository.split("/")[1]
         if result.returncode == 0:
             import_nodes_from_subdirectories(f"./custom_nodes/{folder}")
             self.parent.nodesListWidget.addMyItems()
@@ -172,10 +192,20 @@ class GitHubRepositoriesDialog(QtWidgets.QDialog):
             f"An error occurred while downloading {repository}:\n{result.stderr.decode()}")
 
     def update_repository(self):
+        worker = Worker(self.update_repository_thread)
+        worker.signals.result.connect(self.update_repository_finished)
+        self.parent.threadpool.start(worker)
+
+    def update_repository_thread(self, progress_callback=None):
         repository = self.repository_name_label.text()
         folder = repository.split("/")[1]
         command = f"git -C ./custom_nodes/{folder} stash && git -C ./custom_nodes/{folder} pull && pip install -r ./custom_nodes/{folder}/requirements.txt"
-        result = run(command, shell=True, stdout=PIPE, stderr=PIPE)
+        result = run(command, shell=True, stdout=self.parent.text_widget, stderr=self.parent.text_widget)
+        return result
+    @QtCore.Slot(object)
+    def update_repository_finished(self, result):
+        repository = self.repository_name_label.text()
+        folder = repository.split("/")[1]
         if result.returncode == 0:
             import_nodes_from_subdirectories(f"./custom_nodes/{folder}")
             self.parent.nodesListWidget.addMyItems()
@@ -187,21 +217,26 @@ class GitHubRepositoriesDialog(QtWidgets.QDialog):
                                  f"An error occurred while updating {repository}:\n{result.stderr.decode()}")
 
     def add_repository(self):
+        remove_empty_lines(self.repolist)
         text, ok = QtWidgets.QInputDialog.getText(self, "Add Repository",
                                                   "Enter the repository name (e.g. owner/repo):")
         if ok and text:
             with open("repositories.txt", "r") as f:
-                if text in f.read().splitlines():
+                lines = f.read().splitlines()
+                if text in lines:
                     QtWidgets.QMessageBox.warning(self, "Duplicate Repository", f"{text} already exists in the list.")
                     return
             with open("repositories.txt", "a") as f:
-                f.write(text + "\n")
+                if lines:
+                    f.write("\n")
+                f.write(text)
             item = QtWidgets.QListWidgetItem(text)
             item.setForeground(Qt.black)
             item.setBackground(Qt.darkYellow)
             self.list_widget.addItem(item)
 
     def delete_repository(self):
+        remove_empty_lines(self.repolist)
         row = self.list_widget.currentRow()
         if row != -1:
             repository = self.list_widget.item(row).text()
@@ -226,7 +261,7 @@ class CalculatorWindow(NodeEditorWindow):
         self.text_widget = ConsoleWidget()
         #self.text_widget2 = ConsoleWidget()
 
-
+        self.threadpool = QtCore.QThreadPool()
         # Create a dock widget for the text widget and add it to the main window
         self.dock_widget = QDockWidget('Output', self)
         self.dock_widget.setAllowedAreas(Qt.BottomDockWidgetArea)
@@ -289,9 +324,10 @@ class CalculatorWindow(NodeEditorWindow):
         self.show_github_repositories()
 
     def show_github_repositories(self):
-        dialog = GitHubRepositoriesDialog(self)
-        dialog.load_repositories()
-        dialog.show()
+        self.node_packages = GitHubRepositoriesDialog(self)
+        self.node_packages.load_repositories()
+        self.addDockWidget(Qt.BottomDockWidgetArea, self.node_packages)
+        #dialog.show()
 
     def closeEvent(self, event):
         self.mdiArea.closeAllSubWindows()
@@ -488,7 +524,7 @@ class CalculatorWindow(NodeEditorWindow):
         self.nodesDock.setWidget(self.nodesListWidget)
         self.nodesDock.setFloating(False)
 
-        self.addDockWidget(Qt.RightDockWidgetArea, self.nodesDock)
+        self.addDockWidget(Qt.LeftDockWidgetArea, self.nodesDock)
 
     def createStatusBar(self):
         self.statusBar().showMessage("Ready")
