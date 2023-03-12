@@ -4,3 +4,4 @@ qtpy
 torch==1.13.1+cu117
 torchvision
 requests
+pyqtgraph
