@@ -59,6 +59,11 @@ app.setApplicationName("aiNodes - engine")
 
 # Create and show the main window
 wnd = CalculatorWindow()
+
+sys.stdout = wnd.text_widget
+#sys.stderr = wnd.text_widget
+#sys.stdin = wnd.text_widget
+
 wnd.show()
 
 
@@ -73,4 +78,4 @@ wnd.nodesListWidget.addMyItems()
 
 
 wnd.setStyleSheet(style_sheet)
-sys.exit(app.exec_())
+sys.exit(app.exec())

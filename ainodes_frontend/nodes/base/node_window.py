@@ -105,6 +105,17 @@ class GitHubRepositoriesDialog(QtWidgets.QDialog):
         layout.addWidget(repository_widget)
 
         self.list_widget.currentRowChanged.connect(self.show_repository_details)
+        self.list_widget.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        self.list_widget.customContextMenuRequested.connect(self.right_click_menu)
+
+        self.add_repository_action = QtWidgets.QAction("Add Repository", self)
+        self.add_repository_action.triggered.connect(self.add_repository)
+        self.delete_repository_action = QtWidgets.QAction("Delete Repository", self)
+        self.delete_repository_action.triggered.connect(self.delete_repository)
+
+        self.context_menu = QtWidgets.QMenu(self)
+        self.context_menu.addAction(self.add_repository_action)
+        self.context_menu.addAction(self.delete_repository_action)
 
     def load_repositories(self):
         with open("repositories.txt") as f:
@@ -119,7 +130,7 @@ class GitHubRepositoriesDialog(QtWidgets.QDialog):
                 self.download_button.setVisible(False)
             else:
                 item.setForeground(Qt.black)
-                item.setBackground(Qt.white)
+                item.setBackground(Qt.darkYellow)
             self.list_widget.addItem(item)
 
     def show_repository_details(self, row):
@@ -131,9 +142,11 @@ class GitHubRepositoriesDialog(QtWidgets.QDialog):
         if os.path.isdir(f"./custom_nodes/{folder}"):
             self.list_widget.currentItem().setBackground(Qt.darkGreen)
             self.update_button.show()
+            self.download_button.hide()
         else:
-            self.list_widget.currentItem().setBackground(Qt.white)
+            self.list_widget.currentItem().setBackground(Qt.darkYellow)
             self.update_button.hide()
+            self.download_button.show()
 
     def download_repository(self):
         repository = self.repository_name_label.text()
@@ -144,7 +157,7 @@ class GitHubRepositoriesDialog(QtWidgets.QDialog):
             import_nodes_from_subdirectories(f"./custom_nodes/{folder}")
             self.parent.nodesListWidget.addMyItems()
             QtWidgets.QMessageBox.information(self, "Download Complete", f"{repository} was downloaded successfully.")
-            self.list_widget.currentItem().setBackground(Qt.green)
+            self.list_widget.currentItem().setBackground(Qt.darkGreen)
             self.update_button.hide()
         else:
             QtWidgets.QMessageBox.critical(self, "Download Failed",
@@ -159,12 +172,43 @@ class GitHubRepositoriesDialog(QtWidgets.QDialog):
             import_nodes_from_subdirectories(f"./custom_nodes/{folder}")
             self.parent.nodesListWidget.addMyItems()
             QtWidgets.QMessageBox.information(self, "Update Complete", f"{repository} was updated successfully.")
-            self.list_widget.currentItem().setBackground(Qt.green)
+            self.list_widget.currentItem().setBackground(Qt.darkGreen)
             self.update_button.hide()
         else:
             QtWidgets.QMessageBox.critical(self, "Update Failed",
                                  f"An error occurred while updating {repository}:\n{result.stderr.decode()}")
 
+    def add_repository(self):
+        text, ok = QtWidgets.QInputDialog.getText(self, "Add Repository",
+                                                  "Enter the repository name (e.g. owner/repo):")
+        if ok and text:
+            with open("repositories.txt", "r") as f:
+                if text in f.read().splitlines():
+                    QtWidgets.QMessageBox.warning(self, "Duplicate Repository", f"{text} already exists in the list.")
+                    return
+            with open("repositories.txt", "a") as f:
+                f.write(text + "\n")
+            item = QtWidgets.QListWidgetItem(text)
+            item.setForeground(Qt.black)
+            item.setBackground(Qt.darkYellow)
+            self.list_widget.addItem(item)
+
+    def delete_repository(self):
+        row = self.list_widget.currentRow()
+        if row != -1:
+            repository = self.list_widget.item(row).text()
+            if repository == "XmYx/ainodes_engine_base_nodes":
+                QtWidgets.QMessageBox.warning(self, "Default Repository", "The default repository cannot be deleted.")
+                return
+            with open("repositories.txt", "r") as f:
+                lines = f.readlines()
+            with open("repositories.txt", "w") as f:
+                for line in lines:
+                    if line.strip() != repository:
+                        f.write(line)
+            self.list_widget.takeItem(row)
+    def right_click_menu(self, position):
+        self.context_menu.exec_(self.list_widget.mapToGlobal(position))
 class CalculatorWindow(NodeEditorWindow):
 
     def __init__(self):
@@ -186,9 +230,6 @@ class CalculatorWindow(NodeEditorWindow):
         self.addDockWidget(Qt.BottomDockWidgetArea, self.dock_widget)
 
         # Redirect stdout and stderr to the text widget
-        sys.stdout = self.text_widget
-        sys.stderr = self.text_widget
-        sys.stdin = self.text_widget
 
     def initUI(self):
 
@@ -259,6 +300,7 @@ class CalculatorWindow(NodeEditorWindow):
     def createActions(self):
         super().createActions()
         self.actNode = QAction('&Add Node', self, shortcut='Ctrl+L', statusTip="Open new node", triggered=self.onNodeOpen)
+        self.actNodePacks = QAction('&Node Packages', self, shortcut='Ctrl+K', statusTip="Download Nodes", triggered=self.show_github_repositories)
 
 
         self.actClose = QAction("Cl&ose", self, statusTip="Close the active window", triggered=self.mdiArea.closeActiveSubWindow)
@@ -338,12 +380,19 @@ class CalculatorWindow(NodeEditorWindow):
         self.editMenu.aboutToShow.connect(self.updateEditMenu)
 
         self.fileMenu.addAction(self.actNode)
+        self.fileMenu.addAction(self.actNodePacks)
         # Get the index of the action in the fileMenu
         action_index = self.fileMenu.actions().index(self.actNode)
 
         # Insert the action at the new index
         new_index = max(0, action_index - 4)
         self.fileMenu.insertAction(self.fileMenu.actions()[new_index], self.actNode)
+        # Get the index of the action in the fileMenu
+        action_index = self.fileMenu.actions().index(self.actNodePacks)
+
+        # Insert the action at the new index
+        new_index = max(0, action_index - 4)
+        self.fileMenu.insertAction(self.fileMenu.actions()[new_index], self.actNodePacks)
     def updateMenus(self):
         # print("update Menus")
         active = self.getCurrentNodeEditorWidget()
