@@ -1,6 +1,7 @@
 import os
 import sys
 import threading
+from subprocess import run, PIPE
 
 from qtpy import QtWidgets, QtCore, QtGui
 from qtpy.QtGui import QIcon, QKeySequence
@@ -12,7 +13,7 @@ from ainodes_backend.node_engine.node_editor_window import NodeEditorWindow
 from ainodes_frontend.nodes.base.node_sub_window import CalculatorSubWindow
 from ainodes_frontend.nodes.base.ai_nodes_listbox import QDMDragListbox
 from ainodes_backend.node_engine.utils_no_qt import dumpException, pp
-from ainodes_frontend.nodes.base.node_config import CALC_NODES, import_nodes_from_file
+from ainodes_frontend.nodes.base.node_config import CALC_NODES, import_nodes_from_file, import_nodes_from_subdirectories
 
 # Enabling edge validators
 from ainodes_backend.node_engine.node_edge import Edge
@@ -68,6 +69,79 @@ class StdoutTextEdit(QtWidgets.QPlainTextEdit):
 
         # Scroll to the bottom
         self.ensureCursorVisible()
+class GitHubRepositoriesDialog(QtWidgets.QDialog):
+    def __init__(self, parent=None):
+        super().__init__(parent=parent)
+        self.parent = parent
+        self.initUI()
+
+    def initUI(self):
+        self.setWindowTitle("GitHub Repositories")
+
+        main_widget = QtWidgets.QWidget(self)
+
+
+        layout = QtWidgets.QHBoxLayout()
+        self.setLayout(layout)
+        self.list_widget = QtWidgets.QListWidget()
+        self.load_repositories()
+        layout.addWidget(self.list_widget)
+
+        repository_widget = QtWidgets.QWidget()
+        repository_layout = QtWidgets.QVBoxLayout(repository_widget)
+        repository_label = QtWidgets.QLabel("Repository details")
+        self.repository_name_label = QtWidgets.QLabel()
+        self.repository_url_label = QtWidgets.QLabel()
+        self.download_button = QtWidgets.QPushButton("Download")
+        self.download_button.clicked.connect(self.download_repository)
+
+        self.download_button.hide()
+        repository_layout.addWidget(repository_label)
+        repository_layout.addWidget(self.repository_name_label)
+        repository_layout.addWidget(self.repository_url_label)
+        repository_layout.addWidget(self.download_button)
+        layout.addWidget(repository_widget)
+
+        self.list_widget.currentRowChanged.connect(self.show_repository_details)
+
+    def load_repositories(self):
+        with open("repositories.txt") as f:
+            repositories = f.read().splitlines()
+        for repository in repositories:
+            item = QtWidgets.QListWidgetItem(repository)
+            if os.path.isdir(f"./custom_nodes/{repository}"):
+                item.setBackground(Qt.green)
+                self.download_button.hide()
+            else:
+                item.setBackground(Qt.white)
+            self.list_widget.addItem(item)
+
+    def show_repository_details(self, row):
+        repository = self.list_widget.item(row).text()
+        self.repository_name_label.setText(repository)
+        url = f"https://github.com/{repository}"
+        self.repository_url_label.setText(url)
+        self.download_button.show()
+
+    def download_repository(self):
+        repository = self.repository_name_label.text()
+        folder = repository.split("/")[1]
+        print(folder)
+        command = f"git clone https://github.com/{repository} ./custom_nodes/{folder}"
+        result = run(command, shell=True, stdout=PIPE, stderr=PIPE)
+        if result.returncode == 0:
+            import_nodes_from_subdirectories(f"./custom_nodes/{folder}")
+            self.parent.nodesListWidget.addMyItems()
+            QtWidgets.QMessageBox.information(self, "Download Complete", f"{repository} was downloaded successfully.")
+            self.list_widget.currentItem().setBackground(Qt.green)
+            self.download_button.hide()
+        else:
+            QtWidgets.QMessageBox.critical(self, "Download Failed",
+                                 f"An error occurred while downloading {repository}:\n{result.stderr.decode()}")
+
+
+if __name__ == "__main__":
+    app = QApplication([])
 class CalculatorWindow(NodeEditorWindow):
 
     def __init__(self):
@@ -140,6 +214,11 @@ class CalculatorWindow(NodeEditorWindow):
 
         self.setWindowTitle("aiNodes - Engine")
 
+        self.show_github_repositories()
+
+    def show_github_repositories(self):
+        dialog = GitHubRepositoriesDialog(self)
+        dialog.show()
 
     def closeEvent(self, event):
         self.mdiArea.closeAllSubWindows()

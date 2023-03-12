@@ -62,12 +62,12 @@ wnd = CalculatorWindow()
 wnd.show()
 
 
-import_nodes_from_directory("ainodes_frontend/nodes/exec_nodes")
-import_nodes_from_directory("ainodes_frontend/nodes/image_nodes")
-import_nodes_from_directory("ainodes_frontend/nodes/torch_nodes")
-import_nodes_from_directory("ainodes_frontend/nodes/video_nodes")
-if args.whisper:
-    import_nodes_from_directory("ainodes_frontend/nodes/audio_nodes")
+#import_nodes_from_directory("ainodes_frontend/nodes/exec_nodes")
+#import_nodes_from_directory("ainodes_frontend/nodes/image_nodes")
+#import_nodes_from_directory("ainodes_frontend/nodes/torch_nodes")
+#import_nodes_from_directory("ainodes_frontend/nodes/video_nodes")
+#if args.whisper:
+#    import_nodes_from_directory("ainodes_frontend/nodes/audio_nodes")
 
 wnd.nodesListWidget.addMyItems()
 

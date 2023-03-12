@@ -106,6 +106,7 @@ def import_nodes_from_directory(directory):
         if os.path.basename(node_file) != "__init__.py":
             module_name = os.path.basename(node_file)[:-3].replace('/', '.')
             dir = directory.replace('/', '.')
+            dir = dir.replace('\\', '.').lstrip('.')
             exec(f"from {dir} import {module_name}")
 
 def import_nodes_from_subdirectories(directory):
