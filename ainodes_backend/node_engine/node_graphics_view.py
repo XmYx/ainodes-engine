@@ -285,6 +285,8 @@ class QDMGraphicsView(QGraphicsView):
                 super().mouseReleaseEvent(fakeEvent)
                 QApplication.setOverrideCursor(Qt.CrossCursor)
                 return
+            elif event.modifiers() & Qt.AltModifier:
+                self.setDragMode(QGraphicsView.ScrollHandDrag)
             else:
                 self.rubberBandDraggingRectangle = True
 
@@ -371,6 +373,7 @@ class QDMGraphicsView(QGraphicsView):
 
         super().mouseReleaseEvent(event)
 
+        self.setDragMode(QGraphicsView.RubberBandDrag)
 
     def rightMouseButtonPress(self, event: QMouseEvent):
         """When Right mouse button was pressed"""
