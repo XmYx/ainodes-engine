@@ -138,7 +138,7 @@ class GitHubRepositoriesDialog(QtWidgets.QDialog):
     def download_repository(self):
         repository = self.repository_name_label.text()
         folder = repository.split("/")[1]
-        command = f"git clone https://github.com/{repository} ./custom_nodes/{folder}"
+        command = f"git clone https://github.com/{repository} ./custom_nodes/{folder} && pip install -r ./custom_nodes/{folder}/requirements.txt"
         result = run(command, shell=True, stdout=PIPE, stderr=PIPE)
         if result.returncode == 0:
             import_nodes_from_subdirectories(f"./custom_nodes/{folder}")
@@ -153,7 +153,7 @@ class GitHubRepositoriesDialog(QtWidgets.QDialog):
     def update_repository(self):
         repository = self.repository_name_label.text()
         folder = repository.split("/")[1]
-        command = f"git -C ./custom_nodes/{folder} pull"
+        command = f"git -C ./custom_nodes/{folder} pull && pip install -r ./custom_nodes/{folder}/requirements.txt"
         result = run(command, shell=True, stdout=PIPE, stderr=PIPE)
         if result.returncode == 0:
             import_nodes_from_subdirectories(f"./custom_nodes/{folder}")
