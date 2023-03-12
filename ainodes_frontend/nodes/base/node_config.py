@@ -3,6 +3,11 @@ import importlib
 import os
 import sys
 
+from qtpy import QtWidgets
+
+from ainodes_backend import singleton as gs
+from ainodes_backend.node_engine.node_editor_widget import NodeEditorWidget
+
 LISTBOX_MIMETYPE = "application/x-item"
 
 """OP_NODE_IMG_INPUT = 1
@@ -75,6 +80,13 @@ def register_node_now(op_code, class_reference):
         ))
     CALC_NODES[op_code] = class_reference
 
+    gs.nodes[class_reference.content_label_objname] = {}
+    gs.nodes[class_reference.content_label_objname]['op_code'] = op_code
+    gs.nodes[class_reference.content_label_objname]['class'] = class_reference
+
+
+    print(class_reference.content_label_objname)
+
 
 def register_node(op_code):
     def decorator(original_class):
@@ -84,7 +96,10 @@ def register_node(op_code):
 
 def get_class_from_opcode(op_code):
     if op_code not in CALC_NODES: raise OpCodeNotRegistered("OpCode '%d' is not registered" % op_code)
+
     return CALC_NODES[op_code]
+def get_class_from_content_label_objname(content_label_objname):
+    return gs.nodes[content_label_objname]['class']
 def import_nodes_from_directory(directory):
     node_files = glob.glob(os.path.join(directory, "*.py"))
     for node_file in node_files:

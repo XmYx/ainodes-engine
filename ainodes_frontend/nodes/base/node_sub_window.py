@@ -5,7 +5,8 @@ from qtpy.QtCore import QDataStream, QIODevice, Qt, QThreadPool
 from qtpy.QtWidgets import QAction, QGraphicsProxyWidget, QMenu
 
 from ainodes_backend.node_engine.node_node import Node
-from ainodes_frontend.nodes.base.node_config import CALC_NODES, get_class_from_opcode, LISTBOX_MIMETYPE, node_categories
+from ainodes_frontend.nodes.base.node_config import CALC_NODES, get_class_from_opcode, LISTBOX_MIMETYPE, \
+    node_categories, get_class_from_content_label_objname
 from ainodes_backend.node_engine.node_editor_widget import NodeEditorWidget
 from ainodes_backend.node_engine.node_edge import EDGE_TYPE_DIRECT, EDGE_TYPE_BEZIER, EDGE_TYPE_SQUARE
 from ainodes_backend.node_engine.node_graphics_view import MODE_EDGE_DRAG
@@ -45,7 +46,11 @@ class CalculatorSubWindow(NodeEditorWidget):
         self.scene.queue.start_next_task()
     def getNodeClassFromData(self, data):
         if 'op_code' not in data: return Node
-        return get_class_from_opcode(data['op_code'])
+
+        print("data", data['content_label_objname'])
+        print("op_code", get_class_from_opcode(data['op_code']))
+        return get_class_from_content_label_objname(data['content_label_objname'])
+        #return get_class_from_opcode(data['op_code'])
 
     def doEvalOutputs(self):
         # eval all output nodes

@@ -11,6 +11,7 @@ def main():
     """launch ainodes-engine"""
     parser = argparse.ArgumentParser()
     parser.add_argument("--local_hf", action="store_true")
+    parser.add_argument("--whisper", action="store_true")
     args = parser.parse_args()
 
     if not args.local_hf:

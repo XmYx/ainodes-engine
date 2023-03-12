@@ -24,12 +24,14 @@ if "Linux" in platform.platform():
 gs.obj = {}
 gs.values = {}
 gs.current = {}
+gs.nodes = {}
 gs.current["sd_model"] = None
 gs.current["inpaint_model"] = None
 
 # Parse command line arguments
 parser = argparse.ArgumentParser()
 parser.add_argument("--local_hf", action="store_true")
+parser.add_argument("--whisper", action="store_true")
 args = parser.parse_args()
 
 # Set environment variables for Hugging Face cache if not using local cache
@@ -59,11 +61,13 @@ app.setApplicationName("aiNodes - engine")
 wnd = CalculatorWindow()
 wnd.show()
 
-import_nodes_from_directory("ainodes_frontend/nodes/audio_nodes")
+
 import_nodes_from_directory("ainodes_frontend/nodes/exec_nodes")
 import_nodes_from_directory("ainodes_frontend/nodes/image_nodes")
 import_nodes_from_directory("ainodes_frontend/nodes/torch_nodes")
 import_nodes_from_directory("ainodes_frontend/nodes/video_nodes")
+if args.whisper:
+    import_nodes_from_directory("ainodes_frontend/nodes/audio_nodes")
 
 wnd.nodesListWidget.addMyItems()
 

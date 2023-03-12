@@ -158,6 +158,7 @@ class CalcNode(Node):
     def serialize(self):
         res = super().serialize()
         res['op_code'] = self.__class__.op_code
+        res['content_label_objname'] = self.__class__.content_label_objname
         return res
 
     def deserialize(self, data, hashmap={}, restore_id=True):
