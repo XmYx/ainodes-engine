@@ -17,6 +17,7 @@ def main():
         print("Using HF Cache in app dir")
 
     venv_path = "nodes_env"
+    ensure_virtualenv_installed()
     create_venv(venv_path)
     update_project()
 
@@ -24,7 +25,13 @@ def main():
     activate_env(activate_this)
     install_requirements()
     run_main_script(args, venv_path)
-
+def ensure_virtualenv_installed():
+    try:
+        # Check if virtualenv is installed
+        subprocess.check_call(["virtualenv", "--version"])
+    except (OSError, subprocess.CalledProcessError):
+        # If virtualenv is not installed, install it using pip
+        subprocess.check_call(["pip", "install", "virtualenv"])
 
 def create_venv(venv_path):
     """create virtualenv environment"""
