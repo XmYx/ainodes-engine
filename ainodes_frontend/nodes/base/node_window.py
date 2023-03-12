@@ -80,26 +80,28 @@ class GitHubRepositoriesDialog(QtWidgets.QDialog):
 
         main_widget = QtWidgets.QWidget(self)
 
-
         layout = QtWidgets.QHBoxLayout()
         self.setLayout(layout)
         self.list_widget = QtWidgets.QListWidget()
-        self.load_repositories()
+
         layout.addWidget(self.list_widget)
 
         repository_widget = QtWidgets.QWidget()
         repository_layout = QtWidgets.QVBoxLayout(repository_widget)
-        repository_label = QtWidgets.QLabel("Repository details")
+        repository_label = QtWidgets.QLabel("Node Packages")
         self.repository_name_label = QtWidgets.QLabel()
         self.repository_url_label = QtWidgets.QLabel()
         self.download_button = QtWidgets.QPushButton("Download")
         self.download_button.clicked.connect(self.download_repository)
+        self.update_button = QtWidgets.QPushButton("Update / Import")
+        self.update_button.clicked.connect(self.update_repository)
+        self.update_button.hide()
 
-        self.download_button.hide()
         repository_layout.addWidget(repository_label)
         repository_layout.addWidget(self.repository_name_label)
         repository_layout.addWidget(self.repository_url_label)
         repository_layout.addWidget(self.download_button)
+        repository_layout.addWidget(self.update_button)
         layout.addWidget(repository_widget)
 
         self.list_widget.currentRowChanged.connect(self.show_repository_details)
@@ -109,24 +111,33 @@ class GitHubRepositoriesDialog(QtWidgets.QDialog):
             repositories = f.read().splitlines()
         for repository in repositories:
             item = QtWidgets.QListWidgetItem(repository)
-            if os.path.isdir(f"./custom_nodes/{repository}"):
-                item.setBackground(Qt.green)
-                self.download_button.hide()
+            folder = repository.split("/")[1]
+            if os.path.isdir(f"./custom_nodes/{folder}"):
+                item.setBackground(Qt.darkGreen)
+                item.setForeground(Qt.white)
+                self.update_button.setVisible(True)
+                self.download_button.setVisible(False)
             else:
+                item.setForeground(Qt.black)
                 item.setBackground(Qt.white)
             self.list_widget.addItem(item)
 
     def show_repository_details(self, row):
         repository = self.list_widget.item(row).text()
+        folder = repository.split("/")[1]
         self.repository_name_label.setText(repository)
         url = f"https://github.com/{repository}"
         self.repository_url_label.setText(url)
-        self.download_button.show()
+        if os.path.isdir(f"./custom_nodes/{folder}"):
+            self.list_widget.currentItem().setBackground(Qt.darkGreen)
+            self.update_button.show()
+        else:
+            self.list_widget.currentItem().setBackground(Qt.white)
+            self.update_button.hide()
 
     def download_repository(self):
         repository = self.repository_name_label.text()
         folder = repository.split("/")[1]
-        print(folder)
         command = f"git clone https://github.com/{repository} ./custom_nodes/{folder}"
         result = run(command, shell=True, stdout=PIPE, stderr=PIPE)
         if result.returncode == 0:
@@ -134,14 +145,26 @@ class GitHubRepositoriesDialog(QtWidgets.QDialog):
             self.parent.nodesListWidget.addMyItems()
             QtWidgets.QMessageBox.information(self, "Download Complete", f"{repository} was downloaded successfully.")
             self.list_widget.currentItem().setBackground(Qt.green)
-            self.download_button.hide()
+            self.update_button.hide()
         else:
             QtWidgets.QMessageBox.critical(self, "Download Failed",
-                                 f"An error occurred while downloading {repository}:\n{result.stderr.decode()}")
+            f"An error occurred while downloading {repository}:\n{result.stderr.decode()}")
 
+    def update_repository(self):
+        repository = self.repository_name_label.text()
+        folder = repository.split("/")[1]
+        command = f"git -C ./custom_nodes/{folder} pull"
+        result = run(command, shell=True, stdout=PIPE, stderr=PIPE)
+        if result.returncode == 0:
+            import_nodes_from_subdirectories(f"./custom_nodes/{folder}")
+            self.parent.nodesListWidget.addMyItems()
+            QtWidgets.QMessageBox.information(self, "Update Complete", f"{repository} was updated successfully.")
+            self.list_widget.currentItem().setBackground(Qt.green)
+            self.update_button.hide()
+        else:
+            QtWidgets.QMessageBox.critical(self, "Update Failed",
+                                 f"An error occurred while updating {repository}:\n{result.stderr.decode()}")
 
-if __name__ == "__main__":
-    app = QApplication([])
 class CalculatorWindow(NodeEditorWindow):
 
     def __init__(self):
@@ -218,6 +241,7 @@ class CalculatorWindow(NodeEditorWindow):
 
     def show_github_repositories(self):
         dialog = GitHubRepositoriesDialog(self)
+        dialog.load_repositories()
         dialog.show()
 
     def closeEvent(self, event):
