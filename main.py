@@ -8,9 +8,8 @@ import platform
 import argparse
 from qtpy import QtGui
 from qtpy.QtWidgets import QApplication
-from ainodes_backend import singleton as gs
-from ainodes_frontend.nodes.base.node_config import import_nodes_from_directory
-from ainodes_frontend.nodes.base.node_window import CalculatorWindow
+from ainodes_frontend import singleton as gs
+from ainodes_frontend.base import CalculatorWindow
 
 # Set environment variable QT_API to use PySide6
 os.environ["QT_API"] = "pyside6"
