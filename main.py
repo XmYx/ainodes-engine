@@ -31,6 +31,7 @@ gs.current["inpaint_model"] = None
 parser = argparse.ArgumentParser()
 parser.add_argument("--local_hf", action="store_true")
 parser.add_argument("--whisper", action="store_true")
+parser.add_argument("--skip_base_nodes", action="store_true")
 args = parser.parse_args()
 
 # Set environment variables for Hugging Face cache if not using local cache
@@ -62,7 +63,12 @@ wnd = CalculatorWindow()
 sys.stdout = wnd.text_widget
 #sys.stderr = wnd.text_widget
 #sys.stdin = wnd.text_widget
-
+if not args.skip_base_nodes:
+    wnd.node_packages.list_widget.setCurrentRow(0)
+    if not os.path.isdir('custom_nodes/ainodes_engine_base_nodes'):
+        wnd.node_packages.download_repository()
+    else:
+        wnd.node_packages.update_repository()
 wnd.show()
 
 

@@ -73,9 +73,21 @@ class StdoutTextEdit(QtWidgets.QPlainTextEdit):
 def remove_empty_lines(file_path):
     with open(file_path, "r+") as f:
         content = f.readlines()
-        f.seek(0)
-        f.writelines(line for line in content if line.strip())
-        f.truncate()
+        if not content:
+            # if the file is empty, add the base node as the first line
+            f.write("XmYx/ainodes_engine_base_nodes\n")
+        else:
+            if not content[0].strip().startswith("XmYx/ainodes_engine_base_nodes"):
+                # if the first line doesn't start with the base node, add it as the first line
+                f.seek(0)
+                f.write("XmYx/ainodes_engine_base_nodes\n")
+                f.writelines(line for line in content if line.strip())
+                f.truncate()
+            else:
+                # if the first line is already the base node, remove empty lines
+                f.seek(0)
+                f.writelines(line for line in content if line.strip())
+                f.truncate()
 class GitHubRepositoriesDialog(QtWidgets.QDockWidget):
     def __init__(self, parent=None):
         super().__init__(parent=parent)
@@ -199,7 +211,8 @@ class GitHubRepositoriesDialog(QtWidgets.QDockWidget):
     def update_repository_thread(self, progress_callback=None):
         repository = self.repository_name_label.text()
         folder = repository.split("/")[1]
-        command = f"git -C ./custom_nodes/{folder} stash && git -C ./custom_nodes/{folder} pull && pip install -r ./custom_nodes/{folder}/requirements.txt"
+        #command = f"git -C ./custom_nodes/{folder} stash && git -C ./custom_nodes/{folder} pull && pip install -r ./custom_nodes/{folder}/requirements.txt"
+        command = f"git -C ./custom_nodes/{folder} pull && pip install -r ./custom_nodes/{folder}/requirements.txt"
         result = run(command, shell=True, stdout=self.parent.text_widget, stderr=self.parent.text_widget)
         return result
     @QtCore.Slot(object)
