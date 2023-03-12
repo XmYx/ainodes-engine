@@ -3,6 +3,7 @@ import sys
 import threading
 from subprocess import run, PIPE
 
+import requests
 from qtpy import QtWidgets, QtCore, QtGui
 from qtpy.QtGui import QIcon, QKeySequence
 from qtpy.QtWidgets import QMdiArea, QDockWidget, QAction, QMessageBox, QFileDialog
@@ -91,6 +92,7 @@ class GitHubRepositoriesDialog(QtWidgets.QDialog):
         repository_label = QtWidgets.QLabel("Node Packages")
         self.repository_name_label = QtWidgets.QLabel()
         self.repository_url_label = QtWidgets.QLabel()
+        self.repository_icon_label = QtWidgets.QLabel()
         self.download_button = QtWidgets.QPushButton("Download")
         self.download_button.clicked.connect(self.download_repository)
         self.update_button = QtWidgets.QPushButton("Update / Import")
@@ -98,6 +100,7 @@ class GitHubRepositoriesDialog(QtWidgets.QDialog):
         self.update_button.hide()
 
         repository_layout.addWidget(repository_label)
+        repository_layout.addWidget(self.repository_icon_label)
         repository_layout.addWidget(self.repository_name_label)
         repository_layout.addWidget(self.repository_url_label)
         repository_layout.addWidget(self.download_button)
@@ -116,6 +119,8 @@ class GitHubRepositoriesDialog(QtWidgets.QDialog):
         self.context_menu = QtWidgets.QMenu(self)
         self.context_menu.addAction(self.add_repository_action)
         self.context_menu.addAction(self.delete_repository_action)
+
+        self.repository_icon_label.setFixedSize(128, 128)
 
     def load_repositories(self):
         with open("repositories.txt") as f:
@@ -139,6 +144,11 @@ class GitHubRepositoriesDialog(QtWidgets.QDialog):
         self.repository_name_label.setText(repository)
         url = f"https://github.com/{repository}"
         self.repository_url_label.setText(url)
+        icon_url = f"https://raw.githubusercontent.com/{repository}/main/icon.png"
+        icon_pixmap = QtGui.QPixmap()
+        icon_pixmap.loadFromData(requests.get(icon_url).content)
+        self.repository_icon_label.setPixmap(icon_pixmap)
+        self.repository_icon_label.setScaledContents(True)
         if os.path.isdir(f"./custom_nodes/{folder}"):
             self.list_widget.currentItem().setBackground(Qt.darkGreen)
             self.update_button.show()
