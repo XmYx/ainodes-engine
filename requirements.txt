@@ -1,2 +1,6 @@
 pyside6
 qtpy
+--extra-index-url https://download.pytorch.org/whl/cu117
+torch==1.13.1+cu117
+torchvision
+requests
