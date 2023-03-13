@@ -2,6 +2,7 @@
 """
 A module containing NodeEditor's class for representing `Node`.
 """
+import copy
 from collections import OrderedDict
 from ainodes_frontend.node_engine.node_graphics_node import QDMGraphicsNode
 from ainodes_frontend.node_engine.node_content_widget import QDMNodeContentWidget
@@ -160,8 +161,12 @@ class Node(Serializable):
                 self.inputs = []
                 self.outputs = []
         try:
-            self.output_socket_name.reverse()
-            self.input_socket_name.reverse()
+            temp_outputs = copy.deepcopy(self.output_socket_name)
+            temp_inputs = copy.deepcopy(self.input_socket_name)
+            temp_outputs.reverse()
+            temp_inputs.reverse()
+            #self.output_socket_name.reverse()
+            #self.input_socket_name.reverse()
         except:
             pass
 
@@ -170,7 +175,7 @@ class Node(Serializable):
 
         for item in inputs:
             try:
-                socket_name = self.input_socket_name[counter]
+                socket_name = temp_inputs[counter]
             except:
                 socket_name = f"Input {counter}"
             socket = self.__class__.Socket_class(
@@ -184,7 +189,7 @@ class Node(Serializable):
         counter = 0
         for item in outputs:
             try:
-                socket_name = self.output_socket_name[counter]
+                socket_name = temp_outputs[counter]
             except:
                 socket_name = f"Input {counter}"
 
