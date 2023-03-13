@@ -5,6 +5,7 @@ from qtpy.QtGui import QPixmap, QIcon, QDrag
 from qtpy.QtCore import QSize, Qt, QByteArray, QDataStream, QMimeData, QIODevice, QPoint
 from qtpy.QtWidgets import QListWidget, QAbstractItemView, QListWidgetItem
 
+import ainodes_frontend.base.node_config
 from ainodes_frontend.base.node_config import CALC_NODES, get_class_from_opcode, LISTBOX_MIMETYPE, node_categories
 from ainodes_frontend.node_engine.utils import dumpException, loadStylesheets
 
@@ -105,13 +106,15 @@ class QDMDragListbox(QtWidgets.QTreeWidget):
             node = get_class_from_opcode(key)
             if node.category not in node_categories:
                 node_categories.append(node.category)
-                categories = {category: [] for category in node_categories}
+                categories[node.category] = []
 
             categories[node.category].append((node.op_title, node.icon, node.op_code))
-
+        new_list = []
         for category, items in categories.items():
+
             parent = QtWidgets.QTreeWidgetItem(self)
             parent.setText(0, category.capitalize())
+            items.sort(key=lambda item: item[0])
             for name, icon, op_code in items:
                 item = QtWidgets.QTreeWidgetItem(parent)
                 item.setText(0, name)
@@ -123,6 +126,9 @@ class QDMDragListbox(QtWidgets.QTreeWidget):
                 # setup data
                 item.setData(0, Qt.UserRole, pixmap)
                 item.setData(0, Qt.UserRole + 1, op_code)
+        self.sortItems(0, Qt.AscendingOrder)
+
+
 
     def startDrag(self, *args, **kwargs):
         try:
