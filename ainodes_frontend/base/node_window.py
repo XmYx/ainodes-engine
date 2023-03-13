@@ -284,7 +284,6 @@ class CalculatorWindow(NodeEditorWindow):
         #layout.addWidget(self.text_widget2)
         self.dock_widget.setWidget(self.text_widget)
         self.addDockWidget(Qt.BottomDockWidgetArea, self.dock_widget)
-
         # Redirect stdout and stderr to the text widget
 
     def initUI(self):
@@ -293,11 +292,11 @@ class CalculatorWindow(NodeEditorWindow):
         self.name_product = 'AI Node Editor'
         gs.loaded_models["loaded"] = []
 
-        self.stylesheet_filename = os.path.join(os.path.dirname(__file__), "qss/node_engine-dark.qss")
+        """self.stylesheet_filename = os.path.join(os.path.dirname(__file__), "ainodes_frontend/qss/nodeeditor-dark.qss")
         loadStylesheets(
-            os.path.join(os.path.dirname(__file__), "qss/node_engine-dark.qss"),
+            os.path.join(os.path.dirname(__file__), "ainodes_frontend/qss/nodeeditor-dark.qss"),
             self.stylesheet_filename
-        )
+        )"""
 
         self.empty_icon = QIcon("")
 

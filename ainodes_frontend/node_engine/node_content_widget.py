@@ -2,6 +2,7 @@
 """A module containing the base class for the Node's content graphical representation. It also contains an example of
 an overridden Text Widget, which can pass a notification to it's parent about being modified."""
 from collections import OrderedDict
+
 from ainodes_frontend.node_engine.node_serializable import Serializable
 from qtpy.QtWidgets import QWidget, QLabel, QVBoxLayout, QTextEdit
 from qtpy import QtCore, QtWidgets
@@ -29,9 +30,10 @@ class QDMNodeContentWidget(QWidget, Serializable):
         super().__init__(parent)
 
         self.initUI()
-        sshFile = "ainodes_frontend/qss/nodeeditor-dark.qss"
+        """sshFile = "ainodes_frontend/qss/nodeeditor-dark.qss"
         with open(sshFile, "r") as fh:
-            self.setStyleSheet(fh.read())
+            self.setStyleSheet(fh.read())"""
+
 
 
     def initUI(self):

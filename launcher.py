@@ -11,8 +11,8 @@ def main():
     """launch ainodes-engine"""
     parser = argparse.ArgumentParser()
     parser.add_argument("--local_hf", action="store_true")
-    parser.add_argument("--whisper", action="store_true")
     parser.add_argument("--skip_base_nodes", action="store_true")
+    parser.add_argument("--light", action="store_true")
     args = parser.parse_args()
 
     if not args.local_hf:
@@ -100,6 +100,10 @@ def run_main_script(args, venv_path):
     cmd_args = [python, "main.py"]
     if args.local_hf:
         cmd_args.append("--local_hf")
+    if args.light:
+        cmd_args.append("--light")
+    if args.skip_base_nodes:
+        cmd_args.append("--skip_base_nodes")
     subprocess.check_call(cmd_args)
 
 

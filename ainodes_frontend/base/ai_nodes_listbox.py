@@ -9,75 +9,6 @@ import ainodes_frontend.base.node_config
 from ainodes_frontend.base.node_config import CALC_NODES, get_class_from_opcode, LISTBOX_MIMETYPE, node_categories
 from ainodes_frontend.node_engine.utils import dumpException, loadStylesheets
 
-
-class QDMDragListbox_original(QListWidget):
-    def __init__(self, parent=None):
-        super().__init__(parent)
-        self.initUI()
-
-    def initUI(self):
-        # init
-        self.setIconSize(QSize(32, 32))
-        self.setSelectionMode(QAbstractItemView.SingleSelection)
-        self.setDragEnabled(True)
-
-        self.addMyItems()
-        self.stylesheet_filename = os.path.join(os.path.dirname(__file__), "qss/node_engine-dark.qss")
-        loadStylesheets(
-            os.path.join(os.path.dirname(__file__), "qss/node_engine-dark.qss"),
-            self.stylesheet_filename
-        )
-
-
-    def addMyItems(self):
-        keys = list(CALC_NODES.keys())
-        keys.sort()
-        for key in keys:
-            node = get_class_from_opcode(key)
-            self.addMyItem(node.op_title, node.icon, node.op_code)
-
-
-    def addMyItem(self, name, icon=None, op_code=0):
-        item = QListWidgetItem(name, self) # can be (icon, text, parent, <int>type)
-        pixmap = QPixmap(icon if icon is not None else ".")
-        item.setIcon(QIcon(pixmap))
-        item.setSizeHint(QSize(32, 32))
-
-        item.setFlags(Qt.ItemIsEnabled | Qt.ItemIsSelectable | Qt.ItemIsDragEnabled)
-
-        # setup data
-        item.setData(Qt.UserRole, pixmap)
-        item.setData(Qt.UserRole + 1, op_code)
-
-
-    def startDrag(self, *args, **kwargs):
-        try:
-            item = self.currentItem()
-            op_code = item.data(Qt.UserRole + 1)
-
-            pixmap = QPixmap(item.data(Qt.UserRole))
-
-
-            itemData = QByteArray()
-            dataStream = QDataStream(itemData, QIODevice.WriteOnly)
-            dataStream << pixmap
-            dataStream.writeInt8(op_code)
-            dataStream.writeQString(item.text())
-
-            mimeData = QMimeData()
-            mimeData.setData(LISTBOX_MIMETYPE, itemData)
-
-            drag = QDrag(self)
-            drag.setMimeData(mimeData)
-            drag.setHotSpot(QPoint(pixmap.width() // 2, pixmap.height() // 2))
-            drag.setPixmap(pixmap)
-
-            drag.exec_(Qt.MoveAction)
-
-        except Exception as e: dumpException(e)
-
-
-
 class QDMDragListbox(QtWidgets.QTreeWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -90,11 +21,11 @@ class QDMDragListbox(QtWidgets.QTreeWidget):
         self.setDragEnabled(True)
 
         self.addMyItems()
-        self.stylesheet_filename = os.path.join(os.path.dirname(__file__), "qss/node_engine-dark.qss")
+        """self.stylesheet_filename = os.path.join(os.path.dirname(__file__), "qss/nodeeditor-dark.qss")
         loadStylesheets(
-            os.path.join(os.path.dirname(__file__), "qss/node_engine-dark.qss"),
+            os.path.join(os.path.dirname(__file__), "qss/nodeeditor-dark.qss"),
             self.stylesheet_filename
-        )
+        )"""
 
     def addMyItems(self):
         self.clear()

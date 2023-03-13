@@ -32,6 +32,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--local_hf", action="store_true")
 parser.add_argument("--whisper", action="store_true")
 parser.add_argument("--skip_base_nodes", action="store_true")
+parser.add_argument("--light", action="store_true")
 args = parser.parse_args()
 
 # Set environment variables for Hugging Face cache if not using local cache
@@ -49,10 +50,11 @@ QtGui.QSurfaceFormat.setDefaultFormat(qs_format)
 
 # make app
 app = QApplication(sys.argv)
-
 # Load style sheet from a file
-with open("ainodes_frontend/qss/nodeeditor-dark.qss", "r", encoding="utf-8") as f:
-    style_sheet = f.read()
+if not args.light:
+    with open("ainodes_frontend/qss/nodeeditor-dark.qss", "r", encoding="utf-8") as f:
+        style_sheet = f.read()
+        app.setStyleSheet(style_sheet)
 icon = QtGui.QIcon("ainodes_frontend/qss/icon.png")
 app.setWindowIcon(icon)
 app.setApplicationName("aiNodes - engine")
@@ -82,5 +84,5 @@ wnd.show()
 wnd.nodesListWidget.addMyItems()
 
 
-wnd.setStyleSheet(style_sheet)
+#wnd.setStyleSheet(style_sheet)
 sys.exit(app.exec())
