@@ -176,6 +176,12 @@ semseg/
 *.avi
 *.mov
 
+output/
+output/stills
+output/gifs
+graphs/
+models/other
+custom_nodes/
 
 # vscode
 .vscode

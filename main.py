@@ -8,9 +8,8 @@ import platform
 import argparse
 from qtpy import QtGui
 from qtpy.QtWidgets import QApplication
-from ainodes_backend import singleton as gs
-from ainodes_frontend.nodes.base.node_config import import_nodes_from_directory
-from ainodes_frontend.nodes.base.node_window import CalculatorWindow
+from ainodes_frontend import singleton as gs
+from ainodes_frontend.base import CalculatorWindow
 
 # Set environment variable QT_API to use PySide6
 os.environ["QT_API"] = "pyside6"
@@ -32,6 +31,7 @@ gs.current["inpaint_model"] = None
 parser = argparse.ArgumentParser()
 parser.add_argument("--local_hf", action="store_true")
 parser.add_argument("--whisper", action="store_true")
+parser.add_argument("--skip_base_nodes", action="store_true")
 args = parser.parse_args()
 
 # Set environment variables for Hugging Face cache if not using local cache
@@ -59,18 +59,28 @@ app.setApplicationName("aiNodes - engine")
 
 # Create and show the main window
 wnd = CalculatorWindow()
+
+sys.stdout = wnd.text_widget
+#sys.stderr = wnd.text_widget
+#sys.stdin = wnd.text_widget
+if not args.skip_base_nodes:
+    wnd.node_packages.list_widget.setCurrentRow(0)
+    if not os.path.isdir('custom_nodes/ainodes_engine_base_nodes'):
+        wnd.node_packages.download_repository()
+    else:
+        wnd.node_packages.update_repository()
 wnd.show()
 
 
-import_nodes_from_directory("ainodes_frontend/nodes/exec_nodes")
-import_nodes_from_directory("ainodes_frontend/nodes/image_nodes")
-import_nodes_from_directory("ainodes_frontend/nodes/torch_nodes")
-import_nodes_from_directory("ainodes_frontend/nodes/video_nodes")
-if args.whisper:
-    import_nodes_from_directory("ainodes_frontend/nodes/audio_nodes")
+#import_nodes_from_directory("ainodes_frontend/nodes/exec_nodes")
+#import_nodes_from_directory("ainodes_frontend/nodes/image_nodes")
+#import_nodes_from_directory("ainodes_frontend/nodes/torch_nodes")
+#import_nodes_from_directory("ainodes_frontend/nodes/video_nodes")
+#if args.whisper:
+#    import_nodes_from_directory("ainodes_frontend/nodes/audio_nodes")
 
 wnd.nodesListWidget.addMyItems()
 
 
 wnd.setStyleSheet(style_sheet)
-sys.exit(app.exec_())
+sys.exit(app.exec())
