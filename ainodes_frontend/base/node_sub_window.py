@@ -222,6 +222,12 @@ class CalculatorSubWindow(NodeEditorWidget):
         for category in node_categories:
             submenu = QMenu(category.capitalize(), menu)
             category_menus[category] = submenu
+
+        # sort the category menus by keys
+        sorted_category_menus = dict(sorted(category_menus.items()))
+
+        # add sorted category menus to the root menu
+        for submenu in sorted_category_menus.values():
             menu.addMenu(submenu)
 
         # add nodes to corresponding submenu
@@ -237,9 +243,13 @@ class CalculatorSubWindow(NodeEditorWidget):
             # add action to the corresponding submenu
             category_menus[node.category].addAction(action)
 
+        # sort actions in each category submenu alphabetically
+        for submenu in category_menus.values():
+            submenu.addActions(sorted(submenu.actions(), key=lambda action: action.text()))
+
         # add "Run All" action to the root menu
-        run_all_action = QAction("Run All", self)
-        menu.addAction(run_all_action)
+        #run_all_action = QAction("Run All", self)
+        #menu.addAction(run_all_action)
 
         return menu
     def handleNewNodeContextMenu(self, event):
