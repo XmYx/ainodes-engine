@@ -96,7 +96,6 @@ class QDMDragListbox(QtWidgets.QTreeWidget):
         )
 
     def addMyItems(self):
-
         self.clear()
         categories = {category: [] for category in node_categories}
 
@@ -104,6 +103,10 @@ class QDMDragListbox(QtWidgets.QTreeWidget):
         keys.sort()
         for key in keys:
             node = get_class_from_opcode(key)
+            if node.category not in node_categories:
+                node_categories.append(node.category)
+                categories = {category: [] for category in node_categories}
+
             categories[node.category].append((node.op_title, node.icon, node.op_code))
 
         for category, items in categories.items():

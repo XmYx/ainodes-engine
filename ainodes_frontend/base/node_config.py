@@ -36,7 +36,7 @@ OP_NODE_LORA_LOADER = 27"""
 CALC_NODES = {
 }
 
-node_categories = ['default', 'model', 'conditioning', 'latent', 'sampling', 'image', 'controlnet', 'debug']
+node_categories = ['default', 'model', 'conditioning', 'latent', 'sampling', 'image', 'controlnet', 'debug', 'data', 'exec']
 
 class ConfException(Exception): pass
 class InvalidNodeRegistration(ConfException): pass
