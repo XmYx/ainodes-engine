@@ -1,5 +1,9 @@
 import os
 
+from PySide6.QtGui import QContextMenuEvent, QBrush
+from PySide6.QtWidgets import QColorDialog
+
+from ainodes_frontend.node_engine.node_graphics_node import QDMGraphicsBGNode
 from qtpy.QtGui import QIcon, QPixmap
 from qtpy.QtCore import QDataStream, QIODevice, Qt, QThreadPool
 from qtpy.QtWidgets import QAction, QGraphicsProxyWidget, QMenu
@@ -155,16 +159,39 @@ class CalculatorSubWindow(NodeEditorWidget):
 
     def handleNodeContextMenu(self, event):
         if DEBUG_CONTEXT: print("CONTEXT: NODE")
+
+        item = self.scene.getItemAt(event.pos())
+
+        print("ITEM:", item)
+        if isinstance(item, QDMGraphicsBGNode):
+            context_menu = QMenu()
+            set_color_action = context_menu.addAction("Set Color")
+
+            action = context_menu.exec_(self.mapToGlobal(event.pos()))
+
+            if action == set_color_action:
+                color_dialog = QColorDialog()
+                color = color_dialog.getColor()
+
+                if color.isValid():
+                    item._brush_background = QBrush(color)
+                    item.update()
+                    return
+
+
         context_menu = QMenu(self)
         markDirtyAct = context_menu.addAction("Mark Dirty")
         markDirtyDescendantsAct = context_menu.addAction("Mark Descendant Dirty")
         markInvalidAct = context_menu.addAction("Mark Invalid")
         unmarkInvalidAct = context_menu.addAction("Unmark Invalid")
         evalAct = context_menu.addAction("Eval")
+
+
+
         action = context_menu.exec_(self.mapToGlobal(event.pos()))
 
         selected = None
-        item = self.scene.getItemAt(event.pos())
+
         if type(item) == QGraphicsProxyWidget:
             item = item.widget()
 
