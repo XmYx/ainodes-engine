@@ -13,7 +13,6 @@ from ainodes_frontend.base import CalculatorWindow
 
 # Set environment variable QT_API to use PySide6
 os.environ["QT_API"] = "pyside6"
-
 # Install Triton if running on Linux
 if "Linux" in platform.platform():
     print(platform.platform())
@@ -40,7 +39,6 @@ if not args.local_hf:
     print("Using HF Cache in app dir")
     os.makedirs("hf_cache", exist_ok=True)
     os.environ["HF_HOME"] = "hf_cache"
-
 # Set up high-quality QSurfaceFormat object with OpenGL 3.3 and 8x antialiasing
 qs_format = QtGui.QSurfaceFormat()
 qs_format.setVersion(3, 3)
@@ -62,7 +60,7 @@ app.setApplicationName("aiNodes - engine")
 # Create and show the main window
 wnd = CalculatorWindow()
 
-sys.stdout = wnd.text_widget
+#sys.stdout = wnd.text_widget
 #sys.stderr = wnd.text_widget
 #sys.stdin = wnd.text_widget
 if not args.skip_base_nodes:
