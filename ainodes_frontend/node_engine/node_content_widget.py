@@ -111,11 +111,14 @@ class QDMNodeContentWidget(QWidget, Serializable):
                     for k in range(layout.count()):
                         widget = layout.itemAt(k).widget()
                         if isinstance(widget, QtWidgets.QComboBox):
-                            index = widget.findText(data[f"{widget.objectName()}"])
-                            if index == -1:
+                            try:
+                                index = widget.setCurrentText(data[f"{widget.objectName()}"])
+                            except:
+                                pass
+                            """if index == -1:
                                 widget.setCurrentIndex(0)
                             else:
-                                widget.setCurrentIndex(index)
+                                widget.setCurrentIndex(index)"""
                         elif isinstance(widget, QtWidgets.QLineEdit):
                             widget.setText(data[f"{widget.objectName()}"])
                         elif isinstance(widget, QTextEdit):
