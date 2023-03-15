@@ -83,8 +83,8 @@ class CalculatorSubWindow(NodeEditorWidget):
     def getNodeClassFromData(self, data):
         if 'op_code' not in data: return Node
 
-        print("data", data['content_label_objname'])
-        print("op_code", get_class_from_opcode(data['op_code']))
+        #print("data", data['content_label_objname'])
+        #print("op_code", get_class_from_opcode(data['op_code']))
         return get_class_from_content_label_objname(data['content_label_objname'])
         #return get_class_from_opcode(data['op_code'])
 

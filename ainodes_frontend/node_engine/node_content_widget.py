@@ -32,7 +32,7 @@ class QDMNodeContentWidget(QWidget, Serializable):
         """
         self.node = node
         super().__init__(parent)
-
+        self.widget_list = []
         self.initUI()
         sshFile = "ainodes_frontend/qss/nodeeditor-dark.qss"
         with open(sshFile, "r") as fh:
@@ -87,7 +87,7 @@ class QDMNodeContentWidget(QWidget, Serializable):
                         res[f"{widget.objectName()}"] = widget.isChecked()
             elif isinstance(layout, QtWidgets.QWidgetItem):
                 widget = layout.widget()
-                print(widget)
+                #print(widget)
                 if isinstance(widget, QtWidgets.QComboBox):
                     res[f"{widget.objectName()}"] = widget.currentText()
                 elif isinstance(widget, QtWidgets.QLineEdit):
@@ -99,37 +99,6 @@ class QDMNodeContentWidget(QWidget, Serializable):
                 elif isinstance(widget, QtWidgets.QCheckBox):
                     res[f"{widget.objectName()}"] = widget.isChecked()
         return res
-    def serializeWidgets(self, res):
-        return res
-        for widget in self.findChildren(QtWidgets.QWidget):
-            #print(widget)
-            if isinstance(widget, QtWidgets.QComboBox):
-                name = widget.dynamicPropertyNames()
-                print(name)
-                res[name] = widget.currentText()
-            elif isinstance(widget, QtWidgets.QLineEdit):
-                res[widget.objectName()] = widget.text()
-            elif isinstance(widget, QtWidgets.QSpinBox):
-                res[widget.objectName()] = widget.value()
-            elif isinstance(widget, QtWidgets.QDoubleSpinBox):
-                res[widget.objectName()] = widget.value()
-        print(res)
-        return res
-
-    def deserializeWidgets(self, data):
-        return data
-        for key, value in data.items():
-            widget = self.findChild(QtWidgets.QWidget, key)
-            if widget:
-                if isinstance(widget, QtWidgets.QComboBox):
-                    widget.setCurrentText(str(value))
-                elif isinstance(widget, QtWidgets.QLineEdit):
-                    widget.setText(str(value))
-                elif isinstance(widget, QtWidgets.QSpinBox):
-                    widget.setValue(int(value))
-                elif isinstance(widget, QtWidgets.QDoubleSpinBox):
-                    widget.setValue(float(value))
-
 
     #def deserialize(self, data:dict, hashmap:dict={}, restore_id:bool=True) -> bool:
     #    return True
@@ -183,31 +152,16 @@ class QDMNodeContentWidget(QWidget, Serializable):
             self.node.markDirty(True)
             self.node.eval()
 
-    """def get_widget_values(self):
-        widget_values = {}
-        for i in range(self.layout.count()):
-            item = self.layout.itemAt(i)
-            if isinstance(item, QtWidgets.QLayout):
-                for j in range(item.count()):
-                    sub_item = item.itemAt(j)
-                    if isinstance(sub_item, QtWidgets.QWidgetItem):
-                        widget = sub_item.widget()
-                        try:
-                            accessible_name = widget.accessibleName()
-                            print(accessible_name)
-                            if accessible_name:
-                                node_type, data_type = accessible_name.split("_")
-                                if isinstance(widget, QtWidgets.QLineEdit):
-                                    widget_values[(node_type, data_type)] = widget.text()
-                                elif isinstance(widget, QtWidgets.QSpinBox):
-                                    widget_values[(node_type, data_type)] = widget.value()
-                                elif isinstance(widget, QtWidgets.QDoubleSpinBox):
-                                    widget_values[(node_type, data_type)] = widget.value()
-                        except:
-                            pass
-        print(widget_values)
-        return widget_values"""
     def create_combo_box(self, items, label_text):
+        """Create a combo box widget with the given items and label text.
+
+        Args:
+            items (list): List of items to be added to the combo box.
+            label_text (str): Text for the label of the combo box.
+
+        Returns:
+            QtWidgets.QComboBox: A combo box widget.
+        """
         combo_box = QtWidgets.QComboBox()
         combo_box.addItems(items)
         combo_box.setObjectName(label_text)
@@ -216,9 +170,18 @@ class QDMNodeContentWidget(QWidget, Serializable):
         layout.addWidget(label)
         layout.addWidget(combo_box)
         combo_box.layout = layout
+        self.widget_list.append(combo_box)
         return combo_box
 
     def create_line_edit(self, label_text):
+        """Create a line edit widget with the given label text.
+
+        Args:
+            label_text (str): Text for the label of the line edit.
+
+        Returns:
+            QtWidgets.QLineEdit: A line edit widget.
+        """
         line_edit = QtWidgets.QLineEdit()
         label = QtWidgets.QLabel(label_text)
         label.setObjectName(label_text)
@@ -226,9 +189,22 @@ class QDMNodeContentWidget(QWidget, Serializable):
         layout.addWidget(label)
         layout.addWidget(line_edit)
         line_edit.layout = layout
+        self.widget_list.append(line_edit)
         return line_edit
 
     def create_spin_box(self, label_text, min_val, max_val, default_val, step_value=1):
+        """Create a spin box widget with the given label text, minimum value, maximum value, default value, and step value.
+
+        Args:
+            label_text (str): Text for the label of the spin box.
+            min_val (int): Minimum value of the spin box.
+            max_val (int): Maximum value of the spin box.
+            default_val (int): Default value of the spin box.
+            step_value (int, optional): Step value of the spin box. Defaults to 1.
+
+        Returns:
+            QtWidgets.QSpinBox: A spin box widget.
+        """
         spin_box = QtWidgets.QSpinBox()
         spin_box.setMinimum(min_val)
         spin_box.setMaximum(max_val)
@@ -239,8 +215,21 @@ class QDMNodeContentWidget(QWidget, Serializable):
         layout.addWidget(label)
         layout.addWidget(spin_box)
         spin_box.layout = layout
+        self.widget_list.append(layout)
         return spin_box
     def create_double_spin_box(self, label_text, min_val, max_val, step, default_val):
+        """Create a double spin box widget with the given label text, minimum value, maximum value, step, and default value.
+
+         Args:
+             label_text (str): Text for the label of the double spin box.
+             min_val (float): Minimum value of the double spin box.
+             max_val (float): Maximum value of the double spin box.
+             step (float): Step value of the double spin box.
+             default_val (float): Default value of the double spin box.
+
+         Returns:
+             QtWidgets.QDoubleSpinBox: A double spin box widget.
+         """
         double_spin_box = QtWidgets.QDoubleSpinBox()
         double_spin_box.setMinimum(min_val)
         double_spin_box.setMaximum(max_val)
@@ -252,9 +241,22 @@ class QDMNodeContentWidget(QWidget, Serializable):
         layout.addWidget(label)
         layout.addWidget(double_spin_box)
         double_spin_box.layout = layout
+        self.widget_list.append(layout)
         return double_spin_box
 
     def create_check_box(self, label_text, checked=False):
+        """Create a double spin box widget with the given label text, minimum value, maximum value, step, and default value.
+
+         Args:
+             label_text (str): Text for the label of the double spin box.
+             min_val (float): Minimum value of the double spin box.
+             max_val (float): Maximum value of the double spin box.
+             step (float): Step value of the double spin box.
+             default_val (float): Default value of the double spin box.
+
+         Returns:
+             QtWidgets.QDoubleSpinBox: A double spin box widget.
+         """
         check_box = QtWidgets.QCheckBox(label_text)
         check_box.setChecked(checked)
         check_box.setObjectName(label_text)
@@ -262,13 +264,39 @@ class QDMNodeContentWidget(QWidget, Serializable):
         palette.setColor(QtGui.QPalette.WindowText, QtGui.QColor("white"))
         palette.setColor(QtGui.QPalette.Disabled, QtGui.QPalette.WindowText, QtGui.QColor("black"))
         check_box.setPalette(palette)
+        self.widget_list.append(check_box)
         return check_box
 
     def create_button_layout(self, buttons):
+        """Create a horizontal button layout containing the given buttons.
+
+        Args:
+            buttons (list): List of buttons to be added to the layout.
+
+        Returns:
+            QtWidgets.QHBoxLayout: A horizontal button layout.
+        """
         button_layout = QtWidgets.QHBoxLayout()
         button_layout.addWidget(self.button)
         button_layout.addWidget(self.fix_seed_button)
+        self.widget_list.append(button_layout)
         return button_layout
+
+    def create_main_layout(self):
+        """
+        Create the main layout for the widget and add items from the widget_list.
+        The layout is a QVBoxLayout with custom margins and will be set as the layout for the widget.
+        """
+        self.main_layout = QtWidgets.QVBoxLayout(self)
+        self.main_layout.setContentsMargins(15, 15, 15, 25)
+        for item in self.widget_list:
+            if isinstance(item, QtWidgets.QLayout):
+                self.main_layout.addLayout(item)
+            elif isinstance(item, QtWidgets.QWidget):
+                self.main_layout.addWidget(item)
+        self.setLayout(self.main_layout)
+
+
 
 class QDMTextEdit(QTextEdit):
     """

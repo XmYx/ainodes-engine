@@ -50,6 +50,9 @@ class Node(Serializable):
         self.content = None
         self.grNode = None
 
+        self.inputs = inputs
+        self.outputs = outputs
+
         self.initInnerClasses()
         self.initSettings()
 
@@ -163,8 +166,8 @@ class Node(Serializable):
         try:
             temp_outputs = copy.deepcopy(self.output_socket_name)
             temp_inputs = copy.deepcopy(self.input_socket_name)
-            temp_outputs.reverse()
-            temp_inputs.reverse()
+            #temp_outputs.reverse()
+            #temp_inputs.reverse()
             #self.output_socket_name.reverse()
             #self.input_socket_name.reverse()
         except:
@@ -448,13 +451,13 @@ class Node(Serializable):
 
     def getInput(self, index: int=0) -> ['Node', None]:
         """
-        Get the **first**  `Node` connected to the  Input specified by `index`
+        Get the first Node connected to the Input specified by index.
 
-        :param index: Order number of the `Input Socket`
-        :type index: ``int``
-        :return: :class:`~node_engine.node_node.Node` which is connected to the specified `Input` or ``None`` if
-            there is no connection or the index is out of range
-        :rtype: :class:`~nodeeditor.node_node.Node` or ``None``
+        Args:
+            index (int): Order number of the Input Socket. Defaults to 0.
+
+        Returns:
+            tuple: A tuple containing the connected Node and the socket index, or (None, None) if there is no connection or the index is out of range.
         """
         try:
             input_socket = self.inputs[index]

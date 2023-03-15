@@ -50,7 +50,7 @@ def register_node_now(op_code, class_reference):
     gs.nodes[class_reference.content_label_objname]['class'] = class_reference
 
 
-    print(class_reference.content_label_objname)
+    #print(class_reference.content_label_objname)
 
 
 def register_node(op_code):
