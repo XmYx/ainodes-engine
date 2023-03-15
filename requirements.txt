@@ -1,7 +1,7 @@
-pyside6
-qtpy
+pyside6==6.4.2
+qtpy==2.3.0
 --extra-index-url https://download.pytorch.org/whl/cu117
 torch==1.13.1+cu117
-torchvision
-requests
-pyqtgraph
+torchvision==1.14.1+cu117
+requests==2.28.2
+pyqtgraph==0.12.1

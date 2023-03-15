@@ -54,3 +54,13 @@ QComboBox QListView
 {
 background-color: #666;
 }
+
+QTreeWidget {
+    font-weight: bold;
+    color: #ffffff;
+}
+
+QTreeWidget::item {
+    font-weight: bold;
+    color: #ffffff;
+}
