@@ -324,7 +324,7 @@ class QDMGraphicsBGNode(QGraphicsItem):
     def mouseReleaseEvent(self, event):
         super(QDMGraphicsBGNode, self).mouseReleaseEvent(event)
         self.setFlag(QtWidgets.QGraphicsItem.ItemIsMovable, True)
-        [n.doSelect(True) for n in self._nodes]
+        [n.doSelect(False) for n in self._nodes]
         self._nodes = [self]
     def get_nodes(self, inc_intersects=False):
         mode = {True: QtCore.Qt.IntersectsItemShape,
@@ -425,8 +425,8 @@ class QDMGraphicsBGNode(QGraphicsItem):
                 node.updateConnectedEdges()
         self._was_moved = True
 
-    def mouseReleaseEvent(self, event):
-        """Overriden event to handle when we moved, selected or deselected this `Node`"""
+    """def mouseReleaseEvent(self, event):
+        """"""Overriden event to handle when we moved, selected or deselected this `Node`""""""
         super().mouseReleaseEvent(event)
 
         # handle when grNode moved
@@ -447,7 +447,7 @@ class QDMGraphicsBGNode(QGraphicsItem):
         if self._last_selected_state != self.isSelected() or self.node.scene._last_selected_items != self.node.scene.getSelectedItems():
             self.node.scene.resetLastSelectedStates()
             self._last_selected_state = self.isSelected()
-            self.onSelected()
+            self.onSelected()"""
 
     def mouseDoubleClickEvent(self, event):
         """Overriden event for doubleclick. Resend to `Node::onDoubleClicked`"""
@@ -591,6 +591,9 @@ class BackdropSizer(QtWidgets.QGraphicsItem):
         self.setCursor(QtGui.QCursor(QtCore.Qt.SizeFDiagCursor))
         self.setToolTip('double-click auto resize')
         self._size = size
+
+    def doSelect(self, value=True):
+        self.setSelected(value)
     @property
     def size(self):
         return self._size
