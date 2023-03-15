@@ -163,7 +163,7 @@ class CalcNode(Node):
 
     def deserialize(self, data, hashmap={}, restore_id=True):
         res = super().deserialize(data, hashmap, restore_id)
-        print("Deserialized CalcNode '%s'" % self.__class__.__name__, "res:", res)
+        #print("Deserialized CalcNode '%s'" % self.__class__.__name__, "res:", res)
         return res
     def remove(self):
         x = 0

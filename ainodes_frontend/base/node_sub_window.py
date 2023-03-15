@@ -1,12 +1,14 @@
 import os
 
-from PySide6.QtGui import QContextMenuEvent, QBrush
-from PySide6.QtWidgets import QColorDialog
+from qtpy.QtGui import QContextMenuEvent, QBrush
+from qtpy.QtWidgets import QColorDialog
+from qtpy import QtCore
 
+from ainodes_frontend.base.tab_search import TabSearchMenuWidget
 from ainodes_frontend.node_engine.node_graphics_node import QDMGraphicsBGNode
 from qtpy.QtGui import QIcon, QPixmap
 from qtpy.QtCore import QDataStream, QIODevice, Qt, QThreadPool
-from qtpy.QtWidgets import QAction, QGraphicsProxyWidget, QMenu
+from qtpy.QtWidgets import QAction, QGraphicsProxyWidget, QMenu, QOpenGLWidget
 
 from ainodes_frontend.node_engine.node_node import Node
 from ainodes_frontend.base.node_config import CALC_NODES, get_class_from_opcode, LISTBOX_MIMETYPE, \
@@ -28,7 +30,7 @@ class CalculatorSubWindow(NodeEditorWidget):
         self.setTitle()
 
         self.initNewNodeActions()
-        self.scene.threadpool = QThreadPool()
+        #self.scene.threadpool = QThreadPool()
         self.scene.addHasBeenModifiedListener(self.setTitle)
         self.scene.history.addHistoryRestoredListener(self.onHistoryRestored)
         self.scene.addDragEnterListener(self.onDragEnter)
@@ -44,6 +46,36 @@ class CalculatorSubWindow(NodeEditorWidget):
             os.path.join(os.path.dirname(__file__), "ainodes_frontend/qss/nodeeditor-dark.qss"),
             self.stylesheet_filename
         )"""
+        self._search_widget = TabSearchMenuWidget()
+        #self._search_widget.search_submitted.connect(self._on_search_submitted)
+        print(self._search_widget.isVisible())
+        self.scenePos = None
+        self.tab_search_toggle()
+
+    def tab_search_toggle(self):
+        state = self._search_widget.isVisible()
+        if state == False:
+            self._search_widget.setVisible(state)
+            print(self._search_widget.isVisible())
+            #self.setFocus()
+            #return
+        state = True
+        if self.scenePos:
+            print(self.scenePos.y())
+
+            pos = QtCore.QPoint(int(self.width() / 2),
+                                               int(self.height() / 2))
+            print(pos)
+            rect = self._search_widget.rect()
+            #new_pos = QtCore.QPoint(int(pos.x() - rect.width() / 2),
+            #                        int(pos.y() - rect.height() / 2))
+            print(pos)
+            self._search_widget.move(pos)
+            self._search_widget.setVisible(state)
+            self._search_widget.setFocus()
+
+            rect = self.scene.getView().mapToScene(rect).boundingRect().toRect()
+            self.scene.getView().update(rect)
 
 
     def handle_task_finished(self):
@@ -302,3 +334,8 @@ class CalculatorSubWindow(NodeEditorWidget):
 
                 else:
                     self.scene.history.storeHistory("Created %s" % new_calc_node.__class__.__name__)
+    def mouseMoveEvent(self, event):
+        super(CalculatorSubWindow, self).mouseMoveEvent(event)
+        #self.pos = QtCore.QPointF(event.screenPos())
+        self.scenePos = event.scenePos()
+        print(self.scenePos)

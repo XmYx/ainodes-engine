@@ -1,4 +1,5 @@
 import os
+import sys
 from subprocess import run, PIPE
 
 import requests
@@ -14,7 +15,7 @@ from ainodes_frontend.base.node_sub_window import CalculatorSubWindow
 from ainodes_frontend.base.ai_nodes_listbox import QDMDragListbox
 from ainodes_frontend.node_engine.utils_no_qt import dumpException, pp
 from ainodes_frontend.base.node_config import CALC_NODES, import_nodes_from_file, import_nodes_from_subdirectories
-
+from ainodes_frontend.qss import nodeeditor_dark_resources
 # Enabling edge validators
 from ainodes_frontend.node_engine.node_edge import Edge
 from ainodes_frontend.node_engine.node_edge_validators import (
@@ -88,6 +89,69 @@ def remove_empty_lines(file_path):
                 f.seek(0)
                 f.writelines(line for line in content if line.strip())
                 f.truncate()
+
+
+class MemoryWidget(QtWidgets.QDockWidget):
+    def __init__(self):
+        super().__init__()
+        main_widget = QtWidgets.QWidget(self)
+
+        layout = QtWidgets.QHBoxLayout(main_widget)
+        self.setWidget(main_widget)
+
+        self.treeWidget = QtWidgets.QTreeWidget()
+        self.setLayout(layout)
+        layout.addWidget(self.treeWidget)
+
+        self.populate_tree()
+
+        self.treeWidget.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.treeWidget.customContextMenuRequested.connect(self.show_context_menu)
+
+        refresh_button = QtWidgets.QPushButton("Refresh")
+        refresh_button.clicked.connect(self.refresh)
+        layout.addWidget(refresh_button)
+
+    def populate_tree(self):
+        self.treeWidget.clear()
+        for key, value in gs.models.items():
+            item = QtWidgets.QTreeWidgetItem(gs.models[key])
+            self.treeWidget.addTopLevelItem(item)
+
+            if isinstance(value, dict):
+                self.add_subitems(item, value)
+
+    def add_subitems(self, parent, dict_items):
+        for key, value in dict_items.items():
+            item = QtWidgets.QTreeWidgetItem([key])
+            parent.addChild(item)
+
+            if isinstance(value, dict):
+                self.add_subitems(item, value)
+
+    def show_context_menu(self, pos):
+        item = self.treeWidget.currentItem()
+
+        if item is not None:
+            menu = QtWidgets.QMenu(self)
+
+            delete_action = QAction("Delete", self)
+            delete_action.triggered.connect(lambda: self.delete_item(item))
+            menu.addAction(delete_action)
+
+            menu.exec_(self.treeWidget.mapToGlobal(pos))
+
+    def delete_item(self, item):
+        parent = item.parent()
+
+        if parent is None:
+            self.treeWidget.takeTopLevelItem(self.treeWidget.indexOfTopLevelItem(item))
+        else:
+            parent.removeChild(item)
+
+    def refresh(self):
+        self.populate_tree()
+
 class GitHubRepositoriesDialog(QtWidgets.QDockWidget):
     def __init__(self, parent=None):
         super().__init__(parent=parent)
@@ -265,14 +329,71 @@ class GitHubRepositoriesDialog(QtWidgets.QDockWidget):
             self.list_widget.takeItem(row)
     def right_click_menu(self, position):
         self.context_menu.exec_(self.list_widget.mapToGlobal(position))
+class StreamRedirect(QtCore.QObject):
+    text_written = QtCore.Signal(str)
+
+    def write(self, text):
+        self.text_written.emit(str(text))
+
+    def flush(self):
+        pass
+
+class NodesConsole(ConsoleWidget):
+    def __init__(self):
+        super().__init__()
+    def write(self, strn, html=False, scrollToBottom=True):
+        """Write a string into the console.
+
+        If scrollToBottom is 'auto', then the console is automatically scrolled
+        to fit the new text only if it was already at the bottom.
+        """
+        isGuiThread = QtCore.QThread.currentThread() == QtCore.QCoreApplication.instance().thread()
+        if not isGuiThread:
+            sys.__stdout__.write(strn)
+            return
+
+        sb = self.output.verticalScrollBar()
+        scroll = sb.value()
+        if scrollToBottom == 'auto':
+            atBottom = scroll == sb.maximum()
+            scrollToBottom = atBottom
+
+        self.output.moveCursor(QtGui.QTextCursor.MoveOperation.End)
+        if html:
+            self.output.textCursor().insertHtml(strn)
+        else:
+            if self.inCmd:
+                self.inCmd = False
+                self.output.textCursor().insertHtml("</div><br><div style='font-weight: normal; background-color: #FFF; color: black'>")
+            self.output.insertPlainText(strn)
+
+        if scrollToBottom:
+            sb.setValue(sb.maximum())
+        else:
+            sb.setValue(scroll)
+
+
 class CalculatorWindow(NodeEditorWindow):
 
     def __init__(self):
         super().__init__()
 
         # Create a text widget for stdout and stderr
-        self.text_widget = ConsoleWidget()
-        #self.text_widget2 = ConsoleWidget()
+        self.text_widget = NodesConsole()
+        # Set up the StreamRedirect objects
+        self.stdout_redirect = StreamRedirect()
+        #self.stderr_redirect = StreamRedirect()
+        #self.stdin_redirect = StreamRedirect()
+        # Connect the text_written signal to the text_widget's append method
+        self.stdout_redirect.text_written.connect(self.text_widget.write)
+        #self.stdin_redirect.text_written.connect(self.text_widget.write)
+        #self.stderr_redirect.text_written.connect(self.text_widget.write)
+
+        # Redirect stdout and stderr to the StreamRedirect objects
+        sys.stdout = self.stdout_redirect
+        #sys.stdin = self.stdin_redirect
+        #sys.stderr = self.stderr_redirect
+
 
         self.threadpool = QtCore.QThreadPool()
         # Create a dock widget for the text widget and add it to the main window
@@ -292,11 +413,11 @@ class CalculatorWindow(NodeEditorWindow):
         self.name_product = 'AI Node Editor'
         gs.loaded_models["loaded"] = []
 
-        """self.stylesheet_filename = os.path.join(os.path.dirname(__file__), "ainodes_frontend/qss/nodeeditor-dark.qss")
+        self.stylesheet_filename = os.path.join(os.path.dirname(__file__), "ainodes_frontend/qss/nodeeditor-dark.qss")
         loadStylesheets(
             os.path.join(os.path.dirname(__file__), "ainodes_frontend/qss/nodeeditor-dark.qss"),
             self.stylesheet_filename
-        )"""
+        )
 
         self.empty_icon = QIcon("")
 
@@ -334,7 +455,10 @@ class CalculatorWindow(NodeEditorWindow):
         self.setWindowTitle("aiNodes - Engine")
 
         self.show_github_repositories()
-
+        #self.show_memory_widget()
+    def show_memory_widget(self):
+        self.mem_widget = MemoryWidget()
+        self.mem_widget.show()
     def show_github_repositories(self):
         self.node_packages = GitHubRepositoriesDialog(self)
         self.node_packages.load_repositories()

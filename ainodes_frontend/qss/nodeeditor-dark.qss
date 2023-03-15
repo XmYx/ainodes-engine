@@ -16,6 +16,7 @@ QMdiArea QTabBar::close-button:!selected{image:url(":icons/tab_close_nonselected
 QMdiSubWindow{border-size:1px;border-style:solid;background:#616161}
 QTabBar::tab:selected,QTabBar::tab:hover{color:#eee}
 QDockWidget{color:#ddd;font-weight:bold;titlebar-close-icon:url(":icons/docktitle-close-btn-light.png");titlebar-normal-icon:url(":icons/docktitle-normal-btn-light.png")}
+QDockWidget{color:#ddd;font-weight:bold;titlebar-close-icon:url(":icons/docktitle-close-btn-light.png");titlebar-normal-icon:url(":icons/docktitle-normal-btn-light.png")}
 QDockWidget::title{background:qlineargradient(x1 : 0,y1 : 0,x2 : 0,y2 : 1,stop : 0 #3b3b3b,stop : 1 #2e2e2e);padding-top:4px;padding-right:22px;font-weight:bold}
 QDockWidget::close-button,QDockWidget::float-button{subcontrol-position:top right;subcontrol-origin:margin;text-align:center;icon-size:16px;width:14px;position:absolute;top:0;bottom:0;left:0;right:4px}
 QDockWidget::close-button{right:4px}

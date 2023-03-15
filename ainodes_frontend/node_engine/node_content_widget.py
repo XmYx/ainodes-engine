@@ -87,6 +87,7 @@ class QDMNodeContentWidget(QWidget, Serializable):
                         res[f"{widget.objectName()}"] = widget.isChecked()
             elif isinstance(layout, QtWidgets.QWidgetItem):
                 widget = layout.widget()
+                print(widget)
                 if isinstance(widget, QtWidgets.QComboBox):
                     res[f"{widget.objectName()}"] = widget.currentText()
                 elif isinstance(widget, QtWidgets.QLineEdit):
@@ -163,13 +164,15 @@ class QDMNodeContentWidget(QWidget, Serializable):
                         else:
                             widget.setCurrentIndex(index)
                     elif isinstance(widget, QtWidgets.QLineEdit):
-                        widget.setText(data[f"{widget.objectName()}"])
+                        widget.setText(str(data[f"{widget.objectName()}"]))
                     elif isinstance(widget, QTextEdit):
-                        widget.setPlainText(data[f"{widget.objectName()}"])
-                    elif isinstance(widget, QtWidgets.QSpinBox) or isinstance(widget, QtWidgets.QDoubleSpinBox):
-                        widget.setValue(data[f"{widget.objectName()}"])
+                        widget.setPlainText(str(data[f"{widget.objectName()}"]))
+                    elif isinstance(widget, QtWidgets.QSpinBox):
+                        widget.setValue(int(data[f"{widget.objectName()}"]))
+                    elif isinstance(widget, QtWidgets.QDoubleSpinBox):
+                        widget.setValue(float(data[f"{widget.objectName()}"]))
                     elif isinstance(widget, QtWidgets.QCheckBox):
-                        widget.setChecked(data[f"{widget.objectName()}"])
+                        widget.setChecked(bool(data[f"{widget.objectName()}"]))
                     return True
         except Exception as e:
             dumpException(e)

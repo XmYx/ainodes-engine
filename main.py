@@ -10,6 +10,8 @@ from qtpy import QtGui
 from qtpy.QtWidgets import QApplication
 from ainodes_frontend import singleton as gs
 from ainodes_frontend.base import CalculatorWindow
+import ainodes_frontend.qss.nodeeditor_dark_resources
+from ainodes_frontend.node_engine.utils import loadStylesheets
 
 # Set environment variable QT_API to use PySide6
 os.environ["QT_API"] = "pyside6"
@@ -49,20 +51,27 @@ QtGui.QSurfaceFormat.setDefaultFormat(qs_format)
 # make app
 app = QApplication(sys.argv)
 # Load style sheet from a file
-if not args.light:
+"""if not args.light:
     with open("ainodes_frontend/qss/nodeeditor-dark.qss", "r", encoding="utf-8") as f:
         style_sheet = f.read()
-        app.setStyleSheet(style_sheet)
+        app.setStyleSheet(style_sheet)"""
 icon = QtGui.QIcon("ainodes_frontend/qss/icon.png")
 app.setWindowIcon(icon)
 app.setApplicationName("aiNodes - engine")
 
 # Create and show the main window
 wnd = CalculatorWindow()
+wnd.stylesheet_filename = os.path.join(os.path.dirname(__file__), "ainodes_frontend/qss/nodeeditor-dark.qss")
+loadStylesheets(
+    os.path.join(os.path.dirname(__file__), "ainodes_frontend/qss/nodeeditor-dark.qss"),
+    wnd.stylesheet_filename
+)
 
 #sys.stdout = wnd.text_widget
 #sys.stderr = wnd.text_widget
 #sys.stdin = wnd.text_widget
+
+
 if not args.skip_base_nodes:
     wnd.node_packages.list_widget.setCurrentRow(0)
     if not os.path.isdir('custom_nodes/ainodes_engine_base_nodes'):
