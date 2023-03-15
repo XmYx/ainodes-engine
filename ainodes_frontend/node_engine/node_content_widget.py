@@ -280,11 +280,35 @@ class QDMNodeContentWidget(QWidget, Serializable):
             QtWidgets.QHBoxLayout: A horizontal button layout.
         """
         button_layout = QtWidgets.QHBoxLayout()
-        button_layout.addWidget(self.button)
-        button_layout.addWidget(self.fix_seed_button)
+        for widget in buttons:
+            button_layout.addWidget(widget)
         self.widget_list.append(button_layout)
         return button_layout
 
+    def create_progress_bar(self, label_text, min_val, max_val, default_val):
+        """Create a progress bar widget with the given label text, minimum value, maximum value, and default value.
+
+        Args:
+            label_text (str): Text for the label of the progress bar.
+            min_val (int): Minimum value of the progress bar.
+            max_val (int): Maximum value of the progress bar.
+            default_val (int): Default value of the progress bar.
+
+        Returns:
+            QtWidgets.QProgressBar: A progress bar widget.
+        """
+        progress_bar = QtWidgets.QProgressBar()
+        progress_bar.setMinimum(min_val)
+        progress_bar.setMaximum(max_val)
+        progress_bar.setValue(default_val)
+        progress_bar.setObjectName(label_text)
+        label = QtWidgets.QLabel(label_text)
+        layout = QtWidgets.QHBoxLayout()
+        layout.addWidget(label)
+        layout.addWidget(progress_bar)
+        progress_bar.layout = layout
+        self.widget_list.append(layout)
+        return progress_bar
     def create_main_layout(self):
         """
         Create the main layout for the widget and add items from the widget_list.

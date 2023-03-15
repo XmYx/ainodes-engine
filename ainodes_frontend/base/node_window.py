@@ -15,8 +15,6 @@ from ainodes_frontend.base.node_sub_window import CalculatorSubWindow
 from ainodes_frontend.base.ai_nodes_listbox import QDMDragListbox
 from ainodes_frontend.node_engine.utils_no_qt import dumpException, pp
 from ainodes_frontend.base.node_config import CALC_NODES, import_nodes_from_file, import_nodes_from_subdirectories
-from ainodes_frontend.qss import nodeeditor_dark_resources
-# Enabling edge validators
 from ainodes_frontend.node_engine.node_edge import Edge
 from ainodes_frontend.node_engine.node_edge_validators import (
     edge_validator_debug,
@@ -29,7 +27,6 @@ Edge.registerEdgeValidator(edge_validator_debug)
 Edge.registerEdgeValidator(edge_cannot_connect_two_outputs_or_two_inputs)
 Edge.registerEdgeValidator(edge_cannot_connect_input_and_output_of_same_node)
 Edge.registerEdgeValidator(edge_cannot_connect_input_and_output_of_different_type)
-
 
 from pyqtgraph.console import ConsoleWidget
 
@@ -267,7 +264,8 @@ class GitHubRepositoriesDialog(QtWidgets.QDockWidget):
             QtWidgets.QMessageBox.critical(self, "Download Failed",
             f"An error occurred while downloading {repository}:\n{result.stderr.decode()}")
 
-    def update_repository(self):
+    def update_repository(self, skip_update=False):
+        self.skip_update = skip_update
         worker = Worker(self.update_repository_thread)
         worker.signals.result.connect(self.update_repository_finished)
         self.parent.threadpool.start(worker)
@@ -276,22 +274,33 @@ class GitHubRepositoriesDialog(QtWidgets.QDockWidget):
         repository = self.repository_name_label.text()
         folder = repository.split("/")[1]
         #command = f"git -C ./custom_nodes/{folder} stash && git -C ./custom_nodes/{folder} pull && pip install -r ./custom_nodes/{folder}/requirements.txt"
-        command = f"git -C ./custom_nodes/{folder} pull && pip install -r ./custom_nodes/{folder}/requirements.txt"
-        result = run(command, shell=True, stdout=self.parent.text_widget, stderr=self.parent.text_widget)
+        if self.skip_update == False:
+            command = f"git -C ./custom_nodes/{folder} pull && pip install -r ./custom_nodes/{folder}/requirements.txt"
+            result = run(command, shell=True, stdout=self.parent.text_widget, stderr=self.parent.text_widget)
+        else:
+            result = None
         return result
     @QtCore.Slot(object)
     def update_repository_finished(self, result):
         repository = self.repository_name_label.text()
         folder = repository.split("/")[1]
-        if result.returncode == 0:
+        if result != None:
+            if result.returncode == 0:
+                import_nodes_from_subdirectories(f"./custom_nodes/{folder}")
+                self.parent.nodesListWidget.addMyItems()
+                QtWidgets.QMessageBox.information(self, "Update Complete", f"{repository} was updated successfully.")
+                self.list_widget.currentItem().setBackground(Qt.darkGreen)
+                self.update_button.hide()
+
+            else:
+                QtWidgets.QMessageBox.critical(self, "Update Failed",
+                                     f"An error occurred while updating {repository}:\n{result.stderr.decode()}")
+        elif result == None:
             import_nodes_from_subdirectories(f"./custom_nodes/{folder}")
             self.parent.nodesListWidget.addMyItems()
-            QtWidgets.QMessageBox.information(self, "Update Complete", f"{repository} was updated successfully.")
+            #QtWidgets.QMessageBox.information(self, "Import Complete", f"{repository} was imported successfully.")
             self.list_widget.currentItem().setBackground(Qt.darkGreen)
             self.update_button.hide()
-        else:
-            QtWidgets.QMessageBox.critical(self, "Update Failed",
-                                 f"An error occurred while updating {repository}:\n{result.stderr.decode()}")
 
     def add_repository(self):
         remove_empty_lines(self.repolist)
@@ -382,17 +391,17 @@ class CalculatorWindow(NodeEditorWindow):
         self.text_widget = NodesConsole()
         # Set up the StreamRedirect objects
         self.stdout_redirect = StreamRedirect()
-        #self.stderr_redirect = StreamRedirect()
+        self.stderr_redirect = StreamRedirect()
         #self.stdin_redirect = StreamRedirect()
         # Connect the text_written signal to the text_widget's append method
         self.stdout_redirect.text_written.connect(self.text_widget.write)
         #self.stdin_redirect.text_written.connect(self.text_widget.write)
-        #self.stderr_redirect.text_written.connect(self.text_widget.write)
+        self.stderr_redirect.text_written.connect(self.text_widget.write)
 
         # Redirect stdout and stderr to the StreamRedirect objects
         sys.stdout = self.stdout_redirect
         #sys.stdin = self.stdin_redirect
-        #sys.stderr = self.stderr_redirect
+        sys.stderr = self.stderr_redirect
 
 
         self.threadpool = QtCore.QThreadPool()

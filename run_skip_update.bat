@@ -1,0 +1,1 @@
+python launcher.py --skip_update

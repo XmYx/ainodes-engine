@@ -176,6 +176,27 @@ class AiNode(Node):
             print(f"Value doesnt exist yet, make sure to validate the node: {self.content_label_objname}")
             value = None
         return value
+
+    def getInputData(self, index=0):
+        """
+        Get the data from the connected input socket specified by 'index'.
+
+        :param index: The index of the input socket to get data from.
+        :type index: int
+        :return: The data from the connected input socket, or None if the socket is not connected.
+        :rtype: Any or None
+        """
+        try:
+            if self.getInput(index) is not None:
+                node, index = self.getInput(index)
+                data = node.getOutput(index)
+                return data
+            else:
+                return None
+        except Exception as e:
+            print(f"Error in getInputData: {e}")
+            return None
+
     def initSettings(self):
         """
         Initialize settings for the node, such as input and output socket positions.
