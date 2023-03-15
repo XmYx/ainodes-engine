@@ -265,7 +265,7 @@ class AiNode(Node):
         Returns:
             None
         """
-        if self.getChildrenNodes() != []:
+        if len(self.getOutputs(output_index)) > 0:
             try:
                 node = self.getOutputs(output_index)[0]
                 node.markDirty(True)
@@ -274,6 +274,7 @@ class AiNode(Node):
             except Exception as e:
                 print("Skipping execution:", e)
                 return None
+
     def onInputChanged(self, socket=None):
         """
         Handle the event when an input socket value is changed.
