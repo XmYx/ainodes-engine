@@ -387,33 +387,12 @@ class CalculatorWindow(NodeEditorWindow):
     def __init__(self):
         super().__init__()
 
-        # Create a text widget for stdout and stderr
-        self.text_widget = NodesConsole()
-        # Set up the StreamRedirect objects
-        self.stdout_redirect = StreamRedirect()
-        self.stderr_redirect = StreamRedirect()
-        #self.stdin_redirect = StreamRedirect()
-        # Connect the text_written signal to the text_widget's append method
-        self.stdout_redirect.text_written.connect(self.text_widget.write)
-        #self.stdin_redirect.text_written.connect(self.text_widget.write)
-        self.stderr_redirect.text_written.connect(self.text_widget.write)
-
-        # Redirect stdout and stderr to the StreamRedirect objects
-        sys.stdout = self.stdout_redirect
-        #sys.stdin = self.stdin_redirect
-        sys.stderr = self.stderr_redirect
 
 
         self.threadpool = QtCore.QThreadPool()
         # Create a dock widget for the text widget and add it to the main window
-        self.dock_widget = QDockWidget('Output', self)
-        self.dock_widget.setAllowedAreas(Qt.BottomDockWidgetArea)
-        self.layout = QtWidgets.QHBoxLayout()
-        self.layout.setContentsMargins(5,5,5,5)
 
-        #layout.addWidget(self.text_widget2)
-        self.dock_widget.setWidget(self.text_widget)
-        self.addDockWidget(Qt.BottomDockWidgetArea, self.dock_widget)
+
         # Redirect stdout and stderr to the text widget
 
     def initUI(self):
@@ -462,9 +441,65 @@ class CalculatorWindow(NodeEditorWindow):
         self.readSettings()
 
         self.setWindowTitle("aiNodes - Engine")
-
+        self.create_console_widget()
         self.show_github_repositories()
+        self.tabifyDockWidget(self.node_packages, self.console)
         #self.show_memory_widget()
+
+    def toggleDockWidgets(self):
+        # Get the current visibility state of the dock widgets
+        consoleVisible = self.console.isVisible()
+        packagesVisible = self.node_packages.isVisible()
+
+        # Toggle the visibility of the dock widgets
+        self.console.setVisible(not consoleVisible)
+        self.node_packages.setVisible(not packagesVisible)
+    def toggleNodesDock(self):
+        # Get the current visibility state of the dock widgets
+        consoleVisible = self.nodesDock.isVisible()
+
+        # Toggle the visibility of the dock widgets
+        self.nodesDock.setVisible(not consoleVisible)
+    def toggleFullscreen(self):
+        if self.isFullScreen():
+            self.showNormal()
+        else:
+            self.showFullScreen()
+    def keyPressEvent(self, event: QtGui.QKeyEvent) -> None:
+        super().keyPressEvent(event)
+        if event.key() == 96:
+            self.toggleDockWidgets()
+        if event.key() == 16777274:
+            self.toggleFullscreen()
+        elif event.key() == 16777216:
+            self.toggleNodesDock()
+    def create_console_widget(self):
+        # Create a text widget for stdout and stderr
+        self.text_widget = NodesConsole()
+        # Set up the StreamRedirect objects
+        self.stdout_redirect = StreamRedirect()
+        self.stderr_redirect = StreamRedirect()
+        #self.stdin_redirect = StreamRedirect()
+        # Connect the text_written signal to the text_widget's append method
+        self.stdout_redirect.text_written.connect(self.text_widget.write)
+        #self.stdin_redirect.text_written.connect(self.text_widget.write)
+        self.stderr_redirect.text_written.connect(self.text_widget.write)
+        # Redirect stdout and stderr to the StreamRedirect objects
+        sys.stdout = self.stdout_redirect
+        #sys.stdin = self.stdin_redirect
+        sys.stderr = self.stderr_redirect
+
+        self.console = QDockWidget()
+        self.console.setWindowTitle("Console")
+        self.console.setAllowedAreas(Qt.BottomDockWidgetArea)
+        widget = QtWidgets.QWidget()
+        layout = QtWidgets.QHBoxLayout(widget)
+        layout.setContentsMargins(5,5,5,5)
+        layout.addWidget(self.text_widget)
+        self.console.setWidget(widget)
+        #layout.addWidget(self.text_widget2)
+        self.addDockWidget(Qt.BottomDockWidgetArea, self.console)
+
     def show_memory_widget(self):
         self.mem_widget = MemoryWidget()
         self.mem_widget.show()
