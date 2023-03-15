@@ -348,13 +348,12 @@ class Node(Serializable):
         """
         self._is_dirty = new_value
         if self._is_dirty: self.onMarkedDirty()
-    def markDirty_signal(self):
-        self.content.mark_dirty_signal.emit()
     def onMarkedDirty(self):
         """Called when this `Node` has been marked as `Dirty`. This method is supposed to be overridden"""
         pass
 
     def markChildrenDirty(self, new_value: bool=True):
+        return
         """Mark all first level children of this `Node` to be `Dirty`. Not this `Node` it self. Not other descendants
 
         :param new_value: ``True`` if children should be `Dirty`. ``False`` if you want to un-dirty children
@@ -364,6 +363,7 @@ class Node(Serializable):
             other_node.markDirty(new_value)
 
     def markDescendantsDirty(self, new_value: bool=True):
+        return
         """Mark all children and descendants of this `Node` to be `Dirty`. Not this `Node` it self
 
         :param new_value: ``True`` if children and descendants should be `Dirty`. ``False`` if you want to un-dirty children and descendants
@@ -395,6 +395,7 @@ class Node(Serializable):
         pass
 
     def markChildrenInvalid(self, new_value: bool=True):
+        return
         """Mark all first level children of this `Node` to be `Invalid`. Not this `Node` it self. Not other descendants
 
         :param new_value: ``True`` if children should be `Invalid`. ``False`` if you want to make children valid
@@ -404,6 +405,7 @@ class Node(Serializable):
             other_node.markInvalid(new_value)
 
     def markDescendantsInvalid(self, new_value: bool=True):
+        return
         """Mark all children and descendants of this `Node` to be `Invalid`. Not this `Node` it self
 
         :param new_value: ``True`` if children and descendants should be `Invalid`. ``False`` if you want to make children and descendants valid
@@ -420,6 +422,7 @@ class Node(Serializable):
         return 0
 
     def evalChildren(self):
+        return
         """Evaluate all children of this `Node`"""
         for node in self.getChildrenNodes():
             node.eval()
@@ -618,6 +621,4 @@ class Node(Serializable):
         if isinstance(self.content, Serializable):
             res = self.content.deserialize(data['content'], hashmap)
             return res
-
-
         return True

@@ -3,7 +3,7 @@
 A module containing Graphics representation of :class:`~node_engine.node_node.Node`
 """
 from ainodes_frontend.node_engine.node_graphics_edge import QDMGraphicsEdge
-from ainodes_frontend.node_engine.node_node import Node
+#from ainodes_frontend.node_engine.node_node import Node
 from qtpy.QtWidgets import QGraphicsItem, QWidget, QGraphicsTextItem
 from qtpy.QtGui import QFont, QColor, QPen, QBrush, QPainterPath
 from qtpy.QtCore import Qt, QRectF
@@ -455,6 +455,7 @@ class QDMGraphicsBGNode(QGraphicsItem):
 
     def hoverEnterEvent(self, event: 'QGraphicsSceneHoverEvent') -> None:
         """Handle hover effect"""
+        self._sizer.set_pos(self.width,self.height)
         self.hovered = True
         self.update()
 
@@ -518,7 +519,10 @@ class QDMGraphicsBGNode(QGraphicsItem):
         path_content.addRect(0, self.title_height, self.edge_roundness, self.edge_roundness)
         path_content.addRect(self.width - self.edge_roundness, self.title_height, self.edge_roundness, self.edge_roundness)
         painter.setPen(Qt.NoPen)
-        painter.setBrush(self._brush_background)
+        color = self._brush_background.color()
+        color.setAlphaF(0.5)
+
+        painter.setBrush(QBrush(color))
         painter.drawPath(path_content.simplified())
 
 
