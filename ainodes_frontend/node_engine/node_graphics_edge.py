@@ -167,6 +167,22 @@ class QDMGraphicsEdge(QGraphicsPathItem):
         """Qt's overridden method to paint this Graphics Edge. Path calculated
             in :func:`~node_engine.node_graphics_edge.QDMGraphicsEdge.calcPath` method"""
         self.setPath(self.calcPath())
+        SOCKET_COLORS = [
+            QColor("#FFFF7700"),
+            QColor("#FF52e220"),
+            QColor("#FF0056a6"),
+            QColor("#FFa86db1"),
+            QColor("#FFb54747"),
+            QColor("#FFdbe220"),
+            QColor("#FF888888"),
+            QColor("#FFFF7700"),
+            QColor("#FF52e220"),
+            QColor("#FF0056a6"),
+            QColor("#FFa86db1"),
+            QColor("#FFb54747"),
+            QColor("#FFdbe220"),
+            QColor("#FF888888"),
+        ]
 
         painter.setBrush(Qt.NoBrush)
 
@@ -178,6 +194,12 @@ class QDMGraphicsEdge(QGraphicsPathItem):
             painter.setPen(self._pen_dragging)
         else:
             painter.setPen(self._pen if not self.isSelected() else self._pen_selected)
+        key = self.edge.end_socket.grSocket.socket_type
+        color = SOCKET_COLORS[key]
+        print(self.edge.end_socket.grSocket.socket_type)
+        pen = QPen(color)
+        pen.setWidth(3)  # Set the width to 2 pixels
+        painter.setPen(pen)
 
         painter.drawPath(self.path())
 
