@@ -110,6 +110,9 @@ class AiNode(Node):
 
         #self.content.mark_dirty_signal.connect(self.markDirty)
     def set_socket_names(self):
+        """
+        Internal function to set socket names, override in your custom node pack to add additional socket types
+        """
         sockets = {1: "EXEC",
                    2: "LATENT",
                    3: "COND",
@@ -123,7 +126,7 @@ class AiNode(Node):
 
         # Dynamically populate input and output socket names using loops
         for input_index in self._inputs:
-            print(sockets[input_index])
+            #print(sockets[input_index])
             self.input_socket_name.append(sockets[input_index])
 
         for output_index in self._outputs:

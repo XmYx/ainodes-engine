@@ -194,6 +194,40 @@ class QDMNodeContentWidget(QWidget, Serializable):
         line_edit.layout = layout
         self.widget_list.append(line_edit)
         return line_edit
+    def create_text_edit(self, label_text):
+        """Create a line edit widget with the given label text.
+
+        Args:
+            label_text (str): Text for the label of the line edit.
+
+        Returns:
+            QtWidgets.QLineEdit: A line edit widget.
+        """
+        line_edit = QtWidgets.QTextEdit()
+        label = QtWidgets.QLabel(label_text)
+        label.setObjectName(label_text)
+        layout = QtWidgets.QHBoxLayout()
+        layout.addWidget(label)
+        layout.addWidget(line_edit)
+        line_edit.layout = layout
+        self.widget_list.append(line_edit)
+        return line_edit
+    def create_label(self, label_text):
+        """Create a label widget with the given label text.
+
+        Args:
+            label_text (str): Text for the label of the label.
+
+        Returns:
+            QtWidgets.QLabel: A label widget.
+        """
+        label = QtWidgets.QLabel(label_text)
+        label.setObjectName(label_text)
+        layout = QtWidgets.QHBoxLayout()
+        layout.addWidget(label)
+        label.layout = layout
+        self.widget_list.append(label)
+        return label
 
     def create_spin_box(self, label_text, min_val, max_val, default_val, step_value=1):
         """Create a spin box widget with the given label text, minimum value, maximum value, default value, and step value.
@@ -317,6 +351,7 @@ class QDMNodeContentWidget(QWidget, Serializable):
         self.main_layout = QtWidgets.QVBoxLayout(self)
         self.main_layout.setContentsMargins(15, 15, 15, 25)
         for item in self.widget_list:
+            print(item)
             if isinstance(item, QtWidgets.QLayout):
                 self.main_layout.addLayout(item)
             elif isinstance(item, QtWidgets.QWidget):

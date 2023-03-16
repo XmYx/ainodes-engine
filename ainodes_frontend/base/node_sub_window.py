@@ -194,7 +194,7 @@ class CalculatorSubWindow(NodeEditorWidget):
 
         item = self.scene.getItemAt(event.pos())
 
-        print("ITEM:", item)
+        #print("ITEM:", item)
         if isinstance(item, QDMGraphicsBGNode):
             context_menu = QMenu()
             set_color_action = context_menu.addAction("Set Color")
