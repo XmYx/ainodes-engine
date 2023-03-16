@@ -194,12 +194,14 @@ class QDMGraphicsEdge(QGraphicsPathItem):
             painter.setPen(self._pen_dragging)
         else:
             painter.setPen(self._pen if not self.isSelected() else self._pen_selected)
-        key = self.edge.end_socket.grSocket.socket_type
-        color = SOCKET_COLORS[key]
-        print(self.edge.end_socket.grSocket.socket_type)
-        pen = QPen(color)
-        pen.setWidth(3)  # Set the width to 2 pixels
-        painter.setPen(pen)
+
+        if self.edge.end_socket is not None:
+            key = self.edge.end_socket.grSocket.socket_type
+            color = SOCKET_COLORS[key]
+            print(self.edge.end_socket.grSocket.socket_type)
+            pen = QPen(color)
+            pen.setWidth(3)  # Set the width to 2 pixels
+            painter.setPen(pen)
 
         painter.drawPath(self.path())
 
