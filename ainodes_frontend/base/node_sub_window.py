@@ -46,11 +46,11 @@ class CalculatorSubWindow(NodeEditorWidget):
             os.path.join(os.path.dirname(__file__), "ainodes_frontend/qss/nodeeditor-dark.qss"),
             self.stylesheet_filename
         )"""
-        self._search_widget = TabSearchMenuWidget()
+        #self._search_widget = TabSearchMenuWidget()
         #self._search_widget.search_submitted.connect(self._on_search_submitted)
-        print(self._search_widget.isVisible())
+        #print(self._search_widget.isVisible())
         self.scenePos = None
-        self.tab_search_toggle()
+        #self.tab_search_toggle()
 
     def tab_search_toggle(self):
         state = self._search_widget.isVisible()

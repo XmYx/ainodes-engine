@@ -149,11 +149,12 @@ class QDMNodeContentWidget(QWidget, Serializable):
         except Exception as e:
             dumpException(e)
             return False
-    def keyPressEvent(self, event):
+    """def keyPressEvent(self, event):
+        super().keyPressEvent(event)
         if event.key() == Qt.Key_E:
             print("TRIGGER")
             self.node.markDirty(True)
-            self.node.eval()
+            self.node.eval()"""
 
     def create_combo_box(self, items, label_text):
         """Create a combo box widget with the given items and label text.
