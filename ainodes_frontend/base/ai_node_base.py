@@ -113,7 +113,7 @@ class AiNode(Node):
         """
         Internal function to set socket names, override in your custom node pack to add additional socket types
         """
-        sockets = {1: "EXEC",
+        gs.sockets = {1: "EXEC",
                    2: "LATENT",
                    3: "COND",
                    4: "EMPTY",
@@ -127,11 +127,15 @@ class AiNode(Node):
         # Dynamically populate input and output socket names using loops
         for input_index in self._inputs:
             #print(sockets[input_index])
-            self.input_socket_name.append(sockets[input_index])
+            self.input_socket_name.append(gs.sockets[input_index])
 
         for output_index in self._outputs:
-            self.output_socket_name.append(sockets[output_index])
+            self.output_socket_name.append(gs.sockets[output_index])
         self.initSockets(inputs=self._inputs, outputs=self._outputs, reset=True)
+    def update_all_sockets(self):
+        for socket in self.outputs + self.inputs:
+            socket.setSocketPosition()
+        self.updateConnectedEdges()
 
     def getID(self, index):
         """

@@ -6,6 +6,7 @@ from qtpy import QtGui, QtCore
 from qtpy.QtWidgets import QGraphicsItem
 from qtpy.QtGui import QColor, QBrush, QPen
 from qtpy.QtCore import Qt, QRectF
+from ainodes_frontend import singleton as gs
 
 SOCKET_COLORS = [
     QColor("#FFFF7700"),
@@ -34,7 +35,6 @@ class QDMGraphicsSocket(QGraphicsItem):
         super().__init__(socket.node.grNode)
 
         self.socket = socket
-
         self.isHighlighted = False
         self.setZValue(-1)
         self.radius = 8
@@ -47,7 +47,7 @@ class QDMGraphicsSocket(QGraphicsItem):
 
     def getSocketColor(self, key):
         """Returns the ``QColor`` for this ``key``"""
-        if type(key) == int: return SOCKET_COLORS[key]
+        if type(key) == int: return gs.SOCKET_COLORS[key]
         elif type(key) == str: return QColor(key)
         return Qt.transparent
 

@@ -246,6 +246,7 @@ class QDMNodeContentWidget(QWidget, Serializable):
         spin_box.setMinimum(min_val)
         spin_box.setMaximum(max_val)
         spin_box.setValue(default_val)
+        spin_box.setSingleStep(step_value)
         spin_box.setObjectName(label_text)
         label = QtWidgets.QLabel(label_text)
         layout = QtWidgets.QHBoxLayout()

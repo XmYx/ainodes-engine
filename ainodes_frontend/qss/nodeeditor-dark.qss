@@ -31,14 +31,32 @@ QMenu::active{background:#616161;color:#eee}
 QMenu::separator{height:1px;background:#2e2e2e}
 QMenu::disabled,QMenu::item:disabled{color:#6e6e6e}
 QListView{background-color:#555;alternate-background-color:#434343}
-QListView::item{height:22px;color:#e6e6e6}
+QListView::item{height:15px;color:#e6e6e6}
 QListView::item:hover{background:#6e6e6e}
 QListView::item::active:hover{color:#fff}
 QListView::item:selected,QListView::item::active:selected{color:#fff;background:qlineargradient(x1 : 0,y1 : 0,x2 : 0,y2 : 1,stop : 0 #4f9eee,stop : 1 #2084ea);border:0}
 QPushButton{color:#e6e6e6;background:#555;border-color:#141414}
 QLabel{color:#e6e6e6}
-QLineEdit,QTextEdit{color:#e6e6e6;background:#5a5a5a}
-QLineEdit{border:1px solid #3a3a3a;border-radius:2px;padding:1px 2px}
+QLineEdit, QTextEdit {
+    color: #ffffff;
+    background: #3a3a3a;
+    border: 1px solid #5a5a5a;
+    border-radius: 4px;
+    padding: 2px 4px;
+    selection-background-color: #6a6a6a;
+    selection-color: #ffffff;
+}
+
+QLineEdit:focus, QTextEdit:focus {
+    border: 1px solid #7a7a7a;
+}
+
+QLineEdit:disabled, QTextEdit:disabled {
+    color: #bbbbbb;
+    background: #2a2a2a;
+    border: 1px solid #3a3a3a;
+}
+
 QDMNodeContentWidget{background:transparent;}
 QDMNodeContentWidget QFrame{background:transparent}
 QDMNodeContentWidget QTextEdit{background:#666}
@@ -61,6 +79,7 @@ QTreeWidget {
 }
 
 QTreeWidget::item {
+    height: 40px;
     font-weight: bold;
     color: #ffffff;
 }

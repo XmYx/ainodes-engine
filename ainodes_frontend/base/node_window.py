@@ -8,6 +8,7 @@ from qtpy.QtGui import QIcon, QKeySequence
 from qtpy.QtWidgets import QMdiArea, QDockWidget, QAction, QMessageBox, QFileDialog
 from qtpy.QtCore import Qt, QSignalMapper
 
+from ainodes_frontend.base.settings import load_settings, save_settings
 from ainodes_frontend.base.worker import Worker
 from ainodes_frontend.node_engine.utils import loadStylesheets
 from ainodes_frontend.node_engine.node_editor_window import NodeEditorWindow
@@ -33,6 +34,7 @@ from pyqtgraph.console import ConsoleWidget
 # images for the dark skin
 DEBUG = False
 from ainodes_frontend import singleton as gs
+load_settings()
 
 gs.loaded_models = {}
 gs.models = {}
@@ -381,11 +383,56 @@ class NodesConsole(ConsoleWidget):
         else:
             sb.setValue(scroll)
 
+class ColorEditor(QtWidgets.QDialog):
+    def __init__(self, colors, names, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle("Color Editor")
+        self.colors = colors
+        self.names = names
 
+        self.init_ui()
+
+    def init_ui(self):
+        layout = QtWidgets.QVBoxLayout()
+
+        self.list_widget = QtWidgets.QListWidget()
+        for index, color in enumerate(self.colors):
+            item = QtWidgets.QListWidgetItem()
+            item.setBackground(color)
+            item_name = self.names.get(index, "UNUSED")
+            item.setText(item_name)
+            self.list_widget.addItem(item)
+        layout.addWidget(self.list_widget)
+
+        edit_btn = QtWidgets.QPushButton("Edit Color")
+        edit_btn.clicked.connect(self.edit_color)
+        layout.addWidget(edit_btn)
+
+        save_btn = QtWidgets.QPushButton("Save")
+        save_btn.clicked.connect(self.accept)
+        layout.addWidget(save_btn)
+
+        self.setLayout(layout)
+
+    def edit_color(self):
+        current_item = self.list_widget.currentItem()
+        if current_item:
+            initial_color = current_item.background().color()
+            new_color = QtWidgets.QColorDialog.getColor(initial_color, self)
+            if new_color.isValid():
+                current_item.setBackground(new_color)
+
+    def get_updated_colors(self):
+        updated_colors = []
+        for i in range(self.list_widget.count()):
+            item = self.list_widget.item(i)
+            updated_colors.append(item.background().color())
+        return updated_colors
 class CalculatorWindow(NodeEditorWindow):
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, parent=None):
+        super(CalculatorWindow, self).__init__()
+        self.parent = parent
 
 
 
@@ -395,7 +442,14 @@ class CalculatorWindow(NodeEditorWindow):
 
         # Redirect stdout and stderr to the text widget
 
+    def eventListener(self, *args, **kwargs):
+        print("WERE HERE")
+        save_settings()
+        self.parent.quit()
+        #super().closeEvent(e)
     def initUI(self):
+        #self.setup_defaults()
+
 
         self.name_company = 'aiNodes'
         self.name_product = 'AI Node Editor'
@@ -444,8 +498,14 @@ class CalculatorWindow(NodeEditorWindow):
         self.create_console_widget()
         self.show_github_repositories()
         self.tabifyDockWidget(self.node_packages, self.console)
+        #self.edit_colors()
         #self.show_memory_widget()
 
+    def edit_colors(self):
+        editor = ColorEditor(gs.SOCKET_COLORS, gs.socket_names)
+        result = editor.exec_()
+        if result == QtWidgets.QDialog.Accepted:
+            gs.SOCKET_COLORS = editor.get_updated_colors()
     def toggleDockWidgets(self):
         # Get the current visibility state of the dock widgets
         consoleVisible = self.console.isVisible()
@@ -485,9 +545,9 @@ class CalculatorWindow(NodeEditorWindow):
         #self.stdin_redirect.text_written.connect(self.text_widget.write)
         self.stderr_redirect.text_written.connect(self.text_widget.write)
         # Redirect stdout and stderr to the StreamRedirect objects
-        sys.stdout = self.stdout_redirect
+        #sys.stdout = self.stdout_redirect
         #sys.stdin = self.stdin_redirect
-        sys.stderr = self.stderr_redirect
+        #sys.stderr = self.stderr_redirect
 
         self.console = QDockWidget()
         self.console.setWindowTitle("Console")
@@ -538,6 +598,7 @@ class CalculatorWindow(NodeEditorWindow):
         self.actSeparator.setSeparator(True)
 
         self.actAbout = QAction("&About", self, statusTip="Show the application's About box", triggered=self.about)
+        self.actColors = QAction("&Change Colors", self, statusTip="Change socket / route color palette", triggered=self.edit_colors)
 
 
     def getCurrentNodeEditorWidget(self):
@@ -596,10 +657,12 @@ class CalculatorWindow(NodeEditorWindow):
         self.updateWindowMenu()
         self.windowMenu.aboutToShow.connect(self.updateWindowMenu)
 
+
         self.menuBar().addSeparator()
 
         self.helpMenu = self.menuBar().addMenu("&Help")
         self.helpMenu.addAction(self.actAbout)
+
 
         self.editMenu.aboutToShow.connect(self.updateEditMenu)
 
@@ -659,7 +722,7 @@ class CalculatorWindow(NodeEditorWindow):
         toolbar_nodes.setCheckable(True)
         toolbar_nodes.triggered.connect(self.onWindowNodesToolbar)
         toolbar_nodes.setChecked(self.nodesDock.isVisible())
-
+        self.windowMenu.addAction(self.actColors)
         self.windowMenu.addSeparator()
 
         self.windowMenu.addAction(self.actClose)
