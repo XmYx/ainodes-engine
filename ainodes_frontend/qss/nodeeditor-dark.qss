@@ -31,7 +31,6 @@ QMenu::active{background:#616161;color:#eee}
 QMenu::separator{height:1px;background:#2e2e2e}
 QMenu::disabled,QMenu::item:disabled{color:#6e6e6e}
 QListView{background-color:#555;alternate-background-color:#434343}
-QListView::item{height:15px;color:#e6e6e6}
 QListView::item:hover{background:#6e6e6e}
 QListView::item::active:hover{color:#fff}
 QListView::item:selected,QListView::item::active:selected{color:#fff;background:qlineargradient(x1 : 0,y1 : 0,x2 : 0,y2 : 1,stop : 0 #4f9eee,stop : 1 #2084ea);border:0}

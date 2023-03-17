@@ -65,24 +65,26 @@ class QDMDragListbox(QtWidgets.QTreeWidget):
         try:
             item = self.currentItem()
             op_code = item.data(0, Qt.UserRole + 1)
+            if op_code is not None:
+                pm = False
+                itemData = QByteArray()
+                dataStream = QDataStream(itemData, QIODevice.WriteOnly)
+                if item.data(0, Qt.UserRole) is not None:
+                    pixmap = QPixmap(item.data(0, Qt.UserRole))
+                    pm = True
+                    dataStream << pixmap
+                dataStream.writeInt8(op_code)
+                dataStream.writeQString(item.text(0))
 
-            pixmap = QPixmap(item.data(0, Qt.UserRole))
+                mimeData = QMimeData()
+                mimeData.setData(LISTBOX_MIMETYPE, itemData)
 
+                drag = QDrag(self)
+                drag.setMimeData(mimeData)
+                if pm == True:
+                    drag.setHotSpot(QPoint(pixmap.width() // 2, pixmap.height() // 2))
+                    drag.setPixmap(pixmap)
 
-            itemData = QByteArray()
-            dataStream = QDataStream(itemData, QIODevice.WriteOnly)
-            dataStream << pixmap
-            dataStream.writeInt8(op_code)
-            dataStream.writeQString(item.text(0))
-
-            mimeData = QMimeData()
-            mimeData.setData(LISTBOX_MIMETYPE, itemData)
-
-            drag = QDrag(self)
-            drag.setMimeData(mimeData)
-            drag.setHotSpot(QPoint(pixmap.width() // 2, pixmap.height() // 2))
-            drag.setPixmap(pixmap)
-
-            drag.exec_(Qt.MoveAction)
+                drag.exec_(Qt.MoveAction)
 
         except Exception as e: dumpException(e)
