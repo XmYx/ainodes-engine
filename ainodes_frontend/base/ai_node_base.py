@@ -1,5 +1,6 @@
 import copy
 
+from qtpy import QtWidgets, QtCore
 from qtpy.QtGui import QImage
 from qtpy.QtCore import QRectF
 from qtpy.QtWidgets import QLabel
@@ -73,7 +74,7 @@ class AiNode(Node):
     category = "default"
     input_socket_name = ["EXEC"]
     output_socket_name = ["EXEC"]
-
+    help_text = "Default help text"
     GraphicsNode_class = CalcGraphicsNode
     NodeContent_class = CalcContent
 
@@ -352,3 +353,21 @@ class AiNode(Node):
             gs.values[object_name] = None
             x += 1
         super().remove()
+
+
+    def showNiceDialog(self):
+        title = self.title + " Help"
+        dialog = QtWidgets.QDialog(self.scene.getView())
+        dialog.setWindowTitle(title)
+        dialog.setWindowFlags(dialog.windowFlags() | QtCore.Qt.WindowStaysOnTopHint)
+
+        layout = QtWidgets.QVBoxLayout()
+        layout.addWidget(QLabel(self.help_text))
+
+        close_button = QtWidgets.QPushButton("Close")
+        close_button.clicked.connect(dialog.close)
+        layout.addWidget(close_button)
+
+        dialog.setLayout(layout)
+        dialog.show()
+        return dialog

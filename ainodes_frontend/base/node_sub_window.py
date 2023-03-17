@@ -217,6 +217,7 @@ class CalculatorSubWindow(NodeEditorWidget):
         markInvalidAct = context_menu.addAction("Mark Invalid")
         unmarkInvalidAct = context_menu.addAction("Unmark Invalid")
         evalAct = context_menu.addAction("Eval")
+        helpAct = context_menu.addAction("Help")
 
 
 
@@ -240,6 +241,8 @@ class CalculatorSubWindow(NodeEditorWidget):
         if selected and action == evalAct:
             val = selected.eval()
             if DEBUG_CONTEXT: print("EVALUATED:", val)
+        if selected and action == helpAct:
+            selected.showNiceDialog()
 
 
     def handleEdgeContextMenu(self, event):
