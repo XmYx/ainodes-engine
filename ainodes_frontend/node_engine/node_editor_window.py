@@ -3,6 +3,9 @@
 A module containing the Main Window class
 """
 import os, json
+from functools import partial
+
+from PySide6 import QtWidgets
 from qtpy.QtCore import QSize, QSettings, QPoint
 from qtpy.QtWidgets import QMainWindow, QLabel, QAction, QMessageBox, QFileDialog, QApplication
 from ainodes_frontend.node_engine.node_editor_widget import NodeEditorWidget
@@ -79,6 +82,31 @@ class NodeEditorWindow(QMainWindow):
     def createFileMenu(self):
         menubar = self.menuBar()
         self.fileMenu = menubar.addMenu('&File')
+
+        # Create submenus for graphs and example_graphs
+        self.graphsSubMenu = QtWidgets.QMenu('Graphs', self)
+        self.exampleGraphsSubMenu = QtWidgets.QMenu('Example Graphs', self)
+
+        # List all JSON files in the graphs and example_graphs folders
+        graphs_files = [f for f in os.listdir('graphs') if f.endswith('.json')]
+        example_graphs_files = [f for f in os.listdir('example_graphs') if f.endswith('.json')]
+
+        # Add JSON files to the submenus and connect actions
+        for file in graphs_files:
+            file_action = QAction(file, self)
+            file_action.triggered.connect(partial(self.onFileOpenAction, os.path.join('graphs', file)))
+            self.graphsSubMenu.addAction(file_action)
+
+        for file in example_graphs_files:
+            file_action = QAction(file, self)
+            file_action.triggered.connect(partial(self.onFileOpenAction, os.path.join('example_graphs', file)))
+            self.exampleGraphsSubMenu.addAction(file_action)
+
+        # Add submenus to the File menu
+        self.fileMenu.addMenu(self.graphsSubMenu)
+        self.fileMenu.addMenu(self.exampleGraphsSubMenu)
+
+        # Add other actions to the File menu
         self.fileMenu.addAction(self.actNew)
         self.fileMenu.addSeparator()
         self.fileMenu.addAction(self.actOpen)
@@ -86,7 +114,6 @@ class NodeEditorWindow(QMainWindow):
         self.fileMenu.addAction(self.actSaveAs)
         self.fileMenu.addSeparator()
         self.fileMenu.addAction(self.actExit)
-
     def createEditMenu(self):
         menubar = self.menuBar()
         self.editMenu = menubar.addMenu('&Edit')
@@ -188,7 +215,11 @@ class NodeEditorWindow(QMainWindow):
             if fname != '' and os.path.isfile(fname):
                 self.getCurrentNodeEditorWidget().fileLoad(fname)
                 self.setTitle()
-
+    def onFileOpenAction(self, fname):
+        self.onFileNew()
+        self.getCurrentNodeEditorWidget().fileLoad(fname)
+        self.getCurrentNodeEditorWidget().setWindowTitle(fname)
+        self.setTitle()
 
     def onFileSave(self):
         """Handle File Save operation"""

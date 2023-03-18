@@ -289,7 +289,6 @@ class QDMGraphicsBGNode(QGraphicsItem):
         self.hovered = False
         self._was_moved = False
         self._last_selected_state = False
-
         self.initSizes()
         self.initAssets()
         self.initUI()
@@ -365,11 +364,9 @@ class QDMGraphicsBGNode(QGraphicsItem):
         self.setFlag(QGraphicsItem.ItemIsSelectable)
         self.setFlag(QGraphicsItem.ItemIsMovable)
         self.setAcceptHoverEvents(True)
-
         # init title
         self.initTitle()
         self.title = self.node.title
-
         self.initContent()
 
     def initSizes(self):
@@ -451,6 +448,12 @@ class QDMGraphicsBGNode(QGraphicsItem):
 
     def mouseDoubleClickEvent(self, event):
         """Overriden event for doubleclick. Resend to `Node::onDoubleClicked`"""
+
+        text, ok = QtWidgets.QInputDialog.getText(None, "Input Dialog", "Enter some text:")
+
+        if ok:
+            self.title = text
+            self.node.title = text
         self.node.onDoubleClicked(event)
 
     def hoverEnterEvent(self, event: 'QGraphicsSceneHoverEvent') -> None:

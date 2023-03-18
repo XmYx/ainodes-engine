@@ -545,9 +545,9 @@ class CalculatorWindow(NodeEditorWindow):
         #self.stdin_redirect.text_written.connect(self.text_widget.write)
         self.stderr_redirect.text_written.connect(self.text_widget.write)
         # Redirect stdout and stderr to the StreamRedirect objects
-        #sys.stdout = self.stdout_redirect
+        sys.stdout = self.stdout_redirect
         #sys.stdin = self.stdin_redirect
-        #sys.stderr = self.stderr_redirect
+        sys.stderr = self.stderr_redirect
 
         self.console = QDockWidget()
         self.console.setWindowTitle("Console")

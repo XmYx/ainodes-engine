@@ -130,7 +130,7 @@ class QDMNodeContentWidget(QWidget, Serializable):
                 elif isinstance(layout, QtWidgets.QWidgetItem):
                     widget = layout.widget()
                     if isinstance(widget, QtWidgets.QComboBox):
-                        index = widget.findText(data[f"{widget.objectName()}"])
+                        index = widget.findText(str(data[f"{widget.objectName()}"]))
                         if index == -1:
                             widget.setCurrentIndex(0)
                         else:
