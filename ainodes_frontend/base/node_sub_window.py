@@ -341,11 +341,14 @@ class CalculatorSubWindow(NodeEditorWidget):
             category_items[node.category].append((node.op_title, node.op_code, QIcon(pixmap)))
 
         # sort category items alphabetically and add them to the list widget
+        temp_list = []
         for items in category_items.values():
-            items.sort(key=lambda item: item[0])
+            items.sort(key=lambda item: item[1])
             for item in items:
-                nodes_dialog.add_item(item[0], item[1], item[2])
-
+                temp_list.append(item)
+        temp_list.sort()
+        for item in temp_list:
+            nodes_dialog.add_item(item[0], item[1], item[2])
         return nodes_dialog
     def handleNewNodeContextMenu_orig(self, event):
 
