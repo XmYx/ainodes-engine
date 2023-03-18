@@ -4,6 +4,7 @@
 import os
 import argparse
 import subprocess
+import sys
 from platform import platform
 
 
@@ -13,6 +14,8 @@ def main():
     parser.add_argument("--local_hf", action="store_true")
     parser.add_argument("--skip_base_nodes", action="store_true")
     parser.add_argument("--light", action="store_true")
+    parser.add_argument("--skip_update", action="store_true")
+    parser.add_argument("--torch2", action="store_true")
     args = parser.parse_args()
 
     if not args.local_hf:
@@ -26,6 +29,7 @@ def main():
     activate_this = get_activate_path()
     activate_env(activate_this)
     install_requirements()
+    check_python_version()
     run_main_script(args, venv_path)
 def ensure_virtualenv_installed():
     try:
@@ -35,15 +39,33 @@ def ensure_virtualenv_installed():
         # If virtualenv is not installed, install it using pip
         subprocess.check_call(["pip", "install", "virtualenv"])
 
+
+def check_python_version():
+    # List of supported Python versions
+    python_versions = [(3, 10), (3, 9), (3, 8), (3, 7), (3, 6), (3, 5), (2, 7)]
+
+    # Get current Python version
+    current_version = sys.version_info[:2]
+
+    # Iterate through the list of supported Python versions in descending order
+    for version in python_versions:
+        # Check if the version is less than 3.11 and greater than or equal to the current version
+        if version < (3, 11) and version >= current_version:
+            # If the version is found, return it as a string
+            return f"{version[0]}.{version[1]}"
+
+    # If no version is found, return None
+    return None
 def create_venv(venv_path):
     """create virtualenv environment"""
     if os.path.exists(venv_path):
         return
     try:
+        version = check_python_version()
         if "Windows" in platform():
-            subprocess.check_call(["python", "-m", "virtualenv", venv_path])
+            subprocess.check_call(["python", "-m", "virtualenv", venv_path, f"python={version}"])
         else:
-            subprocess.check_call(["python3", "-m", "virtualenv", venv_path])
+            subprocess.check_call(["python3", "-m", "virtualenv", venv_path, f"python={version}"])
     except subprocess.CalledProcessError as cpe:
         print(f"Command '{cpe.cmd}' failed with return code {cpe.returncode}")
         print("Error, Python 3.10 not found.")
@@ -104,6 +126,10 @@ def run_main_script(args, venv_path):
         cmd_args.append("--light")
     if args.skip_base_nodes:
         cmd_args.append("--skip_base_nodes")
+    if args.skip_update:
+        cmd_args.append("--skip_update")
+    if args.torch2:
+        cmd_args.append("--torch2")
     subprocess.check_call(cmd_args)
 
 
