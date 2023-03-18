@@ -1,5 +1,6 @@
 import os
 
+from PySide6 import QtWidgets
 from qtpy.QtGui import QContextMenuEvent, QBrush
 from qtpy.QtWidgets import QColorDialog
 from qtpy import QtCore
@@ -25,6 +26,8 @@ DEBUG_CONTEXT = False
 class CalculatorSubWindow(NodeEditorWidget):
     def __init__(self):
         super().__init__()
+        self.context_menu_style = 'modern'
+
         self.setAttribute(Qt.WA_DeleteOnClose)
 
         self.setTitle()
@@ -314,7 +317,37 @@ class CalculatorSubWindow(NodeEditorWidget):
         #menu.addAction(run_all_action)
 
         return menu
-    def handleNewNodeContextMenu(self, event):
+
+    def init_nodes_list_widget(self, event):
+        nodes_dialog = NodeListDialog()
+        nodes_dialog.setFixedHeight(1024)
+
+        x = self.mapToGlobal(event.pos()).x() - 256
+        y = self.mapToGlobal(event.pos()).y() - 512
+
+        nodes_dialog.setGeometry(x, y, 512, 1024)
+
+        # create a dictionary to store category items
+        category_items = {}
+        for category in node_categories:
+            category_items[category] = []
+
+        # sort nodes and add them to the corresponding category
+        keys = list(CALC_NODES.keys())
+        keys.sort()
+        for key in keys:
+            node = get_class_from_opcode(key)
+            pixmap = QPixmap(node.icon if node.icon is not None else ".")
+            category_items[node.category].append((node.op_title, node.op_code, QIcon(pixmap)))
+
+        # sort category items alphabetically and add them to the list widget
+        for items in category_items.values():
+            items.sort(key=lambda item: item[0])
+            for item in items:
+                nodes_dialog.add_item(item[0], item[1], item[2])
+
+        return nodes_dialog
+    def handleNewNodeContextMenu_orig(self, event):
 
         if DEBUG_CONTEXT: print("CONTEXT: EMPTY SPACE")
         context_menu = self.initNodesContextMenu(event)
@@ -337,8 +370,67 @@ class CalculatorSubWindow(NodeEditorWidget):
 
                 else:
                     self.scene.history.storeHistory("Created %s" % new_calc_node.__class__.__name__)
+
+    def handleNewNodeContextMenu(self, event):
+        if self.context_menu_style == 'modern':
+            self.handleNewNodeContextMenuFunction(event)
+        else:
+            self.handleNewNodeContextMenu_orig(event)
+    def handleNewNodeContextMenuFunction(self, event):
+        if DEBUG_CONTEXT: print("CONTEXT: EMPTY SPACE")
+        nodes_dialog = self.init_nodes_list_widget(event)
+        result = nodes_dialog.exec_()
+
+        if result == QtWidgets.QDialog.Accepted:
+            selected_op_code = nodes_dialog.selected_data()
+            if selected_op_code is not None:
+                new_calc_node = get_class_from_opcode(selected_op_code)(self.scene)
+                scene_pos = self.scene.getView().mapToScene(event.pos())
+                new_calc_node.setPos(scene_pos.x(), scene_pos.y())
+                if DEBUG_CONTEXT: print("Selected node:", new_calc_node)
+
+                if self.scene.getView().mode == MODE_EDGE_DRAG:
+                    # if we were dragging an edge...
+                    target_socket = self.determine_target_socket_of_node(
+                        self.scene.getView().dragging.drag_start_socket.is_output, new_calc_node)
+                    if target_socket is not None:
+                        self.scene.getView().dragging.edgeDragEnd(target_socket.grSocket)
+                        self.finish_new_node_state(new_calc_node)
+
+                else:
+                    self.scene.history.storeHistory("Created %s" % new_calc_node.__class__.__name__)
     def mouseMoveEvent(self, event):
         super(CalculatorSubWindow, self).mouseMoveEvent(event)
         #self.pos = QtCore.QPointF(event.screenPos())
         self.scenePos = event.scenePos()
         print(self.scenePos)
+class NodeListDialog(QtWidgets.QDialog):
+    def __init__(self, parent=None):
+        super(NodeListDialog, self).__init__(parent)
+        self.setWindowTitle("Select a Node")
+        self.layout = QtWidgets.QVBoxLayout()
+        self.list_widget = QtWidgets.QListWidget()
+        self.ok_button = QtWidgets.QPushButton("OK")
+        self.ok_button.setEnabled(False)
+
+        self.layout.addWidget(self.list_widget)
+        self.layout.addWidget(self.ok_button)
+        self.setLayout(self.layout)
+
+        self.list_widget.itemDoubleClicked.connect(self.accept)
+        self.list_widget.itemSelectionChanged.connect(self.enable_ok_button)
+        self.ok_button.clicked.connect(self.accept)
+
+    def enable_ok_button(self):
+        self.ok_button.setEnabled(True)
+
+    def add_item(self, text, data, icon):
+        item = QtWidgets.QListWidgetItem(icon, text)
+        item.setData(Qt.UserRole, data)
+        self.list_widget.addItem(item)
+
+    def selected_data(self):
+        selected_items = self.list_widget.selectedItems()
+        if selected_items:
+            return selected_items[0].data(Qt.UserRole)
+        return None

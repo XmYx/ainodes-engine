@@ -443,7 +443,6 @@ class CalculatorWindow(NodeEditorWindow):
         # Redirect stdout and stderr to the text widget
 
     def eventListener(self, *args, **kwargs):
-        print("WERE HERE")
         save_settings()
         self.parent.quit()
         #super().closeEvent(e)
@@ -599,8 +598,14 @@ class CalculatorWindow(NodeEditorWindow):
 
         self.actAbout = QAction("&About", self, statusTip="Show the application's About box", triggered=self.about)
         self.actColors = QAction("&Change Colors", self, statusTip="Change socket / route color palette", triggered=self.edit_colors)
+        self.actRClickMenu = QAction("&Alternate context menu", self, statusTip="Change context menu type", triggered=self.toggle_menu)
+        # Create a checkable QAction
+        self.actRClickMenu.setCheckable(True)
 
-
+    def toggle_menu(self):
+        widget = self.getCurrentNodeEditorWidget()
+        if widget is not None:
+            widget.context_menu_style = 'classic' if widget.context_menu_style == 'modern' else 'modern'
     def getCurrentNodeEditorWidget(self):
         """ we're returning NodeEditorWidget here... """
         activeSubWindow = self.mdiArea.activeSubWindow()
@@ -723,6 +728,7 @@ class CalculatorWindow(NodeEditorWindow):
         toolbar_nodes.triggered.connect(self.onWindowNodesToolbar)
         toolbar_nodes.setChecked(self.nodesDock.isVisible())
         self.windowMenu.addAction(self.actColors)
+        self.windowMenu.addAction(self.actRClickMenu)
         self.windowMenu.addSeparator()
 
         self.windowMenu.addAction(self.actClose)
