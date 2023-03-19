@@ -1,12 +1,19 @@
-import threading
+from PySide6.QtCore import QObject, QMutex, QMutexLocker
+
 
 class Singleton:
-    __instance = None
-    __lock = threading.Lock()
+    _instance = None
+    _mutex = QMutex()
 
-    def __new__(cls):
-        if not cls.__instance:
-            with cls.__lock:
-                if not cls.__instance:
-                    cls.__instance = super().__new__(cls)
-        return cls.__instance
+    def __init__(self):
+        if not Singleton._instance:
+            self._data = {}
+        else:
+            raise RuntimeError("Singleton instances can only be accessed through the 'instance()' method.")
+
+    @classmethod
+    def instance(cls):
+        with QMutexLocker(cls._mutex):
+            if not cls._instance:
+                cls._instance = cls()
+            return cls._instance

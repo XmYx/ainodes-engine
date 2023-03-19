@@ -7,8 +7,8 @@ from qtpy.QtGui import QColor, QPen, QPainterPath
 from qtpy.QtCore import Qt, QRectF, QPointF
 
 from ainodes_frontend.node_engine.node_graphics_edge_path import GraphicsEdgePathBezier, GraphicsEdgePathDirect, GraphicsEdgePathSquare
-from ainodes_frontend import singleton as gs
-
+from ainodes_frontend import singleton
+gs = singleton.Singleton.instance()
 
 
 class QDMGraphicsEdge(QGraphicsPathItem):

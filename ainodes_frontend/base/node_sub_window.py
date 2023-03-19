@@ -24,13 +24,14 @@ DEBUG_CONTEXT = False
 
 
 class CalculatorSubWindow(NodeEditorWidget):
-    def __init__(self):
+    def __init__(self, parent=None):
         super().__init__()
         self.context_menu_style = 'modern'
-
+        self.parent = parent
         self.setAttribute(Qt.WA_DeleteOnClose)
 
         self.setTitle()
+
 
         self.initNewNodeActions()
         #self.scene.threadpool = QThreadPool()
@@ -79,10 +80,6 @@ class CalculatorSubWindow(NodeEditorWidget):
 
             rect = self.scene.getView().mapToScene(rect).boundingRect().toRect()
             self.scene.getView().update(rect)
-
-
-    def handle_task_finished(self):
-        self.scene.queue.start_next_task()
     def getNodeClassFromData(self, data):
         if 'op_code' not in data: return Node
 
@@ -388,6 +385,9 @@ class CalculatorSubWindow(NodeEditorWidget):
             selected_op_code = nodes_dialog.selected_data()
             if selected_op_code is not None:
                 new_calc_node = get_class_from_opcode(selected_op_code)(self.scene)
+
+
+
                 scene_pos = self.scene.getView().mapToScene(event.pos())
                 new_calc_node.setPos(scene_pos.x(), scene_pos.y())
                 if DEBUG_CONTEXT: print("Selected node:", new_calc_node)

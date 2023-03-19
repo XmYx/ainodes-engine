@@ -26,6 +26,7 @@ class QDMGraphicsScene(QGraphicsScene):
         """
         super().__init__(parent)
 
+        self.parent = parent
         self.scene = scene
 
         # There is an issue when reconnecting edges -> mouseMove and trying to delete/remove them

@@ -29,7 +29,8 @@ class NodeEditorWidget(QWidget):
         - **filename** - currently graph's filename or ``None``
         """
         super().__init__(parent)
-
+        self.parent = parent
+        self.Scene_class.parent = self
         self.filename = None
 
         self.initUI()
@@ -43,7 +44,7 @@ class NodeEditorWidget(QWidget):
         self.setLayout(self.layout)
 
         # crate graphics scene
-        self.scene = self.__class__.Scene_class()
+        self.scene = self.__class__.Scene_class(self)
 
         # create graphics view
         self.view = self.__class__.GraphicsView_class(self.scene.grScene, self)

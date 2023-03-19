@@ -2,7 +2,8 @@ import json
 import os
 
 
-from ainodes_frontend import singleton as gs
+from ainodes_frontend import singleton
+gs = singleton.Singleton.instance()
 from qtpy.QtGui import QColor
 import yaml
 def color_to_hex(color):

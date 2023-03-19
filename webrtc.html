@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebRTC Stream</title>
+    <style>
+        video {
+            width: 100%;
+            max-width: 480px;
+            border: 1px solid #ccc;
+        }
+    </style>
+</head>
+<body>
+    <h1>WebRTC Stream</h1>
+    <p>Local video:</p>
+    <video id="localVideo" autoplay playsinline muted></video>
+    <p>Processed video from server:</p>
+    <video id="remoteVideo" autoplay playsinline></video>
+    <script>
+        const localVideo = document.getElementById('localVideo');
+        const remoteVideo = document.getElementById('remoteVideo');
+        let ws;
+        let pc;
+
+        async function start() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+                localVideo.srcObject = stream;
+
+                if (ws && ws.readyState === WebSocket.OPEN) {
+                    pc = new RTCPeerConnection();
+                    setupPeerConnection();
+                    stream.getTracks().forEach(track => pc.addTrack(track, stream));
+
+                    const offer = await pc.createOffer();
+                    await pc.setLocalDescription(offer);
+                    ws.send(JSON.stringify({ 'sdp': pc.localDescription }));
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        function setupWebSocket() {
+            ws = new WebSocket('ws://' + 'localhost' + '/ws');
+
+            ws.onmessage = async (event) => {
+                const data = JSON.parse(event.data);
+                if ('sdp' in data) {
+                    await pc.setRemoteDescription(new RTCSessionDescription(data));
+                    if (data.type === 'answer') {
+                        console.log('Got answer:', data);
+                    }
+                } else if ('candidate' in data) {
+                    console.log('Got ICE candidate:', data.candidate);
+                    await pc.addIceCandidate(new RTCIceCandidate(data.candidate));
+                } else {
+                    console.error('Unknown message received:', event.data);
+                }
+            };
+
+            ws.onopen = () => {
+                console.log('WebSocket connection established.');
+                start();
+            };
+
+            ws.onclose = () => {
+                console.log('WebSocket connection closed.');
+                setTimeout(() => {
+                    console.log('Retrying WebSocket connection...');
+                    setupWebSocket();
+                }, 10000); // Retry every 10 seconds
+            };
+
+            ws.onerror = (error) => {
+                console.error('WebSocket error:', error);
+            };
+        }
+
+        function setupPeerConnection() {
+            pc.onicecandidate = (event) => {
+                if (event.candidate) {
+                    ws.send(JSON.stringify({ 'candidate': event.candidate }));
+                }
+            };
+
+            pc.ontrack = (event) => {
+                if (event.streams && event.streams[0]) {
+                    remoteVideo.srcObject = event.streams[0];
+                }
+            };
+        }
+
+        start(); // Start the local video
+        setupWebSocket(); // Set up WebSocket connection
+
+    </script>
+</body>
+</html>

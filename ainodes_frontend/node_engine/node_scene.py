@@ -21,7 +21,7 @@ class InvalidFile(Exception): pass
 
 class Scene(Serializable):
     """Class representing NodeEditor's `Scene`"""
-    def __init__(self):
+    def __init__(self, parent=None):
         """
         :Instance Attributes:
 
@@ -33,6 +33,8 @@ class Scene(Serializable):
             - **scene_height** - height of this `Scene` in pixels
         """
         super().__init__()
+        self.parent = parent
+
         self.nodes = []
         self.edges = []
 

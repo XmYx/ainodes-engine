@@ -10,8 +10,8 @@ from ainodes_frontend.node_engine.node_content_widget import QDMNodeContentWidge
 from ainodes_frontend.node_engine.node_graphics_node import QDMGraphicsNode
 from ainodes_frontend.node_engine.node_socket import LEFT_BOTTOM, RIGHT_BOTTOM
 from ainodes_frontend.node_engine.utils import dumpException
-from ainodes_frontend import singleton as gs
-
+from ainodes_frontend import singleton
+gs = singleton.Singleton.instance()
 
 class CalcGraphicsNode(QDMGraphicsNode):
     def initSizes(self):

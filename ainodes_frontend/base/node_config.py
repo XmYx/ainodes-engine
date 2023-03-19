@@ -1,7 +1,8 @@
 import glob
 import os
 
-from ainodes_frontend import singleton as gs
+from ainodes_frontend import singleton
+gs = singleton.Singleton.instance()
 
 LISTBOX_MIMETYPE = "application/x-item"
 

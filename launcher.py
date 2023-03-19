@@ -133,8 +133,5 @@ def run_main_script(args, venv_path):
     subprocess.check_call(cmd_args)
 
 
-if __name__ == "__main__":
-    try:
-        main()
-    except Exception as e:
-        print(f"Error: {e}")
+main()
+

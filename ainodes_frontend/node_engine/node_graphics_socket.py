@@ -6,7 +6,8 @@ from qtpy import QtGui, QtCore
 from qtpy.QtWidgets import QGraphicsItem
 from qtpy.QtGui import QColor, QBrush, QPen
 from qtpy.QtCore import Qt, QRectF
-from ainodes_frontend import singleton as gs
+from ainodes_frontend import singleton
+gs = singleton.Singleton.instance()
 
 SOCKET_COLORS = [
     QColor("#FFFF7700"),

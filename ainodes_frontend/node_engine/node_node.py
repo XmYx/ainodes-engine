@@ -13,7 +13,7 @@ from ainodes_frontend.node_engine.utils_no_qt import dumpException
 DEBUG = False
 from ainodes_frontend.singleton import Singleton
 
-gs = Singleton()
+gs = Singleton.instance()
 
 class Node(Serializable):
     """

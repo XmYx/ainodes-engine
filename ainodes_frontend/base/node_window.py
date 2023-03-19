@@ -33,10 +33,12 @@ from pyqtgraph.console import ConsoleWidget
 
 # images for the dark skin
 DEBUG = False
-from ainodes_frontend import singleton as gs
+from ainodes_frontend import singleton
+gs = singleton.Singleton.instance()
 load_settings()
 
 gs.loaded_models = {}
+gs.loaded_vaes = {}
 gs.models = {}
 
 class StdoutTextEdit(QtWidgets.QPlainTextEdit):
@@ -441,6 +443,9 @@ class CalculatorWindow(NodeEditorWindow):
 
 
         # Redirect stdout and stderr to the text widget
+    @QtCore.Slot(object)
+    def run_worker(self, worker):
+        self.threadpool.start(worker)
 
     def eventListener(self, *args, **kwargs):
         save_settings()
@@ -452,7 +457,7 @@ class CalculatorWindow(NodeEditorWindow):
 
         self.name_company = 'aiNodes'
         self.name_product = 'AI Node Editor'
-        gs.loaded_models["loaded"] = []
+        #gs.loaded_models["loaded"] = []
 
         self.stylesheet_filename = os.path.join(os.path.dirname(__file__), "ainodes_frontend/qss/nodeeditor-dark.qss")
         loadStylesheets(
@@ -638,7 +643,7 @@ class CalculatorWindow(NodeEditorWindow):
                         self.mdiArea.setActiveSubWindow(existing)
                     else:
                         # we need to create new subWindow and open the file
-                        nodeeditor = CalculatorSubWindow()
+                        nodeeditor = CalculatorSubWindow(self)
                         if nodeeditor.fileLoad(fname):
                             self.statusBar().showMessage("File %s loaded" % fname, 5000)
                             nodeeditor.setTitle()
@@ -779,7 +784,7 @@ class CalculatorWindow(NodeEditorWindow):
         self.statusBar().showMessage("Ready")
 
     def createMdiChild(self, child_widget=None):
-        nodeeditor = child_widget if child_widget is not None else CalculatorSubWindow()
+        nodeeditor = child_widget if child_widget is not None else CalculatorSubWindow(self)
         subwnd = self.mdiArea.addSubWindow(nodeeditor)
         subwnd.setWindowIcon(self.empty_icon)
 
