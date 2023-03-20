@@ -8,9 +8,7 @@ import sys
 from platform import platform
 
 
-
-
-def main_start():
+def main():
     """launch ainodes-engine"""
     parser = argparse.ArgumentParser()
     parser.add_argument("--local_hf", action="store_true")
@@ -132,11 +130,9 @@ def run_main_script(args, venv_path):
         cmd_args.append("--skip_update")
     if args.torch2:
         cmd_args.append("--torch2")
-    import main
-    main.main(args, venv_path)
-    #subprocess.check_call(cmd_args)
+    subprocess.Popen(cmd_args)
 
-main_start()
+main()
 
 """if __name__ == "__main__":
     try:
