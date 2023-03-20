@@ -132,9 +132,10 @@ def run_main_script(args, venv_path):
         cmd_args.append("--torch2")
     subprocess.check_call(cmd_args)
 
+main()
 
-if __name__ == "__main__":
+"""if __name__ == "__main__":
     try:
         main()
     except Exception as e:
-        print(f"Error: {e}")
+        print(f"Error: {e}")"""

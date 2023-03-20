@@ -70,39 +70,40 @@ def eventListener(*args, **kwargs):
     print("EVENT")
 #QtCore.QCoreApplication.setAttribute(QtCore.Qt.ApplicationAttribute.AA_ShareOpenGLContexts)
 #QtQuick.QQuickWindow.setGraphicsApi(QSGRendererInterface.OpenGLRhi)
+if __name__ == "__main__":
 
-# make app
-app = QApplication(sys.argv)
+    # make app
+    app = QApplication(sys.argv)
 
-QCoreApplication.instance().aboutToQuit.connect(eventListener)
+    QCoreApplication.instance().aboutToQuit.connect(eventListener)
 
-# Load style sheet from a file
-"""if not args.light:
-    with open("ainodes_frontend/qss/nodeeditor-dark.qss", "r", encoding="utf-8") as f:
-        style_sheet = f.read()
-        app.setStyleSheet(style_sheet)"""
-icon = QtGui.QIcon("ainodes_frontend/qss/icon.png")
-app.setWindowIcon(icon)
-app.setApplicationName("aiNodes - engine")
-load_settings()
-# Create and show the main window
-wnd = CalculatorWindow(app)
-wnd.stylesheet_filename = os.path.join(os.path.dirname(__file__), "ainodes_frontend/qss/nodeeditor-dark.qss")
-loadStylesheets(
-    os.path.join(os.path.dirname(__file__), "ainodes_frontend/qss/nodeeditor-dark.qss"),
-    wnd.stylesheet_filename
-)
+    # Load style sheet from a file
+    """if not args.light:
+        with open("ainodes_frontend/qss/nodeeditor-dark.qss", "r", encoding="utf-8") as f:
+            style_sheet = f.read()
+            app.setStyleSheet(style_sheet)"""
+    icon = QtGui.QIcon("ainodes_frontend/qss/icon.png")
+    app.setWindowIcon(icon)
+    app.setApplicationName("aiNodes - engine")
+    load_settings()
+    # Create and show the main window
+    wnd = CalculatorWindow(app)
+    wnd.stylesheet_filename = os.path.join(os.path.dirname(__file__), "ainodes_frontend/qss/nodeeditor-dark.qss")
+    loadStylesheets(
+        os.path.join(os.path.dirname(__file__), "ainodes_frontend/qss/nodeeditor-dark.qss"),
+        wnd.stylesheet_filename
+    )
 
-if not args.skip_base_nodes:
-    wnd.node_packages.list_widget.setCurrentRow(0)
-    if not os.path.isdir('custom_nodes/ainodes_engine_base_nodes'):
-        wnd.node_packages.download_repository()
-    else:
-        wnd.node_packages.update_repository(args.skip_update)
-wnd.show()
-wnd.nodesListWidget.addMyItems()
-wnd.onFileNew()
-if args.torch2 == True:
-    from custom_nodes.ainodes_engine_base_nodes.ainodes_backend.sd_optimizations.sd_hijack import apply_optimizations
-    apply_optimizations()
-sys.exit(app.exec())
+    if not args.skip_base_nodes:
+        wnd.node_packages.list_widget.setCurrentRow(0)
+        if not os.path.isdir('custom_nodes/ainodes_engine_base_nodes'):
+            wnd.node_packages.download_repository()
+        else:
+            wnd.node_packages.update_repository(args.skip_update)
+    wnd.show()
+    wnd.nodesListWidget.addMyItems()
+    wnd.onFileNew()
+    if args.torch2 == True:
+        from custom_nodes.ainodes_engine_base_nodes.ainodes_backend.sd_optimizations.sd_hijack import apply_optimizations
+        apply_optimizations()
+    sys.exit(app.exec())
