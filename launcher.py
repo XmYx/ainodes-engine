@@ -7,7 +7,7 @@ import subprocess
 import sys
 from platform import platform
 
-import main
+
 
 
 def main_start():
@@ -132,6 +132,7 @@ def run_main_script(args, venv_path):
         cmd_args.append("--skip_update")
     if args.torch2:
         cmd_args.append("--torch2")
+    import main
     main.main(args, venv_path)
     #subprocess.check_call(cmd_args)
 
