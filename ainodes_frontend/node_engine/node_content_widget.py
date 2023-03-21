@@ -14,7 +14,7 @@ from ainodes_frontend.node_engine.utils import dumpException
 
 
 class QDMNodeContentWidget(QWidget, Serializable):
-    eval_signal = QtCore.Signal(int)
+    eval_signal = QtCore.Signal()
     mark_dirty_signal = QtCore.Signal()
 
     """Base class for representation of the Node's graphics content. This class also provides layout
