@@ -82,7 +82,7 @@ class QDMGraphicsNode(QGraphicsItem):
     def initAssets(self):
         """Initialize ``QObjects`` like ``QColor``, ``QPen`` and ``QBrush``"""
         self._title_color = Qt.white
-        self._title_font = QFont("Ubuntu", 10)
+        self._title_font = QFont("Monospace", 10)
 
         self._color = QColor("#7F000000")
         self._color_selected = QColor("#FFFFA637")
@@ -382,7 +382,7 @@ class QDMGraphicsBGNode(QGraphicsItem):
     def initAssets(self):
         """Initialize ``QObjects`` like ``QColor``, ``QPen`` and ``QBrush``"""
         self._title_color = Qt.white
-        self._title_font = QFont("Ubuntu", 10)
+        self._title_font = QFont("Monospace", 10)
 
         self._color = QColor("#7F000000")
         self._color_selected = QColor("#FFFFA637")
