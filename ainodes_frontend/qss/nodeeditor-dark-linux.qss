@@ -36,7 +36,22 @@ QListView::item::active:hover{color:#fff}
 QListView::item:selected,QListView::item::active:selected{color:#fff;background:qlineargradient(x1 : 0,y1 : 0,x2 : 0,y2 : 1,stop : 0 #4f9eee,stop : 1 #2084ea);border:0}
 QPushButton{color:#e6e6e6;background:#555;border-color:#141414}
 QLabel{color:#e6e6e6}
+QLineEdit,QTextEdit {
+    background-color: #5a5a5a;
+    color: #e6e6e6;
+}
 
+QLineEdit:selected,QTextEdit:selected {
+    background-color: #e6e6e6;
+    color: #5a5a5a;
+    selection-background-color: #5a5a5a;
+    selection-color: #e6e6e6;
+}
+
+QLineEdit:!selected,QTextEdit:!selected {
+    background-color: #5a5a5a;
+    color: #e6e6e6;
+}
 QLineEdit{border:1px solid #3a3a3a;border-radius:2px;padding:1px 2px}
 QDMNodeContentWidget{background:transparent;}
 QDMNodeContentWidget QFrame{background:transparent}

@@ -14,7 +14,7 @@ from qtpy.QtCore import QCoreApplication
 from qtpy import QtGui
 from qtpy.QtWidgets import QApplication
 from ainodes_frontend import singleton as gs
-from ainodes_frontend.base import CalculatorWindow
+
 import ainodes_frontend.qss.nodeeditor_dark_resources
 from ainodes_frontend.base.settings import save_settings, load_settings
 from ainodes_frontend.node_engine.utils import loadStylesheets
@@ -25,6 +25,10 @@ os.environ["QT_API"] = "pyside6"
 if "Linux" in platform.platform():
     print(platform.platform())
     subprocess.check_call(["pip", "install", "triton==2.0.0"])
+if "Linux" in platform.platform():
+    qss = "ainodes_frontend/qss/nodeeditor-dark-linux.qss"
+else:
+    qss = "ainodes_frontend/qss/nodeeditor-dark.qss"
 
 # Initialize global variables
 gs.obj = {}
@@ -89,11 +93,14 @@ if __name__ == "__main__":
     app.setWindowIcon(icon)
     app.setApplicationName("aiNodes - engine")
     load_settings()
+    from ainodes_frontend.base import CalculatorWindow
     # Create and show the main window
     wnd = CalculatorWindow(app)
-    wnd.stylesheet_filename = os.path.join(os.path.dirname(__file__), "ainodes_frontend/qss/nodeeditor-dark.qss")
+
+
+    wnd.stylesheet_filename = os.path.join(os.path.dirname(__file__), qss)
     loadStylesheets(
-        os.path.join(os.path.dirname(__file__), "ainodes_frontend/qss/nodeeditor-dark.qss"),
+        os.path.join(os.path.dirname(__file__), qss),
         wnd.stylesheet_filename
     )
 
