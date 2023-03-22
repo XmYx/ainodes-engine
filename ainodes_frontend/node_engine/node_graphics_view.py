@@ -10,7 +10,7 @@ from ainodes_frontend.node_engine.node_graphics_socket import QDMGraphicsSocket
 from ainodes_frontend.node_engine.node_graphics_edge import QDMGraphicsEdge
 from ainodes_frontend.node_engine.node_edge_dragging import EdgeDragging
 from ainodes_frontend.node_engine.node_edge_rerouting import EdgeRerouting
-from ainodes_frontend.node_engine.node_edge_intersect import EdgeIntersect
+#from ainodes_frontend.node_engine.node_edge_intersect import EdgeIntersect
 from ainodes_frontend.node_engine.node_edge_snapping import EdgeSnapping
 from ainodes_frontend.node_engine.node_graphics_cutline import QDMCutLine
 from ainodes_frontend.node_engine.utils import dumpException
@@ -27,7 +27,7 @@ STATE_STRING = ['', 'Noop', 'Edge Drag', 'Edge Cut', 'Edge Rerouting', 'Node Dra
 EDGE_DRAG_START_THRESHOLD = 50
 
 #: Enable UnrealEngine style rerouting
-EDGE_REROUTING_UE = True
+EDGE_REROUTING_UE = False
 
 #: Socket snapping distance
 EDGE_SNAPPING_RADIUS = 24
@@ -82,7 +82,7 @@ class QDMGraphicsView(QGraphicsView):
         self.rerouting = EdgeRerouting(self)
 
         # drop a node on an existing edge
-        self.edgeIntersect = EdgeIntersect(self)
+        #self.edgeIntersect = EdgeIntersect(self)
 
         # edge snapping
         self.snapping = EdgeSnapping(self, snapping_radius=EDGE_SNAPPING_RADIUS)
@@ -253,8 +253,8 @@ class QDMGraphicsView(QGraphicsView):
             if DEBUG_EDGE_INTERSECT: print('View::leftMouseButtonPress - Start dragging a node')
             if self.mode == MODE_NOOP:
                 self.mode = MODE_NODE_DRAG
-                self.edgeIntersect.enterState(item.node)
-                if DEBUG_EDGE_INTERSECT: print(">> edgeIntersect start:", self.edgeIntersect.draggedNode)
+                #self.edgeIntersect.enterState(item.node)
+                #if DEBUG_EDGE_INTERSECT: print(">> edgeIntersect start:", self.edgeIntersect.draggedNode)
 
         # support for snapping
         if self.isSnappingEnabled(event):
@@ -346,7 +346,7 @@ class QDMGraphicsView(QGraphicsView):
 
             if self.mode == MODE_NODE_DRAG:
                 scenepos = self.mapToScene(event.pos())
-                self.edgeIntersect.leaveState(scenepos.x(), scenepos.y())
+                #self.edgeIntersect.leaveState(scenepos.x(), scenepos.y())
                 self.mode = MODE_NOOP
                 self.update()
 
@@ -405,8 +405,8 @@ class QDMGraphicsView(QGraphicsView):
             if self.mode == MODE_EDGE_DRAG:
                 self.dragging.updateDestination(scenepos.x(), scenepos.y())
 
-            if self.mode == MODE_NODE_DRAG:
-                self.edgeIntersect.update(scenepos.x(), scenepos.y())
+            #if self.mode == MODE_NODE_DRAG:
+            #    self.edgeIntersect.update(scenepos.x(), scenepos.y())
 
             if self.mode == MODE_EDGES_REROUTING:
                 self.rerouting.updateScenePos(scenepos.x(), scenepos.y())
