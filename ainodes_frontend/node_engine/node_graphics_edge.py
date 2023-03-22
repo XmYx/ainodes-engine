@@ -8,7 +8,7 @@ from qtpy.QtCore import Qt, QRectF, QPointF
 
 from ainodes_frontend.node_engine.node_graphics_edge_path import GraphicsEdgePathBezier, GraphicsEdgePathDirect, GraphicsEdgePathSquare
 from ainodes_frontend import singleton as gs
-
+from ainodes_frontend.node_engine.node_graphics_socket import SOCKET_COLORS
 
 
 class QDMGraphicsEdge(QGraphicsPathItem):
@@ -182,7 +182,7 @@ class QDMGraphicsEdge(QGraphicsPathItem):
             painter.setPen(self._pen if not self.isSelected() else self._pen_selected)
         if self.edge.end_socket is not None:
             key = self.edge.end_socket.grSocket.socket_type
-            color = gs.SOCKET_COLORS[key]
+            color = SOCKET_COLORS[key]
             pen = QPen(color)
             pen.setWidth(3)  # Set the width to 3 pixels
             painter.setPen(pen)

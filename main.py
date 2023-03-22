@@ -32,6 +32,7 @@ gs.values = {}
 gs.current = {}
 gs.nodes = {}
 gs.system = SimpleNamespace()
+gs.busy = False
 
 gs.system.textual_inversion_dir = "models/embeddings"
 try:

@@ -11,9 +11,8 @@ from ainodes_frontend.node_engine.node_socket import Socket, LEFT_BOTTOM, LEFT_C
 from ainodes_frontend.node_engine.utils_no_qt import dumpException
 
 DEBUG = False
-from ainodes_frontend.singleton import Singleton
+from ainodes_frontend import singleton as gs
 
-gs = Singleton()
 
 class Node(Serializable):
     """

@@ -432,11 +432,7 @@ class CalculatorWindow(NodeEditorWindow):
 
     def __init__(self, parent=None):
         super(CalculatorWindow, self).__init__()
-        self.parent = parent
 
-
-
-        self.threadpool = QtCore.QThreadPool()
         # Create a dock widget for the text widget and add it to the main window
 
 
@@ -444,7 +440,7 @@ class CalculatorWindow(NodeEditorWindow):
 
     def eventListener(self, *args, **kwargs):
         save_settings()
-        self.parent.quit()
+        #self.parent.quit()
         #super().closeEvent(e)
     def initUI(self):
         #self.setup_defaults()
@@ -497,6 +493,7 @@ class CalculatorWindow(NodeEditorWindow):
         self.create_console_widget()
         self.show_github_repositories()
         self.tabifyDockWidget(self.node_packages, self.console)
+        self.threadpool = QtCore.QThreadPool()
         #self.edit_colors()
         #self.show_memory_widget()
 

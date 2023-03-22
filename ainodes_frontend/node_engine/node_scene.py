@@ -4,6 +4,9 @@ A module containing the representation of the NodeEditor's Scene
 """
 import os, sys, json
 from collections import OrderedDict
+
+from qtpy import QtCore
+
 from ainodes_frontend.node_engine.utils_no_qt import dumpException
 from ainodes_frontend.node_engine.node_serializable import Serializable
 from ainodes_frontend.node_engine.node_graphics_scene import QDMGraphicsScene
@@ -62,6 +65,8 @@ class Scene(Serializable):
 
         self.grScene.itemSelected.connect(self.onItemSelected)
         self.grScene.itemsDeselected.connect(self.onItemsDeselected)
+
+        self.threadpool = QtCore.QThreadPool()
 
     @property
     def has_been_modified(self):

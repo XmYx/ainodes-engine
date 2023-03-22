@@ -14,8 +14,8 @@ def hex_to_color(hex_string):
 def save_settings():
     print("saving")
     settings = {
-        'socket_names': gs.socket_names,
-        'COLORS': [color_to_hex(color) for color in gs.SOCKET_COLORS],
+        'socket_names': socket_names,
+        'COLORS': [color_to_hex(color) for color in SOCKET_COLORS],
         'checkpoints': gs.checkpoints,
         'controlnet': gs.controlnet,
         'embeddings': gs.embeddings,
@@ -30,12 +30,15 @@ def save_settings():
 
 
 def load_settings():
+    global SOCKET_COLORS
+    global socket_names
+
     if os.path.exists('config/settings.yaml'):
         with open('config/settings.yaml', 'r') as file:
             settings = yaml.safe_load(file)
             try:
-                gs.socket_names = settings['socket_names']
-                gs.SOCKET_COLORS = [hex_to_color(hex_string) for hex_string in settings['COLORS']]
+                socket_names = settings['socket_names']
+                SOCKET_COLORS = [hex_to_color(hex_string) for hex_string in settings['COLORS']]
                 gs.checkpoints = settings['checkpoints']
                 gs.controlnet = settings['controlnet']
                 gs.embeddings = settings['embeddings']
@@ -50,7 +53,9 @@ def load_settings():
         save_settings()
         
 def setup_defaults():
-    gs.SOCKET_COLORS = [
+    global SOCKET_COLORS
+    global socket_names
+    SOCKET_COLORS = [
         QColor("#FFFF7700"),
         QColor("#FF52e220"),
         QColor("#FF0056a6"),
@@ -67,7 +72,7 @@ def setup_defaults():
         QColor("#FF888888"),
     ]
 
-    gs.socket_names = {0: "UNUSED",
+    socket_names = {0: "UNUSED",
                       1: "EXEC",
                       2: "LATENT",
                       3: "COND",

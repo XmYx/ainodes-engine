@@ -1,10 +1,14 @@
 import copy
+import threading
+import time
+from queue import Queue
 
 from qtpy import QtWidgets, QtCore
 from qtpy.QtGui import QImage
 from qtpy.QtCore import QRectF
 from qtpy.QtWidgets import QLabel
 
+from .worker import Worker
 from ainodes_frontend.node_engine.node_node import Node
 from ainodes_frontend.node_engine.node_content_widget import QDMNodeContentWidget
 from ainodes_frontend.node_engine.node_graphics_node import QDMGraphicsNode
@@ -108,13 +112,21 @@ class AiNode(Node):
         # it's really important to mark all nodes Dirty by default
         self.markDirty()
         self.values = {}
+        self.task_queue = Queue()
+        self.busy = False
 
-        #self.content.mark_dirty_signal.connect(self.markDirty)
+    def process_tasks(self):
+        while not self.task_queue.empty():
+            task = self.task_queue.get()
+            task()
+    def task_done(self):
+        self.task_queue.task_done()
     def set_socket_names(self):
+        global sockets
         """
         Internal function to set socket names, override in your custom node pack to add additional socket types
         """
-        gs.sockets = {1: "EXEC",
+        sockets = {1: "EXEC",
                    2: "LATENT",
                    3: "COND",
                    4: "EMPTY",
@@ -128,10 +140,10 @@ class AiNode(Node):
         # Dynamically populate input and output socket names using loops
         for input_index in self._inputs:
             #print(sockets[input_index])
-            self.input_socket_name.append(gs.sockets[input_index])
+            self.input_socket_name.append(sockets[input_index])
 
         for output_index in self._outputs:
-            self.output_socket_name.append(gs.sockets[output_index])
+            self.output_socket_name.append(sockets[output_index])
         self.initSockets(inputs=self._inputs, outputs=self._outputs, reset=True)
     def update_all_sockets(self):
         for socket in self.outputs + self.inputs:
@@ -166,7 +178,8 @@ class AiNode(Node):
             except:
                 value_copy = value
 
-        gs.values[object_name] = value_copy
+        #gs.values[object_name] = value_copy
+        self.values[object_name] = value_copy
     def getOutput(self, index):
         """
          Get the value of the output socket with the given index.
@@ -179,7 +192,7 @@ class AiNode(Node):
          """
         object_name = self.getID(index)
         try:
-            value = gs.values[object_name]
+            value = self.values[object_name]
         except:
             print(f"Value doesnt exist yet, make sure to validate the node: {self.content_label_objname}")
             value = None
@@ -227,36 +240,23 @@ class AiNode(Node):
         """
         return 123
 
-    def evalImplementation(self, index=0):
-        """
-         Evaluate the node by processing the inputs and performing the operation.
+    @QtCore.Slot()
+    def evalImplementation(self):
+        if self.busy == False:
+            self.busy = True
+            worker = Worker(self.evalImplementation_thread)
+            worker.signals.result.connect(self.onWorkerFinished)
+            self.scene.threadpool.start(worker)
+            #thread0 = threading.Thread(target=self.evalImplementation_thread)
+            #thread0.start()
+        return None
 
-         Args:
-             index (int): Optional index used for custom implementations. Defaults to 0.
-
-         Returns:
-             The result of the operation, or None if inputs are invalid.
-         """
-        i1 = self.getInput(0)
-        i2 = self.getInput(1)
-
-        if i1 is None or i2 is None:
-            self.markInvalid()
-            #self.markDescendantsDirty()
-            self.grNode.setToolTip("Connect all inputs")
-            return None
-
-        else:
-            val = self.evalOperation(i1.eval(), i2.eval())
-            self.value = val
-            self.markDirty(False)
-            self.markInvalid(False)
-            self.grNode.setToolTip("")
-
-            #self.markDescendantsDirty()
-            #self.evalChildren()
-
-            return val
+    def evalImplementation_thread(self):
+        pass
+    @QtCore.Slot(object)
+    def onWorkerFinished(self):
+        print(f"PLEASE IMPLEMENT onWorkerFinished function for {self}")
+        pass
 
     def eval(self, index=0):
         """
