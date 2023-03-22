@@ -1,1 +1,1 @@
-python launcher.py --skip_update
+python launcher.py --skip_update --no_console
