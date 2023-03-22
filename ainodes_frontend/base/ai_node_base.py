@@ -301,7 +301,7 @@ class AiNode(Node):
                 node.eval()
                 return None
             except Exception as e:
-                print("Skipping execution:", e)
+                print("Skipping execution:", e, self)
                 return None
 
     def onInputChanged(self, socket=None):
