@@ -1,1 +1,1 @@
-python launcher.py --no_console
+python launcher.py
