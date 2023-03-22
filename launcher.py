@@ -64,9 +64,9 @@ def create_venv(venv_path):
     try:
         version = check_python_version()
         if "Windows" in platform():
-            subprocess.check_call(["python", "-m", "virtualenv", venv_path"])
+            subprocess.check_call(["python", "-m", "virtualenv", venv_path])
         else:
-            subprocess.check_call(["python3", "-m", "virtualenv", venv_path"])
+            subprocess.check_call(["python3", "-m", "virtualenv", venv_path])
     except subprocess.CalledProcessError as cpe:
         print(f"Command '{cpe.cmd}' failed with return code {cpe.returncode}")
         print("Error, Python 3.10 not found.")
