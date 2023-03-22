@@ -490,12 +490,11 @@ class CalculatorWindow(NodeEditorWindow):
         self.readSettings()
 
         self.setWindowTitle("aiNodes - Engine")
-        self.create_console_widget()
         self.show_github_repositories()
-        self.tabifyDockWidget(self.node_packages, self.console)
+        if not gs.args.no_console:
+            self.create_console_widget()
+            self.tabifyDockWidget(self.node_packages, self.console)
         self.threadpool = QtCore.QThreadPool()
-        #self.edit_colors()
-        #self.show_memory_widget()
 
     def edit_colors(self):
         editor = ColorEditor(gs.SOCKET_COLORS, gs.socket_names)
@@ -504,11 +503,14 @@ class CalculatorWindow(NodeEditorWindow):
             gs.SOCKET_COLORS = editor.get_updated_colors()
     def toggleDockWidgets(self):
         # Get the current visibility state of the dock widgets
-        consoleVisible = self.console.isVisible()
+        if not gs.args.no_console:
+            consoleVisible = self.console.isVisible()
+            self.console.setVisible(not consoleVisible)
+
         packagesVisible = self.node_packages.isVisible()
 
         # Toggle the visibility of the dock widgets
-        self.console.setVisible(not consoleVisible)
+
         self.node_packages.setVisible(not packagesVisible)
     def toggleNodesDock(self):
         # Get the current visibility state of the dock widgets

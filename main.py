@@ -54,7 +54,9 @@ parser.add_argument("--skip_base_nodes", action="store_true")
 parser.add_argument("--light", action="store_true")
 parser.add_argument("--skip_update", action="store_true")
 parser.add_argument("--torch2", action="store_true")
+parser.add_argument("--no_console", action="store_true")
 args = parser.parse_args()
+gs.args = args
 
 # Set environment variables for Hugging Face cache if not using local cache
 if not args.local_hf:

@@ -16,6 +16,7 @@ def main():
     parser.add_argument("--light", action="store_true")
     parser.add_argument("--skip_update", action="store_true")
     parser.add_argument("--torch2", action="store_true")
+    parser.add_argument("--no_console", action="store_true")
     args = parser.parse_args()
 
     if not args.local_hf:
@@ -130,6 +131,8 @@ def run_main_script(args, venv_path):
         cmd_args.append("--skip_update")
     if args.torch2:
         cmd_args.append("--torch2")
+    if args.no_console:
+        cmd_args.append("--no_console")
     subprocess.Popen(cmd_args)
 
 main()
