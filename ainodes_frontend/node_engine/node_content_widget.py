@@ -108,7 +108,7 @@ class QDMNodeContentWidget(QWidget, Serializable):
                 elif isinstance(widget, QtWidgets.QCheckBox):
 
                     res[f"{widget.objectName()}"] = str(widget.isChecked())
-                    print("Saving checkbox value:", widget.objectName(), widget.isChecked())
+                    #print("Saving checkbox value:", widget.objectName(), widget.isChecked())
 
         return res
 
@@ -116,7 +116,7 @@ class QDMNodeContentWidget(QWidget, Serializable):
     #    return True
 
     def deserialize(self, data, hashmap={}, restore_id:bool=True) -> bool:
-        print("DESER_BEGIN")
+        #print("DESER_BEGIN")
         for item in self.widget_list:
 
             #print("ALL ITEMS", item)
@@ -126,7 +126,7 @@ class QDMNodeContentWidget(QWidget, Serializable):
                     widget = item.layout().itemAt(i)
                     if isinstance(widget, QtWidgets.QWidgetItem):
                         widget = widget.widget()
-                        print("Layout Item:", widget)
+                        #print("Layout Item:", widget)
                         if isinstance(widget, QtWidgets.QComboBox):
                             widget.setCurrentText(data[f"{widget.objectName()}"])
                         elif isinstance(widget, QtWidgets.QLineEdit):
@@ -159,7 +159,7 @@ class QDMNodeContentWidget(QWidget, Serializable):
                     #print("Setting checkbox to:", type(data[f"{widget.objectName()}"]))
                     value = data[f"{widget.objectName()}"]
                     widget.setChecked(True) if value == "True" else widget.setChecked(False)
-        print("DESER_END")
+        #print("DESER_END")
         return True
 
         """#try:

@@ -29,6 +29,7 @@ def print_error(*args):
     if DEBUG: print("Edge Validation Error:", *args)
 
 def edge_validator_debug(input: 'Socket', output: 'Socket') -> bool:
+    return True
     """This will consider edge always valid, however writes bunch of debug stuff into console"""
     print("VALIDATING:")
     print(input, "input" if input.is_input else "output",  "of node", input.node)

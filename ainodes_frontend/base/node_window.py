@@ -22,9 +22,9 @@ from ainodes_frontend.node_engine.node_edge_validators import (
     edge_cannot_connect_two_outputs_or_two_inputs,
     edge_cannot_connect_input_and_output_of_same_node,
     edge_cannot_connect_input_and_output_of_different_type
-
 )
-Edge.registerEdgeValidator(edge_validator_debug)
+
+#Edge.registerEdgeValidator(edge_validator_debug)
 Edge.registerEdgeValidator(edge_cannot_connect_two_outputs_or_two_inputs)
 Edge.registerEdgeValidator(edge_cannot_connect_input_and_output_of_same_node)
 Edge.registerEdgeValidator(edge_cannot_connect_input_and_output_of_different_type)

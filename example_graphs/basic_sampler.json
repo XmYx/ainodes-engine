@@ -27,10 +27,11 @@
                 }
             ],
             "content": {
-                "model": "model.ckpt",
-                "config": "v1-inference_fp16.yaml"
+                "Models": "photovintagev15_photovintagev15.safetensors",
+                "Configs": "v1-inference_fp16.yaml",
+                "Vae": "default"
             },
-            "op_code": 10,
+            "op_code": 18,
             "content_label_objname": "torch_loader_node"
         },
         {
@@ -64,9 +65,9 @@
                 }
             ],
             "content": {
-                "prompt": ""
+                "Prompt": ""
             },
-            "op_code": 11,
+            "op_code": 19,
             "content_label_objname": "cond_node"
         },
         {
@@ -100,9 +101,9 @@
                 }
             ],
             "content": {
-                "prompt": ""
+                "Prompt": ""
             },
-            "op_code": 11,
+            "op_code": 19,
             "content_label_objname": "cond_node"
         },
         {
@@ -164,13 +165,20 @@
                 }
             ],
             "content": {
-                "scheduler": "karras",
-                "sampler": "euler",
-                "seed": "",
-                "steps": 10,
-                "guidance_scale": 7.5
+                "Scheduler:": "karras",
+                "Sampler:": "euler",
+                "Seed:": "",
+                "Steps:": "10",
+                "Start Step:": "0",
+                "Last Step:": "5",
+                "Stop Sampling Early": "False",
+                "Force full denoise": "True",
+                "Disable noise generation": "False",
+                "Iterate seed": "False",
+                "Denoise:": "1.0",
+                "Guidance Scale:": "7.5"
             },
-            "op_code": 17,
+            "op_code": 25,
             "content_label_objname": "K_sampling_node"
         },
         {
@@ -192,6 +200,13 @@
                     "multi_edges": false,
                     "position": 3,
                     "socket_type": 1
+                },
+                {
+                    "id": 139669711678192,
+                    "index": 2,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 1
                 }
             ],
             "outputs": [
@@ -208,17 +223,24 @@
                     "multi_edges": true,
                     "position": 6,
                     "socket_type": 1
+                },
+                {
+                    "id": 139669711024528,
+                    "index": 2,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 1
                 }
             ],
             "content": {},
-            "op_code": 5,
+            "op_code": 7,
             "content_label_objname": "image_output_node"
         },
         {
             "id": 140448517923120,
             "title": "Execute",
-            "pos_x": -953.0,
-            "pos_y": -216.0,
+            "pos_x": -929.5625000000001,
+            "pos_y": -230.06250000000006,
             "inputs": [
                 {
                     "id": 140448517885760,
