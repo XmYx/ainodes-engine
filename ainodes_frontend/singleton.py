@@ -1,19 +1,5 @@
-import datetime
+from qtpy.QtCore import QMutex, QMutexLocker, QObject
 
-from qtpy.QtCore import QMutex, QMutexLocker, QObject, Signal
-
-#from backend.torch_gc import torch_gc
-
-#hypernetworks = {}
-
-
-
-
-class Callbacks(QObject):
-	selected_model_changed = Signal(str)
-	doInpaintTriggered = Signal()
-	paintInpaintMaskTriggered = Signal()
-	sceneBrushChanged = Signal(int)
 
 class Singleton(QObject):
 	_instance = None
@@ -25,6 +11,3 @@ class Singleton(QObject):
 				cls._instance = super(Singleton, cls).__new__(cls)
 				QObject.__init__(cls._instance)
 		return cls._instance
-
-	def __init__(self):
-		self.signals = Callbacks()
