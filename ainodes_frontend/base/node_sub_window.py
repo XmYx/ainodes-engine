@@ -139,19 +139,48 @@ class CalculatorSubWindow(NodeEditorWidget):
         for callback in self._close_event_listeners: callback(self, event)
 
     def onDragEnter(self, event):
+
         if event.mimeData().hasFormat(LISTBOX_MIMETYPE):
             event.acceptProposedAction()
+        elif event.mimeData().hasUrls():
+            event.acceptProposedAction()
+            print(event.mimeData().hasText())
+            print(event.mimeData().hasHtml())
+            print(event.mimeData().hasUrls())
+            print(event.mimeData().hasImage())
+            print(event.mimeData().hasColor())
+            print(event.mimeData().urls())
+            #mime_type = QtCore.QMimeType(event.mimeData().formats()[0])
+            #if mime_type.name() == 'image/*' or mime_type.name() == 'video/*':
+            #    event.acceptProposedAction()
+            #    return
         else:
             # print(" ... denied drag enter event")
             event.setAccepted(False)
 
     def onDrop(self, event):
+        if event.mimeData().hasUrls():
+            mouse_position = event.pos()
+            scene_position = self.scene.grScene.views()[0].mapToScene(mouse_position)
+            node = get_class_from_content_label_objname("image_input_node")(self.scene)
+            self.scene.history.storeHistory("Created node %s" % node.__class__.__name__)
+            node.setPos(scene_position.x(), scene_position.y())
+            node.add_urls(event.mimeData().urls())
+            #for url in event.mimeData().urls():
+            #    if url.isLocalFile():
+            #        file_path = url.toLocalFile()
+            #        print(file_path)
+            event.setDropAction(Qt.MoveAction)
+            event.accept()
+
         if event.mimeData().hasFormat(LISTBOX_MIMETYPE):
+
             eventData = event.mimeData().data(LISTBOX_MIMETYPE)
             dataStream = QDataStream(eventData, QIODevice.ReadOnly)
             pixmap = QPixmap()
             dataStream >> pixmap
             op_code = dataStream.readInt8()
+            print(op_code)
             text = dataStream.readQString()
 
             mouse_position = event.pos()

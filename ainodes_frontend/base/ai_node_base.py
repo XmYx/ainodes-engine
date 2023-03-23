@@ -241,7 +241,7 @@ class AiNode(Node):
         return 123
 
     @QtCore.Slot()
-    def evalImplementation(self):
+    def evalImplementation(self, index=0, *args, **kwargs):
         if self.busy == False:
             self.busy = True
             worker = Worker(self.evalImplementation_thread)
