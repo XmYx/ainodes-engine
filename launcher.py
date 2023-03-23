@@ -133,12 +133,8 @@ def run_main_script(args, venv_path):
         cmd_args.append("--torch2")
     if args.no_console:
         cmd_args.append("--no_console")
-    subprocess.Popen(cmd_args)
+    subprocess.run(cmd_args)
 
+
+#Run the main function to call main.py which has the event loop for PySide
 main()
-
-"""if __name__ == "__main__":
-    try:
-        main()
-    except Exception as e:
-        print(f"Error: {e}")"""
