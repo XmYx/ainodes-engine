@@ -564,8 +564,8 @@ class LatentDiffusion(DDPM):
         else:
             self.register_buffer('scale_factor', torch.tensor(scale_factor))
 
-        self.instantiate_first_stage(first_stage_config)
-        self.instantiate_cond_stage(cond_stage_config)
+        #self.instantiate_first_stage(first_stage_config)
+        #self.instantiate_cond_stage(cond_stage_config)
 
         self.cond_stage_forward = cond_stage_forward
         self.clip_denoised = False
