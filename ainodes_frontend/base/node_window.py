@@ -8,8 +8,10 @@ from qtpy.QtGui import QIcon, QKeySequence
 from qtpy.QtWidgets import QMdiArea, QDockWidget, QAction, QMessageBox, QFileDialog
 from qtpy.QtCore import Qt, QSignalMapper
 
+from ainodes_frontend.base import CalcGraphicsNode
 from ainodes_frontend.base.settings import load_settings, save_settings
 from ainodes_frontend.base.worker import Worker
+from ainodes_frontend.node_engine.node_content_widget import QDMNodeContentWidget
 from ainodes_frontend.node_engine.utils import loadStylesheets
 from ainodes_frontend.node_engine.node_editor_window import NodeEditorWindow
 from ainodes_frontend.base.node_sub_window import CalculatorSubWindow
@@ -90,6 +92,17 @@ def remove_empty_lines(file_path):
                 f.seek(0)
                 f.writelines(line for line in content if line.strip())
                 f.truncate()
+
+
+class ParameterDock(QtWidgets.QDockWidget):
+    def __init__(self):
+        super().__init__()
+        self.main_widget = QtWidgets.QWidget(self)
+
+        self.layout = QtWidgets.QVBoxLayout(self.main_widget)
+        self.setWidget(self.main_widget)
+        self.setLayout(self.layout)
+
 
 
 class MemoryWidget(QtWidgets.QDockWidget):
@@ -480,17 +493,13 @@ class CalculatorWindow(NodeEditorWindow):
 
         # Connect the signal mapper to the map slot using a lambda function
         self.windowMapper.mappedInt[int].connect(lambda id: self.setActiveSubWindow(self.subWindowList()[id]))
-
         self.createNodesDock()
-
         self.createActions()
         self.createMenus()
         self.createToolBars()
         self.createStatusBar()
         self.updateMenus()
-
         self.readSettings()
-
         self.setWindowTitle("aiNodes - Engine")
         self.show_github_repositories()
         if not gs.args.no_console:
@@ -498,6 +507,9 @@ class CalculatorWindow(NodeEditorWindow):
             self.tabifyDockWidget(self.node_packages, self.console)
         self.threadpool = QtCore.QThreadPool()
 
+        self.parameter_dock = ParameterDock()
+
+        self.addDockWidget(Qt.LeftDockWidgetArea, self.parameter_dock)
     def edit_colors(self):
         editor = ColorEditor(gs.SOCKET_COLORS, gs.socket_names)
         result = editor.exec_()
@@ -788,10 +800,53 @@ class CalculatorWindow(NodeEditorWindow):
 
         # node_engine.scene.addItemSelectedListener(self.updateEditMenu)
         # node_engine.scene.addItemsDeselectedListener(self.updateEditMenu)
+
+
+        #nodeeditor.scene.addItemSelectedListener(self.emitUIobjects)
+
         nodeeditor.scene.history.addHistoryModifiedListener(self.updateEditMenu)
         nodeeditor.addCloseEventListener(self.onSubWndClose)
         return subwnd
 
+    def emitUIobjects(self, item):
+
+        # Remove any existing widgets from the layout
+        self.clear_layout(self.parameter_dock.layout)
+
+        if isinstance(item, CalcGraphicsNode):
+            # Remove any existing widgets from the layout
+            if hasattr(item, "content"):
+                # Save the widgets and layouts in a list within the item.node
+                item.node.saved_widgets_and_layouts = []
+
+                for widget in item.content.widget_list:
+                    print(widget)
+                    widget.setParent(None)
+                    item.node.saved_widgets_and_layouts.append(widget)
+                    if isinstance(widget, QtWidgets.QHBoxLayout) or isinstance(widget, QtWidgets.QVBoxLayout):
+                        self.parameter_dock.layout.addLayout(widget)
+                    else:
+                        self.parameter_dock.layout.addWidget(widget)
+
+    def clear_layout(self, layout):
+        while layout.count() > 0:
+            item = layout.takeAt(0)
+            widget = item.widget()
+            if widget is not None:
+                widget.setParent(None)
+            else:
+                child_layout = item.layout()
+                if child_layout is not None:
+                    self.clear_layout(child_layout)
+                    # Restore the parent of the child layout if it was saved in item.node
+                    subwnd = self.getCurrentNodeEditorWidget()
+                    for node_item in subwnd.scene.nodes:
+                        if hasattr(node_item,
+                                   "saved_widgets_and_layouts") and child_layout in node_item.saved_widgets_and_layouts:
+                            node_item.saved_widgets_and_layouts.remove(child_layout)
+                            node_item.saved_widgets_and_layouts.append(child_layout)
+                            child_layout.setParent(node_item.content.main_layout)
+                            break
     def onSubWndClose(self, widget, event):
         existing = self.findMdiChild(widget.filename)
         self.mdiArea.setActiveSubWindow(existing)

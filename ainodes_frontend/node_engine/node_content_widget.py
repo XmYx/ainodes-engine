@@ -32,6 +32,9 @@ class QDMNodeContentWidget(QWidget, Serializable):
         """
         self.node = node
         super().__init__(parent)
+
+        print("NODE PARENT", parent)
+
         self.widget_list = []
         self.initUI()
         sshFile = "ainodes_frontend/qss/nodeeditor-dark.qss"
