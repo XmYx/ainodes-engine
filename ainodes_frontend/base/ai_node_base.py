@@ -192,7 +192,8 @@ class AiNode(Node):
          """
         object_name = self.getID(index)
         try:
-            value = self.values[object_name]
+            return self.values[object_name]
+            #value = self.values[object_name]
         except:
             print(f"Value doesnt exist yet, make sure to validate the node: {self.content_label_objname}")
             value = None
@@ -247,8 +248,6 @@ class AiNode(Node):
             worker = Worker(self.evalImplementation_thread)
             worker.signals.result.connect(self.onWorkerFinished)
             self.scene.threadpool.start(worker)
-            #thread0 = threading.Thread(target=self.evalImplementation_thread)
-            #thread0.start()
         return None
 
     def evalImplementation_thread(self):
@@ -257,8 +256,15 @@ class AiNode(Node):
     def onWorkerFinished(self):
         print(f"PLEASE IMPLEMENT onWorkerFinished function for {self}")
         pass
-
     def eval(self, index=0):
+        try:
+            self.markDirty(True)
+            self.content.eval_signal.emit()
+        except Exception as e:
+            print(e, self)
+
+
+    def eval_orig(self, index=0):
         """
         Evaluate the node, returning the cached value if it's valid and not dirty.
 
@@ -371,3 +377,71 @@ class AiNode(Node):
         dialog.setLayout(layout)
         dialog.show()
         return dialog
+class AiApiNode(AiNode):
+    icon = ""
+    op_code = 0
+    op_title = "Undefined"
+    content_label = ""
+    content_label_objname = "calc_node_bg"
+    category = "default"
+    input_socket_name = ["EXEC"]
+    output_socket_name = ["EXEC"]
+    help_text = "Default help text"
+    GraphicsNode_class = CalcGraphicsNode
+    NodeContent_class = CalcContent
+
+    def __init__(self, scene, inputs=[2,2], outputs=[1]):
+        """
+         Initialize the AiNode class with a scene, inputs, and outputs.
+
+         Args:
+             scene (QGraphicsScene): The scene where the node is displayed.
+             inputs (list): A list of input sockets, with values representing their types.
+                           1: EXEC
+                           2: LATENT
+                           3: CONDITIONING
+                           5: IMAGE
+                           6: DATA
+                           (4 is not used yet)
+                           Defaults to [2,2].
+             outputs (list): A list of output sockets, with values representing their types.
+                           1: EXEC
+                           2: LATENT
+                           3: CONDITIONING
+                           5: IMAGE
+                           6: DATA
+                           (4 is not used yet)
+                           Defaults to [1].
+         """
+        super().__init__(scene, self.__class__.op_title, inputs, outputs)
+        self.set_socket_names()
+        self.value = None
+        self.output_values = {}
+        # it's really important to mark all nodes Dirty by default
+        self.markDirty()
+        self.values = {}
+        self.task_queue = Queue()
+        self.busy = False
+
+    @QtCore.Slot()
+    def evalImplementation(self, index=0, *args, **kwargs):
+        if self.busy == False:
+            self.busy = True
+            worker = Worker(self.evalImplementation_thread)
+            worker.signals.result.connect(self.onWorkerFinished)
+            self.scene.threadpool.start(worker)
+        return None
+
+    def evalImplementation_thread(self):
+        pass
+    @QtCore.Slot(object)
+    def onWorkerFinished(self):
+        print(f"PLEASE IMPLEMENT onWorkerFinished function for {self}")
+        pass
+    def eval(self, index=0):
+        try:
+            self.markDirty(True)
+            self.content.eval_signal.emit()
+        except Exception as e:
+            print(e, self)
+

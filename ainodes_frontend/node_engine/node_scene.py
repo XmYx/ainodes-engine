@@ -128,7 +128,8 @@ class Scene(Serializable):
             if not silent:
                 # we could create some kind of UI which could be serialized,
                 # therefore first run all callbacks...
-                for callback in self._item_selected_listeners: callback()
+                if len(current_selected_items) == 1:
+                    for callback in self._item_selected_listeners: callback(current_selected_items[0])
                 # and store history as a last step always
                 self.history.storeHistory("Selection Changed")
 

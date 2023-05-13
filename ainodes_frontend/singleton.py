@@ -1,6 +1,6 @@
 import threading
 
-class Singleton:
+"""class Singleton:
     __instance = None
     __lock = threading.Lock()
 
@@ -9,4 +9,7 @@ class Singleton:
             with cls.__lock:
                 if not cls.__instance:
                     cls.__instance = super().__new__(cls)
-        return cls.__instance
+        return cls.__instance"""
+
+models = {}
+token = ""

@@ -1,0 +1,29 @@
+COLORS:
+- '#ff7700'
+- '#52e220'
+- '#0056a6'
+- '#a86db1'
+- '#b54747'
+- '#dbe220'
+- '#888888'
+- '#ff7700'
+- '#52e220'
+- '#0056a6'
+- '#a86db1'
+- '#b54747'
+- '#dbe220'
+- '#888888'
+checkpoints: models/checkpoints
+controlnet: models/controlnet
+embeddings: models/embeddings
+loras: models/loras
+output: output
+socket_names:
+    0: UNUSED
+    1: EXEC
+    2: LATENT
+    3: COND
+    4: EMPTY
+    5: IMAGE
+    6: DATA
+t2i_adapter: models/t2i_adapter

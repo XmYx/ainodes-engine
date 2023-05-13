@@ -27,11 +27,8 @@ class CalculatorSubWindow(NodeEditorWidget):
     def __init__(self):
         super().__init__()
         self.context_menu_style = 'modern'
-
         self.setAttribute(Qt.WA_DeleteOnClose)
-
         self.setTitle()
-
         self.initNewNodeActions()
         #self.scene.threadpool = QThreadPool()
         self.scene.addHasBeenModifiedListener(self.setTitle)
@@ -39,9 +36,7 @@ class CalculatorSubWindow(NodeEditorWidget):
         self.scene.addDragEnterListener(self.onDragEnter)
         self.scene.addDropListener(self.onDrop)
         self.scene.setNodeClassSelector(self.getNodeClassFromData)
-
         self._close_event_listeners = []
-
         self.run_all_action = QAction("Run All")
         self.run_all_action.triggered.connect(self.doRunAll)
         """self.stylesheet_filename = os.path.join(os.path.dirname(__file__), "ainodes_frontend/qss/nodeeditor-dark.qss")
@@ -180,7 +175,6 @@ class CalculatorSubWindow(NodeEditorWidget):
             pixmap = QPixmap()
             dataStream >> pixmap
             op_code = dataStream.readInt8()
-            print(op_code)
             text = dataStream.readQString()
 
             mouse_position = event.pos()
@@ -190,6 +184,9 @@ class CalculatorSubWindow(NodeEditorWidget):
 
             try:
                 node = get_class_from_opcode(op_code)(self.scene)
+
+                #print("NODE CONTENT", node.content)
+
                 node.setPos(scene_position.x(), scene_position.y())
                 self.scene.history.storeHistory("Created node %s" % node.__class__.__name__)
             except Exception as e: dumpException(e)
