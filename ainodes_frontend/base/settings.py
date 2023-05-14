@@ -42,6 +42,7 @@ def load_settings():
                 gs.checkpoints = settings['checkpoints']
                 gs.controlnet = settings['controlnet']
                 gs.embeddings = settings['embeddings']
+                gs.upscalers = settings['upscalers']
                 gs.loras = settings['loras']
                 gs.t2i_adapter = settings['t2i_adapter']
                 gs.output = settings['output']
