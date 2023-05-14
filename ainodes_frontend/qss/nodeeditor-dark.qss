@@ -38,6 +38,14 @@ QPushButton{color:#e6e6e6;background:#555;border-color:#141414}
 QLabel{color:#e6e6e6}
 
 QLineEdit{border:1px solid #3a3a3a;border-radius:2px;padding:1px 2px}
+QTextEdit {
+    border: 1px solid #3a3a3a;
+    border-radius: 2px;
+    padding: 1px 2px;
+    font-weight: bold;
+    font-size: 14px;
+    color: white;
+}
 QDMNodeContentWidget{background:transparent;}
 QDMNodeContentWidget QFrame{background:transparent}
 QDMNodeContentWidget QLabel{color:#e0e0e0}
