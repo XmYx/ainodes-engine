@@ -1,0 +1,2 @@
+@echo off
+cmd /k "cd nodes_env\Scripts && activate.bat && cd.. && cd.. && git stash && git pull && pip install -r requirements.txt && cd custom_nodes && cd ainodes_engine_base_nodes && git stash && git pull && pip install -r requirements.txt && cd.. && cd.."
