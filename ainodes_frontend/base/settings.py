@@ -25,7 +25,7 @@ def save_settings():
 
     }
     print(settings)
-    with open('config/settings.yaml', 'w') as file:
+    with open('config/default_settings.yaml', 'w') as file:
         yaml.dump(settings, file, indent=4)
 
 
