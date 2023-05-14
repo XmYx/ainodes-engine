@@ -17,6 +17,7 @@ checkpoints: models/checkpoints
 controlnet: models/controlnet
 embeddings: models/embeddings
 upscalers: models/upscalers
+vae: models/vae
 loras: models/loras
 output: output
 socket_names:

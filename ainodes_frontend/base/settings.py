@@ -40,6 +40,7 @@ def load_settings():
                 socket_names = settings['socket_names']
                 SOCKET_COLORS = [hex_to_color(hex_string) for hex_string in settings['COLORS']]
                 gs.checkpoints = settings['checkpoints']
+                gs.vae = settings['vae']
                 gs.controlnet = settings['controlnet']
                 gs.embeddings = settings['embeddings']
                 gs.upscalers = settings['upscalers']
@@ -83,6 +84,8 @@ def setup_defaults():
     gs.checkpoints = "models/checkpoints"
     gs.controlnet = "models/controlnet"
     gs.embeddings = "models/embeddings"
+    gs.upscalers = 'models/upscalers'
+    gs.vae = 'models/vae'
     gs.loras = "models/loras"
     gs.t2i_adapter = "models/t2i_adapter"
     gs.output = "output"
