@@ -187,3 +187,5 @@ custom_nodes/
 .vscode
 models/checkpoints/22h02.safetensors
 *.safetensors
+
+config/
