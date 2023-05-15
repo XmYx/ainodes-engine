@@ -84,7 +84,6 @@ class QDMGraphicsSocket(QGraphicsItem):
                             if self.socket.socket_type == dragged_socket.socket_type:
                                 self.radius = 12
                                 self.isHighlighted = True
-                        print("Dragging Input Socket")
                     else:
                         if not dragged_socket.is_input:
                             if self.socket.is_input:

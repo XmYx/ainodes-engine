@@ -1,0 +1,917 @@
+{
+    "id": 1862133580800,
+    "scene_width": 64000,
+    "scene_height": 64000,
+    "nodes": [
+        {
+            "id": 1862133584640,
+            "title": "Conditioning",
+            "pos_x": -425.0,
+            "pos_y": 15.0,
+            "inputs": [
+                {
+                    "id": 1862133584160,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 6
+                },
+                {
+                    "id": 1862133583872,
+                    "index": 1,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 1
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 1862133584352,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 6
+                },
+                {
+                    "id": 1862133585600,
+                    "index": 1,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 3
+                },
+                {
+                    "id": 1862133587904,
+                    "index": 2,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 1
+                }
+            ],
+            "content": {
+                "Prompt": ""
+            },
+            "op_code": 16,
+            "content_label_objname": "cond_node"
+        },
+        {
+            "id": 1862132940752,
+            "title": "Execute",
+            "pos_x": -828.0,
+            "pos_y": -281.0,
+            "inputs": [
+                {
+                    "id": 1862132940272,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 1
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 1862132939936,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 1
+                }
+            ],
+            "content": {},
+            "op_code": 3,
+            "content_label_objname": "exec_node"
+        },
+        {
+            "id": 1858103438512,
+            "title": "Stable Diffusion",
+            "pos_x": -1044.0,
+            "pos_y": -452.0,
+            "inputs": [],
+            "outputs": [],
+            "content": {},
+            "op_code": 2,
+            "content_label_objname": "bg_node",
+            "color": "#ff55557f",
+            "width": 2048.0,
+            "height": 868.0
+        },
+        {
+            "id": 1862132937728,
+            "title": "Image Preview",
+            "pos_x": 311.0,
+            "pos_y": -344.0,
+            "inputs": [
+                {
+                    "id": 1862133585504,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 5
+                },
+                {
+                    "id": 1862133583584,
+                    "index": 1,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 6
+                },
+                {
+                    "id": 1862133584064,
+                    "index": 2,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 1
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 1862133579840,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 5
+                },
+                {
+                    "id": 1862133581952,
+                    "index": 1,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 6
+                },
+                {
+                    "id": 1862133580896,
+                    "index": 2,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 1
+                }
+            ],
+            "content": {},
+            "op_code": 10,
+            "content_label_objname": "image_output_node"
+        },
+        {
+            "id": 1862133587712,
+            "title": "Conditioning",
+            "pos_x": -423.0,
+            "pos_y": -350.0,
+            "inputs": [
+                {
+                    "id": 1862133581184,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 6
+                },
+                {
+                    "id": 1862133579936,
+                    "index": 1,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 1
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 1862133585792,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 6
+                },
+                {
+                    "id": 1862133588480,
+                    "index": 1,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 3
+                },
+                {
+                    "id": 1862133580416,
+                    "index": 2,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 1
+                }
+            ],
+            "content": {
+                "Prompt": "Alien landscape, highly detailed"
+            },
+            "op_code": 16,
+            "content_label_objname": "cond_node"
+        },
+        {
+            "id": 1862132936288,
+            "title": "Torch Loader",
+            "pos_x": -864.0,
+            "pos_y": -11.0,
+            "inputs": [
+                {
+                    "id": 1862133462304,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 1
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 1862133462784,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 1
+                }
+            ],
+            "content": {
+                "Models": "cyberrealistic_v20.safetensors",
+                "Configs": "v1-inference_fp16.yaml",
+                "Vae": "default"
+            },
+            "op_code": 15,
+            "content_label_objname": "torch_loader_node"
+        },
+        {
+            "id": 1862133463936,
+            "title": "K Sampler",
+            "pos_x": -17.0,
+            "pos_y": -270.0,
+            "inputs": [
+                {
+                    "id": 1862133453952,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 6
+                },
+                {
+                    "id": 1862133453472,
+                    "index": 1,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 2
+                },
+                {
+                    "id": 1862133462112,
+                    "index": 2,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 3
+                },
+                {
+                    "id": 1857865003552,
+                    "index": 3,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 3
+                },
+                {
+                    "id": 1862133035216,
+                    "index": 4,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 1
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 1862133034928,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 5
+                },
+                {
+                    "id": 1862133035024,
+                    "index": 1,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 2
+                },
+                {
+                    "id": 1862133034448,
+                    "index": 2,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 1
+                }
+            ],
+            "content": {
+                "Scheduler:": "karras",
+                "Sampler:": "euler",
+                "Seed:": "",
+                "Steps:": "10",
+                "Start Step:": "0",
+                "Last Step:": "5",
+                "Stop Sampling Early": "False",
+                "Force full denoise": "True",
+                "Disable noise generation": "False",
+                "Iterate seed": "False",
+                "Denoise:": "1.0",
+                "Guidance Scale:": "7.5"
+            },
+            "op_code": 22,
+            "content_label_objname": "K_sampling_node"
+        },
+        {
+            "id": 1862133584448,
+            "title": "ControlNet Loader",
+            "pos_x": 2697.109374999999,
+            "pos_y": -377.3632812499999,
+            "inputs": [
+                {
+                    "id": 1862133031376,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 1
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 1862133030992,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 1
+                }
+            ],
+            "content": {
+                "ControlNet": "control_sd15_canny.pth"
+            },
+            "op_code": 18,
+            "content_label_objname": "controlnet_loader_node"
+        },
+        {
+            "id": 1862133031568,
+            "title": "Image Operators",
+            "pos_x": 1094.921875,
+            "pos_y": -129.00390625,
+            "inputs": [
+                {
+                    "id": 1862133029840,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 5
+                },
+                {
+                    "id": 1862133028784,
+                    "index": 1,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 6
+                },
+                {
+                    "id": 1862133028880,
+                    "index": 2,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 1
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 1862133028592,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 5
+                },
+                {
+                    "id": 1862133028688,
+                    "index": 1,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 6
+                },
+                {
+                    "id": 1862133028400,
+                    "index": 2,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 1
+                }
+            ],
+            "content": {
+                "Image Operator:": "canny",
+                "Width:": "512",
+                "Height:": "512",
+                "Canny Low:": "100",
+                "Canny High:": "100",
+                "Midas A:": "6.28",
+                "Midas Bg:": "0.01"
+            },
+            "op_code": 8,
+            "content_label_objname": "image_op_node"
+        },
+        {
+            "id": 1862133029456,
+            "title": "Image Preview",
+            "pos_x": 1570.3124999999995,
+            "pos_y": -318.84765624999994,
+            "inputs": [
+                {
+                    "id": 1862133029360,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 5
+                },
+                {
+                    "id": 1862133027056,
+                    "index": 1,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 6
+                },
+                {
+                    "id": 1862133026672,
+                    "index": 2,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 1
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 1862133026768,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 5
+                },
+                {
+                    "id": 1862133026480,
+                    "index": 1,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 6
+                },
+                {
+                    "id": 1862133026576,
+                    "index": 2,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 1
+                }
+            ],
+            "content": {},
+            "op_code": 10,
+            "content_label_objname": "image_output_node"
+        },
+        {
+            "id": 1862133027248,
+            "title": "Apply ControlNet",
+            "pos_x": 2702.578124999999,
+            "pos_y": -210.41015624999997,
+            "inputs": [
+                {
+                    "id": 1862133027536,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 5
+                },
+                {
+                    "id": 1862133025136,
+                    "index": 1,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 3
+                },
+                {
+                    "id": 1862133024752,
+                    "index": 2,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 1
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 1862133024848,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 3
+                },
+                {
+                    "id": 1862133024464,
+                    "index": 1,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 1
+                }
+            ],
+            "content": {
+                "Strength": "1.0",
+                "Guidance Scale": "7.5",
+                "Start %": "0",
+                "Stop %": "100",
+                "Soft Inject": "False",
+                "CFG Inject": "False",
+                "CleanUp on Run": "True",
+                "Control Style": "controlnet"
+            },
+            "op_code": 17,
+            "content_label_objname": "CN_apply_node"
+        },
+        {
+            "id": 1862133025424,
+            "title": "Conditioning",
+            "pos_x": 2194.140624999999,
+            "pos_y": -395.0195312499999,
+            "inputs": [
+                {
+                    "id": 1862133029744,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 6
+                },
+                {
+                    "id": 1862133023216,
+                    "index": 1,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 1
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 1862133022928,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 6
+                },
+                {
+                    "id": 1862133023024,
+                    "index": 1,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 3
+                },
+                {
+                    "id": 1862133035600,
+                    "index": 2,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 1
+                }
+            ],
+            "content": {
+                "Prompt": ""
+            },
+            "op_code": 16,
+            "content_label_objname": "cond_node"
+        },
+        {
+            "id": 1862133023408,
+            "title": "Conditioning",
+            "pos_x": 2196.09375,
+            "pos_y": -49.31640625,
+            "inputs": [
+                {
+                    "id": 1877384463264,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 6
+                },
+                {
+                    "id": 1877384463504,
+                    "index": 1,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 1
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 1877384463552,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 6
+                },
+                {
+                    "id": 1877384463696,
+                    "index": 1,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 3
+                },
+                {
+                    "id": 1877384463744,
+                    "index": 2,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 1
+                }
+            ],
+            "content": {
+                "Prompt": ""
+            },
+            "op_code": 16,
+            "content_label_objname": "cond_node"
+        },
+        {
+            "id": 1862133029648,
+            "title": "K Sampler",
+            "pos_x": 3103.515624999999,
+            "pos_y": -238.76953124999997,
+            "inputs": [
+                {
+                    "id": 1877384465472,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 6
+                },
+                {
+                    "id": 1877384465712,
+                    "index": 1,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 2
+                },
+                {
+                    "id": 1877384465760,
+                    "index": 2,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 3
+                },
+                {
+                    "id": 1877384465904,
+                    "index": 3,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 3
+                },
+                {
+                    "id": 1877384465952,
+                    "index": 4,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 1
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 1877384466240,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 5
+                },
+                {
+                    "id": 1877384466048,
+                    "index": 1,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 2
+                },
+                {
+                    "id": 1877384466384,
+                    "index": 2,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 1
+                }
+            ],
+            "content": {
+                "Scheduler:": "karras",
+                "Sampler:": "euler",
+                "Seed:": "",
+                "Steps:": "10",
+                "Start Step:": "0",
+                "Last Step:": "5",
+                "Stop Sampling Early": "False",
+                "Force full denoise": "True",
+                "Disable noise generation": "False",
+                "Iterate seed": "False",
+                "Denoise:": "1.0",
+                "Guidance Scale:": "7.5"
+            },
+            "op_code": 22,
+            "content_label_objname": "K_sampling_node"
+        },
+        {
+            "id": 1877384465568,
+            "title": "Image Preview",
+            "pos_x": 3558.593749999999,
+            "pos_y": -336.4257812499999,
+            "inputs": [
+                {
+                    "id": 1877384465280,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 5
+                },
+                {
+                    "id": 1877384467392,
+                    "index": 1,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 6
+                },
+                {
+                    "id": 1877384467536,
+                    "index": 2,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 1
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 1877384467584,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 5
+                },
+                {
+                    "id": 1877384467872,
+                    "index": 1,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 6
+                },
+                {
+                    "id": 1877384467776,
+                    "index": 2,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 1
+                }
+            ],
+            "content": {},
+            "op_code": 10,
+            "content_label_objname": "image_output_node"
+        },
+        {
+            "id": 1877384472960,
+            "title": "ControlNet",
+            "pos_x": 1015.6249999999995,
+            "pos_y": -432.1289062499998,
+            "inputs": [],
+            "outputs": [],
+            "content": {},
+            "op_code": 2,
+            "content_label_objname": "bg_node",
+            "color": "#ff5500ff",
+            "width": 3262.7382812499986,
+            "height": 850.6289062499995
+        }
+    ],
+    "edges": [
+        {
+            "id": 1862133033776,
+            "edge_type": 2,
+            "start": 1862133587904,
+            "end": 1862133035216
+        },
+        {
+            "id": 1862133033392,
+            "edge_type": 2,
+            "start": 1862133585504,
+            "end": 1862133034928
+        },
+        {
+            "id": 1862133033488,
+            "edge_type": 2,
+            "start": 1862133583872,
+            "end": 1862133580416
+        },
+        {
+            "id": 1862133033008,
+            "edge_type": 2,
+            "start": 1862133034448,
+            "end": 1862133584064
+        },
+        {
+            "id": 1862133464512,
+            "edge_type": 2,
+            "start": 1862133462784,
+            "end": 1862133579936
+        },
+        {
+            "id": 1862133464992,
+            "edge_type": 2,
+            "start": 1857865003552,
+            "end": 1862133588480
+        },
+        {
+            "id": 1862133464224,
+            "edge_type": 2,
+            "start": 1862133462112,
+            "end": 1862133585600
+        },
+        {
+            "id": 1862133464416,
+            "edge_type": 2,
+            "start": 1862132939936,
+            "end": 1862133462304
+        },
+        {
+            "id": 1862133582816,
+            "edge_type": 2,
+            "start": 1862133029840,
+            "end": 1862133579840
+        },
+        {
+            "id": 1877384464800,
+            "edge_type": 2,
+            "start": 1862133580896,
+            "end": 1862133028880
+        },
+        {
+            "id": 1862132937056,
+            "edge_type": 2,
+            "start": 1862133028400,
+            "end": 1862133026672
+        },
+        {
+            "id": 1877384469312,
+            "edge_type": 2,
+            "start": 1862133029360,
+            "end": 1862133028592
+        },
+        {
+            "id": 1877384470080,
+            "edge_type": 2,
+            "start": 1862133028592,
+            "end": 1862133027536
+        },
+        {
+            "id": 1877384469264,
+            "edge_type": 2,
+            "start": 1862133026576,
+            "end": 1862133023216
+        },
+        {
+            "id": 1862132936960,
+            "edge_type": 2,
+            "start": 1862133035600,
+            "end": 1877384463504
+        },
+        {
+            "id": 1877384470656,
+            "edge_type": 2,
+            "start": 1877384463744,
+            "end": 1862133031376
+        },
+        {
+            "id": 1877384471424,
+            "edge_type": 2,
+            "start": 1862133030992,
+            "end": 1862133024752
+        },
+        {
+            "id": 1877384472144,
+            "edge_type": 2,
+            "start": 1862133024464,
+            "end": 1877384465952
+        },
+        {
+            "id": 1877384471184,
+            "edge_type": 2,
+            "start": 1877384466384,
+            "end": 1877384467536
+        },
+        {
+            "id": 1877384472672,
+            "edge_type": 2,
+            "start": 1862133023024,
+            "end": 1862133025136
+        },
+        {
+            "id": 1877384473104,
+            "edge_type": 2,
+            "start": 1862133024848,
+            "end": 1877384465904
+        },
+        {
+            "id": 1877384473920,
+            "edge_type": 2,
+            "start": 1877384463696,
+            "end": 1877384465760
+        },
+        {
+            "id": 1877384473296,
+            "edge_type": 2,
+            "start": 1862133585792,
+            "end": 1862133029744
+        },
+        {
+            "id": 1866043016528,
+            "edge_type": 2,
+            "start": 1877384466240,
+            "end": 1877384465280
+        }
+    ]
+}
