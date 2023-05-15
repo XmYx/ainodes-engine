@@ -986,7 +986,7 @@
             ],
             "content": {
                 "Blend:": "0.0",
-                "Composite Method:": "destination_over"
+                "Composite Method:": "source_over"
             },
             "op_code": 6,
             "content_label_objname": "image_blend_node"
@@ -1320,6 +1320,12 @@
             "edge_type": 2,
             "start": 2165263085248,
             "end": 2165262248416
+        },
+        {
+            "id": 2167253257520,
+            "edge_type": 2,
+            "start": 2167255350432,
+            "end": 2166331336704
         }
     ]
 }
