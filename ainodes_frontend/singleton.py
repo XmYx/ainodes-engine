@@ -14,3 +14,4 @@ import threading
 models = {}
 token = ""
 use_deforum_loss = None
+highlight_sockets = True

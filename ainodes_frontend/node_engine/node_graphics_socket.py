@@ -73,6 +73,27 @@ class QDMGraphicsSocket(QGraphicsItem):
         self._brush = QBrush(self._color_background)
 
     def paint(self, painter, QStyleOptionGraphicsItem, widget=None):
+
+        if gs.highlight_sockets:
+            mode = self.socket.node.scene.getView().mode
+            dragged_socket = self.socket.node.scene.getView().dragging.drag_start_socket
+            if mode == 2:
+                if self.socket.node != dragged_socket.node:
+                    if dragged_socket.is_input:
+                        if not self.socket.is_input:
+                            if self.socket.socket_type == dragged_socket.socket_type:
+                                self.radius = 12
+                                self.isHighlighted = True
+                        print("Dragging Input Socket")
+                    else:
+                        if not dragged_socket.is_input:
+                            if self.socket.is_input:
+                                if self.socket.socket_type == dragged_socket.socket_type:
+                                    self.radius = 12
+                                    self.isHighlighted = True
+            else:
+                self.radius = 8
+
         painter.setBrush(self._brush)
         painter.setPen(self._pen if not self.isHighlighted else self._pen_highlight)
         """Painting a circle"""

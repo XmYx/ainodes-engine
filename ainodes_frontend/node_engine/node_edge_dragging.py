@@ -105,9 +105,11 @@ class EdgeDragging:
 
                     self.grView.grScene.scene.history.storeHistory("Created new edge by dragging", setModified=True)
                     return True
+
             except Exception as e: dumpException(e)
 
 
         if DEBUG: print('View::edgeDragEnd ~ everything done.')
+        self.drag_start_socket = None
         return False
 
