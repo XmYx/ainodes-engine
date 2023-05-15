@@ -1,0 +1,330 @@
+{
+    "id": 1862133451072,
+    "scene_width": 64000,
+    "scene_height": 64000,
+    "nodes": [
+        {
+            "id": 1862133141696,
+            "title": "Kandinsky",
+            "pos_x": -377.0,
+            "pos_y": -246.0,
+            "inputs": [
+                {
+                    "id": 1862133141504,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 5
+                },
+                {
+                    "id": 1862133141744,
+                    "index": 1,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 6
+                },
+                {
+                    "id": 1862133141792,
+                    "index": 2,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 1
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 1862133142560,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 5
+                },
+                {
+                    "id": 1862133141024,
+                    "index": 1,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 1
+                }
+            ],
+            "content": {
+                "Prompt:": "alien landscape, highly detailed",
+                "Seed:": "",
+                "Steps:": "25",
+                "Guidance Scale:": "4",
+                "Width:": "512",
+                "Height:": "512",
+                "Sampler:": "p_sampler",
+                "Prior Scale:": "5"
+            },
+            "op_code": 23,
+            "content_label_objname": "kandinsky_node"
+        },
+        {
+            "id": 1862133141168,
+            "title": "Image Preview",
+            "pos_x": -31.0,
+            "pos_y": -328.0,
+            "inputs": [
+                {
+                    "id": 1862133141312,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 5
+                },
+                {
+                    "id": 1862133140064,
+                    "index": 1,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 6
+                },
+                {
+                    "id": 1862133139920,
+                    "index": 2,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 1
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 1862133139968,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 5
+                },
+                {
+                    "id": 1862133139872,
+                    "index": 1,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 6
+                },
+                {
+                    "id": 1862133139776,
+                    "index": 2,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 1
+                }
+            ],
+            "content": {},
+            "op_code": 10,
+            "content_label_objname": "image_output_node"
+        },
+        {
+            "id": 1862133139008,
+            "title": "Kandinsky Text2Image",
+            "pos_x": -769.0,
+            "pos_y": -385.0,
+            "inputs": [],
+            "outputs": [],
+            "content": {},
+            "op_code": 2,
+            "content_label_objname": "bg_node",
+            "color": "#ff5555ff",
+            "width": 1376.0,
+            "height": 781.0
+        },
+        {
+            "id": 1877383882992,
+            "title": "Execute",
+            "pos_x": -726.0,
+            "pos_y": -248.0,
+            "inputs": [
+                {
+                    "id": 1877383883808,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 1
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 1877383883856,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 1
+                }
+            ],
+            "content": {},
+            "op_code": 3,
+            "content_label_objname": "exec_node"
+        },
+        {
+            "id": 1877383880736,
+            "title": "Image Preview",
+            "pos_x": 1120.5,
+            "pos_y": -329.25,
+            "inputs": [
+                {
+                    "id": 1877383882128,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 5
+                },
+                {
+                    "id": 1877383880016,
+                    "index": 1,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 6
+                },
+                {
+                    "id": 1877383880112,
+                    "index": 2,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 1
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 1877383879968,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 5
+                },
+                {
+                    "id": 1877383879728,
+                    "index": 1,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 6
+                },
+                {
+                    "id": 1877383879680,
+                    "index": 2,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 1
+                }
+            ],
+            "content": {},
+            "op_code": 10,
+            "content_label_objname": "image_output_node"
+        },
+        {
+            "id": 1862133139008,
+            "title": "Kandinsky Image2Image",
+            "pos_x": 632.5,
+            "pos_y": -381.25,
+            "inputs": [],
+            "outputs": [],
+            "content": {},
+            "op_code": 2,
+            "content_label_objname": "bg_node",
+            "color": "#ff5555ff",
+            "width": 1129.75,
+            "height": 769.75
+        },
+        {
+            "id": 1877383877328,
+            "title": "Kandinsky",
+            "pos_x": 699.5,
+            "pos_y": -267.25,
+            "inputs": [
+                {
+                    "id": 1877383880496,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 5
+                },
+                {
+                    "id": 1877383880544,
+                    "index": 1,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 6
+                },
+                {
+                    "id": 1877383880976,
+                    "index": 2,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 1
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 1877383882032,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 5
+                },
+                {
+                    "id": 1877383882512,
+                    "index": 1,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 1
+                }
+            ],
+            "content": {
+                "Prompt:": "alien landscape, highly detailed",
+                "Seed:": "",
+                "Steps:": "25",
+                "Guidance Scale:": "4",
+                "Width:": "512",
+                "Height:": "512",
+                "Sampler:": "p_sampler",
+                "Prior Scale:": "5"
+            },
+            "op_code": 23,
+            "content_label_objname": "kandinsky_node"
+        }
+    ],
+    "edges": [
+        {
+            "id": 1862133141408,
+            "edge_type": 2,
+            "start": 1862133142560,
+            "end": 1862133141312
+        },
+        {
+            "id": 1862133139200,
+            "edge_type": 2,
+            "start": 1862133139920,
+            "end": 1862133141024
+        },
+        {
+            "id": 1877383880688,
+            "edge_type": 2,
+            "start": 1877383883856,
+            "end": 1862133141792
+        },
+        {
+            "id": 1877383881216,
+            "edge_type": 2,
+            "start": 1877383882032,
+            "end": 1877383882128
+        },
+        {
+            "id": 1877383881456,
+            "edge_type": 2,
+            "start": 1877383880112,
+            "end": 1877383882512
+        },
+        {
+            "id": 1877383878768,
+            "edge_type": 2,
+            "start": 1877383880496,
+            "end": 1862133139968
+        },
+        {
+            "id": 1877383882368,
+            "edge_type": 2,
+            "start": 1877383880976,
+            "end": 1862133139776
+        }
+    ]
+}

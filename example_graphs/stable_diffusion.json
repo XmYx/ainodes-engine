@@ -1,16 +1,16 @@
 {
-    "id": 140462794768240,
+    "id": 1857559596672,
     "scene_width": 64000,
     "scene_height": 64000,
     "nodes": [
         {
-            "id": 140455957578848,
+            "id": 1858037328256,
             "title": "Torch Loader",
-            "pos_x": -549.0,
-            "pos_y": -306.0,
+            "pos_x": -899.0,
+            "pos_y": 275.0,
             "inputs": [
                 {
-                    "id": 140455956926816,
+                    "id": 1858089772816,
                     "index": 0,
                     "multi_edges": false,
                     "position": 3,
@@ -19,7 +19,7 @@
             ],
             "outputs": [
                 {
-                    "id": 140455956926768,
+                    "id": 1858089772672,
                     "index": 0,
                     "multi_edges": true,
                     "position": 6,
@@ -27,22 +27,29 @@
                 }
             ],
             "content": {
-                "Models": "photovintagev15_photovintagev15.safetensors",
+                "Models": "cyberrealistic_v20.safetensors",
                 "Configs": "v1-inference_fp16.yaml",
                 "Vae": "default"
             },
-            "op_code": 18,
+            "op_code": 15,
             "content_label_objname": "torch_loader_node"
         },
         {
-            "id": 140462795078000,
+            "id": 1858089770368,
             "title": "Conditioning",
-            "pos_x": -93.0,
-            "pos_y": -304.0,
+            "pos_x": -458.0,
+            "pos_y": -64.0,
             "inputs": [
                 {
-                    "id": 140462795077040,
+                    "id": 1858103432416,
                     "index": 0,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 6
+                },
+                {
+                    "id": 1858103431936,
+                    "index": 1,
                     "multi_edges": false,
                     "position": 3,
                     "socket_type": 1
@@ -50,15 +57,72 @@
             ],
             "outputs": [
                 {
-                    "id": 140462795078144,
+                    "id": 1858103432176,
                     "index": 0,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 6
+                },
+                {
+                    "id": 1858103433184,
+                    "index": 1,
                     "multi_edges": true,
                     "position": 6,
                     "socket_type": 3
                 },
                 {
-                    "id": 140462795078960,
+                    "id": 1858103433136,
+                    "index": 2,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 1
+                }
+            ],
+            "content": {
+                "Prompt": "Alien landscape, highly detailed"
+            },
+            "op_code": 16,
+            "content_label_objname": "cond_node"
+        },
+        {
+            "id": 1858103433472,
+            "title": "Conditioning",
+            "pos_x": -460.0,
+            "pos_y": 301.0,
+            "inputs": [
+                {
+                    "id": 1858103433568,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 6
+                },
+                {
+                    "id": 1858103433904,
                     "index": 1,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 1
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 1858103433952,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 6
+                },
+                {
+                    "id": 1858103434000,
+                    "index": 1,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 3
+                },
+                {
+                    "id": 1858103434048,
+                    "index": 2,
                     "multi_edges": true,
                     "position": 6,
                     "socket_type": 1
@@ -67,75 +131,46 @@
             "content": {
                 "Prompt": ""
             },
-            "op_code": 19,
+            "op_code": 16,
             "content_label_objname": "cond_node"
         },
         {
-            "id": 140462795078192,
-            "title": "Conditioning",
-            "pos_x": -91.0,
-            "pos_y": -27.0,
-            "inputs": [
-                {
-                    "id": 140462795078288,
-                    "index": 0,
-                    "multi_edges": false,
-                    "position": 3,
-                    "socket_type": 1
-                }
-            ],
-            "outputs": [
-                {
-                    "id": 140462795077712,
-                    "index": 0,
-                    "multi_edges": true,
-                    "position": 6,
-                    "socket_type": 3
-                },
-                {
-                    "id": 140462795077760,
-                    "index": 1,
-                    "multi_edges": true,
-                    "position": 6,
-                    "socket_type": 1
-                }
-            ],
-            "content": {
-                "Prompt": ""
-            },
-            "op_code": 19,
-            "content_label_objname": "cond_node"
-        },
-        {
-            "id": 140448517956080,
+            "id": 1858103435152,
             "title": "K Sampler",
-            "pos_x": 365.0,
-            "pos_y": -354.0,
+            "pos_x": -52.0,
+            "pos_y": 16.0,
             "inputs": [
                 {
-                    "id": 140448517956032,
+                    "id": 1858103435680,
                     "index": 0,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 6
+                },
+                {
+                    "id": 1858103435728,
+                    "index": 1,
                     "multi_edges": false,
                     "position": 3,
                     "socket_type": 2
                 },
                 {
-                    "id": 140448517957952,
-                    "index": 1,
-                    "multi_edges": false,
-                    "position": 3,
-                    "socket_type": 3
-                },
-                {
-                    "id": 140448517958000,
+                    "id": 1858103435776,
                     "index": 2,
                     "multi_edges": false,
                     "position": 3,
                     "socket_type": 3
                 },
                 {
-                    "id": 140448517957808,
+                    "id": 1858103435824,
                     "index": 3,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 3
+                },
+                {
+                    "id": 1858103435872,
+                    "index": 4,
                     "multi_edges": false,
                     "position": 3,
                     "socket_type": 1
@@ -143,21 +178,21 @@
             ],
             "outputs": [
                 {
-                    "id": 140448517957760,
+                    "id": 1858103435920,
                     "index": 0,
                     "multi_edges": true,
                     "position": 6,
                     "socket_type": 5
                 },
                 {
-                    "id": 140448517957520,
+                    "id": 1858103435968,
                     "index": 1,
                     "multi_edges": true,
                     "position": 6,
                     "socket_type": 2
                 },
                 {
-                    "id": 140448517958768,
+                    "id": 1858103436016,
                     "index": 2,
                     "multi_edges": true,
                     "position": 6,
@@ -178,31 +213,31 @@
                 "Denoise:": "1.0",
                 "Guidance Scale:": "7.5"
             },
-            "op_code": 25,
+            "op_code": 22,
             "content_label_objname": "K_sampling_node"
         },
         {
-            "id": 140448517956848,
+            "id": 1858103435632,
             "title": "Image Preview",
-            "pos_x": 774.0,
-            "pos_y": -382.0,
+            "pos_x": 276.0,
+            "pos_y": -58.0,
             "inputs": [
                 {
-                    "id": 140448517924320,
+                    "id": 1858103435536,
                     "index": 0,
                     "multi_edges": false,
                     "position": 3,
                     "socket_type": 5
                 },
                 {
-                    "id": 140448517924080,
+                    "id": 1858103436448,
                     "index": 1,
                     "multi_edges": false,
                     "position": 3,
-                    "socket_type": 1
+                    "socket_type": 6
                 },
                 {
-                    "id": 139669711678192,
+                    "id": 1858103436496,
                     "index": 2,
                     "multi_edges": false,
                     "position": 3,
@@ -211,21 +246,21 @@
             ],
             "outputs": [
                 {
-                    "id": 140448517924032,
+                    "id": 1858103436544,
                     "index": 0,
                     "multi_edges": true,
                     "position": 6,
                     "socket_type": 5
                 },
                 {
-                    "id": 140448517923888,
+                    "id": 1858103436592,
                     "index": 1,
                     "multi_edges": true,
                     "position": 6,
-                    "socket_type": 1
+                    "socket_type": 6
                 },
                 {
-                    "id": 139669711024528,
+                    "id": 1858103436640,
                     "index": 2,
                     "multi_edges": true,
                     "position": 6,
@@ -233,17 +268,31 @@
                 }
             ],
             "content": {},
-            "op_code": 7,
+            "op_code": 10,
             "content_label_objname": "image_output_node"
         },
         {
-            "id": 140448517923120,
+            "id": 1858103438512,
+            "title": "Stable Diffusion",
+            "pos_x": -1079.0,
+            "pos_y": -166.0,
+            "inputs": [],
+            "outputs": [],
+            "content": {},
+            "op_code": 2,
+            "content_label_objname": "bg_node",
+            "color": "#ff55557f",
+            "width": 2048.0,
+            "height": 868.0
+        },
+        {
+            "id": 1858103438176,
             "title": "Execute",
-            "pos_x": -929.5625000000001,
-            "pos_y": -230.06250000000006,
+            "pos_x": -863.0,
+            "pos_y": 5.0,
             "inputs": [
                 {
-                    "id": 140448517885760,
+                    "id": 1858103437792,
                     "index": 0,
                     "multi_edges": false,
                     "position": 3,
@@ -252,7 +301,7 @@
             ],
             "outputs": [
                 {
-                    "id": 140448517885520,
+                    "id": 1858103437744,
                     "index": 0,
                     "multi_edges": true,
                     "position": 6,
@@ -260,58 +309,58 @@
                 }
             ],
             "content": {},
-            "op_code": 2,
+            "op_code": 3,
             "content_label_objname": "exec_node"
         }
     ],
     "edges": [
         {
-            "id": 140462795079008,
+            "id": 1858103436976,
             "edge_type": 2,
-            "start": 140455956926768,
-            "end": 140462795077040
+            "start": 1858089772672,
+            "end": 1858103431936
         },
         {
-            "id": 140448517956608,
+            "id": 1858103437024,
             "edge_type": 2,
-            "start": 140462795078960,
-            "end": 140462795078288
+            "start": 1858103433904,
+            "end": 1858103433136
         },
         {
-            "id": 140448517958480,
+            "id": 1858103435488,
             "edge_type": 2,
-            "start": 140462795077760,
-            "end": 140448517957808
+            "start": 1858103434048,
+            "end": 1858103435872
         },
         {
-            "id": 140448517955648,
+            "id": 1858103437600,
             "edge_type": 2,
-            "start": 140462795078144,
-            "end": 140448517958000
+            "start": 1858103435776,
+            "end": 1858103434000
         },
         {
-            "id": 140448517958960,
+            "id": 1858103437936,
             "edge_type": 2,
-            "start": 140462795077712,
-            "end": 140448517957952
+            "start": 1858103435824,
+            "end": 1858103433184
         },
         {
-            "id": 140448517956992,
+            "id": 1858103438224,
             "edge_type": 2,
-            "start": 140448517957760,
-            "end": 140448517924320
+            "start": 1858103436016,
+            "end": 1858103436496
         },
         {
-            "id": 140448517923408,
+            "id": 1858103438416,
             "edge_type": 2,
-            "start": 140448517958768,
-            "end": 140448517924080
+            "start": 1858103435536,
+            "end": 1858103435920
         },
         {
-            "id": 140448517885328,
+            "id": 1858103439088,
             "edge_type": 2,
-            "start": 140448517885520,
-            "end": 140455956926816
+            "start": 1858103437744,
+            "end": 1858089772816
         }
     ]
 }

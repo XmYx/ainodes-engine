@@ -209,7 +209,7 @@ class AiNode(Node):
         :rtype: Any or None
         """
         try:
-            if self.getInput(index) is not None:
+            if len(self.getInputs(index)) > 0:
                 node, index = self.getInput(index)
                 data = node.getOutput(index)
                 return data

@@ -297,9 +297,12 @@ class Edge(Serializable):
 
     def deserialize(self, data:dict, hashmap:dict={}, restore_id:bool=True, *args, **kwargs) -> bool:
         if restore_id: self.id = data['id']
-        self.start_socket = hashmap[data['start']]
-        self.end_socket = hashmap[data['end']]
-        self.edge_type = data['edge_type']
+        try:
+            self.start_socket = hashmap[data['start']]
+            self.end_socket = hashmap[data['end']]
+            self.edge_type = data['edge_type']
+        except:
+            pass
 
 
 # Example: using validators for Edge
