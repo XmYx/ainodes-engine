@@ -32,27 +32,29 @@ def save_settings():
 def load_settings():
     global SOCKET_COLORS
     global socket_names
-
     if os.path.exists('config/settings.yaml'):
-        with open('config/settings.yaml', 'r') as file:
-            settings = yaml.safe_load(file)
-            try:
-                socket_names = settings['socket_names']
-                SOCKET_COLORS = [hex_to_color(hex_string) for hex_string in settings['COLORS']]
-                gs.checkpoints = settings['checkpoints']
-                gs.vae = settings['vae']
-                gs.controlnet = settings['controlnet']
-                gs.embeddings = settings['embeddings']
-                gs.upscalers = settings['upscalers']
-                gs.loras = settings['loras']
-                gs.t2i_adapter = settings['t2i_adapter']
-                gs.output = settings['output']
-            except:
-                setup_defaults()
-                save_settings()
+        path = 'config/settings.yaml'
     else:
-        setup_defaults()
-        save_settings()
+        path = 'config/default_settings.yaml'
+
+    with open(path, 'r') as file:
+        settings = yaml.safe_load(file)
+        try:
+            socket_names = settings['socket_names']
+            SOCKET_COLORS = [hex_to_color(hex_string) for hex_string in settings['COLORS']]
+            gs.checkpoints = settings['checkpoints']
+            gs.vae = settings['vae']
+            gs.controlnet = settings['controlnet']
+            gs.embeddings = settings['embeddings']
+            gs.upscalers = settings['upscalers']
+            gs.loras = settings['loras']
+            gs.t2i_adapter = settings['t2i_adapter']
+            gs.output = settings['output']
+            save_settings()
+        except:
+            setup_defaults()
+            save_settings()
+
         
 def setup_defaults():
     global SOCKET_COLORS

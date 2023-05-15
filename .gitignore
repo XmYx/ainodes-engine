@@ -188,4 +188,4 @@ custom_nodes/
 models/checkpoints/22h02.safetensors
 *.safetensors
 
-config/
+config/settings.yaml
