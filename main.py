@@ -38,6 +38,17 @@ gs.nodes = {}
 gs.system = SimpleNamespace()
 gs.busy = False
 
+gs.models = {}
+gs.token = ""
+gs.use_deforum_loss = None
+gs.highlight_sockets = True
+gs.loaded_sd = ""
+gs.current = {}
+gs.loaded_vae = ""
+gs.logging = None
+gs.debug = None
+
+
 gs.system.textual_inversion_dir = "models/embeddings"
 try:
     import xformers
