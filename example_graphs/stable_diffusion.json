@@ -31,7 +31,7 @@
                 "Configs": "v1-inference_fp16.yaml",
                 "Vae": "default"
             },
-            "op_code": 15,
+            "op_code": 16,
             "content_label_objname": "torch_loader_node"
         },
         {
@@ -81,7 +81,7 @@
             "content": {
                 "Prompt": "Alien landscape, highly detailed"
             },
-            "op_code": 16,
+            "op_code": 17,
             "content_label_objname": "cond_node"
         },
         {
@@ -131,7 +131,7 @@
             "content": {
                 "Prompt": ""
             },
-            "op_code": 16,
+            "op_code": 17,
             "content_label_objname": "cond_node"
         },
         {
@@ -213,7 +213,7 @@
                 "Denoise:": "1.0",
                 "Guidance Scale:": "7.5"
             },
-            "op_code": 22,
+            "op_code": 23,
             "content_label_objname": "K_sampling_node"
         },
         {
@@ -268,7 +268,7 @@
                 }
             ],
             "content": {},
-            "op_code": 10,
+            "op_code": 11,
             "content_label_objname": "image_output_node"
         },
         {
@@ -309,8 +309,24 @@
                 }
             ],
             "content": {},
-            "op_code": 3,
+            "op_code": 4,
             "content_label_objname": "exec_node"
+        },
+        {
+            "id": 2259872148320,
+            "title": "Bg Node Info",
+            "pos_x": -413.59374999999966,
+            "pos_y": -507.3906249999998,
+            "inputs": [],
+            "outputs": [],
+            "content": {
+                "Info": "Stable Diffusion Example Graph\n\nThe Torch Loader Node loads the model from the set model folder, with the config chosen, and with default VAE, if not selected otherwise.\n\nA Positive and a Negative conditioning gets created and fed into the sampler node, where you can further tweak the parameters.\n\nIf you add an Empty Latent Image before the sampler node and feed it's LATENT output to the input of the sampler, you adjust the resolution. Make sure EXEC lines are connected, as that is making sure that a node is executed, and is executed in order."
+            },
+            "op_code": 3,
+            "content_label_objname": "bg_node_info",
+            "color": "#e3212121",
+            "width": 782.5624999999999,
+            "height": 302.8749999999999
         }
     ],
     "edges": [
