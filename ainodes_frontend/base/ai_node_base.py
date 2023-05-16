@@ -112,15 +112,9 @@ class AiNode(Node):
         # it's really important to mark all nodes Dirty by default
         self.markDirty()
         self.values = {}
-        self.task_queue = Queue()
+        #self.task_queue = Queue()
         self.busy = False
 
-    def process_tasks(self):
-        while not self.task_queue.empty():
-            task = self.task_queue.get()
-            task()
-    def task_done(self):
-        self.task_queue.task_done()
     def set_socket_names(self):
         global sockets
         """
@@ -249,7 +243,7 @@ class AiNode(Node):
             worker.signals.result.connect(self.onWorkerFinished)
             self.scene.threadpool.start(worker)
         return None
-
+    @QtCore.Slot()
     def evalImplementation_thread(self):
         pass
     @QtCore.Slot(object)
@@ -258,7 +252,7 @@ class AiNode(Node):
         pass
     def eval(self, index=0):
         try:
-            self.markDirty(True)
+            #self.markDirty(True)
             self.content.eval_signal.emit()
         except Exception as e:
             print(e, self)
@@ -420,7 +414,7 @@ class AiApiNode(AiNode):
         # it's really important to mark all nodes Dirty by default
         self.markDirty()
         self.values = {}
-        self.task_queue = Queue()
+        #self.task_queue = Queue()
         self.busy = False
 
     @QtCore.Slot()
@@ -433,6 +427,7 @@ class AiApiNode(AiNode):
         return None
 
     def evalImplementation_thread(self):
+        print(f"PLEASE IMPLEMENT evalImplementation_thread function for {self}")
         pass
     @QtCore.Slot(object)
     def onWorkerFinished(self):
@@ -440,7 +435,7 @@ class AiApiNode(AiNode):
         pass
     def eval(self, index=0):
         try:
-            self.markDirty(True)
+            #self.markDirty(True)
             self.content.eval_signal.emit()
         except Exception as e:
             print(e, self)
