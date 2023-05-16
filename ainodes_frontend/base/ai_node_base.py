@@ -248,8 +248,13 @@ class AiNode(Node):
     def evalImplementation_thread(self):
         pass
     @QtCore.Slot(object)
-    def onWorkerFinished(self):
-        print(f"PLEASE IMPLEMENT onWorkerFinished function for {self}")
+    def onWorkerFinished(self, result):
+        #print(f"PLEASE IMPLEMENT onWorkerFinished function for {self}")
+        try:
+            self.worker.signals.result.disconnect(self.onWorkerFinished)
+            del self.worker
+        except:
+            pass
         pass
     def eval(self, index=0):
         try:

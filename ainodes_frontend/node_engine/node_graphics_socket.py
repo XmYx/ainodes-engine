@@ -99,7 +99,7 @@ class QDMGraphicsSocket(QGraphicsItem):
         #print(self.socket.node, self.socket.is_input)
         # Add text next to the ellipse
         text = "Test Text"
-        font = QtGui.QFont("Arial", 12)
+        font = QtGui.QFont("Monospace", 12)
         painter.setFont(font)
         text_width = painter.fontMetrics().width(text) * 1.13
         text_height = painter.fontMetrics().height() - 29

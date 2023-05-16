@@ -59,7 +59,7 @@ class QDMGraphicsScene(QGraphicsScene):
         self._pen_dark.setWidth(2)
 
         self._pen_state = QPen(self._color_state)
-        self._font_state = QFont("Ubuntu", 16)
+        self._font_state = QFont("Monospace", 16)
 
 
     # the drag events won't be allowed until dragMoveEvent is overriden
