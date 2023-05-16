@@ -112,8 +112,9 @@ class AiNode(Node):
         # it's really important to mark all nodes Dirty by default
         self.markDirty()
         self.values = {}
-        #self.task_queue = Queue()
         self.busy = False
+        #self.task_queue = Queue()
+        pass
 
     def set_socket_names(self):
         global sockets
@@ -249,6 +250,9 @@ class AiNode(Node):
         pass
     @QtCore.Slot(object)
     def onWorkerFinished(self, result):
+
+        self.busy = False
+
         #print(f"PLEASE IMPLEMENT onWorkerFinished function for {self}")
         try:
             self.worker.signals.result.disconnect(self.onWorkerFinished)
@@ -421,7 +425,7 @@ class AiApiNode(AiNode):
         self.markDirty()
         self.values = {}
         #self.task_queue = Queue()
-        self.busy = False
+        pass
 
     @QtCore.Slot()
     def evalImplementation(self, index=0, *args, **kwargs):

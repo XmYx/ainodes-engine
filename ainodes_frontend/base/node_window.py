@@ -3,6 +3,7 @@ import sys
 from subprocess import run, PIPE
 
 import requests
+from PySide6.QtCore import QEvent
 from qtpy import QtWidgets, QtCore, QtGui
 from qtpy.QtGui import QIcon, QKeySequence
 from qtpy.QtWidgets import QMdiArea, QDockWidget, QAction, QMessageBox, QFileDialog
@@ -867,3 +868,19 @@ class CalculatorWindow(NodeEditorWindow):
     def setActiveSubWindow(self, window):
         if window:
             self.mdiArea.setActiveSubWindow(window)
+        self.pausePaintEvents()
+
+
+
+
+    def resumePaintEvents(self):
+        # Resume paint events for all windows
+        for window in self.mdiArea.subWindowList():
+            window.widget().setAttribute(Qt.WA_PaintOnScreen, True)
+
+    def pausePaintEvents(self):
+        # Pause paint events for all windows except the active one
+        active_subwindow = self.mdiArea.activeSubWindow()
+        for window in self.mdiArea.subWindowList():
+            if window != active_subwindow:
+                window.widget().setAttribute(Qt.WA_PaintOnScreen, False)
