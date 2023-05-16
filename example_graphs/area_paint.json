@@ -1,0 +1,1024 @@
+{
+    "id": 1779867372992,
+    "scene_width": 64000,
+    "scene_height": 64000,
+    "nodes": [
+        {
+            "id": 1780885985872,
+            "title": "Set Conditioning Area",
+            "pos_x": -255.0,
+            "pos_y": -484.0,
+            "inputs": [
+                {
+                    "id": 1780968336656,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 3
+                },
+                {
+                    "id": 1780968339584,
+                    "index": 1,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 1
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 1780968340448,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 3
+                },
+                {
+                    "id": 1780968341312,
+                    "index": 1,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 1
+                }
+            ],
+            "content": {
+                "Width": "384",
+                "Height": "384",
+                "X": "0",
+                "Y": "0",
+                "strength": "1.0"
+            },
+            "op_code": 15,
+            "content_label_objname": "cond_area_node"
+        },
+        {
+            "id": 1780881296016,
+            "title": "Conditioning",
+            "pos_x": -657.0,
+            "pos_y": -510.0,
+            "inputs": [
+                {
+                    "id": 1780968563344,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 6
+                },
+                {
+                    "id": 1780968563392,
+                    "index": 1,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 1
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 1780968563440,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 6
+                },
+                {
+                    "id": 1780968563488,
+                    "index": 1,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 3
+                },
+                {
+                    "id": 1780968563104,
+                    "index": 2,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 1
+                }
+            ],
+            "content": {
+                "Prompt": ""
+            },
+            "op_code": 17,
+            "content_label_objname": "cond_node"
+        },
+        {
+            "id": 1780968566128,
+            "title": "Conditioning",
+            "pos_x": 254.0,
+            "pos_y": -510.0,
+            "inputs": [
+                {
+                    "id": 1780968566416,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 6
+                },
+                {
+                    "id": 1780968566656,
+                    "index": 1,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 1
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 1780968566704,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 6
+                },
+                {
+                    "id": 1780968566752,
+                    "index": 1,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 3
+                },
+                {
+                    "id": 1780968566800,
+                    "index": 2,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 1
+                }
+            ],
+            "content": {
+                "Prompt": ""
+            },
+            "op_code": 17,
+            "content_label_objname": "cond_node"
+        },
+        {
+            "id": 1780968566608,
+            "title": "Set Conditioning Area",
+            "pos_x": 656.0,
+            "pos_y": -484.0,
+            "inputs": [
+                {
+                    "id": 1780968567136,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 3
+                },
+                {
+                    "id": 1780968567184,
+                    "index": 1,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 1
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 1780968567232,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 3
+                },
+                {
+                    "id": 1780968567280,
+                    "index": 1,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 1
+                }
+            ],
+            "content": {
+                "Width": "384",
+                "Height": "384",
+                "X": "128",
+                "Y": "0",
+                "strength": "1.0"
+            },
+            "op_code": 15,
+            "content_label_objname": "cond_area_node"
+        },
+        {
+            "id": 1780968564496,
+            "title": "Conditioning",
+            "pos_x": -653.75,
+            "pos_y": 250.0,
+            "inputs": [
+                {
+                    "id": 1780968562912,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 6
+                },
+                {
+                    "id": 1780968566368,
+                    "index": 1,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 1
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 1780968564784,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 6
+                },
+                {
+                    "id": 1780968564688,
+                    "index": 1,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 3
+                },
+                {
+                    "id": 1780968564304,
+                    "index": 2,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 1
+                }
+            ],
+            "content": {
+                "Prompt": ""
+            },
+            "op_code": 17,
+            "content_label_objname": "cond_node"
+        },
+        {
+            "id": 1780968564160,
+            "title": "Set Conditioning Area",
+            "pos_x": -251.75,
+            "pos_y": 276.0,
+            "inputs": [
+                {
+                    "id": 1780968564976,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 3
+                },
+                {
+                    "id": 1780968562960,
+                    "index": 1,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 1
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 1780968564448,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 3
+                },
+                {
+                    "id": 1780968564256,
+                    "index": 1,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 1
+                }
+            ],
+            "content": {
+                "Width": "384",
+                "Height": "384",
+                "X": "0",
+                "Y": "128",
+                "strength": "1.0"
+            },
+            "op_code": 15,
+            "content_label_objname": "cond_area_node"
+        },
+        {
+            "id": 1780968567040,
+            "title": "Conditioning",
+            "pos_x": 280.0,
+            "pos_y": 245.0,
+            "inputs": [
+                {
+                    "id": 1780968566944,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 6
+                },
+                {
+                    "id": 1780968564928,
+                    "index": 1,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 1
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 1780968566320,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 6
+                },
+                {
+                    "id": 1780968567664,
+                    "index": 1,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 3
+                },
+                {
+                    "id": 1780968567712,
+                    "index": 2,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 1
+                }
+            ],
+            "content": {
+                "Prompt": ""
+            },
+            "op_code": 17,
+            "content_label_objname": "cond_node"
+        },
+        {
+            "id": 1780968564544,
+            "title": "Set Conditioning Area",
+            "pos_x": 682.0,
+            "pos_y": 271.0,
+            "inputs": [
+                {
+                    "id": 1780968568048,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 3
+                },
+                {
+                    "id": 1780968568096,
+                    "index": 1,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 1
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 1780968568144,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 3
+                },
+                {
+                    "id": 1780968568192,
+                    "index": 1,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 1
+                }
+            ],
+            "content": {
+                "Width": "384",
+                "Height": "384",
+                "X": "128",
+                "Y": "128",
+                "strength": "1.0"
+            },
+            "op_code": 15,
+            "content_label_objname": "cond_area_node"
+        },
+        {
+            "id": 1780848705936,
+            "title": "K Sampler",
+            "pos_x": 2374.6875000000005,
+            "pos_y": -283.75000000000006,
+            "inputs": [
+                {
+                    "id": 1780694258048,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 6
+                },
+                {
+                    "id": 1780968567088,
+                    "index": 1,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 2
+                },
+                {
+                    "id": 1780968567808,
+                    "index": 2,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 3
+                },
+                {
+                    "id": 1780968568000,
+                    "index": 3,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 3
+                },
+                {
+                    "id": 1780968567952,
+                    "index": 4,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 1
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 1780968567904,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 5
+                },
+                {
+                    "id": 1780968567856,
+                    "index": 1,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 2
+                },
+                {
+                    "id": 1780968566224,
+                    "index": 2,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 1
+                }
+            ],
+            "content": {
+                "Scheduler:": "karras",
+                "Sampler:": "euler",
+                "Seed:": "",
+                "Steps:": "10",
+                "Start Step:": "0",
+                "Last Step:": "5",
+                "Stop Sampling Early": "False",
+                "Force full denoise": "True",
+                "Disable noise generation": "False",
+                "Iterate seed": "False",
+                "Denoise:": "1.0",
+                "Guidance Scale:": "7.5"
+            },
+            "op_code": 23,
+            "content_label_objname": "K_sampling_node"
+        },
+        {
+            "id": 1780847563232,
+            "title": "Combine Conditioning",
+            "pos_x": 1185.9374999999998,
+            "pos_y": -164.06249999999997,
+            "inputs": [
+                {
+                    "id": 1780847813792,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 3
+                },
+                {
+                    "id": 1780968566272,
+                    "index": 1,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 3
+                },
+                {
+                    "id": 1780968566080,
+                    "index": 2,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 1
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 1780968566512,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 3
+                },
+                {
+                    "id": 1780968566560,
+                    "index": 1,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 1
+                }
+            ],
+            "content": {
+                "Strength": "0.0"
+            },
+            "op_code": 14,
+            "content_label_objname": "cond_combine_node"
+        },
+        {
+            "id": 1780846617760,
+            "title": "Combine Conditioning",
+            "pos_x": 1187.4999999999998,
+            "pos_y": 146.87499999999997,
+            "inputs": [
+                {
+                    "id": 1780885930912,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 3
+                },
+                {
+                    "id": 1780885930576,
+                    "index": 1,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 3
+                },
+                {
+                    "id": 1780968336320,
+                    "index": 2,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 1
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 1780968329216,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 3
+                },
+                {
+                    "id": 1780968329024,
+                    "index": 1,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 1
+                }
+            ],
+            "content": {
+                "Strength": "0.0"
+            },
+            "op_code": 14,
+            "content_label_objname": "cond_combine_node"
+        },
+        {
+            "id": 1780968327872,
+            "title": "Combine Conditioning",
+            "pos_x": 1765.6249999999998,
+            "pos_y": -240.625,
+            "inputs": [
+                {
+                    "id": 1780968563824,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 3
+                },
+                {
+                    "id": 1780968564112,
+                    "index": 1,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 3
+                },
+                {
+                    "id": 1780968564016,
+                    "index": 2,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 1
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 1780968565936,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 3
+                },
+                {
+                    "id": 1780968565072,
+                    "index": 1,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 1
+                }
+            ],
+            "content": {
+                "Strength": "0.0"
+            },
+            "op_code": 14,
+            "content_label_objname": "cond_combine_node"
+        },
+        {
+            "id": 1780968568288,
+            "title": "Conditioning",
+            "pos_x": 1770.3124999999998,
+            "pos_y": -76.56249999999997,
+            "inputs": [
+                {
+                    "id": 1780968568240,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 6
+                },
+                {
+                    "id": 1780968568528,
+                    "index": 1,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 1
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 1780968568576,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 6
+                },
+                {
+                    "id": 1780968568624,
+                    "index": 1,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 3
+                },
+                {
+                    "id": 1780968568672,
+                    "index": 2,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 1
+                }
+            ],
+            "content": {
+                "Prompt": ""
+            },
+            "op_code": 17,
+            "content_label_objname": "cond_node"
+        },
+        {
+            "id": 1780968569344,
+            "title": "Empty Latent Image",
+            "pos_x": 1824.9999999999998,
+            "pos_y": 246.87499999999994,
+            "inputs": [
+                {
+                    "id": 1780968569392,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 2
+                },
+                {
+                    "id": 1780968569728,
+                    "index": 1,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 5
+                },
+                {
+                    "id": 1780968569776,
+                    "index": 2,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 1
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 1780968569824,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 2
+                },
+                {
+                    "id": 1780968569872,
+                    "index": 1,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 1
+                }
+            ],
+            "content": {
+                "Width": "512",
+                "Height": "512",
+                "Latent Rescale": "False"
+            },
+            "op_code": 20,
+            "content_label_objname": "empty_latent_node"
+        },
+        {
+            "id": 1780968570256,
+            "title": "Image Preview",
+            "pos_x": 2774.9999999999995,
+            "pos_y": -54.687499999999986,
+            "inputs": [
+                {
+                    "id": 1780968570304,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 5
+                },
+                {
+                    "id": 1780968570688,
+                    "index": 1,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 6
+                },
+                {
+                    "id": 1780968570736,
+                    "index": 2,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 1
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 1780968570784,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 5
+                },
+                {
+                    "id": 1780968570832,
+                    "index": 1,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 6
+                },
+                {
+                    "id": 1779962363968,
+                    "index": 2,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 1
+                }
+            ],
+            "content": {},
+            "op_code": 11,
+            "content_label_objname": "image_output_node"
+        },
+        {
+            "id": 1780968569632,
+            "title": "Torch Loader",
+            "pos_x": -1286.6210937499995,
+            "pos_y": -78.12499999999997,
+            "inputs": [
+                {
+                    "id": 1780968570208,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 1
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 1780968569488,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 1
+                }
+            ],
+            "content": {
+                "Models": "anything-v4.0-pruned-fp16.safetensors",
+                "Configs": "v1-inference_fp16.yaml",
+                "Vae": "default"
+            },
+            "op_code": 16,
+            "content_label_objname": "torch_loader_node"
+        },
+        {
+            "id": 1780968563536,
+            "title": "Execute",
+            "pos_x": -1688.5351562499993,
+            "pos_y": -142.08984374999994,
+            "inputs": [
+                {
+                    "id": 1779962364208,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 1
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 1779962364256,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 1
+                }
+            ],
+            "content": {},
+            "op_code": 4,
+            "content_label_objname": "exec_node"
+        }
+    ],
+    "edges": [
+        {
+            "id": 1780968336608,
+            "edge_type": 2,
+            "start": 1780968339584,
+            "end": 1780968563104
+        },
+        {
+            "id": 1780968563008,
+            "edge_type": 2,
+            "start": 1780968563488,
+            "end": 1780968336656
+        },
+        {
+            "id": 1780968566896,
+            "edge_type": 2,
+            "start": 1780968567184,
+            "end": 1780968566800
+        },
+        {
+            "id": 1780968567328,
+            "edge_type": 2,
+            "start": 1780968566752,
+            "end": 1780968567136
+        },
+        {
+            "id": 1780968565888,
+            "edge_type": 2,
+            "start": 1780968562960,
+            "end": 1780968564304
+        },
+        {
+            "id": 1780968564832,
+            "edge_type": 2,
+            "start": 1780968564688,
+            "end": 1780968564976
+        },
+        {
+            "id": 1780503146272,
+            "edge_type": 2,
+            "start": 1780968341312,
+            "end": 1780968566656
+        },
+        {
+            "id": 1780848220848,
+            "edge_type": 2,
+            "start": 1780968567280,
+            "end": 1780968566368
+        },
+        {
+            "id": 1780968565840,
+            "edge_type": 2,
+            "start": 1780968564256,
+            "end": 1780968564928
+        },
+        {
+            "id": 1780847813600,
+            "edge_type": 2,
+            "start": 1780968568192,
+            "end": 1780968566080
+        },
+        {
+            "id": 1780968565456,
+            "edge_type": 2,
+            "start": 1780968566560,
+            "end": 1780968336320
+        },
+        {
+            "id": 1780968565696,
+            "edge_type": 2,
+            "start": 1780968340448,
+            "end": 1780968566272
+        },
+        {
+            "id": 1780854579040,
+            "edge_type": 2,
+            "start": 1780968567232,
+            "end": 1780847813792
+        },
+        {
+            "id": 1780968565648,
+            "edge_type": 2,
+            "start": 1780968564448,
+            "end": 1780885930576
+        },
+        {
+            "id": 1780968563728,
+            "edge_type": 2,
+            "start": 1780968568144,
+            "end": 1780885930912
+        },
+        {
+            "id": 1780968563920,
+            "edge_type": 2,
+            "start": 1780968567664,
+            "end": 1780968568048
+        },
+        {
+            "id": 1780968564640,
+            "edge_type": 2,
+            "start": 1780968568096,
+            "end": 1780968567712
+        },
+        {
+            "id": 1780968564064,
+            "edge_type": 2,
+            "start": 1780968566512,
+            "end": 1780968564112
+        },
+        {
+            "id": 1780968562864,
+            "edge_type": 2,
+            "start": 1780968329216,
+            "end": 1780968563824
+        },
+        {
+            "id": 1780968568432,
+            "edge_type": 2,
+            "start": 1780968329024,
+            "end": 1780968564016
+        },
+        {
+            "id": 1780968565120,
+            "edge_type": 2,
+            "start": 1780968568624,
+            "end": 1780968567808
+        },
+        {
+            "id": 1780968568864,
+            "edge_type": 2,
+            "start": 1780968565936,
+            "end": 1780968568000
+        },
+        {
+            "id": 1780968569152,
+            "edge_type": 2,
+            "start": 1780968565072,
+            "end": 1780968568528
+        },
+        {
+            "id": 1780968569440,
+            "edge_type": 2,
+            "start": 1780968568672,
+            "end": 1780968569776
+        },
+        {
+            "id": 1780968563776,
+            "edge_type": 2,
+            "start": 1780968569824,
+            "end": 1780968567088
+        },
+        {
+            "id": 1780968570112,
+            "edge_type": 2,
+            "start": 1780968569872,
+            "end": 1780968567952
+        },
+        {
+            "id": 1780968570352,
+            "edge_type": 2,
+            "start": 1780968567904,
+            "end": 1780968570304
+        },
+        {
+            "id": 1780968569536,
+            "edge_type": 2,
+            "start": 1780968570736,
+            "end": 1780968566224
+        },
+        {
+            "id": 1779962364160,
+            "edge_type": 2,
+            "start": 1779962364256,
+            "end": 1780968570208
+        },
+        {
+            "id": 1779962364448,
+            "edge_type": 2,
+            "start": 1780968569488,
+            "end": 1780968563392
+        }
+    ]
+}
