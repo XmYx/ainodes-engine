@@ -239,9 +239,10 @@ class AiNode(Node):
     def evalImplementation(self, index=0, *args, **kwargs):
         if self.busy == False:
             self.busy = True
-            worker = Worker(self.evalImplementation_thread)
-            worker.signals.result.connect(self.onWorkerFinished)
-            self.scene.threadpool.start(worker)
+            self.worker = Worker(self.evalImplementation_thread)
+            self.worker.signals.result.connect(self.onWorkerFinished)
+            self.worker.setAutoDelete(True)
+            self.scene.threadpool.start(self.worker)
         return None
     @QtCore.Slot()
     def evalImplementation_thread(self):
