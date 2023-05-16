@@ -137,7 +137,9 @@
                     "socket_type": 1
                 }
             ],
-            "content": {},
+            "content": {
+                "Strength": "0.0"
+            },
             "op_code": 14,
             "content_label_objname": "cond_combine_node"
         },
@@ -1122,66 +1124,6 @@
             },
             "op_code": 31,
             "content_label_objname": "FILM_node"
-        },
-        {
-            "id": 1316989810768,
-            "title": "RIFE",
-            "pos_x": 0.0,
-            "pos_y": 0.0,
-            "inputs": [
-                {
-                    "id": 1316989810864,
-                    "index": 0,
-                    "multi_edges": false,
-                    "position": 3,
-                    "socket_type": 5
-                },
-                {
-                    "id": 1316989811248,
-                    "index": 1,
-                    "multi_edges": false,
-                    "position": 3,
-                    "socket_type": 5
-                },
-                {
-                    "id": 1316989811296,
-                    "index": 2,
-                    "multi_edges": false,
-                    "position": 3,
-                    "socket_type": 1
-                }
-            ],
-            "outputs": [
-                {
-                    "id": 1316989811344,
-                    "index": 0,
-                    "multi_edges": true,
-                    "position": 6,
-                    "socket_type": 5
-                },
-                {
-                    "id": 1316989811392,
-                    "index": 1,
-                    "multi_edges": true,
-                    "position": 6,
-                    "socket_type": 1
-                },
-                {
-                    "id": 1316989811440,
-                    "index": 2,
-                    "multi_edges": true,
-                    "position": 6,
-                    "socket_type": 1
-                }
-            ],
-            "content": {
-                "exp": "5",
-                "ratio": "0.0",
-                "rthreshold": "0.02",
-                "rmaxcycles": "8"
-            },
-            "op_code": 32,
-            "content_label_objname": "rife_node"
         },
         {
             "id": 1316989811776,
