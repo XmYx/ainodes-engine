@@ -811,7 +811,8 @@ class CalculatorWindow(NodeEditorWindow):
             if state_2 == Qt.WindowState.WindowNoState:
                 view.setViewportUpdateMode(QGraphicsView.NoViewportUpdate)
             else:
-                view.setViewportUpdateMode(QGraphicsView.FullViewportUpdate)
+                #view.setViewportUpdateMode(QGraphicsView.FullViewportUpdate)
+                view.setViewportUpdateMode(QGraphicsView.MinimalViewportUpdate)
                 view.update()
         elif state == Qt.WindowMinimized:
             pass

@@ -37,8 +37,8 @@
         {
             "id": 1858089770368,
             "title": "Conditioning",
-            "pos_x": 230.17138671874977,
-            "pos_y": 61.42724609374983,
+            "pos_x": 138.6186523437499,
+            "pos_y": 52.27197265624983,
             "inputs": [
                 {
                     "id": 1858103432416,
@@ -79,7 +79,7 @@
                 }
             ],
             "content": {
-                "Prompt": "abstract art"
+                "Prompt": "highly detailed monolith in the desert"
             },
             "op_code": 17,
             "content_label_objname": "cond_node"
@@ -87,8 +87,8 @@
         {
             "id": 1858103433472,
             "title": "Conditioning",
-            "pos_x": 225.11962890624977,
-            "pos_y": 417.27197265625006,
+            "pos_x": 135.8557128906249,
+            "pos_y": 413.457275390625,
             "inputs": [
                 {
                     "id": 1858103433568,
@@ -137,8 +137,8 @@
         {
             "id": 1858103435152,
             "title": "K Sampler",
-            "pos_x": 755.1899414062493,
-            "pos_y": 107.85791015624977,
+            "pos_x": 554.5368652343747,
+            "pos_y": 66.65917968749977,
             "inputs": [
                 {
                     "id": 1858103435680,
@@ -202,7 +202,7 @@
             "content": {
                 "Scheduler:": "karras",
                 "Sampler:": "euler",
-                "Seed:": "401446880205235982",
+                "Seed:": "",
                 "Steps:": "10",
                 "Start Step:": "0",
                 "Last Step:": "5",
@@ -219,8 +219,8 @@
         {
             "id": 1858103435632,
             "title": "Image Preview",
-            "pos_x": 1070.9829101562498,
-            "pos_y": 73.53076171874989,
+            "pos_x": 979.43017578125,
+            "pos_y": 52.16845703125,
             "inputs": [
                 {
                     "id": 1858103435536,
@@ -331,8 +331,8 @@
         {
             "id": 2186599438160,
             "title": "K Sampler",
-            "pos_x": 2742.850830078124,
-            "pos_y": 120.77410888671892,
+            "pos_x": 2733.6955566406236,
+            "pos_y": 114.67059326171898,
             "inputs": [
                 {
                     "id": 2186599438736,
@@ -396,7 +396,7 @@
             "content": {
                 "Scheduler:": "karras",
                 "Sampler:": "euler",
-                "Seed:": "401446880205235982",
+                "Seed:": "",
                 "Steps:": "10",
                 "Start Step:": "0",
                 "Last Step:": "5",
@@ -413,8 +413,8 @@
         {
             "id": 2186599439408,
             "title": "Image Preview",
-            "pos_x": 3086.1096191406236,
-            "pos_y": 52.87762451171892,
+            "pos_x": 3107.4719238281236,
+            "pos_y": 55.92938232421898,
             "inputs": [
                 {
                     "id": 2186599439504,
@@ -468,8 +468,8 @@
         {
             "id": 2186598771888,
             "title": "Conditioning",
-            "pos_x": 2339.9025878906245,
-            "pos_y": 71.29168701171889,
+            "pos_x": 2275.815673828125,
+            "pos_y": 71.29168701171886,
             "inputs": [
                 {
                     "id": 2186599439792,
@@ -510,7 +510,7 @@
                 }
             ],
             "content": {
-                "Prompt": "cyberpunk"
+                "Prompt": "abstract art"
             },
             "op_code": 17,
             "content_label_objname": "cond_node"
@@ -532,8 +532,8 @@
         {
             "id": 2186599438448,
             "title": "Conditioning",
-            "pos_x": 2353.1613769531245,
-            "pos_y": 421.03289794921886,
+            "pos_x": 2273.815673828125,
+            "pos_y": 463.75750732421875,
             "inputs": [
                 {
                     "id": 2186599436000,
@@ -582,8 +582,8 @@
         {
             "id": 2186599434896,
             "title": "K Sampler",
-            "pos_x": 600.6694335937498,
-            "pos_y": 1524.544555664062,
+            "pos_x": 576.2553710937495,
+            "pos_y": 1509.285766601562,
             "inputs": [
                 {
                     "id": 2186599440704,
@@ -647,7 +647,7 @@
             "content": {
                 "Scheduler:": "karras",
                 "Sampler:": "euler",
-                "Seed:": "401446880205235982",
+                "Seed:": "",
                 "Steps:": "10",
                 "Start Step:": "0",
                 "Last Step:": "5",
@@ -664,8 +664,8 @@
         {
             "id": 2186599441568,
             "title": "Image Preview",
-            "pos_x": 989.7045898437495,
-            "pos_y": 1449.934204101562,
+            "pos_x": 968.3422851562495,
+            "pos_y": 1468.244750976562,
             "inputs": [
                 {
                     "id": 2186599441664,
@@ -719,8 +719,8 @@
         {
             "id": 2186599439696,
             "title": "Conditioning",
-            "pos_x": 172.69677734375028,
-            "pos_y": 1464.075805664062,
+            "pos_x": 120.81689453125045,
+            "pos_y": 1479.3345947265616,
             "inputs": [
                 {
                     "id": 2186599441856,
@@ -761,7 +761,7 @@
                 }
             ],
             "content": {
-                "Prompt": "alien infestation"
+                "Prompt": "abstract art"
             },
             "op_code": 17,
             "content_label_objname": "cond_node"
@@ -769,8 +769,8 @@
         {
             "id": 1858103438512,
             "title": "Stable Diffusion",
-            "pos_x": -163.87939453125,
-            "pos_y": 1375.503540039062,
+            "pos_x": -124.20654296875,
+            "pos_y": 1360.244750976562,
             "inputs": [],
             "outputs": [],
             "content": {},
@@ -783,8 +783,8 @@
         {
             "id": 2186599442528,
             "title": "Conditioning",
-            "pos_x": 171.91748046875034,
-            "pos_y": 1813.2066650390627,
+            "pos_x": 113.93408203125045,
+            "pos_y": 1849.8277587890625,
             "inputs": [
                 {
                     "id": 2186599442816,
@@ -833,8 +833,8 @@
         {
             "id": 2186599444400,
             "title": "K Sampler",
-            "pos_x": 2789.1994018554688,
-            "pos_y": 1538.2774658203125,
+            "pos_x": 2749.526550292969,
+            "pos_y": 1532.1739501953125,
             "inputs": [
                 {
                     "id": 2186599441952,
@@ -898,7 +898,7 @@
             "content": {
                 "Scheduler:": "karras",
                 "Sampler:": "euler",
-                "Seed:": "401446880205235982",
+                "Seed:": "",
                 "Steps:": "10",
                 "Start Step:": "0",
                 "Last Step:": "5",
@@ -915,8 +915,8 @@
         {
             "id": 2186599437872,
             "title": "Image Preview",
-            "pos_x": 3095.837097167969,
-            "pos_y": 1473.4327392578125,
+            "pos_x": 3138.561706542969,
+            "pos_y": 1488.6915283203125,
             "inputs": [
                 {
                     "id": 2186599437440,
@@ -970,8 +970,8 @@
         {
             "id": 2186599437344,
             "title": "Conditioning",
-            "pos_x": 2377.095886230469,
-            "pos_y": 1473.5362548828125,
+            "pos_x": 2294.6984252929688,
+            "pos_y": 1485.7432861328125,
             "inputs": [
                 {
                     "id": 2186599437104,
@@ -1012,7 +1012,7 @@
                 }
             ],
             "content": {
-                "Prompt": "highlights, shadows, ancient"
+                "Prompt": "ismetric 3d render"
             },
             "op_code": 17,
             "content_label_objname": "cond_node"
@@ -1034,8 +1034,8 @@
         {
             "id": 2186599436912,
             "title": "Conditioning",
-            "pos_x": 2365.940612792969,
-            "pos_y": 1826.3292236328125,
+            "pos_x": 2292.6984252929688,
+            "pos_y": 1872.1055908203125,
             "inputs": [
                 {
                     "id": 2186599437680,
@@ -1084,8 +1084,8 @@
         {
             "id": 2186362404576,
             "title": "Image Preview",
-            "pos_x": 5939.5794677734375,
-            "pos_y": 754.2860107421884,
+            "pos_x": 5935.329467773438,
+            "pos_y": 820.2235107421886,
             "inputs": [
                 {
                     "id": 2186362404528,
@@ -1139,8 +1139,8 @@
         {
             "id": 1858103438512,
             "title": "Stable Diffusion",
-            "pos_x": 5453.872680664061,
-            "pos_y": 683.2122802734375,
+            "pos_x": 5449.62268066406,
+            "pos_y": 749.1497802734377,
             "inputs": [],
             "outputs": [],
             "content": {},
@@ -1153,8 +1153,8 @@
         {
             "id": 2186362404480,
             "title": "K Sampler",
-            "pos_x": 5570.228149414064,
-            "pos_y": 848.2750244140634,
+            "pos_x": 5558.978149414063,
+            "pos_y": 905.8609619140636,
             "inputs": [
                 {
                     "id": 2186362404720,
@@ -1218,8 +1218,8 @@
             "content": {
                 "Scheduler:": "karras",
                 "Sampler:": "euler",
-                "Seed:": "401446880205235982",
-                "Steps:": "10",
+                "Seed:": "",
+                "Steps:": "20",
                 "Start Step:": "0",
                 "Last Step:": "5",
                 "Stop Sampling Early": "False",
@@ -1277,7 +1277,7 @@
                 }
             ],
             "content": {
-                "Strength": "0.5"
+                "Strength": "0.2"
             },
             "op_code": 14,
             "content_label_objname": "cond_combine_node"
@@ -1327,7 +1327,7 @@
                 }
             ],
             "content": {
-                "Strength": "0.5"
+                "Strength": "0.35"
             },
             "op_code": 14,
             "content_label_objname": "cond_combine_node"

@@ -307,8 +307,8 @@ class AiNode(Node):
         if len(self.getOutputs(output_index)) > 0:
             try:
                 node = self.getOutputs(output_index)[0]
-                node.markDirty(True)
-                node.eval()
+                #node.markDirty(True)
+                node.content.eval_signal.emit()
                 return None
             except Exception as e:
                 print("Skipping execution:", e, self)
