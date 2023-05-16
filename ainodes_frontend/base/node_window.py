@@ -797,18 +797,22 @@ class CalculatorWindow(NodeEditorWindow):
         subwnd = self.mdiArea.addSubWindow(nodeeditor)
         subwnd.setWindowIcon(self.empty_icon)
 
-
-
         # node_engine.scene.addItemSelectedListener(self.updateEditMenu)
         # node_engine.scene.addItemsDeselectedListener(self.updateEditMenu)
-
-
         #nodeeditor.scene.addItemSelectedListener(self.emitUIobjects)
 
         nodeeditor.scene.history.addHistoryModifiedListener(self.updateEditMenu)
         nodeeditor.addCloseEventListener(self.onSubWndClose)
+        subwnd.windowStateChanged.connect(self.onSubWndFocusChanged)
+
         return subwnd
 
+    def onSubWndFocusChanged(self, state):
+        if state == Qt.WindowActive:
+            self.pausePaintEvents()
+
+        elif state == Qt.WindowMinimized:
+            pass
     def emitUIobjects(self, item):
 
         # Remove any existing widgets from the layout
@@ -851,7 +855,6 @@ class CalculatorWindow(NodeEditorWindow):
     def onSubWndClose(self, widget, event):
         existing = self.findMdiChild(widget.filename)
         self.mdiArea.setActiveSubWindow(existing)
-
         if self.maybeSave():
             event.accept()
         else:
@@ -868,10 +871,7 @@ class CalculatorWindow(NodeEditorWindow):
     def setActiveSubWindow(self, window):
         if window:
             self.mdiArea.setActiveSubWindow(window)
-        self.pausePaintEvents()
-
-
-
+            window.widget().setAttribute(Qt.WA_PaintOnScreen, True)
 
     def resumePaintEvents(self):
         # Resume paint events for all windows
@@ -879,6 +879,7 @@ class CalculatorWindow(NodeEditorWindow):
             window.widget().setAttribute(Qt.WA_PaintOnScreen, True)
 
     def pausePaintEvents(self):
+
         # Pause paint events for all windows except the active one
         active_subwindow = self.mdiArea.activeSubWindow()
         for window in self.mdiArea.subWindowList():
