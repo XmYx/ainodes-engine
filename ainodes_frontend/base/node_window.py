@@ -810,10 +810,12 @@ class CalculatorWindow(NodeEditorWindow):
             view = subwnd.widget().scene.grScene.scene.getView()
             if state_2 == Qt.WindowState.WindowNoState:
                 view.setViewportUpdateMode(QGraphicsView.NoViewportUpdate)
+                #print("STOPPED")
             else:
                 #view.setViewportUpdateMode(QGraphicsView.FullViewportUpdate)
                 view.setViewportUpdateMode(QGraphicsView.MinimalViewportUpdate)
-                view.update()
+                #print("STARTED")
+                #view.update()
         elif state == Qt.WindowMinimized:
             pass
     def emitUIobjects(self, item):
@@ -874,7 +876,7 @@ class CalculatorWindow(NodeEditorWindow):
     def setActiveSubWindow(self, window):
         if window:
             self.mdiArea.setActiveSubWindow(window)
-            window.widget().setAttribute(Qt.WA_PaintOnScreen, True)
+            #window.widget().setAttribute(Qt.WA_PaintOnScreen, True)
 
     def resumePaintEvents(self):
         # Resume paint events for all windows
