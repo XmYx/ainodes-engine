@@ -1,9 +1,11 @@
 import os
 import sys
+from functools import partial
 from subprocess import run, PIPE
 
 import requests
 from PySide6.QtCore import QEvent
+from PySide6.QtWidgets import QGraphicsView
 from qtpy import QtWidgets, QtCore, QtGui
 from qtpy.QtGui import QIcon, QKeySequence
 from qtpy.QtWidgets import QMdiArea, QDockWidget, QAction, QMessageBox, QFileDialog
@@ -449,10 +451,6 @@ class CalculatorWindow(NodeEditorWindow):
     def __init__(self, parent=None):
         super(CalculatorWindow, self).__init__()
 
-        # Create a dock widget for the text widget and add it to the main window
-
-
-        # Redirect stdout and stderr to the text widget
 
     def eventListener(self, *args, **kwargs):
         save_settings()
@@ -803,14 +801,18 @@ class CalculatorWindow(NodeEditorWindow):
 
         nodeeditor.scene.history.addHistoryModifiedListener(self.updateEditMenu)
         nodeeditor.addCloseEventListener(self.onSubWndClose)
-        subwnd.windowStateChanged.connect(self.onSubWndFocusChanged)
+        subwnd.windowStateChanged.connect(partial(self.onSubWndFocusChanged, subwnd))
 
         return subwnd
 
-    def onSubWndFocusChanged(self, state):
+    def onSubWndFocusChanged(self, subwnd, state, state_2):
         if state == Qt.WindowActive:
-            self.pausePaintEvents()
-
+            view = subwnd.widget().scene.grScene.scene.getView()
+            if state_2 == Qt.WindowState.WindowNoState:
+                view.setViewportUpdateMode(QGraphicsView.NoViewportUpdate)
+            else:
+                view.setViewportUpdateMode(QGraphicsView.FullViewportUpdate)
+                view.update()
         elif state == Qt.WindowMinimized:
             pass
     def emitUIobjects(self, item):
@@ -877,11 +879,36 @@ class CalculatorWindow(NodeEditorWindow):
         # Resume paint events for all windows
         for window in self.mdiArea.subWindowList():
             window.widget().setAttribute(Qt.WA_PaintOnScreen, True)
+            self.resumeSceneUpdates(window.scene)
 
     def pausePaintEvents(self):
 
         # Pause paint events for all windows except the active one
-        active_subwindow = self.mdiArea.activeSubWindow()
+        #active_subwindow = self.mdiArea.activeSubWindow()
+
+
+        active_subwindow = self.mdiArea.currentSubWindow()
+        print(self.mdiArea.subWindowList())
         for window in self.mdiArea.subWindowList():
-            if window != active_subwindow:
-                window.widget().setAttribute(Qt.WA_PaintOnScreen, False)
+
+            print(window.hasFocus())
+            #if window != active_subwindow:
+            #    #window.widget().setAttribute(Qt.WA_PaintOnScreen, False)
+            #    self.pauseSceneUpdates(window.widget().scene)
+            #else:
+            #    #window.widget().setAttribute(Qt.WA_PaintOnScreen, True)
+            #    self.resumeSceneUpdates(active_subwindow.widget().scene)
+
+
+    def pauseSceneUpdates(self, scene):
+
+        print("Pausing rendering", scene)
+        view = scene.grScene.scene.getView()  # Assuming there is only one view associated with the scene
+        view.setViewportUpdateMode(QGraphicsView.NoViewportUpdate)
+
+    def resumeSceneUpdates(self, scene):
+        print("Resuming rendering", scene)
+
+        view = scene.grScene.scene.getView()  # Assuming there is only one view associated with the scene
+        view.setViewportUpdateMode(QGraphicsView.FullViewportUpdate)
+        view.update()
