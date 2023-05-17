@@ -9,6 +9,7 @@ from qtpy.QtGui import QFont, QColor, QPen, QBrush, QPainterPath
 from qtpy.QtCore import Qt, QRectF
 
 from qtpy import QtWidgets, QtCore, QtGui
+from ainodes_frontend import singleton as gs
 
 
 class QDMGraphicsNode(QGraphicsItem):
@@ -153,11 +154,16 @@ class QDMGraphicsNode(QGraphicsItem):
     def hoverEnterEvent(self, event: 'QGraphicsSceneHoverEvent') -> None:
         """Handle hover effect"""
         self.hovered = True
+        gs.hovered = True
+        gs.hover_node = self
         self.update()
 
     def hoverLeaveEvent(self, event: 'QGraphicsSceneHoverEvent') -> None:
         """Handle hover effect"""
         self.hovered = False
+        gs.hovered = None
+        gs.hover_node = None
+
         self.update()
 
 

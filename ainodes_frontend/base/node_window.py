@@ -801,7 +801,7 @@ class CalculatorWindow(NodeEditorWindow):
 
         nodeeditor.scene.history.addHistoryModifiedListener(self.updateEditMenu)
         nodeeditor.addCloseEventListener(self.onSubWndClose)
-        subwnd.windowStateChanged.connect(partial(self.onSubWndFocusChanged, subwnd))
+        #subwnd.windowStateChanged.connect(partial(self.onSubWndFocusChanged, subwnd))
 
         return subwnd
 

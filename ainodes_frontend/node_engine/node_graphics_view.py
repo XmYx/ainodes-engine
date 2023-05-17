@@ -2,6 +2,7 @@
 """
 A module containing `Graphics View` for NodeEditor
 """
+from PySide6.QtWidgets import QGraphicsSceneWheelEvent
 from qtpy.QtWidgets import QGraphicsView, QApplication
 from qtpy.QtCore import Signal, QPoint, Qt, QEvent, QPointF, QRectF
 from qtpy.QtGui import QDragEnterEvent, QDropEvent, QMouseEvent, QKeyEvent, QWheelEvent
@@ -14,6 +15,9 @@ from ainodes_frontend.node_engine.node_edge_rerouting import EdgeRerouting
 from ainodes_frontend.node_engine.node_edge_snapping import EdgeSnapping
 from ainodes_frontend.node_engine.node_graphics_cutline import QDMCutLine
 from ainodes_frontend.node_engine.utils import dumpException
+
+from ainodes_frontend import singleton as gs
+
 
 MODE_NOOP = 1               #: Mode representing ready state
 MODE_EDGE_DRAG = 2          #: Mode representing when we drag edge state
@@ -536,23 +540,37 @@ class QDMGraphicsView(QGraphicsView):
 
     def wheelEvent(self, event: QWheelEvent):
         """overridden Qt's ``wheelEvent``. This handles zooming"""
-        # calculate our zoom Factor
-        zoomOutFactor = 1 / self.zoomInFactor
+        if not gs.hovered:
+            # calculate our zoom Factor
+            zoomOutFactor = 1 / self.zoomInFactor
 
-        # calculate zoom
-        if event.angleDelta().y() > 0:
-            zoomFactor = self.zoomInFactor
-            self.zoom += self.zoomStep
-        else:
-            zoomFactor = zoomOutFactor
-            self.zoom -= self.zoomStep
+            # calculate zoom
+            if event.angleDelta().y() > 0:
+                zoomFactor = self.zoomInFactor
+                self.zoom += self.zoomStep
+            else:
+                zoomFactor = zoomOutFactor
+                self.zoom -= self.zoomStep
 
 
-        clamped = False
-        if self.zoom < self.zoomRange[0]: self.zoom, clamped = self.zoomRange[0], True
-        if self.zoom > self.zoomRange[1]: self.zoom, clamped = self.zoomRange[1], True
+            clamped = False
+            if self.zoom < self.zoomRange[0]: self.zoom, clamped = self.zoomRange[0], True
+            if self.zoom > self.zoomRange[1]: self.zoom, clamped = self.zoomRange[1], True
 
-        # set scene scale
-        if not clamped or self.zoomClamp is False:
-            self.scale(zoomFactor, zoomFactor)
+            # set scene scale
+            if not clamped or self.zoomClamp is False:
+                self.scale(zoomFactor, zoomFactor)
+        if gs.hovered:
+
+            #print(event.position())
+
+            #scene_event = QGraphicsSceneWheelEvent(event.position(), event.angleDelta(), event.buttons(), event.modifiers(),
+            #                                       QPointF())
+
+            #scene_event = QGraphicsSceneWheelEvent(event.type())
+            #scene_event.setAccepted(event.isAccepted())
+            #scene_event.setInverted(event.inverted())
+            #gs.hover_node.grNode.wheelEvent(scene_event)
+            self.setDragMode(QGraphicsView.NoDrag)
+            super().wheelEvent(event)
 
