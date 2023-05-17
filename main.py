@@ -8,6 +8,7 @@ import platform
 import argparse
 from types import SimpleNamespace
 
+from PySide6.QtCore import Qt
 from qtpy import QtCore, QtQuick
 from qtpy.QtQuick import QSGRendererInterface
 from qtpy.QtCore import QCoreApplication
@@ -47,6 +48,8 @@ gs.current = {}
 gs.loaded_vae = ""
 gs.logging = None
 gs.debug = None
+gs.hovered = None
+gs.loaded_loras = []
 
 
 gs.system.textual_inversion_dir = "models/embeddings"
@@ -92,6 +95,9 @@ if __name__ == "__main__":
 
     # make app
     app = QApplication(sys.argv)
+
+    # Enable automatic updates for the entire application
+    app.setAttribute(Qt.AA_EnableHighDpiScaling)
 
     QCoreApplication.instance().aboutToQuit.connect(eventListener)
 
