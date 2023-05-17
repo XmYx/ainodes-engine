@@ -117,19 +117,25 @@ class QDMNodeContentWidget(QWidget, Serializable):
     #    return True
 
     def deserialize(self, data, hashmap={}, restore_id:bool=True) -> bool:
+
+
+
         for item in self.widget_list:
             if isinstance(item, QtWidgets.QLayout):
                 for i in range(item.layout().count()):
 
-                    try:
-                        value = data[f"{widget.objectName()}"]
-                    except:
-                        value = None
+
 
                     widget = item.layout().itemAt(i)
-                    if value is not None:
-                        if isinstance(widget, QtWidgets.QWidgetItem):
-                            widget = widget.widget()
+
+
+                    if isinstance(widget, QtWidgets.QWidgetItem):
+                        widget = widget.widget()
+                        try:
+                            value = data[f"{widget.objectName()}"]
+                        except:
+                            value = None
+                        if value is not None:
                             if isinstance(widget, QtWidgets.QComboBox):
                                 widget.setCurrentText(data[f"{widget.objectName()}"])
                             elif isinstance(widget, QtWidgets.QLineEdit):
@@ -144,25 +150,29 @@ class QDMNodeContentWidget(QWidget, Serializable):
                                 widget.setChecked(bool(data[f"{widget.objectName()}"]))
             elif isinstance(item, QtWidgets.QWidget):
                 widget = item
-                #print(widget)
-                if isinstance(widget, QtWidgets.QComboBox):
-                    try:
-                        widget.setCurrentText(data[f"{widget.objectName()}"])
-                    except:
-                        pass
-                elif isinstance(widget, QtWidgets.QLineEdit):
-                    widget.setText(str(data[f"{widget.objectName()}"]))
-                elif isinstance(widget, QTextEdit):
-                    widget.setPlainText(str(data[f"{widget.objectName()}"]))
-                elif isinstance(widget, QtWidgets.QSpinBox):
-                    widget.setValue(int(data[f"{widget.objectName()}"]))
-                elif isinstance(widget, QtWidgets.QDoubleSpinBox):
-                    widget.setValue(float(data[f"{widget.objectName()}"]))
-                elif isinstance(widget, QtWidgets.QCheckBox):
-                    #print("Setting checkbox to:", type(data[f"{widget.objectName()}"]))
+                try:
                     value = data[f"{widget.objectName()}"]
-                    widget.setChecked(True) if value == "True" else widget.setChecked(False)
-        #print("DESER_END")
+                except:
+                    value = None
+
+
+                if value is not None:
+                    if isinstance(widget, QtWidgets.QComboBox):
+                        try:
+                            widget.setCurrentText(data[f"{widget.objectName()}"])
+                        except:
+                            pass
+                    elif isinstance(widget, QtWidgets.QLineEdit):
+                        widget.setText(str(data[f"{widget.objectName()}"]))
+                    elif isinstance(widget, QTextEdit):
+                        widget.setPlainText(str(data[f"{widget.objectName()}"]))
+                    elif isinstance(widget, QtWidgets.QSpinBox):
+                        widget.setValue(int(data[f"{widget.objectName()}"]))
+                    elif isinstance(widget, QtWidgets.QDoubleSpinBox):
+                        widget.setValue(float(data[f"{widget.objectName()}"]))
+                    elif isinstance(widget, QtWidgets.QCheckBox):
+                        if value is not None:
+                            widget.setChecked(True) if value == "True" else widget.setChecked(False)
         return True
 
         """#try:
