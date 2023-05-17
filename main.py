@@ -115,6 +115,7 @@ def check_repo_update(folder_path):
     except subprocess.CalledProcessError as e:
         print(e)
         return None
+load_settings()
 
 if __name__ == "__main__":
 
@@ -122,7 +123,7 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
 
     # Enable automatic updates for the entire application
-    app.setAttribute(Qt.AA_EnableHighDpiScaling)
+    #app.setAttribute(Qt.AA_EnableHighDpiScaling)
 
     QCoreApplication.instance().aboutToQuit.connect(eventListener)
 
@@ -134,7 +135,7 @@ if __name__ == "__main__":
     icon = QtGui.QIcon("ainodes_frontend/qss/icon.png")
     app.setWindowIcon(icon)
     app.setApplicationName("aiNodes - engine")
-    load_settings()
+
     from ainodes_frontend.base import CalculatorWindow
     # Create and show the main window
     wnd = CalculatorWindow(app)
@@ -167,4 +168,11 @@ if __name__ == "__main__":
     if args.torch2 == True:
         from custom_nodes.ainodes_engine_base_nodes.ainodes_backend.sd_optimizations.sd_hijack import apply_optimizations
         apply_optimizations()
+
+
+    # Create a timer to trigger the update every second
+    timer = QtCore.QTimer()
+    timer.timeout.connect(wnd.update)
+    timer.start(10000)  # 1000 milliseconds = 1 second
+
     sys.exit(app.exec())

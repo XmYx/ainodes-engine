@@ -114,7 +114,7 @@
                 }
             ],
             "content": {
-                "Prompt": "wowicon of Alien landscape, highly detailed"
+                "Prompt": "wowicon of a wizard, detailed portrait"
             },
             "op_code": 17,
             "content_label_objname": "cond_node"
@@ -225,7 +225,7 @@
                 }
             ],
             "content": {
-                "Models": "anything-v4.0-pruned-fp16.safetensors",
+                "Models": "dreamlike-diffusion-1.0.safetensors",
                 "Configs": "v1-inference_fp16.yaml",
                 "Vae": "default",
                 "Force Reload": "False"
