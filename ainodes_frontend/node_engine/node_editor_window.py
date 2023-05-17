@@ -8,7 +8,10 @@ from functools import partial
 from PySide6 import QtWidgets
 from qtpy.QtCore import QSize, QSettings, QPoint
 from qtpy.QtWidgets import QMainWindow, QLabel, QAction, QMessageBox, QFileDialog, QApplication
+
+from ainodes_frontend.base.open_os_browser import open_folder_in_file_browser
 from ainodes_frontend.node_engine.node_editor_widget import NodeEditorWidget
+from ainodes_frontend import singleton as gs
 
 
 class NodeEditorWindow(QMainWindow):
@@ -87,6 +90,20 @@ class NodeEditorWindow(QMainWindow):
         self.graphsSubMenu = QtWidgets.QMenu('Graphs', self)
         self.exampleGraphsSubMenu = QtWidgets.QMenu('Example Graphs', self)
 
+        self.defaultDirsSubMenu = QtWidgets.QMenu('Model Dirs', self)
+        default_dirs = {"SD Models":gs.checkpoints,
+                        "VAE":gs.vae,
+                        "ControlNet":gs.controlnet,
+                        "Embeddings":gs.embeddings,
+                        "Upscalers":gs.upscalers,
+                        "LORAs":gs.loras,
+                        "T2I Adapters":gs.t2i_adapter}
+
+        for dir_name, dir in default_dirs.items():
+            dir_action = QAction(dir_name, self)
+            dir_action.triggered.connect(partial(open_folder_in_file_browser, os.path.join(os.getcwd(), dir)))
+            self.defaultDirsSubMenu.addAction(dir_action)
+
         # List all JSON files in the graphs and example_graphs folders
         graphs_files = [f for f in os.listdir('graphs') if f.endswith('.json')]
         example_graphs_files = [f for f in os.listdir('example_graphs') if f.endswith('.json')]
@@ -102,6 +119,7 @@ class NodeEditorWindow(QMainWindow):
             file_action.triggered.connect(partial(self.onFileOpenAction, os.path.join('example_graphs', file)))
             self.exampleGraphsSubMenu.addAction(file_action)
 
+        self.fileMenu.addMenu(self.defaultDirsSubMenu)
         # Add submenus to the File menu
         self.fileMenu.addMenu(self.graphsSubMenu)
         self.fileMenu.addMenu(self.exampleGraphsSubMenu)

@@ -225,9 +225,10 @@
                 }
             ],
             "content": {
-                "Models": "dreamlike-diffusion-1.0.safetensors",
+                "Models": "anything-v4.0-pruned-fp16.safetensors",
                 "Configs": "v1-inference_fp16.yaml",
-                "Vae": "default"
+                "Vae": "default",
+                "Force Reload": "False"
             },
             "op_code": 16,
             "content_label_objname": "torch_loader_node"
@@ -404,7 +405,7 @@
                 }
             ],
             "content": {
-                "Lora": "theovercomer8sContrastFix_sd21.safetensors",
+                "Lora": "sxz-wowicons-v2-new_sd15.safetensors",
                 "Force Load": "False",
                 "Model Weight": "1.0",
                 "Clip Weight": "1.0"
