@@ -91,7 +91,6 @@ def eventListener(*args, **kwargs):
     print("EVENT")
 #QtCore.QCoreApplication.setAttribute(QtCore.Qt.ApplicationAttribute.AA_ShareOpenGLContexts)
 #QtQuick.QQuickWindow.setGraphicsApi(QSGRendererInterface.OpenGLRhi)
-from git import Repo
 
 
 def check_repo_update(folder_path):
