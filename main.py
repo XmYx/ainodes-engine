@@ -9,7 +9,7 @@ import argparse
 from types import SimpleNamespace
 
 from PySide6.QtCore import Qt
-from qtpy import QtCore, QtQuick
+from qtpy import QtCore, QtQuick, QtWidgets
 from qtpy.QtQuick import QSGRendererInterface
 from qtpy.QtCore import QCoreApplication
 from qtpy import QtGui
@@ -91,6 +91,31 @@ def eventListener(*args, **kwargs):
     print("EVENT")
 #QtCore.QCoreApplication.setAttribute(QtCore.Qt.ApplicationAttribute.AA_ShareOpenGLContexts)
 #QtQuick.QQuickWindow.setGraphicsApi(QSGRendererInterface.OpenGLRhi)
+from git import Repo
+
+
+def check_repo_update(folder_path):
+    repo_path = folder_path
+    try:
+        # Run 'git fetch' to update the remote-tracking branches
+        subprocess.check_output(['git', '-C', repo_path, 'fetch'])
+
+        # Get the commit hash of the remote 'origin/master' branch
+        remote_commit_hash = subprocess.check_output(
+            ['git', '-C', repo_path, 'ls-remote', '--quiet', '--refs', 'origin',
+             'refs/heads/main']).decode().strip().split()[0]
+
+        # Get the commit hash of the local branch
+        local_commit_hash = subprocess.check_output(['git', '-C', repo_path, 'rev-parse', 'HEAD']).decode().strip().split()[0]
+
+        if local_commit_hash != remote_commit_hash:
+            return True
+        else:
+            return None
+    except subprocess.CalledProcessError as e:
+        print(e)
+        return None
+
 if __name__ == "__main__":
 
     # make app
@@ -127,9 +152,18 @@ if __name__ == "__main__":
             wnd.node_packages.download_repository()
         else:
             wnd.node_packages.update_repository(args.skip_update)
+
+    update_avail = check_repo_update('custom_nodes/ainodes_engine_base_nodes')
+    print("Update", update_avail)
+
     wnd.show()
     wnd.nodesListWidget.addMyItems()
     wnd.onFileNew()
+
+    if update_avail:
+        QtWidgets.QMessageBox.information(wnd, "Notification", "Update available to the base Node package, please run update.bat")
+
+
     if args.torch2 == True:
         from custom_nodes.ainodes_engine_base_nodes.ainodes_backend.sd_optimizations.sd_hijack import apply_optimizations
         apply_optimizations()
