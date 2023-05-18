@@ -2,7 +2,7 @@
 import re
 from collections import OrderedDict
 
-from PySide6.QtCore import Qt
+from qtpy.QtCore import Qt
 from qtpy import QtCore, QtWidgets, QtGui
 
 #from NodeGraphQt.constants import ViewerEnum, ViewerNavEnum

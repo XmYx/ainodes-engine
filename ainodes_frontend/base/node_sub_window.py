@@ -1,6 +1,6 @@
 import os
 
-from PySide6 import QtWidgets
+from qtpy import QtWidgets
 from qtpy.QtGui import QContextMenuEvent, QBrush
 from qtpy.QtWidgets import QColorDialog
 from qtpy import QtCore

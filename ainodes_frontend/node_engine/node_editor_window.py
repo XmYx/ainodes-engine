@@ -5,7 +5,7 @@ A module containing the Main Window class
 import os, json
 from functools import partial
 
-from PySide6 import QtWidgets
+from qtpy import QtWidgets
 from qtpy.QtCore import QSize, QSettings, QPoint
 from qtpy.QtWidgets import QMainWindow, QLabel, QAction, QMessageBox, QFileDialog, QApplication
 

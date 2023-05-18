@@ -4,8 +4,8 @@ from functools import partial
 from subprocess import run, PIPE
 
 import requests
-from PySide6.QtCore import QEvent
-from PySide6.QtWidgets import QGraphicsView
+from qtpy.QtCore import QEvent
+from qtpy.QtWidgets import QGraphicsView
 from qtpy import QtWidgets, QtCore, QtGui
 from qtpy.QtGui import QIcon, QKeySequence
 from qtpy.QtWidgets import QMdiArea, QDockWidget, QAction, QMessageBox, QFileDialog

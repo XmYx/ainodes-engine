@@ -2,7 +2,7 @@
 """
 A module containing `Graphics View` for NodeEditor
 """
-from PySide6.QtWidgets import QGraphicsSceneWheelEvent
+from qtpy.QtWidgets import QGraphicsSceneWheelEvent
 from qtpy.QtWidgets import QGraphicsView, QApplication
 from qtpy.QtCore import Signal, QPoint, Qt, QEvent, QPointF, QRectF
 from qtpy.QtGui import QDragEnterEvent, QDropEvent, QMouseEvent, QKeyEvent, QWheelEvent
@@ -43,6 +43,9 @@ DEBUG_MMB_SCENE_ITEMS = False
 DEBUG_MMB_LAST_SELECTIONS = False
 DEBUG_EDGE_INTERSECT = False
 DEBUG_STATE = False
+from qtpy.QtOpenGLWidgets import QOpenGLWidget
+
+
 
 
 class QDMGraphicsView(QGraphicsView):
@@ -105,6 +108,8 @@ class QDMGraphicsView(QGraphicsView):
         # listeners
         self._drag_enter_listeners = []
         self._drop_listeners = []
+
+        self.setViewport(QOpenGLWidget(self))
 
 
     def initUI(self):

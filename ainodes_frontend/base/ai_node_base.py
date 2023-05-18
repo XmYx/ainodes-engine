@@ -3,6 +3,7 @@ import threading
 import time
 from queue import Queue
 
+from PySide6.QtCore import QThreadPool
 from qtpy import QtWidgets, QtCore
 from qtpy.QtGui import QImage
 from qtpy.QtCore import QRectF
@@ -84,6 +85,7 @@ class AiNode(Node):
     sockets = None
 
     def __init__(self, scene, inputs=[2,2], outputs=[1]):
+        self.threadpool = QThreadPool()
         """
          Initialize the AiNode class with a scene, inputs, and outputs.
 
@@ -248,7 +250,7 @@ class AiNode(Node):
             self.worker = Worker(self.evalImplementation_thread)
             self.worker.signals.result.connect(self.onWorkerFinished)
             self.worker.setAutoDelete(True)
-            self.scene.threadpool.start(self.worker)
+            self.threadpool.start(self.worker)
         return None
     @QtCore.Slot()
     def evalImplementation_thread(self):
