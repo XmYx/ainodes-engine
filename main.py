@@ -51,6 +51,8 @@ gs.debug = None
 gs.hovered = None
 gs.loaded_loras = []
 
+gs.metas = "output/metas"
+
 
 gs.system.textual_inversion_dir = "models/embeddings"
 try:
@@ -170,8 +172,8 @@ if __name__ == "__main__":
 
 
     # Create a timer to trigger the update every second
-    timer = QtCore.QTimer()
-    timer.timeout.connect(wnd.update)
-    timer.start(10000)  # 1000 milliseconds = 1 second
+    #timer = QtCore.QTimer()
+    #timer.timeout.connect(wnd.update)
+    #timer.start(10000)  # 1000 milliseconds = 1 second
 
     sys.exit(app.exec())

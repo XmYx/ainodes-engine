@@ -447,7 +447,7 @@ class ColorEditor(QtWidgets.QDialog):
             updated_colors.append(item.background().color())
         return updated_colors
 class CalculatorWindow(NodeEditorWindow):
-
+    file_open_signal = QtCore.Signal(object)
     def __init__(self, parent=None):
         super(CalculatorWindow, self).__init__()
 
@@ -509,6 +509,8 @@ class CalculatorWindow(NodeEditorWindow):
         self.parameter_dock = ParameterDock()
 
         self.addDockWidget(Qt.LeftDockWidgetArea, self.parameter_dock)
+
+        self.file_open_signal.connect(self.fileOpen)
     def edit_colors(self):
         editor = ColorEditor(gs.SOCKET_COLORS, gs.socket_names)
         result = editor.exec_()
@@ -642,6 +644,29 @@ class CalculatorWindow(NodeEditorWindow):
     def onFileOpen(self):
         fnames, filter = QFileDialog.getOpenFileNames(self, 'Open graph from file', f"{self.getFileDialogDirectory()}/graphs", self.getFileDialogFilter())
 
+        try:
+            for fname in fnames:
+                if fname:
+                    existing = self.findMdiChild(fname)
+                    if existing:
+                        self.mdiArea.setActiveSubWindow(existing)
+                    else:
+                        # we need to create new subWindow and open the file
+                        nodeeditor = CalculatorSubWindow()
+                        if nodeeditor.fileLoad(fname):
+                            self.statusBar().showMessage("File %s loaded" % fname, 5000)
+                            nodeeditor.setTitle()
+                            subwnd = self.createMdiChild(nodeeditor)
+                            subwnd.show()
+                        else:
+                            nodeeditor.close()
+        except Exception as e: dumpException(e)
+    @QtCore.Slot(object)
+    def fileOpen(self, file):
+
+        print("OPENING")
+
+        fnames = [file]
         try:
             for fname in fnames:
                 if fname:
@@ -884,23 +909,6 @@ class CalculatorWindow(NodeEditorWindow):
             window.widget().setAttribute(Qt.WA_PaintOnScreen, True)
             self.resumeSceneUpdates(window.scene)
 
-    def pausePaintEvents(self):
-
-        # Pause paint events for all windows except the active one
-        #active_subwindow = self.mdiArea.activeSubWindow()
-
-
-        active_subwindow = self.mdiArea.currentSubWindow()
-        print(self.mdiArea.subWindowList())
-        for window in self.mdiArea.subWindowList():
-
-            print(window.hasFocus())
-            #if window != active_subwindow:
-            #    #window.widget().setAttribute(Qt.WA_PaintOnScreen, False)
-            #    self.pauseSceneUpdates(window.widget().scene)
-            #else:
-            #    #window.widget().setAttribute(Qt.WA_PaintOnScreen, True)
-            #    self.resumeSceneUpdates(active_subwindow.widget().scene)
 
 
     def pauseSceneUpdates(self, scene):

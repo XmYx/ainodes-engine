@@ -111,7 +111,7 @@ class QDMGraphicsView(QGraphicsView):
         """Set up this ``QGraphicsView``"""
         #self.setRenderHints(QPainter.Antialiasing | QPainter.HighQualityAntialiasing | QPainter.TextAntialiasing | QPainter.SmoothPixmapTransform)
 
-        self.setViewportUpdateMode(QGraphicsView.MinimalViewportUpdate)
+        #self.setViewportUpdateMode(QGraphicsView.FullViewportUpdate)
 
         self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)

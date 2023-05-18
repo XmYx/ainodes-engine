@@ -96,7 +96,6 @@ class QDMNodeContentWidget(QWidget, Serializable):
                             res[f"{widget.objectName()}"] = str(widget.isChecked())
             elif isinstance(item, QtWidgets.QWidget):
                 widget = item
-                #print(widget)
                 if isinstance(widget, QtWidgets.QComboBox):
                     res[f"{widget.objectName()}"] = widget.currentText()
                     #print(res[f"{widget.objectName()}"])
@@ -113,8 +112,7 @@ class QDMNodeContentWidget(QWidget, Serializable):
 
         return res
 
-    #def deserialize(self, data:dict, hashmap:dict={}, restore_id:bool=True) -> bool:
-    #    return True
+
 
     def deserialize(self, data, hashmap={}, restore_id:bool=True) -> bool:
 
@@ -124,10 +122,7 @@ class QDMNodeContentWidget(QWidget, Serializable):
             if isinstance(item, QtWidgets.QLayout):
                 for i in range(item.layout().count()):
 
-
-
                     widget = item.layout().itemAt(i)
-
 
                     if isinstance(widget, QtWidgets.QWidgetItem):
                         widget = widget.widget()
@@ -154,7 +149,6 @@ class QDMNodeContentWidget(QWidget, Serializable):
                     value = data[f"{widget.objectName()}"]
                 except:
                     value = None
-
 
                 if value is not None:
                     if isinstance(widget, QtWidgets.QComboBox):
