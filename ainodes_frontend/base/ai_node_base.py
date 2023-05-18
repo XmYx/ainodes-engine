@@ -81,6 +81,7 @@ class AiNode(Node):
     help_text = "Default help text"
     GraphicsNode_class = CalcGraphicsNode
     NodeContent_class = CalcContent
+    sockets = None
 
     def __init__(self, scene, inputs=[2,2], outputs=[1]):
         """
@@ -113,20 +114,21 @@ class AiNode(Node):
         self.markDirty()
         self.values = {}
         self.busy = False
-        #self.task_queue = Queue()
-        pass
 
     def set_socket_names(self):
-        global sockets
         """
         Internal function to set socket names, override in your custom node pack to add additional socket types
         """
-        sockets = {1: "EXEC",
-                   2: "LATENT",
-                   3: "COND",
-                   4: "EMPTY",
-                   5: "IMAGE",
-                   6: "DATA"}
+
+        if self.sockets == None:
+            sockets = {1: "EXEC",
+                       2: "LATENT",
+                       3: "COND",
+                       4: "EMPTY",
+                       5: "IMAGE",
+                       6: "DATA"}
+        else:
+            sockets = self.sockets
 
         # Initialize the input_socket_name and output_socket_name lists as empty lists
         self.input_socket_name = []
@@ -139,6 +141,9 @@ class AiNode(Node):
 
         for output_index in self._outputs:
             self.output_socket_name.append(sockets[output_index])
+
+        if hasattr(self, "custom_input_socket_name"):
+            self.input_socket_name = self.custom_input_socket_name
         self.initSockets(inputs=self._inputs, outputs=self._outputs, reset=True)
     def update_all_sockets(self):
         for socket in self.outputs + self.inputs:

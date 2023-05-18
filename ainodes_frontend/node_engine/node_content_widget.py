@@ -257,7 +257,7 @@ class QDMNodeContentWidget(QWidget, Serializable):
             self.node.markDirty(True)
             self.node.eval()"""
 
-    def create_combo_box(self, items, label_text):
+    def create_combo_box(self, items, label_text, accessible_name=None):
         """Create a combo box widget with the given items and label text.
 
         Args:
@@ -270,15 +270,18 @@ class QDMNodeContentWidget(QWidget, Serializable):
         combo_box = QtWidgets.QComboBox()
         combo_box.addItems(items)
         combo_box.setObjectName(label_text)
+        if accessible_name is not None:
+            combo_box.setAccessibleName(accessible_name)
         label = QtWidgets.QLabel(label_text)
         layout = QtWidgets.QHBoxLayout()
+
         layout.addWidget(label)
         layout.addWidget(combo_box)
         combo_box.layout = layout
         self.widget_list.append(combo_box)
         return combo_box
 
-    def create_line_edit(self, label_text):
+    def create_line_edit(self, label_text, accessible_name=None, default=None):
         """Create a line edit widget with the given label text.
 
         Args:
@@ -289,6 +292,11 @@ class QDMNodeContentWidget(QWidget, Serializable):
         """
         line_edit = QtWidgets.QLineEdit()
         line_edit.setObjectName(label_text)
+        if default is not None:
+            line_edit.setText(default)
+        if accessible_name is not None:
+            line_edit.setAccessibleName(accessible_name)
+
         label = QtWidgets.QLabel(label_text)
         layout = QtWidgets.QHBoxLayout()
         layout.addWidget(label)
@@ -331,7 +339,7 @@ class QDMNodeContentWidget(QWidget, Serializable):
         self.widget_list.append(label)
         return label
 
-    def create_spin_box(self, label_text, min_val, max_val, default_val, step_value=1):
+    def create_spin_box(self, label_text, min_val, max_val, default_val, step_value=1, accessible_name=None):
         """Create a spin box widget with the given label text, minimum value, maximum value, default value, and step value.
 
         Args:
@@ -350,14 +358,16 @@ class QDMNodeContentWidget(QWidget, Serializable):
         spin_box.setValue(default_val)
         spin_box.setSingleStep(step_value)
         spin_box.setObjectName(label_text)
+        if accessible_name is not None:
+            spin_box.setAccessibleName(accessible_name)
         label = QtWidgets.QLabel(label_text)
         layout = QtWidgets.QHBoxLayout()
         layout.addWidget(label)
         layout.addWidget(spin_box)
         spin_box.layout = layout
-        self.widget_list.append(layout)
+        self.widget_list.append(spin_box)
         return spin_box
-    def create_double_spin_box(self, label_text, min_val, max_val, step, default_val):
+    def create_double_spin_box(self, label_text, min_val, max_val, step, default_val, accessible_name=None):
         """Create a double spin box widget with the given label text, minimum value, maximum value, step, and default value.
 
          Args:
@@ -376,15 +386,17 @@ class QDMNodeContentWidget(QWidget, Serializable):
         double_spin_box.setSingleStep(step)
         double_spin_box.setValue(default_val)
         double_spin_box.setObjectName(label_text)
+        if accessible_name is not None:
+            double_spin_box.setAccessibleName(accessible_name)
         label = QtWidgets.QLabel(label_text)
         layout = QtWidgets.QHBoxLayout()
         layout.addWidget(label)
         layout.addWidget(double_spin_box)
         double_spin_box.layout = layout
-        self.widget_list.append(layout)
+        self.widget_list.append(double_spin_box)
         return double_spin_box
 
-    def create_check_box(self, label_text, checked=False):
+    def create_check_box(self, label_text, checked=False, accessible_name=None):
         """Create a double spin box widget with the given label text, minimum value, maximum value, step, and default value.
 
          Args:
@@ -397,9 +409,12 @@ class QDMNodeContentWidget(QWidget, Serializable):
          Returns:
              QtWidgets.QDoubleSpinBox: A double spin box widget.
          """
+
         check_box = QtWidgets.QCheckBox(label_text)
         check_box.setChecked(checked)
         check_box.setObjectName(label_text)
+        if accessible_name is not None:
+            check_box.setAccessibleName(accessible_name)
         palette = QtGui.QPalette()
         palette.setColor(QtGui.QPalette.WindowText, QtGui.QColor("white"))
         palette.setColor(QtGui.QPalette.Disabled, QtGui.QPalette.WindowText, QtGui.QColor("black"))
@@ -446,18 +461,42 @@ class QDMNodeContentWidget(QWidget, Serializable):
         progress_bar.layout = layout
         self.widget_list.append(layout)
         return progress_bar
-    def create_main_layout(self):
+
+    def create_main_layout(self, grid=None):
         """
         Create the main layout for the widget and add items from the widget_list.
         The layout is a QVBoxLayout with custom margins and will be set as the layout for the widget.
+        If grid parameter is provided, a QGridLayout with grid number of columns will be created.
         """
         self.main_layout = QtWidgets.QVBoxLayout(self)
         self.main_layout.setContentsMargins(15, 15, 15, 25)
-        for item in self.widget_list:
-            if isinstance(item, QtWidgets.QLayout):
-                self.main_layout.addLayout(item)
-            elif isinstance(item, QtWidgets.QWidget):
-                self.main_layout.addWidget(item)
+
+        if grid:
+            # Create a QGridLayout with the specified number of columns
+            grid_layout = QtWidgets.QGridLayout()
+            grid_layout.setSpacing(10)  # Adjust the spacing between items
+
+            # Add widgets to the grid layout
+            for i, item in enumerate(self.widget_list):
+                row = i // grid
+                column = i % grid
+                if isinstance(item, QtWidgets.QWidget):
+                    if isinstance(item, QtWidgets.QComboBox) or isinstance(item, QtWidgets.QLineEdit) or isinstance(item, QtWidgets.QSpinBox) or isinstance(item, QtWidgets.QDoubleSpinBox):
+                        grid_layout.addLayout(item.layout, row, column)
+                    else:
+                        grid_layout.addWidget(item, row, column)
+                elif isinstance(item, QtWidgets.QLayout):
+                    grid_layout.addLayout(item, row, column)
+
+            self.main_layout.addLayout(grid_layout)
+        else:
+            # Add items to the main layout without a grid
+            for item in self.widget_list:
+                if isinstance(item, QtWidgets.QLayout):
+                    self.main_layout.addLayout(item)
+                elif isinstance(item, QtWidgets.QWidget):
+                    self.main_layout.addWidget(item)
+
         self.setLayout(self.main_layout)
 
 
