@@ -9,6 +9,8 @@ import argparse
 from types import SimpleNamespace
 
 from PySide6.QtCore import Qt
+from PySide6.QtGui import QPixmap
+from PySide6.QtWidgets import QSplashScreen
 from qtpy import QtCore, QtQuick, QtWidgets
 from qtpy.QtQuick import QSGRendererInterface
 from qtpy.QtCore import QCoreApplication
@@ -127,7 +129,10 @@ if __name__ == "__main__":
 
     # make app
     app = QApplication(sys.argv)
-
+    # Create and display the splash screen
+    splash_pix = QPixmap("ainodes_frontend/qss/icon.png")  # Replace "splash.png" with the path to your splash screen image
+    splash = QSplashScreen(splash_pix, Qt.WindowStaysOnTopHint)
+    splash.show()
     # Enable automatic updates for the entire application
     if args.highdpi:
         app.setAttribute(Qt.AA_EnableHighDpiScaling)
@@ -180,5 +185,5 @@ if __name__ == "__main__":
         timer = QtCore.QTimer()
         timer.timeout.connect(wnd.update)
         timer.start(1000)  # 1000 milliseconds = 1 second
-
+    splash.finish(wnd)
     sys.exit(app.exec())

@@ -15,6 +15,7 @@ set "VBS_SCRIPT=%TEMP%\CreateShortcut.vbs"
     echo oLink.TargetPath = "%TARGET_PATH%"
     echo oLink.IconLocation = "%ICON_PATH%"
     echo oLink.WorkingDirectory = "%APP_DIR%"
+    echo oLink.WindowStyle = 0
     echo oLink.Save
 )
 
