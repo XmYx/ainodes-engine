@@ -230,7 +230,7 @@ class GitHubRepositoriesDialog(QtWidgets.QDockWidget):
         for repository in repositories:
             item = QtWidgets.QListWidgetItem(repository)
             folder = repository.split("/")[1]
-            if os.path.isdir(f"./custom_nodes/{folder}"):
+            if os.path.isdir(f"custom_nodes/{folder}"):
                 item.setBackground(Qt.darkGreen)
                 item.setForeground(Qt.white)
                 self.update_button.setVisible(True)

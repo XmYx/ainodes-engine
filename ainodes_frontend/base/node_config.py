@@ -69,7 +69,8 @@ def import_nodes_from_directory(directory):
     if "ainodes_backend" not in directory and "backend" not in directory:
         node_files = glob.glob(os.path.join(directory, "*.py"))
         for node_file in node_files:
-            if os.path.basename(node_file) != "__init__.py":
+            f = os.path.basename(node_file)
+            if f != "__init__.py" and "_node" in f:
                 module_name = os.path.basename(node_file)[:-3].replace('/', '.')
                 dir = directory.replace('/', '.')
                 dir = dir.replace('\\', '.').lstrip('.')
