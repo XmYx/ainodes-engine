@@ -358,6 +358,14 @@ class GitHubRepositoriesDialog(QtWidgets.QDockWidget):
             self.list_widget.takeItem(row)
     def right_click_menu(self, position):
         self.context_menu.exec_(self.list_widget.mapToGlobal(position))
+
+    def import_base_repositories(self):
+        base_repo = 'ainodes_engine_base_nodes'
+        import_nodes_from_subdirectories(f"custom_nodes/{base_repo}")
+        if os.path.isdir('custom_nodes/ainodes_engine_deforum_nodes'):
+            deforum_repo = 'ainodes_engine_deforum_nodes'
+            import_nodes_from_subdirectories(f"custom_nodes/{deforum_repo}")
+
 class StreamRedirect(QtCore.QObject):
     text_written = QtCore.Signal(str)
 
@@ -448,6 +456,7 @@ class ColorEditor(QtWidgets.QDialog):
         return updated_colors
 class CalculatorWindow(NodeEditorWindow):
     file_open_signal = QtCore.Signal(object)
+    base_repo_signal = QtCore.Signal()
     def __init__(self, parent=None):
         super(CalculatorWindow, self).__init__()
 
@@ -511,6 +520,17 @@ class CalculatorWindow(NodeEditorWindow):
         self.addDockWidget(Qt.LeftDockWidgetArea, self.parameter_dock)
 
         self.file_open_signal.connect(self.fileOpen)
+        self.base_repo_signal.connect(self.import_base_repos)
+
+    def import_base_repos(self):
+        base_repo = 'ainodes_engine_base_nodes'
+        import_nodes_from_subdirectories(f"custom_nodes/{base_repo}")
+        if os.path.isdir('custom_nodes/ainodes_engine_deforum_nodes'):
+            deforum_repo = 'ainodes_engine_deforum_nodes'
+            import_nodes_from_subdirectories(f"custom_nodes/{deforum_repo}")
+
+
+
     def edit_colors(self):
         editor = ColorEditor(gs.SOCKET_COLORS, gs.socket_names)
         result = editor.exec_()
