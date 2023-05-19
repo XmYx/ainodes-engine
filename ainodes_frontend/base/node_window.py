@@ -519,6 +519,9 @@ class CalculatorWindow(NodeEditorWindow):
 
         self.file_open_signal.connect(self.fileOpen)
         self.base_repo_signal.connect(self.import_base_repos)
+        icon = QtGui.QIcon("ainodes_frontend/qss/icon.png")
+        self.setWindowIcon(icon)
+        #self.onFileNew()
 
     def import_base_repos(self):
         base_repo = 'ainodes_engine_base_nodes'
@@ -655,6 +658,8 @@ class CalculatorWindow(NodeEditorWindow):
         try:
             subwnd = self.createMdiChild()
             subwnd.widget().fileNew()
+            icon = QtGui.QIcon("ainodes_frontend/qss/icon.ico")
+            subwnd.setWindowIcon(icon)
             subwnd.show()
         except Exception as e: dumpException(e)
 
@@ -675,6 +680,8 @@ class CalculatorWindow(NodeEditorWindow):
                             self.statusBar().showMessage("File %s loaded" % fname, 5000)
                             nodeeditor.setTitle()
                             subwnd = self.createMdiChild(nodeeditor)
+                            icon = QtGui.QIcon("ainodes_frontend/qss/icon.png")
+                            subwnd.setWindowIcon(icon)
                             subwnd.show()
                         else:
                             nodeeditor.close()

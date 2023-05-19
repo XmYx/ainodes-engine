@@ -130,7 +130,7 @@ if __name__ == "__main__":
     # make app
     app = QApplication(sys.argv)
     # Create and display the splash screen
-    splash_pix = QPixmap("ainodes_frontend/qss/icon.png")  # Replace "splash.png" with the path to your splash screen image
+    splash_pix = QPixmap("ainodes_frontend/qss/icon.ico")  # Replace "splash.png" with the path to your splash screen image
     splash = QSplashScreen(splash_pix, Qt.WindowStaysOnTopHint)
     splash.show()
     # Enable automatic updates for the entire application
@@ -141,14 +141,15 @@ if __name__ == "__main__":
 
     # Load style sheet from a file
 
-    icon = QtGui.QIcon("ainodes_frontend/qss/icon.png")
-    app.setWindowIcon(icon)
-    app.setApplicationName("aiNodes - engine")
+    icon = QtGui.QIcon("ainodes_frontend/qss/icon.ico")
+
+    app.setApplicationName("aiNodes - Engine")
 
     from ainodes_frontend.base import CalculatorWindow
 
     # Create and show the main window
     wnd = CalculatorWindow(app)
+
 
 
     wnd.stylesheet_filename = os.path.join(os.path.dirname(__file__), gs.qss)
@@ -167,10 +168,16 @@ if __name__ == "__main__":
 
     update_avail = check_repo_update('custom_nodes/ainodes_engine_base_nodes')
     #print("Update", update_avail)
+    wnd.setWindowIconText("aiNodes - Engine")
+    wnd.setWindowIcon(icon)
+    app.setWindowIcon(icon)
 
     wnd.show()
+
     wnd.nodesListWidget.addMyItems()
+
     wnd.onFileNew()
+
 
     if update_avail:
         QtWidgets.QMessageBox.information(wnd, "Notification", "Update available to the base Node package, please run update.bat")
@@ -186,4 +193,5 @@ if __name__ == "__main__":
         timer.timeout.connect(wnd.update)
         timer.start(1000)  # 1000 milliseconds = 1 second
     splash.finish(wnd)
+
     sys.exit(app.exec())

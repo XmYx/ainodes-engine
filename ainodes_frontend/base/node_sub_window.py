@@ -50,6 +50,8 @@ class CalculatorSubWindow(NodeEditorWidget):
         self.scenePos = None
         #self.tab_search_toggle()
 
+
+
     def tab_search_toggle(self):
         state = self._search_widget.isVisible()
         if state == False:
