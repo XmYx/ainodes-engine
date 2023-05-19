@@ -39,7 +39,6 @@ from pyqtgraph.console import ConsoleWidget
 # images for the dark skin
 DEBUG = False
 from ainodes_frontend import singleton as gs
-from main import qss
 
 load_settings()
 
@@ -471,13 +470,12 @@ class CalculatorWindow(NodeEditorWindow):
 
         self.name_company = 'aiNodes'
         self.name_product = 'AI Node Editor'
-        gs.loaded_models["loaded"] = []
 
-        self.stylesheet_filename = os.path.join(os.path.dirname(__file__), qss)
-        loadStylesheets(
-            os.path.join(os.path.dirname(__file__), qss),
-            self.stylesheet_filename
-        )
+        #self.stylesheet_filename = os.path.join(os.path.dirname(__file__), gs.qss)
+        #loadStylesheets(
+        #    os.path.join(os.path.dirname(__file__), gs.qss),
+        #    self.stylesheet_filename
+        #)
 
         self.empty_icon = QIcon("")
 

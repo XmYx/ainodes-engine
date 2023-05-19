@@ -3,7 +3,7 @@ import threading
 import time
 from queue import Queue
 
-from PySide6.QtCore import QThreadPool
+from PySide6.QtCore import QThreadPool, Qt
 from qtpy import QtWidgets, QtCore
 from qtpy.QtGui import QImage
 from qtpy.QtCore import QRectF
@@ -19,6 +19,7 @@ from ainodes_frontend import singleton as gs
 
 
 class CalcGraphicsNode(QDMGraphicsNode):
+    icon = None
     def initSizes(self):
         """
         Initialize the sizes and padding for the graphical representation of the node.
@@ -61,6 +62,12 @@ class CalcGraphicsNode(QDMGraphicsNode):
             QRectF(offset, 0, 24.0, 24.0)
         )
 
+        # Paint self.icon at the top-left corner
+
+        if self.icon:
+            icon_rect = QRectF(self.width - 28, 0, 24.0, 24.0)
+            painter.drawImage(icon_rect, QImage(self.icon))
+
 
 class CalcContent(QDMNodeContentWidget):
 
@@ -68,7 +75,15 @@ class CalcContent(QDMNodeContentWidget):
         lbl = QLabel(self.node.content_label, self)
         lbl.setObjectName(self.node.content_label_objname)
 
+class WorkerThread(threading.Thread):
+    def __init__(self, target, on_finished):
+        super().__init__()
+        self.target = target
+        self.on_finished = on_finished
 
+    def run(self):
+        result = self.target()
+        self.on_finished(result)
 
 class AiNode(Node):
     icon = ""
@@ -85,7 +100,7 @@ class AiNode(Node):
     sockets = None
 
     def __init__(self, scene, inputs=[2,2], outputs=[1]):
-        self.threadpool = QThreadPool()
+        #self.threadpool = QThreadPool()
         """
          Initialize the AiNode class with a scene, inputs, and outputs.
 
@@ -245,16 +260,27 @@ class AiNode(Node):
 
     @QtCore.Slot()
     def evalImplementation(self, index=0, *args, **kwargs):
-        if self.busy == False:
+        if not self.busy:
             self.busy = True
-            self.worker = Worker(self.evalImplementation_thread)
-            self.worker.signals.result.connect(self.onWorkerFinished)
-            self.worker.setAutoDelete(True)
-            self.threadpool.start(self.worker)
-        return None
+            thread = WorkerThread(target=self.evalImplementation_thread,
+                                  on_finished=self.onWorkerFinished)
+            thread.start()
+        else:
+            return
+
+
+        """if self.busy == False:
+            self.busy = True
+            worker = Worker(self.evalImplementation_thread)
+            worker.signals.result.connect(self.onWorkerFinished)
+            #self.worker.setAutoDelete(True)
+            self.scene.threadpool.start(worker)
+            return
+        else:
+            return"""
     @QtCore.Slot()
     def evalImplementation_thread(self):
-        pass
+        return None
     @QtCore.Slot(object)
     def onWorkerFinished(self, result):
 

@@ -35,9 +35,9 @@ class QDMNodeContentWidget(QWidget, Serializable):
 
         self.widget_list = []
         self.initUI()
-        sshFile = "ainodes_frontend/qss/nodeeditor-dark.qss"
-        with open(sshFile, "r") as fh:
-            self.setStyleSheet(fh.read())
+        #sshFile = "ainodes_frontend/qss/nodeeditor-dark.qss"
+        #with open(sshFile, "r") as fh:
+        #    self.setStyleSheet(fh.read())
 
     def initUI(self):
         """Sets up layouts and widgets to be rendered in :py:class:`~node_engine.node_graphics_node.QDMGraphicsNode` class.
@@ -115,9 +115,6 @@ class QDMNodeContentWidget(QWidget, Serializable):
 
 
     def deserialize(self, data, hashmap={}, restore_id:bool=True) -> bool:
-
-
-
         for item in self.widget_list:
             if isinstance(item, QtWidgets.QLayout):
                 for i in range(item.layout().count()):

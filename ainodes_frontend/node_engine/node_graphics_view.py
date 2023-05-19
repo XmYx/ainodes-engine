@@ -576,6 +576,6 @@ class QDMGraphicsView(QGraphicsView):
             #scene_event.setAccepted(event.isAccepted())
             #scene_event.setInverted(event.inverted())
             #gs.hover_node.grNode.wheelEvent(scene_event)
-            self.setDragMode(QGraphicsView.NoDrag)
+            #self.setDragMode(QGraphicsView.NoDrag)
             super().wheelEvent(event)
 

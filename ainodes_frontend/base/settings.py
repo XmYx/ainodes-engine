@@ -1,10 +1,8 @@
-import json
-import os
+import os, yaml
 
+from qtpy.QtGui import QColor
 
 from ainodes_frontend import singleton as gs
-from qtpy.QtGui import QColor
-import yaml
 def color_to_hex(color):
     return color.name()
 
@@ -12,19 +10,19 @@ def hex_to_color(hex_string):
     return QColor(hex_string)
 
 def save_settings():
-    print("saving")
     settings = {
         'socket_names': socket_names,
         'COLORS': [color_to_hex(color) for color in SOCKET_COLORS],
         'checkpoints': gs.checkpoints,
+        'vae': gs.vae,
         'controlnet': gs.controlnet,
         'embeddings': gs.embeddings,
+        'upscalers': gs.upscalers,
         'loras': gs.loras,
         't2i_adapter': gs.t2i_adapter,
         'output': gs.output,
 
     }
-    print(settings)
     with open('config/default_settings.yaml', 'w') as file:
         yaml.dump(settings, file, indent=4)
 

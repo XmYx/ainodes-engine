@@ -27,9 +27,9 @@ if "Linux" in platform.platform():
     print(platform.platform())
     subprocess.check_call(["pip", "install", "triton==2.0.0"])
 if "Linux" in platform.platform():
-    qss = "ainodes_frontend/qss/nodeeditor-dark-linux.qss"
+    gs.qss = "ainodes_frontend/qss/nodeeditor-dark-linux.qss"
 else:
-    qss = "ainodes_frontend/qss/nodeeditor-dark.qss"
+    gs.qss = "ainodes_frontend/qss/nodeeditor-dark.qss"
 
 # Initialize global variables
 gs.obj = {}
@@ -75,6 +75,8 @@ parser.add_argument("--light", action="store_true")
 parser.add_argument("--skip_update", action="store_true")
 parser.add_argument("--torch2", action="store_true")
 parser.add_argument("--no_console", action="store_true")
+parser.add_argument("--highdpi", action="store_true")
+parser.add_argument("--forcewindowupdate", action="store_true")
 args = parser.parse_args()
 gs.args = args
 
@@ -83,16 +85,19 @@ if not args.local_hf:
     print("Using HF Cache in app dir")
     os.makedirs("hf_cache", exist_ok=True)
     os.environ["HF_HOME"] = "hf_cache"
+
+if args.highdpi:
 # Set up high-quality QSurfaceFormat object with OpenGL 3.3 and 8x antialiasing
-qs_format = QtGui.QSurfaceFormat()
-qs_format.setVersion(3, 3)
-qs_format.setSamples(8)
-qs_format.setProfile(QtGui.QSurfaceFormat.CoreProfile)
-QtGui.QSurfaceFormat.setDefaultFormat(qs_format)
+    qs_format = QtGui.QSurfaceFormat()
+    qs_format.setVersion(3, 3)
+    qs_format.setSamples(8)
+    qs_format.setProfile(QtGui.QSurfaceFormat.CoreProfile)
+    QtGui.QSurfaceFormat.setDefaultFormat(qs_format)
+    QtCore.QCoreApplication.setAttribute(QtCore.Qt.ApplicationAttribute.AA_ShareOpenGLContexts)
+    QtQuick.QQuickWindow.setGraphicsApi(QSGRendererInterface.OpenGLRhi)
 def eventListener(*args, **kwargs):
     print("EVENT")
-#QtCore.QCoreApplication.setAttribute(QtCore.Qt.ApplicationAttribute.AA_ShareOpenGLContexts)
-#QtQuick.QQuickWindow.setGraphicsApi(QSGRendererInterface.OpenGLRhi)
+
 
 
 def check_repo_update(folder_path):
@@ -124,27 +129,26 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
 
     # Enable automatic updates for the entire application
-    #app.setAttribute(Qt.AA_EnableHighDpiScaling)
+    if args.highdpi:
+        app.setAttribute(Qt.AA_EnableHighDpiScaling)
 
     QCoreApplication.instance().aboutToQuit.connect(eventListener)
 
     # Load style sheet from a file
-    """if not args.light:
-        with open("ainodes_frontend/qss/nodeeditor-dark.qss", "r", encoding="utf-8") as f:
-            style_sheet = f.read()
-            app.setStyleSheet(style_sheet)"""
+
     icon = QtGui.QIcon("ainodes_frontend/qss/icon.png")
     app.setWindowIcon(icon)
     app.setApplicationName("aiNodes - engine")
 
     from ainodes_frontend.base import CalculatorWindow
+
     # Create and show the main window
     wnd = CalculatorWindow(app)
 
 
-    wnd.stylesheet_filename = os.path.join(os.path.dirname(__file__), qss)
+    wnd.stylesheet_filename = os.path.join(os.path.dirname(__file__), gs.qss)
     loadStylesheets(
-        os.path.join(os.path.dirname(__file__), qss),
+        os.path.join(os.path.dirname(__file__), gs.qss),
         wnd.stylesheet_filename
     )
 
@@ -152,11 +156,12 @@ if __name__ == "__main__":
         wnd.node_packages.list_widget.setCurrentRow(0)
         if not os.path.isdir('custom_nodes/ainodes_engine_base_nodes'):
             wnd.node_packages.download_repository()
-        else:
-            wnd.node_packages.update_repository(args.skip_update)
+
+        wnd.base_repo_signal.emit()
+        #wnd.node_packages.import_base_repositories()
 
     update_avail = check_repo_update('custom_nodes/ainodes_engine_base_nodes')
-    print("Update", update_avail)
+    #print("Update", update_avail)
 
     wnd.show()
     wnd.nodesListWidget.addMyItems()
@@ -170,10 +175,10 @@ if __name__ == "__main__":
         from custom_nodes.ainodes_engine_base_nodes.ainodes_backend.sd_optimizations.sd_hijack import apply_optimizations
         apply_optimizations()
 
-
-    # Create a timer to trigger the update every second
-    #timer = QtCore.QTimer()
-    #timer.timeout.connect(wnd.update)
-    #timer.start(10000)  # 1000 milliseconds = 1 second
+    if args.forcewindowupdate:
+        # Create a timer to trigger the update every second
+        timer = QtCore.QTimer()
+        timer.timeout.connect(wnd.update)
+        timer.start(1000)  # 1000 milliseconds = 1 second
 
     sys.exit(app.exec())

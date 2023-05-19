@@ -25,7 +25,7 @@ def main():
     venv_path = "nodes_env"
     ensure_virtualenv_installed()
     create_venv(venv_path)
-    update_project()
+    #update_project()
 
     activate_this = get_activate_path()
     activate_env(activate_this)
