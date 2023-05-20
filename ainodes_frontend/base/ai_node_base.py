@@ -126,6 +126,7 @@ class AiNode(Node):
         self.markDirty()
         self.values = {}
         self.busy = False
+        self.init_done = None
 
     def set_socket_names(self):
         """
@@ -230,6 +231,11 @@ class AiNode(Node):
         super().initSettings()
         self.input_socket_position = LEFT_BOTTOM
         self.output_socket_position = RIGHT_BOTTOM
+
+    def finishInitialization(self):
+        if not self.init_done:
+            self.content.eval_signal.connect(self.evalImplementation)
+            self.init_done = True
 
     def evalOperation(self, input1, input2):
         """
