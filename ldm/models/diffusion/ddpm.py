@@ -27,6 +27,7 @@ from ldm.models.autoencoder import IdentityFirstStage, AutoencoderKL
 from ldm.modules.diffusionmodules.util import make_beta_schedule, extract_into_tensor, noise_like
 from ldm.models.diffusion.ddim import DDIMSampler
 
+from ainodes_frontend import singleton as gs
 
 __conditioning_keys__ = {'concat': 'c_concat',
                          'crossattn': 'c_crossattn',
@@ -667,15 +668,15 @@ class LatentDiffusion(DDPM):
 
     def get_learned_conditioning(self, c):
         if self.cond_stage_forward is None:
-            if hasattr(self.cond_stage_model, 'encode') and callable(self.cond_stage_model.encode):
-                c = self.cond_stage_model.encode(c)
+            if hasattr(gs.models["clip"], 'encode') and callable(gs.models["clip"].encode):
+                c = gs.models["clip"].encode(c)
                 if isinstance(c, DiagonalGaussianDistribution):
                     c = c.mode()
             else:
-                c = self.cond_stage_model(c)
+                c = gs.models["clip"](c)
         else:
-            assert hasattr(self.cond_stage_model, self.cond_stage_forward)
-            c = getattr(self.cond_stage_model, self.cond_stage_forward)(c)
+            assert hasattr(gs.models["clip"], self.cond_stage_forward)
+            c = getattr(gs.models["clip"], self.cond_stage_forward)(c)
         return c
 
     def meshgrid(self, h, w):

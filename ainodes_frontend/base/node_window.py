@@ -516,12 +516,21 @@ class CalculatorWindow(NodeEditorWindow):
         self.setWindowIcon(icon)
 
     def import_base_repos(self):
-        base_repo = 'ainodes_engine_base_nodes'
+
+
+
+
+        """base_repo = 'ainodes_engine_base_nodes'
         import_nodes_from_subdirectories(f"custom_nodes/{base_repo}")
         if os.path.isdir('custom_nodes/ainodes_engine_deforum_nodes'):
             deforum_repo = 'ainodes_engine_deforum_nodes'
-            import_nodes_from_subdirectories(f"custom_nodes/{deforum_repo}")
+            import_nodes_from_subdirectories(f"custom_nodes/{deforum_repo}")"""
 
+        base_folder = 'custom_nodes'
+        for folder in os.listdir(base_folder):
+            folder_path = os.path.join(base_folder, folder)
+            if os.path.isdir(folder_path):
+                import_nodes_from_subdirectories(folder_path)
 
 
     def edit_colors(self):

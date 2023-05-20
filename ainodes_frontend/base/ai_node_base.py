@@ -128,6 +128,12 @@ class AiNode(Node):
         self.busy = False
         self.init_done = None
 
+        try:
+            print("EVAL_DEBUG", self.content.eval_signal.receivers())
+        except:
+            pass
+
+
     def set_socket_names(self):
         """
         Internal function to set socket names, override in your custom node pack to add additional socket types
@@ -227,13 +233,12 @@ class AiNode(Node):
         """
         Initialize settings for the node, such as input and output socket positions.
         """
-
         super().initSettings()
         self.input_socket_position = LEFT_BOTTOM
         self.output_socket_position = RIGHT_BOTTOM
 
     def finishInitialization(self):
-        if not self.init_done:
+        if not self.content.eval_signal.hasConnections():
             self.content.eval_signal.connect(self.evalImplementation)
             self.init_done = True
 
