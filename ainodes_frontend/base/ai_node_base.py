@@ -148,14 +148,15 @@ class AiNode(Node):
 
         # Dynamically populate input and output socket names using loops
         for input_index in self._inputs:
-            #print(sockets[input_index])
             self.input_socket_name.append(sockets[input_index])
-
         for output_index in self._outputs:
             self.output_socket_name.append(sockets[output_index])
 
         if hasattr(self, "custom_input_socket_name"):
             self.input_socket_name = self.custom_input_socket_name
+        if hasattr(self, "custom_output_socket_name"):
+            self.output_socket_name = self.custom_output_socket_name
+            
         self.initSockets(inputs=self._inputs, outputs=self._outputs, reset=True)
     def update_all_sockets(self):
         for socket in self.outputs + self.inputs:
