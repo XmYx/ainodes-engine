@@ -72,6 +72,7 @@ gs.hovered = None
 gs.loaded_loras = []
 gs.metas = "output/metas"
 gs.system.textual_inversion_dir = "models/embeddings"
+gs.error_stack = []
 
 try:
     import xformers
@@ -177,8 +178,6 @@ if __name__ == "__main__":
 
     # Create and show the main window
     wnd = CalculatorWindow(app)
-
-
 
     wnd.stylesheet_filename = os.path.join(os.path.dirname(__file__), gs.qss)
     loadStylesheets(

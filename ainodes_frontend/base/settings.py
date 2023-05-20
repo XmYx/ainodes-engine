@@ -1,10 +1,33 @@
 import os
+import time
+
 import yaml
+import traceback
 
 from qtpy.QtGui import QColor
 
 from ainodes_frontend import singleton as gs
 
+def handle_ainodes_exception():
+    traceback_str = traceback.format_exc()
+    gs.error_stack.append(traceback_str)
+    save_error_log()
+    return True
+
+def save_error_log():
+    log_dir = 'logs'
+    if not os.path.exists(log_dir):
+        os.makedirs(log_dir)
+
+    today = time.strftime("%Y%m%d")
+    log_file = os.path.join(log_dir, f"error_log_{today}.txt")
+
+    with open(log_file, 'a') as file:  # Open in append mode
+        for error in gs.error_stack:
+            file.write(error)
+            file.write('\n---End of Error---\n')
+
+    print(f"Error log saved at: {log_file}")
 
 def color_to_hex(color):
     return color.name()
@@ -28,6 +51,9 @@ def save_settings():
     }
     with open('config/default_settings.yaml', 'w') as file:
         yaml.dump(settings, file, indent=4)
+
+
+
 
 
 def load_settings():

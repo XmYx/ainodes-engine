@@ -10,6 +10,7 @@ from ainodes_frontend.node_engine.node_graphics_node import QDMGraphicsNode
 from ainodes_frontend.node_engine.node_node import Node
 from ainodes_frontend.node_engine.node_socket import LEFT_BOTTOM, RIGHT_BOTTOM
 from ainodes_frontend.node_engine.utils import dumpException
+from .settings import handle_ainodes_exception
 from .worker import Worker
 
 
@@ -128,12 +129,6 @@ class AiNode(Node):
         self.busy = False
         self.init_done = None
 
-        try:
-            print("EVAL_DEBUG", self.content.eval_signal.receivers())
-        except:
-            pass
-
-
     def set_socket_names(self):
         """
         Internal function to set socket names, override in your custom node pack to add additional socket types
@@ -206,6 +201,8 @@ class AiNode(Node):
         try:
             return self.values[object_name]
         except:
+            done = handle_ainodes_exception()
+
             print(f"Value doesnt exist yet, make sure to validate the node: {self.op_title}")
             return None
 
@@ -226,6 +223,8 @@ class AiNode(Node):
             else:
                 return None
         except Exception as e:
+            done = handle_ainodes_exception()
+
             print(f"Error in getInputData: {e}")
             return None
 

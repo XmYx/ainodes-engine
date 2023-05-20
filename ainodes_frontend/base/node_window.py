@@ -13,7 +13,7 @@ from ainodes_frontend.base import CalcGraphicsNode
 from ainodes_frontend.base.ai_nodes_listbox import QDMDragListbox
 from ainodes_frontend.base.node_config import CALC_NODES, import_nodes_from_file, import_nodes_from_subdirectories
 from ainodes_frontend.base.node_sub_window import CalculatorSubWindow
-from ainodes_frontend.base.settings import load_settings, save_settings
+from ainodes_frontend.base.settings import load_settings, save_settings, save_error_log
 from ainodes_frontend.base.worker import Worker
 from ainodes_frontend.node_engine.node_edge import Edge
 from ainodes_frontend.node_engine.node_edge_validators import (
@@ -457,6 +457,7 @@ class CalculatorWindow(NodeEditorWindow):
 
     def eventListener(self, *args, **kwargs):
         save_settings()
+        save_error_log()
         #self.parent.quit()
         #super().closeEvent(e)
     def initUI(self):
