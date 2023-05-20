@@ -2,8 +2,8 @@
 import re
 from collections import OrderedDict
 
-from qtpy.QtCore import Qt
 from qtpy import QtCore, QtWidgets, QtGui
+
 
 #from NodeGraphQt.constants import ViewerEnum, ViewerNavEnum
 

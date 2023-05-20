@@ -2,10 +2,9 @@
 """
 A module containing the Edge Dragging functionality
 """
-from ainodes_frontend.node_engine.node_graphics_socket import QDMGraphicsSocket
 from ainodes_frontend.node_engine.node_edge import EDGE_TYPE_DEFAULT
+from ainodes_frontend.node_engine.node_graphics_socket import QDMGraphicsSocket
 from ainodes_frontend.node_engine.utils import dumpException
-
 
 DEBUG = False
 

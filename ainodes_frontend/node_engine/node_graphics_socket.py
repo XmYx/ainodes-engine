@@ -3,9 +3,10 @@
 A module containing Graphics representation of a :class:`~node_engine.node_socket.Socket`
 """
 from qtpy import QtGui, QtCore
-from qtpy.QtWidgets import QGraphicsItem
-from qtpy.QtGui import QColor, QBrush, QPen
 from qtpy.QtCore import Qt, QRectF
+from qtpy.QtGui import QColor, QBrush, QPen
+from qtpy.QtWidgets import QGraphicsItem
+
 from ainodes_frontend import singleton as gs
 
 SOCKET_COLORS = [

@@ -4,14 +4,15 @@ A module containing NodeEditor's class for representing `Node`.
 """
 import copy
 from collections import OrderedDict
-from ainodes_frontend.node_engine.node_graphics_node import QDMGraphicsNode
+
 from ainodes_frontend.node_engine.node_content_widget import QDMNodeContentWidget
+from ainodes_frontend.node_engine.node_graphics_node import QDMGraphicsNode
 from ainodes_frontend.node_engine.node_serializable import Serializable
-from ainodes_frontend.node_engine.node_socket import Socket, LEFT_BOTTOM, LEFT_CENTER, LEFT_TOP, RIGHT_BOTTOM, RIGHT_CENTER, RIGHT_TOP
+from ainodes_frontend.node_engine.node_socket import Socket, LEFT_BOTTOM, LEFT_CENTER, LEFT_TOP, RIGHT_BOTTOM, \
+    RIGHT_CENTER, RIGHT_TOP
 from ainodes_frontend.node_engine.utils_no_qt import dumpException
 
 DEBUG = False
-from ainodes_frontend import singleton as gs
 
 
 class Node(Serializable):
@@ -229,6 +230,9 @@ class Node(Serializable):
         pass
 
     def onDoubleClicked(self, event):
+        print(self.content.isVisible())
+
+        self.content.setVisible(not self.content.isVisible())
         """Event handling double click on Graphics Node in `Scene`"""
         pass
 

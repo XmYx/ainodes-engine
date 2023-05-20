@@ -1,5 +1,3 @@
-import datetime
-
 from Qt.QtCore import QMutex, QMutexLocker, QObject, Signal
 
 #from backend.torch_gc import torch_gc

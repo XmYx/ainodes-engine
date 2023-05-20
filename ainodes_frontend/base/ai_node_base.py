@@ -1,21 +1,16 @@
-import copy
 import threading
-import time
-from queue import Queue
 
-from PySide6.QtCore import QThreadPool, Qt
 from qtpy import QtWidgets, QtCore
-from qtpy.QtGui import QImage
 from qtpy.QtCore import QRectF
+from qtpy.QtGui import QImage
 from qtpy.QtWidgets import QLabel
 
-from .worker import Worker
-from ainodes_frontend.node_engine.node_node import Node
 from ainodes_frontend.node_engine.node_content_widget import QDMNodeContentWidget
 from ainodes_frontend.node_engine.node_graphics_node import QDMGraphicsNode
+from ainodes_frontend.node_engine.node_node import Node
 from ainodes_frontend.node_engine.node_socket import LEFT_BOTTOM, RIGHT_BOTTOM
 from ainodes_frontend.node_engine.utils import dumpException
-from ainodes_frontend import singleton as gs
+from .worker import Worker
 
 
 class CalcGraphicsNode(QDMGraphicsNode):
@@ -187,16 +182,8 @@ class AiNode(Node):
             value: The value to be set for the output socket.
         """
         object_name = self.getID(index)
-        try:
-            value_copy = copy.deepcopy(value)
-        except:
-            try:
-                value_copy = value.copy()
-            except:
-                value_copy = value
 
-        #gs.values[object_name] = value_copy
-        self.values[object_name] = value_copy
+        self.values[object_name] = value
     def getOutput(self, index):
         """
          Get the value of the output socket with the given index.
@@ -210,11 +197,9 @@ class AiNode(Node):
         object_name = self.getID(index)
         try:
             return self.values[object_name]
-            #value = self.values[object_name]
         except:
-            print(f"Value doesnt exist yet, make sure to validate the node: {self.content_label_objname}")
-            value = None
-        return value
+            print(f"Value doesnt exist yet, make sure to validate the node: {self.op_title}")
+            return None
 
     def getInputData(self, index=0):
         """
@@ -285,17 +270,13 @@ class AiNode(Node):
     def onWorkerFinished(self, result):
 
         self.busy = False
-
-        #print(f"PLEASE IMPLEMENT onWorkerFinished function for {self}")
-        try:
-            self.worker.signals.result.disconnect(self.onWorkerFinished)
-            del self.worker
-        except:
-            pass
-        pass
+        #try:
+        #    self.worker.signals.result.disconnect(self.onWorkerFinished)
+        #    del self.worker
+        #except:
+        #    pass
     def eval(self, index=0):
         try:
-            #self.markDirty(True)
             self.content.eval_signal.emit()
         except Exception as e:
             print(e, self)
@@ -342,10 +323,8 @@ class AiNode(Node):
                 node = self.getOutputs(output_index)[0]
                 #node.markDirty(True)
                 node.content.eval_signal.emit()
-                return None
             except Exception as e:
                 print("Skipping execution:", e, self)
-                return None
 
     def onInputChanged(self, socket=None):
         """
@@ -355,8 +334,7 @@ class AiNode(Node):
             socket: The input socket that changed.
         """
         print("%s::__onInputChanged" % self.__class__.__name__)
-        self.markDirty(True)
-        #self.content.eval_signal.emit(0)
+        #self.markDirty(True)
 
 
     def serialize(self):
@@ -391,10 +369,9 @@ class AiNode(Node):
          Remove the node, clearing the values in its output sockets.
          """
         x = 0
-        for i in self.outputs:
-            object_name = self.getID(x)
-            gs.values[object_name] = None
-            x += 1
+
+        self.values = None
+        self.values = {}
         super().remove()
 
 

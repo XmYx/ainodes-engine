@@ -5,6 +5,7 @@ A module containing the Edge Snapping functions which are used in :class:`~node_
 
 
 from qtpy.QtCore import QPointF, QRectF
+
 from ainodes_frontend.node_engine.node_graphics_socket import QDMGraphicsSocket
 
 

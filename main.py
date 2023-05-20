@@ -141,7 +141,7 @@ if __name__ == "__main__":
 
     # Load style sheet from a file
 
-    icon = QtGui.QIcon("ainodes_frontend/qss/icon.ico")
+
 
     app.setApplicationName("aiNodes - Engine")
 
@@ -169,6 +169,7 @@ if __name__ == "__main__":
     update_avail = check_repo_update('custom_nodes/ainodes_engine_base_nodes')
     #print("Update", update_avail)
     wnd.setWindowIconText("aiNodes - Engine")
+    icon = QtGui.QIcon("ainodes_frontend/qss/icon.ico")
     wnd.setWindowIcon(icon)
     app.setWindowIcon(icon)
 

@@ -3,9 +3,9 @@
 A module containing all code for working with Clipboard
 """
 from collections import OrderedDict
-from ainodes_frontend.node_engine.node_graphics_edge import QDMGraphicsEdge
-from ainodes_frontend.node_engine.node_edge import Edge
 
+from ainodes_frontend.node_engine.node_edge import Edge
+from ainodes_frontend.node_engine.node_graphics_edge import QDMGraphicsEdge
 
 DEBUG = False
 DEBUG_PASTING = False

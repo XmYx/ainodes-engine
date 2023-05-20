@@ -3,9 +3,9 @@
 A module containing NodeEditor's class for representing Socket and Socket Position Constants.
 """
 from collections import OrderedDict
-from ainodes_frontend.node_engine.node_serializable import Serializable
-from ainodes_frontend.node_engine.node_graphics_socket import QDMGraphicsSocket
 
+from ainodes_frontend.node_engine.node_graphics_socket import QDMGraphicsSocket
+from ainodes_frontend.node_engine.node_serializable import Serializable
 
 LEFT_TOP = 1        #:
 LEFT_CENTER =2      #:

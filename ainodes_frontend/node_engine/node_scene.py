@@ -2,19 +2,20 @@
 """
 A module containing the representation of the NodeEditor's Scene
 """
-import os, sys, json
+import json
+import os
+import sys
 from collections import OrderedDict
 
 from qtpy import QtCore
 
-from ainodes_frontend.node_engine.utils_no_qt import dumpException
-from ainodes_frontend.node_engine.node_serializable import Serializable
+from ainodes_frontend.node_engine.node_edge import Edge
 from ainodes_frontend.node_engine.node_graphics_scene import QDMGraphicsScene
 from ainodes_frontend.node_engine.node_node import Node
-from ainodes_frontend.node_engine.node_edge import Edge
-from ainodes_frontend.node_engine.node_scene_history import SceneHistory
 from ainodes_frontend.node_engine.node_scene_clipboard import SceneClipboard
-
+from ainodes_frontend.node_engine.node_scene_history import SceneHistory
+from ainodes_frontend.node_engine.node_serializable import Serializable
+from ainodes_frontend.node_engine.utils_no_qt import dumpException
 
 DEBUG_REMOVE_WARNINGS = False
 

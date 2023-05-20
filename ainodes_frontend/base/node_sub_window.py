@@ -1,23 +1,19 @@
-import os
-
-from qtpy import QtWidgets
-from qtpy.QtGui import QContextMenuEvent, QBrush
-from qtpy.QtWidgets import QColorDialog
 from qtpy import QtCore
-
-from ainodes_frontend.base.tab_search import TabSearchMenuWidget
-from ainodes_frontend.node_engine.node_graphics_node import QDMGraphicsBGNode
+from qtpy import QtWidgets
+from qtpy.QtCore import QDataStream, QIODevice, Qt
+from qtpy.QtGui import QBrush
 from qtpy.QtGui import QIcon, QPixmap
-from qtpy.QtCore import QDataStream, QIODevice, Qt, QThreadPool
-from qtpy.QtWidgets import QAction, QGraphicsProxyWidget, QMenu, QOpenGLWidget
+from qtpy.QtWidgets import QAction, QGraphicsProxyWidget, QMenu
+from qtpy.QtWidgets import QColorDialog
 
-from ainodes_frontend.node_engine.node_node import Node
 from ainodes_frontend.base.node_config import CALC_NODES, get_class_from_opcode, LISTBOX_MIMETYPE, \
     node_categories, get_class_from_content_label_objname
-from ainodes_frontend.node_engine.node_editor_widget import NodeEditorWidget
 from ainodes_frontend.node_engine.node_edge import EDGE_TYPE_DIRECT, EDGE_TYPE_BEZIER, EDGE_TYPE_SQUARE
+from ainodes_frontend.node_engine.node_editor_widget import NodeEditorWidget
+from ainodes_frontend.node_engine.node_graphics_node import QDMGraphicsBGNode
 from ainodes_frontend.node_engine.node_graphics_view import MODE_EDGE_DRAG
-from ainodes_frontend.node_engine.utils import dumpException, loadStylesheets
+from ainodes_frontend.node_engine.node_node import Node
+from ainodes_frontend.node_engine.utils import dumpException
 
 DEBUG = False
 DEBUG_CONTEXT = False

@@ -3,9 +3,11 @@
 A module containing Graphic representation of :class:`~node_engine.node_scene.Scene`
 """
 import math
-from qtpy.QtWidgets import QGraphicsScene, QWidget
+
 from qtpy.QtCore import Signal, QRect, QLine, Qt
 from qtpy.QtGui import QColor, QPen, QFont, QPainter
+from qtpy.QtWidgets import QGraphicsScene, QWidget
+
 from ainodes_frontend.node_engine.node_graphics_view import STATE_STRING, DEBUG_STATE
 from ainodes_frontend.node_engine.utils_no_qt import dumpException
 

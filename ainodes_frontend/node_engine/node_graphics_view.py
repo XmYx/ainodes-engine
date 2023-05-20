@@ -2,22 +2,19 @@
 """
 A module containing `Graphics View` for NodeEditor
 """
-from qtpy.QtWidgets import QGraphicsSceneWheelEvent
-from qtpy.QtWidgets import QGraphicsView, QApplication
 from qtpy.QtCore import Signal, QPoint, Qt, QEvent, QPointF, QRectF
 from qtpy.QtGui import QDragEnterEvent, QDropEvent, QMouseEvent, QKeyEvent, QWheelEvent
-
-from ainodes_frontend.node_engine.node_graphics_socket import QDMGraphicsSocket
-from ainodes_frontend.node_engine.node_graphics_edge import QDMGraphicsEdge
-from ainodes_frontend.node_engine.node_edge_dragging import EdgeDragging
-from ainodes_frontend.node_engine.node_edge_rerouting import EdgeRerouting
-#from ainodes_frontend.node_engine.node_edge_intersect import EdgeIntersect
-from ainodes_frontend.node_engine.node_edge_snapping import EdgeSnapping
-from ainodes_frontend.node_engine.node_graphics_cutline import QDMCutLine
-from ainodes_frontend.node_engine.utils import dumpException
+from qtpy.QtWidgets import QGraphicsView, QApplication
 
 from ainodes_frontend import singleton as gs
-
+from ainodes_frontend.node_engine.node_edge_dragging import EdgeDragging
+from ainodes_frontend.node_engine.node_edge_rerouting import EdgeRerouting
+# from ainodes_frontend.node_engine.node_edge_intersect import EdgeIntersect
+from ainodes_frontend.node_engine.node_edge_snapping import EdgeSnapping
+from ainodes_frontend.node_engine.node_graphics_cutline import QDMCutLine
+from ainodes_frontend.node_engine.node_graphics_edge import QDMGraphicsEdge
+from ainodes_frontend.node_engine.node_graphics_socket import QDMGraphicsSocket
+from ainodes_frontend.node_engine.utils import dumpException
 
 MODE_NOOP = 1               #: Mode representing ready state
 MODE_EDGE_DRAG = 2          #: Mode representing when we drag edge state

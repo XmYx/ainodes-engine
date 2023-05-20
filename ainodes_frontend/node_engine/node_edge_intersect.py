@@ -3,8 +3,9 @@
 A module containing the intersecting nodes functionality. If a node gets dragged and dropped on an existing edge
 it will intersect that edge.
 """
-from qtpy.QtWidgets import QGraphicsView
 from qtpy.QtCore import QRectF
+from qtpy.QtWidgets import QGraphicsView
+
 from ainodes_frontend.node_engine.node_edge import Edge
 
 

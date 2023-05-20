@@ -1,7 +1,7 @@
 import math
+
 from qtpy.QtCore import QPointF
 from qtpy.QtGui import QPainterPath
-
 
 EDGE_CP_ROUNDNESS = 100     #: Bezier control point distance on the line
 WEIGHT_SOURCE = 0.2         #: factor for square edge to change the midpoint between start and end socket

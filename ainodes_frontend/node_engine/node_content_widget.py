@@ -1,16 +1,12 @@
 # -*- coding: utf-8 -*-
 """A module containing the base class for the Node's content graphical representation. It also contains an example of
 an overridden Text Widget, which can pass a notification to it's parent about being modified."""
-from collections import OrderedDict
 
+from qtpy import QtCore, QtWidgets
 from qtpy import QtGui
+from qtpy.QtWidgets import QWidget, QLabel, QVBoxLayout, QTextEdit
 
 from ainodes_frontend.node_engine.node_serializable import Serializable
-from qtpy.QtWidgets import QWidget, QLabel, QVBoxLayout, QTextEdit
-from qtpy import QtCore, QtWidgets
-from qtpy.QtCore import Qt
-
-from ainodes_frontend.node_engine.utils import dumpException
 
 
 class QDMNodeContentWidget(QWidget, Serializable):

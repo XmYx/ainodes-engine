@@ -2,16 +2,17 @@
 """
 A module containing the Main Window class
 """
-import os, json
+import json
+import os
 from functools import partial
 
 from qtpy import QtWidgets
 from qtpy.QtCore import QSize, QSettings, QPoint
 from qtpy.QtWidgets import QMainWindow, QLabel, QAction, QMessageBox, QFileDialog, QApplication
 
+from ainodes_frontend import singleton as gs
 from ainodes_frontend.base.open_os_browser import open_folder_in_file_browser
 from ainodes_frontend.node_engine.node_editor_widget import NodeEditorWidget
-from ainodes_frontend import singleton as gs
 
 
 class NodeEditorWindow(QMainWindow):

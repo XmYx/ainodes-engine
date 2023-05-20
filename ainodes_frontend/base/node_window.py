@@ -1,33 +1,28 @@
 import os
 import sys
-from functools import partial
-from subprocess import run, PIPE
+from subprocess import run
 
 import requests
-from qtpy.QtCore import QEvent
-from qtpy.QtWidgets import QGraphicsView
 from qtpy import QtWidgets, QtCore, QtGui
-from qtpy.QtGui import QIcon, QKeySequence
-from qtpy.QtWidgets import QMdiArea, QDockWidget, QAction, QMessageBox, QFileDialog
 from qtpy.QtCore import Qt, QSignalMapper
+from qtpy.QtGui import QIcon, QKeySequence
+from qtpy.QtWidgets import QGraphicsView
+from qtpy.QtWidgets import QMdiArea, QDockWidget, QAction, QMessageBox, QFileDialog
 
 from ainodes_frontend.base import CalcGraphicsNode
+from ainodes_frontend.base.ai_nodes_listbox import QDMDragListbox
+from ainodes_frontend.base.node_config import CALC_NODES, import_nodes_from_file, import_nodes_from_subdirectories
+from ainodes_frontend.base.node_sub_window import CalculatorSubWindow
 from ainodes_frontend.base.settings import load_settings, save_settings
 from ainodes_frontend.base.worker import Worker
-from ainodes_frontend.node_engine.node_content_widget import QDMNodeContentWidget
-from ainodes_frontend.node_engine.utils import loadStylesheets
-from ainodes_frontend.node_engine.node_editor_window import NodeEditorWindow
-from ainodes_frontend.base.node_sub_window import CalculatorSubWindow
-from ainodes_frontend.base.ai_nodes_listbox import QDMDragListbox
-from ainodes_frontend.node_engine.utils_no_qt import dumpException, pp
-from ainodes_frontend.base.node_config import CALC_NODES, import_nodes_from_file, import_nodes_from_subdirectories
 from ainodes_frontend.node_engine.node_edge import Edge
 from ainodes_frontend.node_engine.node_edge_validators import (
-    edge_validator_debug,
     edge_cannot_connect_two_outputs_or_two_inputs,
     edge_cannot_connect_input_and_output_of_same_node,
     edge_cannot_connect_input_and_output_of_different_type
 )
+from ainodes_frontend.node_engine.node_editor_window import NodeEditorWindow
+from ainodes_frontend.node_engine.utils_no_qt import dumpException, pp
 
 #Edge.registerEdgeValidator(edge_validator_debug)
 Edge.registerEdgeValidator(edge_cannot_connect_two_outputs_or_two_inputs)
@@ -483,7 +478,6 @@ class CalculatorWindow(NodeEditorWindow):
             print("Registered nodes:")
             pp(CALC_NODES)
 
-
         self.mdiArea = QMdiArea()
         self.mdiArea.setHorizontalScrollBarPolicy(Qt.ScrollBarAsNeeded)
         self.mdiArea.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
@@ -513,15 +507,13 @@ class CalculatorWindow(NodeEditorWindow):
             self.tabifyDockWidget(self.node_packages, self.console)
         self.threadpool = QtCore.QThreadPool()
 
-        self.parameter_dock = ParameterDock()
-
-        self.addDockWidget(Qt.LeftDockWidgetArea, self.parameter_dock)
+        #self.parameter_dock = ParameterDock()
+        #self.addDockWidget(Qt.LeftDockWidgetArea, self.parameter_dock)
 
         self.file_open_signal.connect(self.fileOpen)
         self.base_repo_signal.connect(self.import_base_repos)
         icon = QtGui.QIcon("ainodes_frontend/qss/icon.png")
         self.setWindowIcon(icon)
-        #self.onFileNew()
 
     def import_base_repos(self):
         base_repo = 'ainodes_engine_base_nodes'
@@ -843,7 +835,9 @@ class CalculatorWindow(NodeEditorWindow):
     def createMdiChild(self, child_widget=None):
         nodeeditor = child_widget if child_widget is not None else CalculatorSubWindow()
         subwnd = self.mdiArea.addSubWindow(nodeeditor)
-        subwnd.setWindowIcon(self.empty_icon)
+        #subwnd.setWindowIcon(self.empty_icon)
+        icon = QtGui.QIcon("ainodes_frontend/qss/icon.ico")
+        subwnd.setWindowIcon(icon)
 
         # node_engine.scene.addItemSelectedListener(self.updateEditMenu)
         # node_engine.scene.addItemsDeselectedListener(self.updateEditMenu)

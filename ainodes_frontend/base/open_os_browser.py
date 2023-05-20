@@ -1,5 +1,6 @@
-import subprocess
 import platform
+import subprocess
+
 
 def open_folder_in_file_browser(folder_path):
 

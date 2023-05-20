@@ -3,10 +3,10 @@
 A module containing NodeEditor's class for representing Edge and Edge Type Constants.
 """
 from collections import OrderedDict
+
 from ainodes_frontend.node_engine.node_graphics_edge import QDMGraphicsEdge
 from ainodes_frontend.node_engine.node_serializable import Serializable
 from ainodes_frontend.node_engine.utils_no_qt import dumpException
-
 
 EDGE_TYPE_DIRECT = 1        #:
 EDGE_TYPE_BEZIER = 2        #:

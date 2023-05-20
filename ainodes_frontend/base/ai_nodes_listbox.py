@@ -1,13 +1,11 @@
-import os
-
 from qtpy import QtWidgets
-from qtpy.QtGui import QPixmap, QIcon, QDrag
 from qtpy.QtCore import QSize, Qt, QByteArray, QDataStream, QMimeData, QIODevice, QPoint
-from qtpy.QtWidgets import QListWidget, QAbstractItemView, QListWidgetItem
+from qtpy.QtGui import QPixmap, QIcon, QDrag
+from qtpy.QtWidgets import QAbstractItemView
 
-import ainodes_frontend.base.node_config
 from ainodes_frontend.base.node_config import CALC_NODES, get_class_from_opcode, LISTBOX_MIMETYPE, node_categories
-from ainodes_frontend.node_engine.utils import dumpException, loadStylesheets
+from ainodes_frontend.node_engine.utils import dumpException
+
 
 class QDMDragListbox(QtWidgets.QTreeWidget):
     def __init__(self, parent=None):

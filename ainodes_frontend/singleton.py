@@ -1,5 +1,3 @@
-import threading
-
 """class Singleton:
     __instance = None
     __lock = threading.Lock()

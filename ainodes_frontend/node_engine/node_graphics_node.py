@@ -2,14 +2,14 @@
 """
 A module containing Graphics representation of :class:`~node_engine.node_node.Node`
 """
-from ainodes_frontend.node_engine.node_graphics_edge import QDMGraphicsEdge
-#from ainodes_frontend.node_engine.node_node import Node
-from qtpy.QtWidgets import QGraphicsItem, QWidget, QGraphicsTextItem
-from qtpy.QtGui import QFont, QColor, QPen, QBrush, QPainterPath
-from qtpy.QtCore import Qt, QRectF
-
 from qtpy import QtWidgets, QtCore, QtGui
+from qtpy.QtCore import Qt, QRectF
+from qtpy.QtGui import QFont, QColor, QPen, QBrush, QPainterPath
+# from ainodes_frontend.node_engine.node_node import Node
+from qtpy.QtWidgets import QGraphicsItem, QWidget, QGraphicsTextItem
+
 from ainodes_frontend import singleton as gs
+from ainodes_frontend.node_engine.node_graphics_edge import QDMGraphicsEdge
 
 
 class QDMGraphicsNode(QGraphicsItem):

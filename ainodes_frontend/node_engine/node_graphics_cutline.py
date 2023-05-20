@@ -2,9 +2,9 @@
 """
 A module containing the class for Cutting Line
 """
+from qtpy.QtCore import Qt, QRectF, QPointF
 from qtpy.QtGui import QPen, QPainterPath, QPolygonF, QPainter
 from qtpy.QtWidgets import QGraphicsItem, QWidget
-from qtpy.QtCore import Qt, QRectF, QPointF
 
 
 class QDMCutLine(QGraphicsItem):

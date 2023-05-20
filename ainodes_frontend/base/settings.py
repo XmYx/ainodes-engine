@@ -1,8 +1,11 @@
-import os, yaml
+import os
+import yaml
 
 from qtpy.QtGui import QColor
 
 from ainodes_frontend import singleton as gs
+
+
 def color_to_hex(color):
     return color.name()
 

@@ -3,14 +3,16 @@
 A module containing ``NodeEditorWidget`` class
 """
 import os
+
 from qtpy.QtCore import Qt
 from qtpy.QtGui import QBrush, QPen, QFont, QColor
-from qtpy.QtWidgets import QWidget, QVBoxLayout, QApplication, QMessageBox, QLabel, QGraphicsItem, QTextEdit, QPushButton
+from qtpy.QtWidgets import QWidget, QVBoxLayout, QApplication, QMessageBox, QLabel, QGraphicsItem, QTextEdit, \
+    QPushButton
 
-from ainodes_frontend.node_engine.node_scene import Scene, InvalidFile
-from ainodes_frontend.node_engine.node_node import Node
 from ainodes_frontend.node_engine.node_edge import Edge, EDGE_TYPE_BEZIER
 from ainodes_frontend.node_engine.node_graphics_view import QDMGraphicsView
+from ainodes_frontend.node_engine.node_node import Node
+from ainodes_frontend.node_engine.node_scene import Scene, InvalidFile
 from ainodes_frontend.node_engine.utils import dumpException
 
 
