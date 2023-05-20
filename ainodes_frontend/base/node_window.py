@@ -516,10 +516,6 @@ class CalculatorWindow(NodeEditorWindow):
         self.setWindowIcon(icon)
 
     def import_base_repos(self):
-
-
-
-
         """base_repo = 'ainodes_engine_base_nodes'
         import_nodes_from_subdirectories(f"custom_nodes/{base_repo}")
         if os.path.isdir('custom_nodes/ainodes_engine_deforum_nodes'):
@@ -529,8 +525,9 @@ class CalculatorWindow(NodeEditorWindow):
         base_folder = 'custom_nodes'
         for folder in os.listdir(base_folder):
             folder_path = os.path.join(base_folder, folder)
-            if os.path.isdir(folder_path):
-                import_nodes_from_subdirectories(folder_path)
+            if "__pycache__" not in folder_path and "_nodes" in folder_path:
+                if os.path.isdir(folder_path):
+                    import_nodes_from_subdirectories(folder_path)
 
 
     def edit_colors(self):

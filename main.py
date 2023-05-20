@@ -1,4 +1,5 @@
 """ainodes-engine main"""
+import glob
 #!/usr/bin/env python3
 
 import sys
@@ -33,6 +34,24 @@ if "Linux" in platform.platform():
 else:
     gs.qss = "ainodes_frontend/qss/nodeeditor-dark.qss"
 
+def import_nodes_from_directory(directory):
+    if "ainodes_backend" not in directory and "backend" not in directory:
+        node_files = glob.glob(os.path.join(directory, "*.py"))
+        for node_file in node_files:
+            f = os.path.basename(node_file)
+            if f != "__init__.py" and "_node" in f:
+                module_name = os.path.basename(node_file)[:-3].replace('/', '.')
+                dir = directory.replace('/', '.')
+                dir = dir.replace('\\', '.').lstrip('.')
+                exec(f"from {dir} import {module_name}")
+
+def import_nodes_from_subdirectories(directory):
+    print("importing from", directory)
+    if "ainodes_backend" not in directory and "backend" not in directory:
+        for subdir in os.listdir(directory):
+            subdir_path = os.path.join(directory, subdir)
+            if os.path.isdir(subdir_path) and subdir != "base":
+                import_nodes_from_directory(subdir_path)
 # Initialize global variables
 gs.obj = {}
 gs.values = {}
@@ -40,7 +59,6 @@ gs.current = {}
 gs.nodes = {}
 gs.system = SimpleNamespace()
 gs.busy = False
-
 gs.models = {}
 gs.token = ""
 gs.use_deforum_loss = None
@@ -52,11 +70,9 @@ gs.logging = True
 gs.debug = None
 gs.hovered = None
 gs.loaded_loras = []
-
 gs.metas = "output/metas"
-
-
 gs.system.textual_inversion_dir = "models/embeddings"
+
 try:
     import xformers
     gs.system.xformer = True
@@ -66,6 +82,9 @@ except:
 gs.current["sd_model"] = None
 gs.current["inpaint_model"] = None
 gs.loaded_vae = ""
+
+
+
 
 
 # Parse command line arguments
@@ -123,16 +142,25 @@ def check_repo_update(folder_path):
     except subprocess.CalledProcessError as e:
         print(e)
         return None
+# make app
+app = QApplication(sys.argv)
+splash_pix = QPixmap("ainodes_frontend/qss/icon.ico")  # Replace "splash.png" with the path to your splash screen image
+splash = QSplashScreen(splash_pix, Qt.WindowStaysOnTopHint)
+splash.show()
+
+
 load_settings()
+base_folder = 'custom_nodes'
+for folder in os.listdir(base_folder):
+    folder_path = os.path.join(base_folder, folder)
+    if "__pycache__" not in folder_path and "_nodes" in folder_path:
+        if os.path.isdir(folder_path):
+            import_nodes_from_subdirectories(folder_path)
 
 if __name__ == "__main__":
 
-    # make app
-    app = QApplication(sys.argv)
+
     # Create and display the splash screen
-    splash_pix = QPixmap("ainodes_frontend/qss/icon.ico")  # Replace "splash.png" with the path to your splash screen image
-    splash = QSplashScreen(splash_pix, Qt.WindowStaysOnTopHint)
-    splash.show()
     # Enable automatic updates for the entire application
     if args.highdpi:
         app.setAttribute(Qt.AA_EnableHighDpiScaling)
@@ -163,10 +191,10 @@ if __name__ == "__main__":
         if not os.path.isdir('custom_nodes/ainodes_engine_base_nodes'):
             wnd.node_packages.download_repository()
 
-        wnd.base_repo_signal.emit()
-        #wnd.node_packages.import_base_repositories()
+    #    wnd.base_repo_signal.emit()
+    #    #wnd.node_packages.import_base_repositories()
 
-    update_avail = check_repo_update('custom_nodes/ainodes_engine_base_nodes')
+    #update_avail = check_repo_update('custom_nodes/ainodes_engine_base_nodes')
     #print("Update", update_avail)
     wnd.setWindowIconText("aiNodes - Engine")
     icon = QtGui.QIcon("ainodes_frontend/qss/icon.ico")
@@ -180,8 +208,8 @@ if __name__ == "__main__":
     wnd.onFileNew()
 
 
-    if update_avail:
-        QtWidgets.QMessageBox.information(wnd, "Notification", "Update available to the base Node package, please run update.bat")
+    #if update_avail:
+    #    QtWidgets.QMessageBox.information(wnd, "Notification", "Update available to the base Node package, please run update.bat")
 
 
     if args.torch2 == True:
