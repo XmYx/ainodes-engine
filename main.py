@@ -73,6 +73,7 @@ gs.loaded_loras = []
 gs.metas = "output/metas"
 gs.system.textual_inversion_dir = "models/embeddings"
 gs.error_stack = []
+gs.should_run = True
 
 try:
     import xformers

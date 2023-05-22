@@ -13,6 +13,8 @@ from ainodes_frontend.node_engine.utils import dumpException
 from .settings import handle_ainodes_exception
 from .worker import Worker
 
+from ainodes_frontend import singleton as gs
+
 
 class CalcGraphicsNode(QDMGraphicsNode):
     icon = None
@@ -256,14 +258,17 @@ class AiNode(Node):
 
     @QtCore.Slot()
     def evalImplementation(self, index=0, *args, **kwargs):
-        if not self.busy:
-            self.busy = True
-            thread = WorkerThread(target=self.evalImplementation_thread,
-                                  on_finished=self.onWorkerFinished)
-            thread.start()
+        if gs.should_run:
+            if not self.busy:
+                self.busy = True
+                thread = WorkerThread(target=self.evalImplementationThreadHandler,
+                                      on_finished=self.onWorkerFinished)
+                thread.start()
+            else:
+                return
         else:
+            gs.should_run = True
             return
-
 
         """if self.busy == False:
             self.busy = True
@@ -274,6 +279,15 @@ class AiNode(Node):
             return
         else:
             return"""
+
+    def evalImplementationThreadHandler(self, *args, **kwargs):
+        try:
+            result = self.evalImplementation_thread()
+            return result
+        except:
+            handle_ainodes_exception()
+            return None
+
     @QtCore.Slot()
     def evalImplementation_thread(self):
         return None
