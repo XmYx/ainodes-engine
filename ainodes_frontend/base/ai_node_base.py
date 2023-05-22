@@ -359,12 +359,13 @@ class AiNode(Node):
         print("%s::__onInputChanged" % self.__class__.__name__)
         #self.markDirty(True)
 
-    def update_vars(self, data, local_vars):
+    def update_vars(self, data, local_vars, update_self=True):
         for key, value in data.items():
             if key in local_vars:
                 setattr(local_vars, key, value)
-            if hasattr(self, key):
-                setattr(self, key, value)
+            if update_self:
+                if hasattr(self, key):
+                    setattr(self, key, value)
     def serialize(self):
         """
         Serialize the node's data into a dictionary.
