@@ -13,8 +13,6 @@ from ainodes_frontend.node_engine.utils import dumpException
 from .settings import handle_ainodes_exception
 from .worker import Worker
 
-from ainodes_frontend import singleton as gs
-
 
 class CalcGraphicsNode(QDMGraphicsNode):
     icon = None
@@ -361,7 +359,12 @@ class AiNode(Node):
         print("%s::__onInputChanged" % self.__class__.__name__)
         #self.markDirty(True)
 
-
+    def update_vars(self, data, local_vars):
+        for key, value in data.items():
+            if key in local_vars:
+                setattr(local_vars, key, value)
+            if hasattr(self, key):
+                setattr(self, key, value)
     def serialize(self):
         """
         Serialize the node's data into a dictionary.
