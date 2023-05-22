@@ -360,12 +360,19 @@ class AiNode(Node):
         #self.markDirty(True)
 
     def update_vars(self, data, local_vars, update_self=True):
-        for key, value in data.items():
-            if key in local_vars:
-                setattr(local_vars, key, value)
-            if update_self:
-                if hasattr(self, key):
-                    setattr(self, key, value)
+        if data is not None:
+            try:
+                for key, value in data.items():
+                    if key in local_vars:
+                        setattr(local_vars, key, value)
+                    if update_self:
+                        if hasattr(self, key):
+                            setattr(self, key, value)
+                return None
+            except:
+                handle_ainodes_exception()
+                return None
+
     def serialize(self):
         """
         Serialize the node's data into a dictionary.
