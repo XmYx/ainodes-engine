@@ -8,15 +8,16 @@ set "repositories_file=repositories.txt"
 set "custom_nodes_folder=custom_nodes"
 
 rem Read repositories from repositories.txt
-for /f "tokens=1 delims=/" %%A in (%repositories_file%) do (
+for /f "tokens=*" %%A in (%repositories_file%) do (
   set "repository=%%A"
+  echo Cloning repository: !repository!
 
-  rem Remove folder corresponding to repository
-  set "folder_name=!repository:_=!"
-  echo Removing folder: %custom_nodes_folder%\!folder_name!
-  if exist %custom_nodes_folder%\!folder_name! (
-    rmdir /s /q %custom_nodes_folder%\!folder_name!
-  )
+  rem Go to custom_nodes folder and clone the repository
+  cd %custom_nodes_folder%
+  git clone https://www.github.com/!repository!
+
+  rem Return to the original directory
+  cd ..
 )
 
 setlocal
