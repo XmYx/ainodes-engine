@@ -5,7 +5,6 @@ set "base_folder=nodes_env"
 set "custom_nodes_folder=custom_nodes"
 set "repositories_file=repositories.txt"
 
-
 rem Read repositories from repositories.txt
 for /f "tokens=*" %%A in (%repositories_file%) do (
   set "repository=%%A"
@@ -23,7 +22,8 @@ call %base_folder%\Scripts\activate.bat
 
 rem Stash and pull changes in the base folder
 cd %base_folder%
-
+git stash
+git pull
 pip install -r requirements.txt
 cd ..
 
@@ -38,3 +38,8 @@ for /d %%F in (*_nodes*) do (
   pip install -r requirements.txt
   cd ..
 )
+
+rem Deactivate virtual environment
+call %base_folder%\Scripts\deactivate.bat
+
+endlocal
