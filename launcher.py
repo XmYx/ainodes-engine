@@ -7,6 +7,8 @@ import subprocess
 import sys
 from platform import platform
 
+subprocess.check_call(["pip", "install", "tqdm"])
+from tqdm import tqdm
 
 def main():
     """launch ainodes-engine"""
@@ -15,6 +17,7 @@ def main():
     parser.add_argument("--skip_base_nodes", action="store_true")
     parser.add_argument("--light", action="store_true")
     parser.add_argument("--skip_update", action="store_true")
+    parser.add_argument("--update", action="store_true", default=False)
     parser.add_argument("--torch2", action="store_true")
     parser.add_argument("--no_console", action="store_true")
     args = parser.parse_args()
@@ -29,7 +32,8 @@ def main():
 
     activate_this = get_activate_path()
     activate_env(activate_this)
-    install_requirements()
+    if args.update:
+        install_requirements()
     check_python_version()
     run_main_script(args, venv_path)
 def ensure_virtualenv_installed():
@@ -64,7 +68,7 @@ def create_venv(venv_path):
     try:
         version = check_python_version()
         if "Windows" in platform():
-            subprocess.check_call(["python", "-m", "virtualenv", venv_path])
+            subprocess.check_call(["python", "-m", "virtualenv", venv_path, "--python=3.10"])
         else:
             subprocess.check_call(["python3", "-m", "virtualenv", venv_path])
     except subprocess.CalledProcessError as cpe:
@@ -108,9 +112,27 @@ def activate_env(activate_this):
     exec(open(activate_this, encoding="utf-8").read(), {"__file__": activate_this})
 
 
+
+
 def install_requirements():
-    """install requirements"""
-    subprocess.check_call(["pip", "install", "-r", "requirements.txt"])
+    """Install requirements with progress bar"""
+    requirements_file = "requirements.txt"
+    command = ["pip", "install", "-r", requirements_file]
+
+    with tqdm(total=len(open(requirements_file).readlines())) as pbar:
+        process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
+        for line in process.stdout:
+            # Update progress bar for each installed package
+            pbar.update(1)
+            pbar.set_description(line.strip())
+        process.stdout.close()
+        return_code = process.wait()
+
+    if return_code != 0:
+        error_output = process.stderr.read().strip()
+        raise subprocess.CalledProcessError(return_code, command, output=error_output)
+
+
 
 
 def run_main_script(args, venv_path):
@@ -133,6 +155,8 @@ def run_main_script(args, venv_path):
         cmd_args.append("--torch2")
     if args.no_console:
         cmd_args.append("--no_console")
+    if args.update:
+        cmd_args.append("--update")
     subprocess.run(cmd_args)
 
 
