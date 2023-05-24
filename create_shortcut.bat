@@ -3,7 +3,7 @@ setlocal
 
 set "SCRIPT_DIR=%~dp0"
 set "APP_DIR=%SCRIPT_DIR%"
-set "TARGET_PATH=%APP_DIR%\run_skip_update.bat"
+set "TARGET_PATH=%APP_DIR%\run_ainodes.bat"
 set "ICON_PATH=%APP_DIR%\ainodes_frontend\qss\icon.ico"
 set "SHORTCUT_NAME=%USERPROFILE%\Desktop\aiNodes - Engine.lnk"
 
