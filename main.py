@@ -4,6 +4,8 @@ import glob
 
 import sys
 import os
+
+
 import subprocess
 import platform
 import argparse
@@ -17,6 +19,10 @@ from qtpy.QtQuick import QSGRendererInterface
 from qtpy.QtCore import QCoreApplication
 from qtpy import QtGui
 from qtpy.QtWidgets import QApplication
+
+subprocess.check_call(["pip", "install", "tqdm"])
+from tqdm import tqdm
+
 from ainodes_frontend import singleton as gs
 
 import ainodes_frontend.qss.nodeeditor_dark_resources
@@ -34,6 +40,39 @@ if "Linux" in platform.platform():
 else:
     gs.qss = "ainodes_frontend/qss/nodeeditor-dark.qss"
 
+
+def update_all_nodes_req():
+    top_folder = "./custom_nodes"
+    folders = [folder for folder in os.listdir(top_folder) if os.path.isdir(os.path.join(top_folder, folder))]
+
+    for folder in tqdm(folders, desc="Folders"):
+        repository = f"{top_folder}/{folder}"
+        # command = f"git -C {repository} stash && git -C {repository} pull && pip install -r {repository}/requirements.txt"
+        command = f"git -C {repository} pull && pip install -r {repository}/requirements.txt"
+
+        print("RUNNING COMMAND", command)
+
+        with tqdm(total=100, desc=f"Updating {folder}") as pbar:
+            result = subprocess.run(command, shell=True, stdout=None, stderr=None,
+                                    universal_newlines=True)
+            pbar.update(50)  # Indicate that git pull is 50% complete
+            pbar.set_description(f"Installing {folder}'s requirements")
+            pbar.update(50)  # Indicate that requirements installation is 50% complete
+        try:
+            command = f"git -C {repository} pull && pip install -r {repository}/requirements_no_deps.txt --no-deps"
+
+            print("RUNNING COMMAND", command)
+
+            with tqdm(total=100, desc=f"Updating {folder}") as pbar:
+                result = subprocess.run(command, shell=True, stdout=None, stderr=None,
+                                        universal_newlines=True)
+                pbar.update(50)  # Indicate that git pull is 50% complete
+                pbar.set_description(f"Installing {folder}'s requirements")
+                pbar.update(50)  # Indicate that requirements installation is 50% complete
+        except:
+            pass
+
+
 def import_nodes_from_directory(directory):
     if "ainodes_backend" not in directory and "backend" not in directory:
         node_files = glob.glob(os.path.join(directory, "*.py"))
@@ -46,12 +85,18 @@ def import_nodes_from_directory(directory):
                 exec(f"from {dir} import {module_name}")
 
 def import_nodes_from_subdirectories(directory):
-    print("importing from", directory)
+    print("Importing from", directory)
     if "ainodes_backend" not in directory and "backend" not in directory:
+
+                #if return_code != 0:
+                #    error_output = process.stderr.read().strip()
+                #    raise subprocess.CalledProcessError(return_code, command, output=error_output)
+
         for subdir in os.listdir(directory):
             subdir_path = os.path.join(directory, subdir)
             if os.path.isdir(subdir_path) and subdir != "base":
                 import_nodes_from_directory(subdir_path)
+
 # Initialize global variables
 gs.obj = {}
 gs.values = {}
@@ -96,6 +141,7 @@ parser.add_argument("--local_hf", action="store_true")
 parser.add_argument("--skip_base_nodes", action="store_true")
 parser.add_argument("--light", action="store_true")
 parser.add_argument("--skip_update", action="store_true")
+parser.add_argument("--update", action="store_true", default=False)
 parser.add_argument("--torch2", action="store_true")
 parser.add_argument("--no_console", action="store_true")
 parser.add_argument("--highdpi", action="store_true")
@@ -153,6 +199,9 @@ splash.show()
 
 load_settings()
 base_folder = 'custom_nodes'
+if args.update:
+    update_all_nodes_req()
+
 for folder in os.listdir(base_folder):
     folder_path = os.path.join(base_folder, folder)
     if "__pycache__" not in folder_path and "_nodes" in folder_path:
@@ -160,62 +209,35 @@ for folder in os.listdir(base_folder):
             import_nodes_from_subdirectories(folder_path)
 
 if __name__ == "__main__":
-
-
     # Create and display the splash screen
     # Enable automatic updates for the entire application
     if args.highdpi:
         app.setAttribute(Qt.AA_EnableHighDpiScaling)
 
     QCoreApplication.instance().aboutToQuit.connect(eventListener)
-
-    # Load style sheet from a file
-
-
-
     app.setApplicationName("aiNodes - Engine")
-
     from ainodes_frontend.base import CalculatorWindow
-
     # Create and show the main window
     wnd = CalculatorWindow(app)
-
     wnd.stylesheet_filename = os.path.join(os.path.dirname(__file__), gs.qss)
     loadStylesheets(
         os.path.join(os.path.dirname(__file__), gs.qss),
         wnd.stylesheet_filename
     )
-
     if not args.skip_base_nodes:
         wnd.node_packages.list_widget.setCurrentRow(0)
         if not os.path.isdir('custom_nodes/ainodes_engine_base_nodes'):
             wnd.node_packages.download_repository()
-
-    #    wnd.base_repo_signal.emit()
-    #    #wnd.node_packages.import_base_repositories()
-
-    #update_avail = check_repo_update('custom_nodes/ainodes_engine_base_nodes')
-    #print("Update", update_avail)
     wnd.setWindowIconText("aiNodes - Engine")
     icon = QtGui.QIcon("ainodes_frontend/qss/icon.ico")
     wnd.setWindowIcon(icon)
     app.setWindowIcon(icon)
-
     wnd.show()
-
     wnd.nodesListWidget.addMyItems()
-
     wnd.onFileNew()
-
-
-    #if update_avail:
-    #    QtWidgets.QMessageBox.information(wnd, "Notification", "Update available to the base Node package, please run update.bat")
-
-
     if args.torch2 == True:
         from custom_nodes.ainodes_engine_base_nodes.ainodes_backend.sd_optimizations.sd_hijack import apply_optimizations
         apply_optimizations()
-
     if args.forcewindowupdate:
         # Create a timer to trigger the update every second
         timer = QtCore.QTimer()
