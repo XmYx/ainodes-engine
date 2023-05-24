@@ -24,4 +24,4 @@ endlocal
 call download_node_packs.bat
 call create_shortcut.bat
 
-python launcher.py
+python launcher.py --update
