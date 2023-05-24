@@ -43,3 +43,5 @@ rem Deactivate virtual environment
 call %base_folder%\Scripts\deactivate.bat
 
 endlocal
+
+call run_ainodes.bat

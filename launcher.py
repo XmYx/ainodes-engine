@@ -128,11 +128,6 @@ def install_requirements():
         process.stdout.close()
         return_code = process.wait()
 
-    if return_code != 0:
-        error_output = process.stderr.read().strip()
-        raise subprocess.CalledProcessError(return_code, command, output=error_output)
-
-
 
 
 def run_main_script(args, venv_path):
