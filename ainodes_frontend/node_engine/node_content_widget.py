@@ -312,15 +312,15 @@ class QDMNodeContentWidget(QWidget, Serializable):
 
 
     def create_list_view(self, label_text):
-        """Create a list view widget with the given label text.
+        """Create a list widget with the given label text.
 
         Args:
             label_text (str): Text for the label of the line edit.
 
         Returns:
-            QtWidgets.QListView: A line edit widget.
+            QtWidgets.QListWidget: A list widget.
         """
-        list_view = QtWidgets.QListView()
+        list_view = QtWidgets.QListWidget()
         label = QtWidgets.QLabel(label_text)
         list_view.setObjectName(label_text)
         layout = QtWidgets.QHBoxLayout()
