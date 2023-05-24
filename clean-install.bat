@@ -21,6 +21,7 @@ for /f "tokens=1 delims=/" %%A in (%repositories_file%) do (
 
 setlocal
 
+
 set "SCRIPT_DIR=%~dp0"
 set "APP_DIR=%SCRIPT_DIR%"
 set "TARGET_PATH=%APP_DIR%\run_ainodes.bat"
@@ -40,11 +41,6 @@ set "VBS_SCRIPT=%TEMP%\CreateShortcut.vbs"
 )
 
 cscript //nologo "%VBS_SCRIPT%"
-del "%VBS_SCRIPT%"
-
-
-call download_node_packs.bat
-call create_shortcut.bat
 
 python launcher.py --update
 
