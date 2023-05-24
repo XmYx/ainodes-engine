@@ -89,7 +89,6 @@ class NodeEditorWindow(QMainWindow):
 
         # Create submenus for graphs and example_graphs
         self.graphsSubMenu = QtWidgets.QMenu('Graphs', self)
-        self.exampleGraphsSubMenu = QtWidgets.QMenu('Example Graphs', self)
 
         self.defaultDirsSubMenu = QtWidgets.QMenu('Model Dirs', self)
         default_dirs = {"SD Models":gs.checkpoints,
@@ -107,7 +106,7 @@ class NodeEditorWindow(QMainWindow):
 
         # List all JSON files in the graphs and example_graphs folders
         graphs_files = [f for f in os.listdir('graphs') if f.endswith('.json')]
-        example_graphs_files = [f for f in os.listdir('example_graphs') if f.endswith('.json')]
+        #example_graphs_files = [f for f in os.listdir('example_graphs') if f.endswith('.json')]
 
         # Add JSON files to the submenus and connect actions
         for file in graphs_files:
@@ -115,10 +114,35 @@ class NodeEditorWindow(QMainWindow):
             file_action.triggered.connect(partial(self.onFileOpenAction, os.path.join('graphs', file)))
             self.graphsSubMenu.addAction(file_action)
 
-        for file in example_graphs_files:
-            file_action = QAction(file, self)
-            file_action.triggered.connect(partial(self.onFileOpenAction, os.path.join('example_graphs', file)))
-            self.exampleGraphsSubMenu.addAction(file_action)
+        directory_path = 'custom_nodes'
+        custom_nodes = get_dir_content(directory_path)
+
+        self.exampleGraphsSubMenu = QtWidgets.QMenu('Example Graphs', self)
+
+        for folder in custom_nodes:
+            folder_path = os.path.join('custom_nodes', folder, 'resources', 'examples')
+
+            if "__pycache__" not in folder_path:
+                if os.path.isdir(folder_path):
+                    folder_submenu = self.exampleGraphsSubMenu.addMenu(folder)
+                    example_files = os.listdir(folder_path)
+
+                    for file in example_files:
+                        file_path = os.path.join(folder_path, file)
+                        if os.path.isfile(file_path):
+                            file_action = QAction(file, self)
+                            file_action.triggered.connect(partial(self.onFileOpenAction, file_path))
+                            folder_submenu.addAction(file_action)
+                        elif os.path.isdir(file_path):
+                            folder_submenu_ = folder_submenu.addMenu(file)
+                            example_files_ = os.listdir(file_path)
+
+                            for file_ in example_files_:
+                                file_path_ = os.path.join(file_path, file_)
+                                if os.path.isfile(file_path_):
+                                    file_action_ = QAction(file_, self)
+                                    file_action_.triggered.connect(partial(self.onFileOpenAction, file_path_))
+                                    folder_submenu_.addAction(file_action_)
 
         self.fileMenu.addMenu(self.defaultDirsSubMenu)
         # Add submenus to the File menu
@@ -337,3 +361,15 @@ class NodeEditorWindow(QMainWindow):
         settings = QSettings(self.name_company, self.name_product)
         settings.setValue('pos', self.pos())
         settings.setValue('size', self.size())
+
+def get_dir_content(dir):
+    content = []
+
+    # Iterate over each item in the directory
+    for item in os.listdir(dir):
+        item_path = os.path.join(dir, item)
+
+        # Check if the item is a directory
+        if os.path.isdir(item_path):
+            content.append(item)
+    return content
