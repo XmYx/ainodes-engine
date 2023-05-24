@@ -58,20 +58,6 @@ def update_all_nodes_req():
             pbar.update(50)  # Indicate that git pull is 50% complete
             pbar.set_description(f"Installing {folder}'s requirements")
             pbar.update(50)  # Indicate that requirements installation is 50% complete
-        try:
-            command = f"git -C {repository} pull && pip install -r {repository}/requirements_no_deps.txt --no-deps"
-
-            print("RUNNING COMMAND", command)
-
-            with tqdm(total=100, desc=f"Updating {folder}") as pbar:
-                result = subprocess.run(command, shell=True, stdout=None, stderr=None,
-                                        universal_newlines=True)
-                pbar.update(50)  # Indicate that git pull is 50% complete
-                pbar.set_description(f"Installing {folder}'s requirements")
-                pbar.update(50)  # Indicate that requirements installation is 50% complete
-        except:
-            pass
-
 
 def import_nodes_from_directory(directory):
     if "ainodes_backend" not in directory and "backend" not in directory:
