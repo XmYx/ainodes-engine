@@ -2,6 +2,8 @@
 """
 A module containing `Graphics View` for NodeEditor
 """
+from PySide6.QtGui import QTransform
+from qtpy import QtCore, QtWidgets
 from qtpy.QtCore import Signal, QPoint, Qt, QEvent, QPointF, QRectF
 from qtpy.QtGui import QDragEnterEvent, QDropEvent, QMouseEvent, QKeyEvent, QWheelEvent
 from qtpy.QtWidgets import QGraphicsView, QApplication
@@ -468,9 +470,30 @@ class QDMGraphicsView(QGraphicsView):
         #         print("#", ix, "--", item['desc'])
         #         ix += 1
         # else:
+
+        selected_items = None
+        handle_f = None
+        if handle_f:
+            if event.key() == Qt.Key_F:
+                selected_items = self.grScene.selectedItems()
+                if not selected_items:
+                    items = self.grScene.items()
+                    self.resetZoomLevel()
+
+                    items_rect: QtCore.QRectF = items[0].sceneBoundingRect()
+                    for item in items:
+                        item: QtWidgets.QGraphicsItem
+                        items_rect = items_rect.united(item.sceneBoundingRect())
+
+                    # self.zoom_to_rect(items_rect)
+                    self.ensureVisible(items_rect)
+                    self.centerOn(items_rect.center())
         super().keyPressEvent(event)
 
-
+    def resetZoomLevel(self):
+        """Reset the zoom level to its default value."""
+        self.zoom = 1  # Set the default zoom level
+        self.setTransform(QTransform().scale(self.zoom, self.zoom))
     def cutIntersectingEdges(self):
         """Compare which `Edges` intersect with current `Cut line` and delete them safely"""
         for ix in range(len(self.cutline.line_points) - 1):
