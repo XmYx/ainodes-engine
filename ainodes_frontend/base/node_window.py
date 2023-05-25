@@ -171,15 +171,11 @@ class GitHubRepositoriesDialog(QtWidgets.QDockWidget):
 
     def initUI(self):
         self.setWindowTitle("Node Packages")
-
         main_widget = QtWidgets.QWidget(self)
-
         layout = QtWidgets.QHBoxLayout(main_widget)
         self.setWidget(main_widget)
         self.list_widget = QtWidgets.QListWidget()
-
         layout.addWidget(self.list_widget)
-
         repository_widget = QtWidgets.QWidget()
         repository_layout = QtWidgets.QVBoxLayout(repository_widget)
         repository_label = QtWidgets.QLabel("Node Packages")
@@ -191,7 +187,6 @@ class GitHubRepositoriesDialog(QtWidgets.QDockWidget):
         self.update_button = QtWidgets.QPushButton("Update / Import")
         self.update_button.clicked.connect(self.update_repository)
         self.update_button.hide()
-
         repository_layout.addWidget(repository_label)
         repository_layout.addWidget(self.repository_icon_label)
         repository_layout.addWidget(self.repository_name_label)
@@ -199,11 +194,9 @@ class GitHubRepositoriesDialog(QtWidgets.QDockWidget):
         repository_layout.addWidget(self.download_button)
         repository_layout.addWidget(self.update_button)
         layout.addWidget(repository_widget)
-
         self.list_widget.currentRowChanged.connect(self.show_repository_details)
         self.list_widget.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self.list_widget.customContextMenuRequested.connect(self.right_click_menu)
-
         self.add_repository_action = QtWidgets.QAction("Add Repository", self)
         self.add_repository_action.triggered.connect(self.add_repository)
         self.delete_repository_action = QtWidgets.QAction("Delete Repository", self)
@@ -215,6 +208,7 @@ class GitHubRepositoriesDialog(QtWidgets.QDockWidget):
 
         self.repository_icon_label.setFixedSize(128, 128)
         self.repolist = "repositories.txt"
+
 
 
     def load_repositories(self):
@@ -372,6 +366,77 @@ class StreamRedirect(QtCore.QObject):
 class NodesConsole(ConsoleWidget):
     def __init__(self):
         super().__init__()
+        stylesheet = '''
+        QWidget#Form {
+            background-color: black;
+        }
+
+        QPlainTextEdit#output {
+            background-color: black;
+            color: white;
+            font-family: Monospace;
+        }
+
+        QLineEdit#input {
+            background-color: black;
+            color: white;
+            font-family: Monospace;
+            border: none;
+        }
+
+        QPushButton#historyBtn,
+        QPushButton#exceptionBtn,
+        QPushButton#clearExceptionBtn,
+        QPushButton#catchAllExceptionsBtn,
+        QPushButton#catchNextExceptionBtn {
+            background-color: black;
+            color: white;
+            border: none;
+        }
+
+        QCheckBox#onlyUncaughtCheck,
+        QCheckBox#runSelectedFrameCheck {
+            color: white;
+        }
+
+        QListWidget#historyList,
+        QListWidget#exceptionStackList {
+            background-color: black;
+            color: white;
+            font-family: Monospace;
+            border: none;
+        }
+
+        QGroupBox#exceptionGroup {
+            border: 1px solid white;
+        }
+
+        QLabel#exceptionInfoLabel,
+        QLabel#label {
+            color: white;
+        }
+
+        QLineEdit#filterText {
+            background-color: black;
+            color: white;
+            border: none;
+        }
+
+        QSplitter::handle {
+            background-color: white;
+        }
+
+        QSplitter::handle:vertical {
+            height: 6px;
+        }
+
+        QSplitter::handle:pressed {
+            background-color: #888888;
+        }
+        '''
+
+        # Apply the stylesheet to the application
+        self.setStyleSheet(stylesheet)
     def write(self, strn, html=False, scrollToBottom=True):
         """Write a string into the console.
 
@@ -480,8 +545,10 @@ class CalculatorWindow(NodeEditorWindow):
             pp(CALC_NODES)
 
         self.mdiArea = QMdiArea()
-        self.mdiArea.setHorizontalScrollBarPolicy(Qt.ScrollBarAsNeeded)
-        self.mdiArea.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
+        #self.mdiArea.setHorizontalScrollBarPolicy(Qt.ScrollBarAsNeeded)
+        #self.mdiArea.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
+        self.mdiArea.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.mdiArea.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.mdiArea.setViewMode(QMdiArea.TabbedView)
         self.mdiArea.setDocumentMode(True)
         self.mdiArea.setTabsClosable(True)
@@ -502,10 +569,10 @@ class CalculatorWindow(NodeEditorWindow):
         self.updateMenus()
         self.readSettings()
         self.setWindowTitle("aiNodes - Engine")
-        self.show_github_repositories()
+        #self.show_github_repositories()
         if not gs.args.no_console:
             self.create_console_widget()
-            self.tabifyDockWidget(self.node_packages, self.console)
+            #self.tabifyDockWidget(self.node_packages, self.console)
         self.threadpool = QtCore.QThreadPool()
 
         #self.parameter_dock = ParameterDock()
@@ -515,6 +582,12 @@ class CalculatorWindow(NodeEditorWindow):
         self.base_repo_signal.connect(self.import_base_repos)
         icon = QtGui.QIcon("ainodes_frontend/qss/icon.png")
         self.setWindowIcon(icon)
+
+        print("aiNodes Ready.")
+        print("------------------")
+        print(f"|{len(CALC_NODES)} Nodes loaded.|")
+        print("------------------")
+
 
     def import_base_repos(self):
         """base_repo = 'ainodes_engine_base_nodes'
@@ -682,6 +755,7 @@ class CalculatorWindow(NodeEditorWindow):
                             icon = QtGui.QIcon("ainodes_frontend/qss/icon.png")
                             subwnd.setWindowIcon(icon)
                             subwnd.show()
+
                         else:
                             nodeeditor.close()
         except Exception as e: dumpException(e)
@@ -949,3 +1023,4 @@ class CalculatorWindow(NodeEditorWindow):
         view = scene.grScene.scene.getView()  # Assuming there is only one view associated with the scene
         view.setViewportUpdateMode(QGraphicsView.FullViewportUpdate)
         view.update()
+

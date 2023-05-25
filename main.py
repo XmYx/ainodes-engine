@@ -204,16 +204,18 @@ if __name__ == "__main__":
     app.setApplicationName("aiNodes - Engine")
     from ainodes_frontend.base import CalculatorWindow
     # Create and show the main window
+    app.setStyle('Fusion')
+
     wnd = CalculatorWindow(app)
     wnd.stylesheet_filename = os.path.join(os.path.dirname(__file__), gs.qss)
     loadStylesheets(
         os.path.join(os.path.dirname(__file__), gs.qss),
         wnd.stylesheet_filename
     )
-    if not args.skip_base_nodes:
-        wnd.node_packages.list_widget.setCurrentRow(0)
-        if not os.path.isdir('custom_nodes/ainodes_engine_base_nodes'):
-            wnd.node_packages.download_repository()
+    #if not args.skip_base_nodes:
+    #    wnd.node_packages.list_widget.setCurrentRow(0)
+    #    if not os.path.isdir('custom_nodes/ainodes_engine_base_nodes'):
+    #        wnd.node_packages.download_repository()
     wnd.setWindowIconText("aiNodes - Engine")
     icon = QtGui.QIcon("ainodes_frontend/qss/icon.ico")
     wnd.setWindowIcon(icon)

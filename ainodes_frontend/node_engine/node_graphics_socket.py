@@ -105,7 +105,7 @@ class QDMGraphicsSocket(QGraphicsItem):
         text_width = painter.fontMetrics().width(text) * 1.13
         text_height = painter.fontMetrics().height() - 29
         if self.socket.is_input:
-            painter.drawEllipse(-self.radius - 10, -self.radius, 2 * self.radius, 2 * self.radius)
+            painter.drawEllipse(-self.radius - 15, -self.radius, 2 * self.radius, 2 * self.radius)
 
             # Set the background color to dark green
             bg_color = QtGui.QColor('darkgreen')
@@ -123,7 +123,7 @@ class QDMGraphicsSocket(QGraphicsItem):
         else:
             painter.setBrush(self._brush)
             painter.setPen(self._pen if not self.isHighlighted else self._pen_highlight)
-            painter.drawEllipse(-self.radius + 10, -self.radius, 2 * self.radius, 2 * self.radius)
+            painter.drawEllipse(-self.radius + 15, -self.radius, 2 * self.radius, 2 * self.radius)
 
             # Set the background color to dark green
             bg_color = QtGui.QColor('darkgreen')

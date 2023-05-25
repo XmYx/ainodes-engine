@@ -91,7 +91,9 @@ class NodeEditorWindow(QMainWindow):
         self.graphsSubMenu = QtWidgets.QMenu('Graphs', self)
 
         self.defaultDirsSubMenu = QtWidgets.QMenu('Model Dirs', self)
-        default_dirs = {"SD Models":gs.checkpoints,
+        default_dirs = {"Stills":"output/stills",
+                        "MP4s":"output/mp4s",
+                        "SD Models":gs.checkpoints,
                         "VAE":gs.vae,
                         "ControlNet":gs.controlnet,
                         "Embeddings":gs.embeddings,
