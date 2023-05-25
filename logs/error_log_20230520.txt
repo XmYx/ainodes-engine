@@ -1,0 +1,1311 @@
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\torch_nodes\conditioning_node.py", line 74, in evalImplementation_thread
+    result = [self.get_conditioning(prompt=prompt)]
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\torch_nodes\conditioning_node.py", line 98, in get_conditioning
+    c = gs.models["clip"].encode(prompt)
+KeyError: 'clip'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1925, in deforum_ainodes_adapter
+    test = render_animation(node, args, anim_args, video_args, parseq_args, loop_args, controlnet_args,
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 725, in render_animation
+    prev_vid_img = Image.open(os.path.join(args.outdir, 'inputframes', get_frame_name(anim_args.video_init_path) + f"{frame_idx:09}.jpg"))
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\PIL\Image.py", line 3236, in open
+    fp = builtins.open(filename, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Users\\mix\\ainodes\\ainodes-engine\\output/deforum\\Deforum_20230520193425\\inputframes\\woman_-_10808_720p000000000.jpg'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1925, in deforum_ainodes_adapter
+    test = render_animation(node, args, anim_args, video_args, parseq_args, loop_args, controlnet_args,
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 725, in render_animation
+    prev_vid_img = Image.open(os.path.join(args.outdir, 'inputframes', get_frame_name(anim_args.video_init_path) + f"{frame_idx:09}.jpg"))
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\PIL\Image.py", line 3236, in open
+    fp = builtins.open(filename, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Users\\mix\\ainodes\\ainodes-engine\\output/deforum\\Deforum_20230520193425\\inputframes\\woman_-_10808_720p000000000.jpg'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1925, in deforum_ainodes_adapter
+    test = render_animation(node, args, anim_args, video_args, parseq_args, loop_args, controlnet_args,
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 725, in render_animation
+    prev_vid_img = Image.open(os.path.join(args.outdir, 'inputframes', get_frame_name(anim_args.video_init_path) + f"{frame_idx:09}.jpg"))
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\PIL\Image.py", line 3236, in open
+    fp = builtins.open(filename, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Users\\mix\\ainodes\\ainodes-engine\\output/deforum\\Deforum_20230520193445\\inputframes\\woman_-_10808_720p000000000.jpg'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1925, in deforum_ainodes_adapter
+    test = render_animation(node, args, anim_args, video_args, parseq_args, loop_args, controlnet_args,
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 725, in render_animation
+    prev_vid_img = Image.open(os.path.join(args.outdir, 'inputframes', get_frame_name(anim_args.video_init_path) + f"{frame_idx:09}.jpg"))
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\PIL\Image.py", line 3236, in open
+    fp = builtins.open(filename, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Users\\mix\\ainodes\\ainodes-engine\\output/deforum\\Deforum_20230520193425\\inputframes\\woman_-_10808_720p000000000.jpg'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1925, in deforum_ainodes_adapter
+    test = render_animation(node, args, anim_args, video_args, parseq_args, loop_args, controlnet_args,
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 725, in render_animation
+    prev_vid_img = Image.open(os.path.join(args.outdir, 'inputframes', get_frame_name(anim_args.video_init_path) + f"{frame_idx:09}.jpg"))
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\PIL\Image.py", line 3236, in open
+    fp = builtins.open(filename, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Users\\mix\\ainodes\\ainodes-engine\\output/deforum\\Deforum_20230520193445\\inputframes\\woman_-_10808_720p000000000.jpg'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1925, in deforum_ainodes_adapter
+    test = render_animation(node, args, anim_args, video_args, parseq_args, loop_args, controlnet_args,
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 725, in render_animation
+    prev_vid_img = Image.open(os.path.join(args.outdir, 'inputframes', get_frame_name(anim_args.video_init_path) + f"{frame_idx:09}.jpg"))
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\PIL\Image.py", line 3236, in open
+    fp = builtins.open(filename, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Users\\mix\\ainodes\\ainodes-engine\\output/deforum\\Deforum_20230520193447\\inputframes\\woman_-_10808_720p000000000.jpg'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1925, in deforum_ainodes_adapter
+    test = render_animation(node, args, anim_args, video_args, parseq_args, loop_args, controlnet_args,
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 725, in render_animation
+    prev_vid_img = Image.open(os.path.join(args.outdir, 'inputframes', get_frame_name(anim_args.video_init_path) + f"{frame_idx:09}.jpg"))
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\PIL\Image.py", line 3236, in open
+    fp = builtins.open(filename, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Users\\mix\\ainodes\\ainodes-engine\\output/deforum\\Deforum_20230520193425\\inputframes\\woman_-_10808_720p000000000.jpg'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1925, in deforum_ainodes_adapter
+    test = render_animation(node, args, anim_args, video_args, parseq_args, loop_args, controlnet_args,
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 725, in render_animation
+    prev_vid_img = Image.open(os.path.join(args.outdir, 'inputframes', get_frame_name(anim_args.video_init_path) + f"{frame_idx:09}.jpg"))
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\PIL\Image.py", line 3236, in open
+    fp = builtins.open(filename, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Users\\mix\\ainodes\\ainodes-engine\\output/deforum\\Deforum_20230520193445\\inputframes\\woman_-_10808_720p000000000.jpg'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1925, in deforum_ainodes_adapter
+    test = render_animation(node, args, anim_args, video_args, parseq_args, loop_args, controlnet_args,
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 725, in render_animation
+    prev_vid_img = Image.open(os.path.join(args.outdir, 'inputframes', get_frame_name(anim_args.video_init_path) + f"{frame_idx:09}.jpg"))
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\PIL\Image.py", line 3236, in open
+    fp = builtins.open(filename, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Users\\mix\\ainodes\\ainodes-engine\\output/deforum\\Deforum_20230520193447\\inputframes\\woman_-_10808_720p000000000.jpg'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1925, in deforum_ainodes_adapter
+    test = render_animation(node, args, anim_args, video_args, parseq_args, loop_args, controlnet_args,
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 725, in render_animation
+    prev_vid_img = Image.open(os.path.join(args.outdir, 'inputframes', get_frame_name(anim_args.video_init_path) + f"{frame_idx:09}.jpg"))
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\PIL\Image.py", line 3236, in open
+    fp = builtins.open(filename, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Users\\mix\\ainodes\\ainodes-engine\\output/deforum\\Deforum_20230520193456\\inputframes\\woman_-_10808_720p000000000.jpg'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1925, in deforum_ainodes_adapter
+    test = render_animation(node, args, anim_args, video_args, parseq_args, loop_args, controlnet_args,
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 725, in render_animation
+    prev_vid_img = Image.open(os.path.join(args.outdir, 'inputframes', get_frame_name(anim_args.video_init_path) + f"{frame_idx:09}.jpg"))
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\PIL\Image.py", line 3236, in open
+    fp = builtins.open(filename, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Users\\mix\\ainodes\\ainodes-engine\\output/deforum\\Deforum_20230520193425\\inputframes\\woman_-_10808_720p000000000.jpg'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1925, in deforum_ainodes_adapter
+    test = render_animation(node, args, anim_args, video_args, parseq_args, loop_args, controlnet_args,
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 725, in render_animation
+    prev_vid_img = Image.open(os.path.join(args.outdir, 'inputframes', get_frame_name(anim_args.video_init_path) + f"{frame_idx:09}.jpg"))
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\PIL\Image.py", line 3236, in open
+    fp = builtins.open(filename, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Users\\mix\\ainodes\\ainodes-engine\\output/deforum\\Deforum_20230520193445\\inputframes\\woman_-_10808_720p000000000.jpg'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1925, in deforum_ainodes_adapter
+    test = render_animation(node, args, anim_args, video_args, parseq_args, loop_args, controlnet_args,
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 725, in render_animation
+    prev_vid_img = Image.open(os.path.join(args.outdir, 'inputframes', get_frame_name(anim_args.video_init_path) + f"{frame_idx:09}.jpg"))
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\PIL\Image.py", line 3236, in open
+    fp = builtins.open(filename, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Users\\mix\\ainodes\\ainodes-engine\\output/deforum\\Deforum_20230520193447\\inputframes\\woman_-_10808_720p000000000.jpg'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1925, in deforum_ainodes_adapter
+    test = render_animation(node, args, anim_args, video_args, parseq_args, loop_args, controlnet_args,
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 725, in render_animation
+    prev_vid_img = Image.open(os.path.join(args.outdir, 'inputframes', get_frame_name(anim_args.video_init_path) + f"{frame_idx:09}.jpg"))
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\PIL\Image.py", line 3236, in open
+    fp = builtins.open(filename, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Users\\mix\\ainodes\\ainodes-engine\\output/deforum\\Deforum_20230520193456\\inputframes\\woman_-_10808_720p000000000.jpg'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1925, in deforum_ainodes_adapter
+    test = render_animation(node, args, anim_args, video_args, parseq_args, loop_args, controlnet_args,
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 725, in render_animation
+    prev_vid_img = Image.open(os.path.join(args.outdir, 'inputframes', get_frame_name(anim_args.video_init_path) + f"{frame_idx:09}.jpg"))
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\PIL\Image.py", line 3236, in open
+    fp = builtins.open(filename, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Users\\mix\\ainodes\\ainodes-engine\\output/deforum\\Deforum_20230520193457\\inputframes\\woman_-_10808_720p000000000.jpg'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1925, in deforum_ainodes_adapter
+    test = render_animation(node, args, anim_args, video_args, parseq_args, loop_args, controlnet_args,
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 725, in render_animation
+    prev_vid_img = Image.open(os.path.join(args.outdir, 'inputframes', get_frame_name(anim_args.video_init_path) + f"{frame_idx:09}.jpg"))
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\PIL\Image.py", line 3236, in open
+    fp = builtins.open(filename, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Users\\mix\\ainodes\\ainodes-engine\\output/deforum\\Deforum_20230520193425\\inputframes\\woman_-_10808_720p000000000.jpg'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1925, in deforum_ainodes_adapter
+    test = render_animation(node, args, anim_args, video_args, parseq_args, loop_args, controlnet_args,
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 725, in render_animation
+    prev_vid_img = Image.open(os.path.join(args.outdir, 'inputframes', get_frame_name(anim_args.video_init_path) + f"{frame_idx:09}.jpg"))
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\PIL\Image.py", line 3236, in open
+    fp = builtins.open(filename, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Users\\mix\\ainodes\\ainodes-engine\\output/deforum\\Deforum_20230520193445\\inputframes\\woman_-_10808_720p000000000.jpg'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1925, in deforum_ainodes_adapter
+    test = render_animation(node, args, anim_args, video_args, parseq_args, loop_args, controlnet_args,
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 725, in render_animation
+    prev_vid_img = Image.open(os.path.join(args.outdir, 'inputframes', get_frame_name(anim_args.video_init_path) + f"{frame_idx:09}.jpg"))
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\PIL\Image.py", line 3236, in open
+    fp = builtins.open(filename, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Users\\mix\\ainodes\\ainodes-engine\\output/deforum\\Deforum_20230520193447\\inputframes\\woman_-_10808_720p000000000.jpg'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1925, in deforum_ainodes_adapter
+    test = render_animation(node, args, anim_args, video_args, parseq_args, loop_args, controlnet_args,
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 725, in render_animation
+    prev_vid_img = Image.open(os.path.join(args.outdir, 'inputframes', get_frame_name(anim_args.video_init_path) + f"{frame_idx:09}.jpg"))
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\PIL\Image.py", line 3236, in open
+    fp = builtins.open(filename, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Users\\mix\\ainodes\\ainodes-engine\\output/deforum\\Deforum_20230520193456\\inputframes\\woman_-_10808_720p000000000.jpg'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1925, in deforum_ainodes_adapter
+    test = render_animation(node, args, anim_args, video_args, parseq_args, loop_args, controlnet_args,
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 725, in render_animation
+    prev_vid_img = Image.open(os.path.join(args.outdir, 'inputframes', get_frame_name(anim_args.video_init_path) + f"{frame_idx:09}.jpg"))
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\PIL\Image.py", line 3236, in open
+    fp = builtins.open(filename, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Users\\mix\\ainodes\\ainodes-engine\\output/deforum\\Deforum_20230520193457\\inputframes\\woman_-_10808_720p000000000.jpg'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1925, in deforum_ainodes_adapter
+    test = render_animation(node, args, anim_args, video_args, parseq_args, loop_args, controlnet_args,
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 725, in render_animation
+    prev_vid_img = Image.open(os.path.join(args.outdir, 'inputframes', get_frame_name(anim_args.video_init_path) + f"{frame_idx:09}.jpg"))
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\PIL\Image.py", line 3236, in open
+    fp = builtins.open(filename, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Users\\mix\\ainodes\\ainodes-engine\\output/deforum\\Deforum_20230520193726\\inputframes\\woman_-_10808_720p000000000.jpg'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1925, in deforum_ainodes_adapter
+    test = render_animation(node, args, anim_args, video_args, parseq_args, loop_args, controlnet_args,
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 725, in render_animation
+    prev_vid_img = Image.open(os.path.join(args.outdir, 'inputframes', get_frame_name(anim_args.video_init_path) + f"{frame_idx:09}.jpg"))
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\PIL\Image.py", line 3236, in open
+    fp = builtins.open(filename, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Users\\mix\\ainodes\\ainodes-engine\\output/deforum\\Deforum_20230520193425\\inputframes\\woman_-_10808_720p000000000.jpg'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1925, in deforum_ainodes_adapter
+    test = render_animation(node, args, anim_args, video_args, parseq_args, loop_args, controlnet_args,
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 725, in render_animation
+    prev_vid_img = Image.open(os.path.join(args.outdir, 'inputframes', get_frame_name(anim_args.video_init_path) + f"{frame_idx:09}.jpg"))
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\PIL\Image.py", line 3236, in open
+    fp = builtins.open(filename, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Users\\mix\\ainodes\\ainodes-engine\\output/deforum\\Deforum_20230520193445\\inputframes\\woman_-_10808_720p000000000.jpg'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1925, in deforum_ainodes_adapter
+    test = render_animation(node, args, anim_args, video_args, parseq_args, loop_args, controlnet_args,
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 725, in render_animation
+    prev_vid_img = Image.open(os.path.join(args.outdir, 'inputframes', get_frame_name(anim_args.video_init_path) + f"{frame_idx:09}.jpg"))
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\PIL\Image.py", line 3236, in open
+    fp = builtins.open(filename, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Users\\mix\\ainodes\\ainodes-engine\\output/deforum\\Deforum_20230520193447\\inputframes\\woman_-_10808_720p000000000.jpg'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1925, in deforum_ainodes_adapter
+    test = render_animation(node, args, anim_args, video_args, parseq_args, loop_args, controlnet_args,
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 725, in render_animation
+    prev_vid_img = Image.open(os.path.join(args.outdir, 'inputframes', get_frame_name(anim_args.video_init_path) + f"{frame_idx:09}.jpg"))
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\PIL\Image.py", line 3236, in open
+    fp = builtins.open(filename, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Users\\mix\\ainodes\\ainodes-engine\\output/deforum\\Deforum_20230520193456\\inputframes\\woman_-_10808_720p000000000.jpg'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1925, in deforum_ainodes_adapter
+    test = render_animation(node, args, anim_args, video_args, parseq_args, loop_args, controlnet_args,
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 725, in render_animation
+    prev_vid_img = Image.open(os.path.join(args.outdir, 'inputframes', get_frame_name(anim_args.video_init_path) + f"{frame_idx:09}.jpg"))
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\PIL\Image.py", line 3236, in open
+    fp = builtins.open(filename, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Users\\mix\\ainodes\\ainodes-engine\\output/deforum\\Deforum_20230520193457\\inputframes\\woman_-_10808_720p000000000.jpg'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1925, in deforum_ainodes_adapter
+    test = render_animation(node, args, anim_args, video_args, parseq_args, loop_args, controlnet_args,
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 725, in render_animation
+    prev_vid_img = Image.open(os.path.join(args.outdir, 'inputframes', get_frame_name(anim_args.video_init_path) + f"{frame_idx:09}.jpg"))
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\PIL\Image.py", line 3236, in open
+    fp = builtins.open(filename, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Users\\mix\\ainodes\\ainodes-engine\\output/deforum\\Deforum_20230520193726\\inputframes\\woman_-_10808_720p000000000.jpg'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1925, in deforum_ainodes_adapter
+    test = render_animation(node, args, anim_args, video_args, parseq_args, loop_args, controlnet_args,
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 725, in render_animation
+    prev_vid_img = Image.open(os.path.join(args.outdir, 'inputframes', get_frame_name(anim_args.video_init_path) + f"{frame_idx:09}.jpg"))
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\PIL\Image.py", line 3236, in open
+    fp = builtins.open(filename, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Users\\mix\\ainodes\\ainodes-engine\\output/deforum\\Deforum_20230520193728\\inputframes\\woman_-_10808_720p000000000.jpg'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1925, in deforum_ainodes_adapter
+    test = render_animation(node, args, anim_args, video_args, parseq_args, loop_args, controlnet_args,
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 725, in render_animation
+    prev_vid_img = Image.open(os.path.join(args.outdir, 'inputframes', get_frame_name(anim_args.video_init_path) + f"{frame_idx:09}.jpg"))
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\PIL\Image.py", line 3236, in open
+    fp = builtins.open(filename, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Users\\mix\\ainodes\\ainodes-engine\\output/deforum\\Deforum_20230520193425\\inputframes\\woman_-_10808_720p000000000.jpg'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1925, in deforum_ainodes_adapter
+    test = render_animation(node, args, anim_args, video_args, parseq_args, loop_args, controlnet_args,
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 725, in render_animation
+    prev_vid_img = Image.open(os.path.join(args.outdir, 'inputframes', get_frame_name(anim_args.video_init_path) + f"{frame_idx:09}.jpg"))
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\PIL\Image.py", line 3236, in open
+    fp = builtins.open(filename, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Users\\mix\\ainodes\\ainodes-engine\\output/deforum\\Deforum_20230520193445\\inputframes\\woman_-_10808_720p000000000.jpg'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1925, in deforum_ainodes_adapter
+    test = render_animation(node, args, anim_args, video_args, parseq_args, loop_args, controlnet_args,
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 725, in render_animation
+    prev_vid_img = Image.open(os.path.join(args.outdir, 'inputframes', get_frame_name(anim_args.video_init_path) + f"{frame_idx:09}.jpg"))
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\PIL\Image.py", line 3236, in open
+    fp = builtins.open(filename, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Users\\mix\\ainodes\\ainodes-engine\\output/deforum\\Deforum_20230520193447\\inputframes\\woman_-_10808_720p000000000.jpg'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1925, in deforum_ainodes_adapter
+    test = render_animation(node, args, anim_args, video_args, parseq_args, loop_args, controlnet_args,
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 725, in render_animation
+    prev_vid_img = Image.open(os.path.join(args.outdir, 'inputframes', get_frame_name(anim_args.video_init_path) + f"{frame_idx:09}.jpg"))
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\PIL\Image.py", line 3236, in open
+    fp = builtins.open(filename, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Users\\mix\\ainodes\\ainodes-engine\\output/deforum\\Deforum_20230520193456\\inputframes\\woman_-_10808_720p000000000.jpg'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1925, in deforum_ainodes_adapter
+    test = render_animation(node, args, anim_args, video_args, parseq_args, loop_args, controlnet_args,
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 725, in render_animation
+    prev_vid_img = Image.open(os.path.join(args.outdir, 'inputframes', get_frame_name(anim_args.video_init_path) + f"{frame_idx:09}.jpg"))
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\PIL\Image.py", line 3236, in open
+    fp = builtins.open(filename, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Users\\mix\\ainodes\\ainodes-engine\\output/deforum\\Deforum_20230520193457\\inputframes\\woman_-_10808_720p000000000.jpg'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1925, in deforum_ainodes_adapter
+    test = render_animation(node, args, anim_args, video_args, parseq_args, loop_args, controlnet_args,
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 725, in render_animation
+    prev_vid_img = Image.open(os.path.join(args.outdir, 'inputframes', get_frame_name(anim_args.video_init_path) + f"{frame_idx:09}.jpg"))
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\PIL\Image.py", line 3236, in open
+    fp = builtins.open(filename, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Users\\mix\\ainodes\\ainodes-engine\\output/deforum\\Deforum_20230520193726\\inputframes\\woman_-_10808_720p000000000.jpg'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1925, in deforum_ainodes_adapter
+    test = render_animation(node, args, anim_args, video_args, parseq_args, loop_args, controlnet_args,
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 725, in render_animation
+    prev_vid_img = Image.open(os.path.join(args.outdir, 'inputframes', get_frame_name(anim_args.video_init_path) + f"{frame_idx:09}.jpg"))
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\PIL\Image.py", line 3236, in open
+    fp = builtins.open(filename, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Users\\mix\\ainodes\\ainodes-engine\\output/deforum\\Deforum_20230520193728\\inputframes\\woman_-_10808_720p000000000.jpg'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1925, in deforum_ainodes_adapter
+    test = render_animation(node, args, anim_args, video_args, parseq_args, loop_args, controlnet_args,
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 725, in render_animation
+    prev_vid_img = Image.open(os.path.join(args.outdir, 'inputframes', get_frame_name(anim_args.video_init_path) + f"{frame_idx:09}.jpg"))
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\PIL\Image.py", line 3236, in open
+    fp = builtins.open(filename, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Users\\mix\\ainodes\\ainodes-engine\\output/deforum\\Deforum_20230520193728\\inputframes\\woman_-_10808_720p000000000.jpg'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1925, in deforum_ainodes_adapter
+    test = render_animation(node, args, anim_args, video_args, parseq_args, loop_args, controlnet_args,
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 725, in render_animation
+    prev_vid_img = Image.open(os.path.join(args.outdir, 'inputframes', get_frame_name(anim_args.video_init_path) + f"{frame_idx:09}.jpg"))
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\PIL\Image.py", line 3236, in open
+    fp = builtins.open(filename, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Users\\mix\\ainodes\\ainodes-engine\\output/deforum\\Deforum_20230520193425\\inputframes\\woman_-_10808_720p000000000.jpg'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1925, in deforum_ainodes_adapter
+    test = render_animation(node, args, anim_args, video_args, parseq_args, loop_args, controlnet_args,
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 725, in render_animation
+    prev_vid_img = Image.open(os.path.join(args.outdir, 'inputframes', get_frame_name(anim_args.video_init_path) + f"{frame_idx:09}.jpg"))
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\PIL\Image.py", line 3236, in open
+    fp = builtins.open(filename, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Users\\mix\\ainodes\\ainodes-engine\\output/deforum\\Deforum_20230520193445\\inputframes\\woman_-_10808_720p000000000.jpg'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1925, in deforum_ainodes_adapter
+    test = render_animation(node, args, anim_args, video_args, parseq_args, loop_args, controlnet_args,
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 725, in render_animation
+    prev_vid_img = Image.open(os.path.join(args.outdir, 'inputframes', get_frame_name(anim_args.video_init_path) + f"{frame_idx:09}.jpg"))
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\PIL\Image.py", line 3236, in open
+    fp = builtins.open(filename, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Users\\mix\\ainodes\\ainodes-engine\\output/deforum\\Deforum_20230520193447\\inputframes\\woman_-_10808_720p000000000.jpg'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1925, in deforum_ainodes_adapter
+    test = render_animation(node, args, anim_args, video_args, parseq_args, loop_args, controlnet_args,
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 725, in render_animation
+    prev_vid_img = Image.open(os.path.join(args.outdir, 'inputframes', get_frame_name(anim_args.video_init_path) + f"{frame_idx:09}.jpg"))
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\PIL\Image.py", line 3236, in open
+    fp = builtins.open(filename, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Users\\mix\\ainodes\\ainodes-engine\\output/deforum\\Deforum_20230520193456\\inputframes\\woman_-_10808_720p000000000.jpg'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1925, in deforum_ainodes_adapter
+    test = render_animation(node, args, anim_args, video_args, parseq_args, loop_args, controlnet_args,
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 725, in render_animation
+    prev_vid_img = Image.open(os.path.join(args.outdir, 'inputframes', get_frame_name(anim_args.video_init_path) + f"{frame_idx:09}.jpg"))
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\PIL\Image.py", line 3236, in open
+    fp = builtins.open(filename, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Users\\mix\\ainodes\\ainodes-engine\\output/deforum\\Deforum_20230520193457\\inputframes\\woman_-_10808_720p000000000.jpg'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1925, in deforum_ainodes_adapter
+    test = render_animation(node, args, anim_args, video_args, parseq_args, loop_args, controlnet_args,
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 725, in render_animation
+    prev_vid_img = Image.open(os.path.join(args.outdir, 'inputframes', get_frame_name(anim_args.video_init_path) + f"{frame_idx:09}.jpg"))
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\PIL\Image.py", line 3236, in open
+    fp = builtins.open(filename, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Users\\mix\\ainodes\\ainodes-engine\\output/deforum\\Deforum_20230520193726\\inputframes\\woman_-_10808_720p000000000.jpg'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1925, in deforum_ainodes_adapter
+    test = render_animation(node, args, anim_args, video_args, parseq_args, loop_args, controlnet_args,
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 725, in render_animation
+    prev_vid_img = Image.open(os.path.join(args.outdir, 'inputframes', get_frame_name(anim_args.video_init_path) + f"{frame_idx:09}.jpg"))
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\PIL\Image.py", line 3236, in open
+    fp = builtins.open(filename, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Users\\mix\\ainodes\\ainodes-engine\\output/deforum\\Deforum_20230520193728\\inputframes\\woman_-_10808_720p000000000.jpg'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1925, in deforum_ainodes_adapter
+    test = render_animation(node, args, anim_args, video_args, parseq_args, loop_args, controlnet_args,
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 725, in render_animation
+    prev_vid_img = Image.open(os.path.join(args.outdir, 'inputframes', get_frame_name(anim_args.video_init_path) + f"{frame_idx:09}.jpg"))
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\PIL\Image.py", line 3236, in open
+    fp = builtins.open(filename, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Users\\mix\\ainodes\\ainodes-engine\\output/deforum\\Deforum_20230520193728\\inputframes\\woman_-_10808_720p000000000.jpg'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1925, in deforum_ainodes_adapter
+    test = render_animation(node, args, anim_args, video_args, parseq_args, loop_args, controlnet_args,
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 725, in render_animation
+    prev_vid_img = Image.open(os.path.join(args.outdir, 'inputframes', get_frame_name(anim_args.video_init_path) + f"{frame_idx:09}.jpg"))
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\PIL\Image.py", line 3236, in open
+    fp = builtins.open(filename, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Users\\mix\\ainodes\\ainodes-engine\\output/deforum\\Deforum_20230520193729\\inputframes\\woman_-_10808_720p000000000.jpg'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1925, in deforum_ainodes_adapter
+    test = render_animation(node, args, anim_args, video_args, parseq_args, loop_args, controlnet_args,
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 725, in render_animation
+    prev_vid_img = Image.open(os.path.join(args.outdir, 'inputframes', get_frame_name(anim_args.video_init_path) + f"{frame_idx:09}.jpg"))
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\PIL\Image.py", line 3236, in open
+    fp = builtins.open(filename, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Users\\mix\\ainodes\\ainodes-engine\\output/deforum\\Deforum_20230520193425\\inputframes\\woman_-_10808_720p000000000.jpg'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1925, in deforum_ainodes_adapter
+    test = render_animation(node, args, anim_args, video_args, parseq_args, loop_args, controlnet_args,
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 725, in render_animation
+    prev_vid_img = Image.open(os.path.join(args.outdir, 'inputframes', get_frame_name(anim_args.video_init_path) + f"{frame_idx:09}.jpg"))
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\PIL\Image.py", line 3236, in open
+    fp = builtins.open(filename, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Users\\mix\\ainodes\\ainodes-engine\\output/deforum\\Deforum_20230520193445\\inputframes\\woman_-_10808_720p000000000.jpg'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1925, in deforum_ainodes_adapter
+    test = render_animation(node, args, anim_args, video_args, parseq_args, loop_args, controlnet_args,
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 725, in render_animation
+    prev_vid_img = Image.open(os.path.join(args.outdir, 'inputframes', get_frame_name(anim_args.video_init_path) + f"{frame_idx:09}.jpg"))
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\PIL\Image.py", line 3236, in open
+    fp = builtins.open(filename, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Users\\mix\\ainodes\\ainodes-engine\\output/deforum\\Deforum_20230520193447\\inputframes\\woman_-_10808_720p000000000.jpg'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1925, in deforum_ainodes_adapter
+    test = render_animation(node, args, anim_args, video_args, parseq_args, loop_args, controlnet_args,
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 725, in render_animation
+    prev_vid_img = Image.open(os.path.join(args.outdir, 'inputframes', get_frame_name(anim_args.video_init_path) + f"{frame_idx:09}.jpg"))
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\PIL\Image.py", line 3236, in open
+    fp = builtins.open(filename, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Users\\mix\\ainodes\\ainodes-engine\\output/deforum\\Deforum_20230520193456\\inputframes\\woman_-_10808_720p000000000.jpg'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1925, in deforum_ainodes_adapter
+    test = render_animation(node, args, anim_args, video_args, parseq_args, loop_args, controlnet_args,
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 725, in render_animation
+    prev_vid_img = Image.open(os.path.join(args.outdir, 'inputframes', get_frame_name(anim_args.video_init_path) + f"{frame_idx:09}.jpg"))
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\PIL\Image.py", line 3236, in open
+    fp = builtins.open(filename, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Users\\mix\\ainodes\\ainodes-engine\\output/deforum\\Deforum_20230520193457\\inputframes\\woman_-_10808_720p000000000.jpg'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1925, in deforum_ainodes_adapter
+    test = render_animation(node, args, anim_args, video_args, parseq_args, loop_args, controlnet_args,
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 725, in render_animation
+    prev_vid_img = Image.open(os.path.join(args.outdir, 'inputframes', get_frame_name(anim_args.video_init_path) + f"{frame_idx:09}.jpg"))
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\PIL\Image.py", line 3236, in open
+    fp = builtins.open(filename, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Users\\mix\\ainodes\\ainodes-engine\\output/deforum\\Deforum_20230520193726\\inputframes\\woman_-_10808_720p000000000.jpg'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1925, in deforum_ainodes_adapter
+    test = render_animation(node, args, anim_args, video_args, parseq_args, loop_args, controlnet_args,
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 725, in render_animation
+    prev_vid_img = Image.open(os.path.join(args.outdir, 'inputframes', get_frame_name(anim_args.video_init_path) + f"{frame_idx:09}.jpg"))
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\PIL\Image.py", line 3236, in open
+    fp = builtins.open(filename, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Users\\mix\\ainodes\\ainodes-engine\\output/deforum\\Deforum_20230520193728\\inputframes\\woman_-_10808_720p000000000.jpg'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1925, in deforum_ainodes_adapter
+    test = render_animation(node, args, anim_args, video_args, parseq_args, loop_args, controlnet_args,
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 725, in render_animation
+    prev_vid_img = Image.open(os.path.join(args.outdir, 'inputframes', get_frame_name(anim_args.video_init_path) + f"{frame_idx:09}.jpg"))
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\PIL\Image.py", line 3236, in open
+    fp = builtins.open(filename, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Users\\mix\\ainodes\\ainodes-engine\\output/deforum\\Deforum_20230520193728\\inputframes\\woman_-_10808_720p000000000.jpg'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1925, in deforum_ainodes_adapter
+    test = render_animation(node, args, anim_args, video_args, parseq_args, loop_args, controlnet_args,
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 725, in render_animation
+    prev_vid_img = Image.open(os.path.join(args.outdir, 'inputframes', get_frame_name(anim_args.video_init_path) + f"{frame_idx:09}.jpg"))
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\PIL\Image.py", line 3236, in open
+    fp = builtins.open(filename, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Users\\mix\\ainodes\\ainodes-engine\\output/deforum\\Deforum_20230520193729\\inputframes\\woman_-_10808_720p000000000.jpg'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1925, in deforum_ainodes_adapter
+    test = render_animation(node, args, anim_args, video_args, parseq_args, loop_args, controlnet_args,
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 725, in render_animation
+    prev_vid_img = Image.open(os.path.join(args.outdir, 'inputframes', get_frame_name(anim_args.video_init_path) + f"{frame_idx:09}.jpg"))
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\PIL\Image.py", line 3236, in open
+    fp = builtins.open(filename, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Users\\mix\\ainodes\\ainodes-engine\\output/deforum\\Deforum_20230520193740\\inputframes\\woman_-_10808_720p000000000.jpg'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1925, in deforum_ainodes_adapter
+    test = render_animation(node, args, anim_args, video_args, parseq_args, loop_args, controlnet_args,
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 725, in render_animation
+    prev_vid_img = Image.open(os.path.join(args.outdir, 'inputframes', get_frame_name(anim_args.video_init_path) + f"{frame_idx:09}.jpg"))
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\PIL\Image.py", line 3236, in open
+    fp = builtins.open(filename, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Users\\mix\\ainodes\\ainodes-engine\\output/deforum\\Deforum_20230520193425\\inputframes\\woman_-_10808_720p000000000.jpg'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1925, in deforum_ainodes_adapter
+    test = render_animation(node, args, anim_args, video_args, parseq_args, loop_args, controlnet_args,
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 725, in render_animation
+    prev_vid_img = Image.open(os.path.join(args.outdir, 'inputframes', get_frame_name(anim_args.video_init_path) + f"{frame_idx:09}.jpg"))
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\PIL\Image.py", line 3236, in open
+    fp = builtins.open(filename, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Users\\mix\\ainodes\\ainodes-engine\\output/deforum\\Deforum_20230520193445\\inputframes\\woman_-_10808_720p000000000.jpg'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1925, in deforum_ainodes_adapter
+    test = render_animation(node, args, anim_args, video_args, parseq_args, loop_args, controlnet_args,
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 725, in render_animation
+    prev_vid_img = Image.open(os.path.join(args.outdir, 'inputframes', get_frame_name(anim_args.video_init_path) + f"{frame_idx:09}.jpg"))
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\PIL\Image.py", line 3236, in open
+    fp = builtins.open(filename, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Users\\mix\\ainodes\\ainodes-engine\\output/deforum\\Deforum_20230520193447\\inputframes\\woman_-_10808_720p000000000.jpg'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1925, in deforum_ainodes_adapter
+    test = render_animation(node, args, anim_args, video_args, parseq_args, loop_args, controlnet_args,
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 725, in render_animation
+    prev_vid_img = Image.open(os.path.join(args.outdir, 'inputframes', get_frame_name(anim_args.video_init_path) + f"{frame_idx:09}.jpg"))
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\PIL\Image.py", line 3236, in open
+    fp = builtins.open(filename, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Users\\mix\\ainodes\\ainodes-engine\\output/deforum\\Deforum_20230520193456\\inputframes\\woman_-_10808_720p000000000.jpg'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1925, in deforum_ainodes_adapter
+    test = render_animation(node, args, anim_args, video_args, parseq_args, loop_args, controlnet_args,
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 725, in render_animation
+    prev_vid_img = Image.open(os.path.join(args.outdir, 'inputframes', get_frame_name(anim_args.video_init_path) + f"{frame_idx:09}.jpg"))
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\PIL\Image.py", line 3236, in open
+    fp = builtins.open(filename, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Users\\mix\\ainodes\\ainodes-engine\\output/deforum\\Deforum_20230520193457\\inputframes\\woman_-_10808_720p000000000.jpg'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1925, in deforum_ainodes_adapter
+    test = render_animation(node, args, anim_args, video_args, parseq_args, loop_args, controlnet_args,
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 725, in render_animation
+    prev_vid_img = Image.open(os.path.join(args.outdir, 'inputframes', get_frame_name(anim_args.video_init_path) + f"{frame_idx:09}.jpg"))
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\PIL\Image.py", line 3236, in open
+    fp = builtins.open(filename, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Users\\mix\\ainodes\\ainodes-engine\\output/deforum\\Deforum_20230520193726\\inputframes\\woman_-_10808_720p000000000.jpg'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1925, in deforum_ainodes_adapter
+    test = render_animation(node, args, anim_args, video_args, parseq_args, loop_args, controlnet_args,
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 725, in render_animation
+    prev_vid_img = Image.open(os.path.join(args.outdir, 'inputframes', get_frame_name(anim_args.video_init_path) + f"{frame_idx:09}.jpg"))
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\PIL\Image.py", line 3236, in open
+    fp = builtins.open(filename, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Users\\mix\\ainodes\\ainodes-engine\\output/deforum\\Deforum_20230520193728\\inputframes\\woman_-_10808_720p000000000.jpg'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1925, in deforum_ainodes_adapter
+    test = render_animation(node, args, anim_args, video_args, parseq_args, loop_args, controlnet_args,
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 725, in render_animation
+    prev_vid_img = Image.open(os.path.join(args.outdir, 'inputframes', get_frame_name(anim_args.video_init_path) + f"{frame_idx:09}.jpg"))
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\PIL\Image.py", line 3236, in open
+    fp = builtins.open(filename, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Users\\mix\\ainodes\\ainodes-engine\\output/deforum\\Deforum_20230520193728\\inputframes\\woman_-_10808_720p000000000.jpg'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1925, in deforum_ainodes_adapter
+    test = render_animation(node, args, anim_args, video_args, parseq_args, loop_args, controlnet_args,
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 725, in render_animation
+    prev_vid_img = Image.open(os.path.join(args.outdir, 'inputframes', get_frame_name(anim_args.video_init_path) + f"{frame_idx:09}.jpg"))
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\PIL\Image.py", line 3236, in open
+    fp = builtins.open(filename, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Users\\mix\\ainodes\\ainodes-engine\\output/deforum\\Deforum_20230520193729\\inputframes\\woman_-_10808_720p000000000.jpg'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1925, in deforum_ainodes_adapter
+    test = render_animation(node, args, anim_args, video_args, parseq_args, loop_args, controlnet_args,
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 725, in render_animation
+    prev_vid_img = Image.open(os.path.join(args.outdir, 'inputframes', get_frame_name(anim_args.video_init_path) + f"{frame_idx:09}.jpg"))
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\PIL\Image.py", line 3236, in open
+    fp = builtins.open(filename, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Users\\mix\\ainodes\\ainodes-engine\\output/deforum\\Deforum_20230520193740\\inputframes\\woman_-_10808_720p000000000.jpg'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1925, in deforum_ainodes_adapter
+    test = render_animation(node, args, anim_args, video_args, parseq_args, loop_args, controlnet_args,
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 725, in render_animation
+    prev_vid_img = Image.open(os.path.join(args.outdir, 'inputframes', get_frame_name(anim_args.video_init_path) + f"{frame_idx:09}.jpg"))
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\PIL\Image.py", line 3236, in open
+    fp = builtins.open(filename, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Users\\mix\\ainodes\\ainodes-engine\\output/deforum\\Deforum_20230520193741\\inputframes\\woman_-_10808_720p000000000.jpg'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1925, in deforum_ainodes_adapter
+    test = render_animation(node, args, anim_args, video_args, parseq_args, loop_args, controlnet_args,
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 725, in render_animation
+    prev_vid_img = Image.open(os.path.join(args.outdir, 'inputframes', get_frame_name(anim_args.video_init_path) + f"{frame_idx:09}.jpg"))
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\PIL\Image.py", line 3236, in open
+    fp = builtins.open(filename, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Users\\mix\\ainodes\\ainodes-engine\\output/deforum\\Deforum_20230520193425\\inputframes\\woman_-_10808_720p000000000.jpg'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1925, in deforum_ainodes_adapter
+    test = render_animation(node, args, anim_args, video_args, parseq_args, loop_args, controlnet_args,
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 725, in render_animation
+    prev_vid_img = Image.open(os.path.join(args.outdir, 'inputframes', get_frame_name(anim_args.video_init_path) + f"{frame_idx:09}.jpg"))
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\PIL\Image.py", line 3236, in open
+    fp = builtins.open(filename, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Users\\mix\\ainodes\\ainodes-engine\\output/deforum\\Deforum_20230520193445\\inputframes\\woman_-_10808_720p000000000.jpg'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1925, in deforum_ainodes_adapter
+    test = render_animation(node, args, anim_args, video_args, parseq_args, loop_args, controlnet_args,
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 725, in render_animation
+    prev_vid_img = Image.open(os.path.join(args.outdir, 'inputframes', get_frame_name(anim_args.video_init_path) + f"{frame_idx:09}.jpg"))
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\PIL\Image.py", line 3236, in open
+    fp = builtins.open(filename, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Users\\mix\\ainodes\\ainodes-engine\\output/deforum\\Deforum_20230520193447\\inputframes\\woman_-_10808_720p000000000.jpg'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1925, in deforum_ainodes_adapter
+    test = render_animation(node, args, anim_args, video_args, parseq_args, loop_args, controlnet_args,
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 725, in render_animation
+    prev_vid_img = Image.open(os.path.join(args.outdir, 'inputframes', get_frame_name(anim_args.video_init_path) + f"{frame_idx:09}.jpg"))
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\PIL\Image.py", line 3236, in open
+    fp = builtins.open(filename, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Users\\mix\\ainodes\\ainodes-engine\\output/deforum\\Deforum_20230520193456\\inputframes\\woman_-_10808_720p000000000.jpg'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1925, in deforum_ainodes_adapter
+    test = render_animation(node, args, anim_args, video_args, parseq_args, loop_args, controlnet_args,
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 725, in render_animation
+    prev_vid_img = Image.open(os.path.join(args.outdir, 'inputframes', get_frame_name(anim_args.video_init_path) + f"{frame_idx:09}.jpg"))
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\PIL\Image.py", line 3236, in open
+    fp = builtins.open(filename, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Users\\mix\\ainodes\\ainodes-engine\\output/deforum\\Deforum_20230520193457\\inputframes\\woman_-_10808_720p000000000.jpg'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1925, in deforum_ainodes_adapter
+    test = render_animation(node, args, anim_args, video_args, parseq_args, loop_args, controlnet_args,
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 725, in render_animation
+    prev_vid_img = Image.open(os.path.join(args.outdir, 'inputframes', get_frame_name(anim_args.video_init_path) + f"{frame_idx:09}.jpg"))
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\PIL\Image.py", line 3236, in open
+    fp = builtins.open(filename, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Users\\mix\\ainodes\\ainodes-engine\\output/deforum\\Deforum_20230520193726\\inputframes\\woman_-_10808_720p000000000.jpg'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1925, in deforum_ainodes_adapter
+    test = render_animation(node, args, anim_args, video_args, parseq_args, loop_args, controlnet_args,
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 725, in render_animation
+    prev_vid_img = Image.open(os.path.join(args.outdir, 'inputframes', get_frame_name(anim_args.video_init_path) + f"{frame_idx:09}.jpg"))
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\PIL\Image.py", line 3236, in open
+    fp = builtins.open(filename, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Users\\mix\\ainodes\\ainodes-engine\\output/deforum\\Deforum_20230520193728\\inputframes\\woman_-_10808_720p000000000.jpg'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1925, in deforum_ainodes_adapter
+    test = render_animation(node, args, anim_args, video_args, parseq_args, loop_args, controlnet_args,
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 725, in render_animation
+    prev_vid_img = Image.open(os.path.join(args.outdir, 'inputframes', get_frame_name(anim_args.video_init_path) + f"{frame_idx:09}.jpg"))
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\PIL\Image.py", line 3236, in open
+    fp = builtins.open(filename, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Users\\mix\\ainodes\\ainodes-engine\\output/deforum\\Deforum_20230520193728\\inputframes\\woman_-_10808_720p000000000.jpg'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1925, in deforum_ainodes_adapter
+    test = render_animation(node, args, anim_args, video_args, parseq_args, loop_args, controlnet_args,
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 725, in render_animation
+    prev_vid_img = Image.open(os.path.join(args.outdir, 'inputframes', get_frame_name(anim_args.video_init_path) + f"{frame_idx:09}.jpg"))
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\PIL\Image.py", line 3236, in open
+    fp = builtins.open(filename, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Users\\mix\\ainodes\\ainodes-engine\\output/deforum\\Deforum_20230520193729\\inputframes\\woman_-_10808_720p000000000.jpg'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1925, in deforum_ainodes_adapter
+    test = render_animation(node, args, anim_args, video_args, parseq_args, loop_args, controlnet_args,
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 725, in render_animation
+    prev_vid_img = Image.open(os.path.join(args.outdir, 'inputframes', get_frame_name(anim_args.video_init_path) + f"{frame_idx:09}.jpg"))
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\PIL\Image.py", line 3236, in open
+    fp = builtins.open(filename, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Users\\mix\\ainodes\\ainodes-engine\\output/deforum\\Deforum_20230520193740\\inputframes\\woman_-_10808_720p000000000.jpg'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1925, in deforum_ainodes_adapter
+    test = render_animation(node, args, anim_args, video_args, parseq_args, loop_args, controlnet_args,
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 725, in render_animation
+    prev_vid_img = Image.open(os.path.join(args.outdir, 'inputframes', get_frame_name(anim_args.video_init_path) + f"{frame_idx:09}.jpg"))
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\PIL\Image.py", line 3236, in open
+    fp = builtins.open(filename, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Users\\mix\\ainodes\\ainodes-engine\\output/deforum\\Deforum_20230520193741\\inputframes\\woman_-_10808_720p000000000.jpg'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1925, in deforum_ainodes_adapter
+    except OSError:
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 892, in render_animation
+    image = generate(node, args, keys, anim_args, loop_args, controlnet_args, root, frame_idx, sampler_name=scheduled_sampler_name)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 965, in generate
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1727, in generate_inner
+    processed = generate_with_node(node, prompt, negative_prompt, args, root, frame, init_images=None)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1793, in generate_with_node
+    sampler_node, _ = node.getInput(2)
+TypeError: cannot unpack non-iterable NoneType object
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1925, in deforum_ainodes_adapter
+    test = render_animation(node, args, anim_args, video_args, parseq_args, loop_args, controlnet_args,
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 892, in render_animation
+    image = generate(node, args, keys, anim_args, loop_args, controlnet_args, root, frame_idx, sampler_name=scheduled_sampler_name)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1592, in generate
+    image = generate_inner(node, args, keys, anim_args, loop_args, controlnet_args, root, frame, return_sample, sampler_name)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1757, in generate_inner
+    processed = generate_with_node(node, prompt, negative_prompt, args, root, frame, [init_image])
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1837, in generate_with_node
+    init_images[0] = pil_image_to_pixmap(init_images[0])
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\qops.py", line 16, in pil_image_to_pixmap
+    imageqt = ImageQt(pil_image)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\PIL\ImageQt.py", line 203, in __init__
+    im_data = _toqclass_helper(im)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\PIL\ImageQt.py", line 153, in _toqclass_helper
+    if im.mode == "1":
+AttributeError: 'NoneType' object has no attribute 'mode'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1925, in deforum_ainodes_adapter
+    test = render_animation(node, args, anim_args, video_args, parseq_args, loop_args, controlnet_args,
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 892, in render_animation
+    image = generate(node, args, keys, anim_args, loop_args, controlnet_args, root, frame_idx, sampler_name=scheduled_sampler_name)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1592, in generate
+    image = generate_inner(node, args, keys, anim_args, loop_args, controlnet_args, root, frame, return_sample, sampler_name)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1757, in generate_inner
+    processed = generate_with_node(node, prompt, negative_prompt, args, root, frame, [init_image])
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1837, in generate_with_node
+    init_images[0] = pil_image_to_pixmap(init_images[0])
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\qops.py", line 16, in pil_image_to_pixmap
+    imageqt = ImageQt(pil_image)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\PIL\ImageQt.py", line 203, in __init__
+    im_data = _toqclass_helper(im)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\PIL\ImageQt.py", line 153, in _toqclass_helper
+    if im.mode == "1":
+AttributeError: 'NoneType' object has no attribute 'mode'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1927, in deforum_ainodes_adapter
+    test = render_animation(node, args, anim_args, video_args, parseq_args, loop_args, controlnet_args,
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 892, in render_animation
+    image = generate(node, args, keys, anim_args, loop_args, controlnet_args, root, frame_idx, sampler_name=scheduled_sampler_name)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1592, in generate
+    image = generate_inner(node, args, keys, anim_args, loop_args, controlnet_args, root, frame, return_sample, sampler_name)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1757, in generate_inner
+    processed = generate_with_node(node, prompt, negative_prompt, args, root, frame, [init_image])
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1837, in generate_with_node
+    init_images[0] = pil_image_to_pixmap(init_images[0])
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\qops.py", line 16, in pil_image_to_pixmap
+    imageqt = ImageQt(pil_image)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\PIL\ImageQt.py", line 203, in __init__
+    im_data = _toqclass_helper(im)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\PIL\ImageQt.py", line 153, in _toqclass_helper
+    if im.mode == "1":
+AttributeError: 'NoneType' object has no attribute 'mode'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1927, in deforum_ainodes_adapter
+    test = render_animation(node, args, anim_args, video_args, parseq_args, loop_args, controlnet_args,
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 892, in render_animation
+    image = generate(node, args, keys, anim_args, loop_args, controlnet_args, root, frame_idx, sampler_name=scheduled_sampler_name)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1592, in generate
+    image = generate_inner(node, args, keys, anim_args, loop_args, controlnet_args, root, frame, return_sample, sampler_name)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1757, in generate_inner
+    processed = generate_with_node(node, prompt, negative_prompt, args, root, frame, [init_image])
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1837, in generate_with_node
+    init_images[0] = pil_image_to_pixmap(init_images[0])
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\qops.py", line 16, in pil_image_to_pixmap
+    imageqt = ImageQt(pil_image)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\PIL\ImageQt.py", line 203, in __init__
+    im_data = _toqclass_helper(im)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\PIL\ImageQt.py", line 153, in _toqclass_helper
+    if im.mode == "1":
+AttributeError: 'NoneType' object has no attribute 'mode'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1927, in deforum_ainodes_adapter
+    test = render_animation(node, args, anim_args, video_args, parseq_args, loop_args, controlnet_args,
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 892, in render_animation
+    image = generate(node, args, keys, anim_args, loop_args, controlnet_args, root, frame_idx, sampler_name=scheduled_sampler_name)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1592, in generate
+    image = generate_inner(node, args, keys, anim_args, loop_args, controlnet_args, root, frame, return_sample, sampler_name)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1757, in generate_inner
+    processed = generate_with_node(node, prompt, negative_prompt, args, root, frame, [init_image])
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1837, in generate_with_node
+    init_images[0] = pil_image_to_pixmap(init_images[0])
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\qops.py", line 16, in pil_image_to_pixmap
+    imageqt = ImageQt(pil_image)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\PIL\ImageQt.py", line 203, in __init__
+    im_data = _toqclass_helper(im)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\PIL\ImageQt.py", line 153, in _toqclass_helper
+    if im.mode == "1":
+AttributeError: 'NoneType' object has no attribute 'mode'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1927, in deforum_ainodes_adapter
+    test = render_animation(node, args, anim_args, video_args, parseq_args, loop_args, controlnet_args,
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 892, in render_animation
+    image = generate(node, args, keys, anim_args, loop_args, controlnet_args, root, frame_idx, sampler_name=scheduled_sampler_name)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1592, in generate
+    image = generate_inner(node, args, keys, anim_args, loop_args, controlnet_args, root, frame, return_sample, sampler_name)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1757, in generate_inner
+    processed = generate_with_node(node, prompt, negative_prompt, args, root, frame, [init_image])
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1837, in generate_with_node
+    init_images[0] = pil_image_to_pixmap(init_images[0])
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\qops.py", line 16, in pil_image_to_pixmap
+    imageqt = ImageQt(pil_image)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\PIL\ImageQt.py", line 203, in __init__
+    im_data = _toqclass_helper(im)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\PIL\ImageQt.py", line 153, in _toqclass_helper
+    if im.mode == "1":
+AttributeError: 'NoneType' object has no attribute 'mode'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1927, in deforum_ainodes_adapter
+    test = render_animation(node, args, anim_args, video_args, parseq_args, loop_args, controlnet_args,
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 892, in render_animation
+    image = generate(node, args, keys, anim_args, loop_args, controlnet_args, root, frame_idx, sampler_name=scheduled_sampler_name)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1592, in generate
+    image = generate_inner(node, args, keys, anim_args, loop_args, controlnet_args, root, frame, return_sample, sampler_name)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1757, in generate_inner
+    processed = generate_with_node(node, prompt, negative_prompt, args, root, frame, [init_image])
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1837, in generate_with_node
+    init_images[0] = pil_image_to_pixmap(init_images[0])
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\qops.py", line 16, in pil_image_to_pixmap
+    imageqt = ImageQt(pil_image)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\PIL\ImageQt.py", line 203, in __init__
+    im_data = _toqclass_helper(im)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\PIL\ImageQt.py", line 153, in _toqclass_helper
+    if im.mode == "1":
+AttributeError: 'NoneType' object has no attribute 'mode'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1927, in deforum_ainodes_adapter
+    test = render_animation(node, args, anim_args, video_args, parseq_args, loop_args, controlnet_args,
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 892, in render_animation
+    image = generate(node, args, keys, anim_args, loop_args, controlnet_args, root, frame_idx, sampler_name=scheduled_sampler_name)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1592, in generate
+    image = generate_inner(node, args, keys, anim_args, loop_args, controlnet_args, root, frame, return_sample, sampler_name)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1757, in generate_inner
+    processed = generate_with_node(node, prompt, negative_prompt, args, root, frame, [init_image])
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1837, in generate_with_node
+    init_images[0] = pil_image_to_pixmap(init_images[0])
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\qops.py", line 16, in pil_image_to_pixmap
+    imageqt = ImageQt(pil_image)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\PIL\ImageQt.py", line 203, in __init__
+    im_data = _toqclass_helper(im)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\PIL\ImageQt.py", line 153, in _toqclass_helper
+    if im.mode == "1":
+AttributeError: 'NoneType' object has no attribute 'mode'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1927, in deforum_ainodes_adapter
+    test = render_animation(node, args, anim_args, video_args, parseq_args, loop_args, controlnet_args,
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 892, in render_animation
+    image = generate(node, args, keys, anim_args, loop_args, controlnet_args, root, frame_idx, sampler_name=scheduled_sampler_name)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1592, in generate
+    image = generate_inner(node, args, keys, anim_args, loop_args, controlnet_args, root, frame, return_sample, sampler_name)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1757, in generate_inner
+    processed = generate_with_node(node, prompt, negative_prompt, args, root, frame, [init_image])
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1837, in generate_with_node
+    init_images[0] = pil_image_to_pixmap(init_images[0])
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\qops.py", line 16, in pil_image_to_pixmap
+    imageqt = ImageQt(pil_image)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\PIL\ImageQt.py", line 203, in __init__
+    im_data = _toqclass_helper(im)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\PIL\ImageQt.py", line 153, in _toqclass_helper
+    if im.mode == "1":
+AttributeError: 'NoneType' object has no attribute 'mode'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1925, in deforum_ainodes_adapter
+    test = render_animation(node, args, anim_args, video_args, parseq_args, loop_args, controlnet_args,
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 892, in render_animation
+    image = generate(node, args, keys, anim_args, loop_args, controlnet_args, root, frame_idx, sampler_name=scheduled_sampler_name)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1592, in generate
+    image = generate_inner(node, args, keys, anim_args, loop_args, controlnet_args, root, frame, return_sample, sampler_name)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1757, in generate_inner
+    processed = generate_with_node(node, prompt, negative_prompt, args, root, frame, [init_image])
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1838, in generate_with_node
+    pixmaps = sampler_node.evalImplementation_thread(prompt_override=prompt, args=args, init_image=init_images)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\torch_nodes\kandinsky_node.py", line 133, in evalImplementation_thread
+    pil_img = pixmap_to_pil_image(image)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\qops\qimage_ops.py", line 26, in pixmap_to_pil_image
+    image = pixmap.toImage()
+AttributeError: 'NoneType' object has no attribute 'toImage'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1927, in deforum_ainodes_adapter
+    test = render_animation(node, args, anim_args, video_args, parseq_args, loop_args, controlnet_args,
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 892, in render_animation
+    image = generate(node, args, keys, anim_args, loop_args, controlnet_args, root, frame_idx, sampler_name=scheduled_sampler_name)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1592, in generate
+    image = generate_inner(node, args, keys, anim_args, loop_args, controlnet_args, root, frame, return_sample, sampler_name)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1757, in generate_inner
+    processed = generate_with_node(node, prompt, negative_prompt, args, root, frame, [init_image])
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1837, in generate_with_node
+    init_images[0] = pil_image_to_pixmap(init_images[0])
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\qops.py", line 16, in pil_image_to_pixmap
+    imageqt = ImageQt(pil_image)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\PIL\ImageQt.py", line 203, in __init__
+    im_data = _toqclass_helper(im)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\PIL\ImageQt.py", line 153, in _toqclass_helper
+    if im.mode == "1":
+AttributeError: 'NoneType' object has no attribute 'mode'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1927, in deforum_ainodes_adapter
+    test = render_animation(node, args, anim_args, video_args, parseq_args, loop_args, controlnet_args,
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 892, in render_animation
+    image = generate(node, args, keys, anim_args, loop_args, controlnet_args, root, frame_idx, sampler_name=scheduled_sampler_name)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1592, in generate
+    image = generate_inner(node, args, keys, anim_args, loop_args, controlnet_args, root, frame, return_sample, sampler_name)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1757, in generate_inner
+    processed = generate_with_node(node, prompt, negative_prompt, args, root, frame, [init_image])
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1837, in generate_with_node
+    init_images[0] = pil_image_to_pixmap(init_images[0])
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\qops.py", line 16, in pil_image_to_pixmap
+    imageqt = ImageQt(pil_image)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\PIL\ImageQt.py", line 203, in __init__
+    im_data = _toqclass_helper(im)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\PIL\ImageQt.py", line 153, in _toqclass_helper
+    if im.mode == "1":
+AttributeError: 'NoneType' object has no attribute 'mode'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1925, in deforum_ainodes_adapter
+    test = render_animation(node, args, anim_args, video_args, parseq_args, loop_args, controlnet_args,
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 892, in render_animation
+    image = generate(node, args, keys, anim_args, loop_args, controlnet_args, root, frame_idx, sampler_name=scheduled_sampler_name)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1592, in generate
+    image = generate_inner(node, args, keys, anim_args, loop_args, controlnet_args, root, frame, return_sample, sampler_name)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1757, in generate_inner
+    processed = generate_with_node(node, prompt, negative_prompt, args, root, frame, [init_image])
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1838, in generate_with_node
+    pixmaps = sampler_node.evalImplementation_thread(prompt_override=prompt, args=args, init_image=init_images)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\torch_nodes\kandinsky_node.py", line 133, in evalImplementation_thread
+    pil_img = pixmap_to_pil_image(image)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\qops\qimage_ops.py", line 26, in pixmap_to_pil_image
+    image = pixmap.toImage()
+AttributeError: 'NoneType' object has no attribute 'toImage'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1925, in deforum_ainodes_adapter
+    test = render_animation(node, args, anim_args, video_args, parseq_args, loop_args, controlnet_args,
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 892, in render_animation
+    image = generate(node, args, keys, anim_args, loop_args, controlnet_args, root, frame_idx, sampler_name=scheduled_sampler_name)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1592, in generate
+    image = generate_inner(node, args, keys, anim_args, loop_args, controlnet_args, root, frame, return_sample, sampler_name)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1793, in generate_inner
+    processed = generate_with_node(node, prompt, negative_prompt, args, root, frame, init_images)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1838, in generate_with_node
+    pixmaps = sampler_node.evalImplementation_thread(prompt_override=prompt, args=args, init_image=init)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\torch_nodes\kandinsky_node.py", line 129, in evalImplementation_thread
+    for image in images:
+TypeError: 'PySide6.QtGui.QPixmap' object is not iterable
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\ainodes_frontend\base\ai_node_base.py", line 202, in getOutput
+    return self.values[object_name]
+KeyError: '1571549232000_output_0'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\ainodes_frontend\base\ai_node_base.py", line 202, in getOutput
+    return self.values[object_name]
+KeyError: '1571549232000_output_0'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1927, in deforum_ainodes_adapter
+    test = render_animation(node, args, anim_args, video_args, parseq_args, loop_args, controlnet_args,
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 955, in render_animation
+    args.seed = next_seed(args)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\seed.py", line 16, in next_seed
+    if args.seed_internal % args.seed_iter_N == 0:
+TypeError: not all arguments converted during string formatting
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1929, in deforum_ainodes_adapter
+    test = render_animation(node, args, anim_args, video_args, parseq_args, loop_args, controlnet_args,
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 955, in render_animation
+    args.seed = next_seed(args)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\seed.py", line 16, in next_seed
+    if args.seed_internal % args.seed_iter_N == 0:
+TypeError: not all arguments converted during string formatting
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1929, in deforum_ainodes_adapter
+    test = render_animation(node, args, anim_args, video_args, parseq_args, loop_args, controlnet_args,
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 955, in render_animation
+    args.seed = next_seed(args)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\seed.py", line 16, in next_seed
+    if args.seed_internal % args.seed_iter_N == 0:
+TypeError: not all arguments converted during string formatting
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_nodes\deforum_run_node.py", line 48, in evalImplementation_thread
+    success = deforum_ainodes_adapter(self, data)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1925, in deforum_ainodes_adapter
+    args.seed = int(args.seed)
+TypeError: int() argument must be a string, a bytes-like object or a real number, not 'NoneType'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1929, in deforum_ainodes_adapter
+    test = render_animation(node, args, anim_args, video_args, parseq_args, loop_args, controlnet_args,
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 955, in render_animation
+    args.seed = next_seed(args)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\seed.py", line 16, in next_seed
+    if args.seed_internal % args.seed_iter_N == 0:
+TypeError: not all arguments converted during string formatting
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_nodes\deforum_run_node.py", line 48, in evalImplementation_thread
+    success = deforum_ainodes_adapter(self, data)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1925, in deforum_ainodes_adapter
+    args.seed = int(args.seed)
+TypeError: int() argument must be a string, a bytes-like object or a real number, not 'NoneType'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1929, in deforum_ainodes_adapter
+    test = render_animation(node, args, anim_args, video_args, parseq_args, loop_args, controlnet_args,
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 406, in render_animation
+    keys = DeformAnimKeys(anim_args, args.seed) if not use_parseq else ParseqAnimKeys(parseq_args, anim_args, video_args)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\animation_key_frames.py", line 25, in __init__
+    self.strength_schedule_series = self.fi.get_inbetweens(self.fi.parse_key_frames(anim_args.strength_schedule))
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\animation_key_frames.py", line 134, in parse_key_frames
+    frame = int(self.sanitize_value(frameParam[0])) if check_is_number(self.sanitize_value(frameParam[0].strip())) else int(numexpr.evaluate(frameParam[0].strip().replace("'","",1).replace('"',"",1)[::-1].replace("'","",1).replace('"',"",1)[::-1]))
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\numexpr\necompiler.py", line 817, in evaluate
+    _names_cache[expr_key] = getExprNames(ex, context)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\numexpr\necompiler.py", line 704, in getExprNames
+    ex = stringToExpression(text, {}, context)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\numexpr\necompiler.py", line 274, in stringToExpression
+    c = compile(s, '<expr>', 'eval', flags)
+  File "<expr>", line 0
+    
+SyntaxError: invalid syntax
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1929, in deforum_ainodes_adapter
+    test = render_animation(node, args, anim_args, video_args, parseq_args, loop_args, controlnet_args,
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 955, in render_animation
+    args.seed = next_seed(args)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\seed.py", line 16, in next_seed
+    if args.seed_internal % args.seed_iter_N == 0:
+TypeError: not all arguments converted during string formatting
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_nodes\deforum_run_node.py", line 48, in evalImplementation_thread
+    success = deforum_ainodes_adapter(self, data)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1925, in deforum_ainodes_adapter
+    args.seed = int(args.seed)
+TypeError: int() argument must be a string, a bytes-like object or a real number, not 'NoneType'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1929, in deforum_ainodes_adapter
+    test = render_animation(node, args, anim_args, video_args, parseq_args, loop_args, controlnet_args,
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 406, in render_animation
+    keys = DeformAnimKeys(anim_args, args.seed) if not use_parseq else ParseqAnimKeys(parseq_args, anim_args, video_args)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\animation_key_frames.py", line 25, in __init__
+    self.strength_schedule_series = self.fi.get_inbetweens(self.fi.parse_key_frames(anim_args.strength_schedule))
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\animation_key_frames.py", line 134, in parse_key_frames
+    frame = int(self.sanitize_value(frameParam[0])) if check_is_number(self.sanitize_value(frameParam[0].strip())) else int(numexpr.evaluate(frameParam[0].strip().replace("'","",1).replace('"',"",1)[::-1].replace("'","",1).replace('"',"",1)[::-1]))
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\numexpr\necompiler.py", line 817, in evaluate
+    _names_cache[expr_key] = getExprNames(ex, context)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\numexpr\necompiler.py", line 704, in getExprNames
+    ex = stringToExpression(text, {}, context)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\numexpr\necompiler.py", line 274, in stringToExpression
+    c = compile(s, '<expr>', 'eval', flags)
+  File "<expr>", line 0
+    
+SyntaxError: invalid syntax
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1929, in deforum_ainodes_adapter
+    test = render_animation(node, args, anim_args, video_args, parseq_args, loop_args, controlnet_args,
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 892, in render_animation
+    image = generate(node, args, keys, anim_args, loop_args, controlnet_args, root, frame_idx, sampler_name=scheduled_sampler_name)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1592, in generate
+    image = generate_inner(node, args, keys, anim_args, loop_args, controlnet_args, root, frame, return_sample, sampler_name)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1793, in generate_inner
+    processed = generate_with_node(node, prompt, negative_prompt, args, root, frame, init_images)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1821, in generate_with_node
+    sampler_node, _ = node.getInput(2)
+TypeError: cannot unpack non-iterable NoneType object
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\ainodes_frontend\base\ai_node_base.py", line 202, in getOutput
+    return self.values[object_name]
+KeyError: '2105717599024_output_0'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\ainodes_frontend\base\ai_node_base.py", line 202, in getOutput
+    return self.values[object_name]
+KeyError: '2105717599024_output_0'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1929, in deforum_ainodes_adapter
+    test = render_animation(node, args, anim_args, video_args, parseq_args, loop_args, controlnet_args,
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 892, in render_animation
+    image = generate(node, args, keys, anim_args, loop_args, controlnet_args, root, frame_idx, sampler_name=scheduled_sampler_name)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1592, in generate
+    image = generate_inner(node, args, keys, anim_args, loop_args, controlnet_args, root, frame, return_sample, sampler_name)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1793, in generate_inner
+    processed = generate_with_node(node, prompt, negative_prompt, args, root, frame, init_images)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1821, in generate_with_node
+    sampler_node, _ = node.getInput(2)
+TypeError: cannot unpack non-iterable NoneType object
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\ainodes_frontend\base\ai_node_base.py", line 202, in getOutput
+    return self.values[object_name]
+KeyError: '2105717599024_output_0'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1929, in deforum_ainodes_adapter
+    test = render_animation(node, args, anim_args, video_args, parseq_args, loop_args, controlnet_args,
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 892, in render_animation
+    image = generate(node, args, keys, anim_args, loop_args, controlnet_args, root, frame_idx, sampler_name=scheduled_sampler_name)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1592, in generate
+    image = generate_inner(node, args, keys, anim_args, loop_args, controlnet_args, root, frame, return_sample, sampler_name)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1793, in generate_inner
+    processed = generate_with_node(node, prompt, negative_prompt, args, root, frame, init_images)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1821, in generate_with_node
+    sampler_node, _ = node.getInput(2)
+TypeError: cannot unpack non-iterable NoneType object
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1929, in deforum_ainodes_adapter
+    test = render_animation(node, args, anim_args, video_args, parseq_args, loop_args, controlnet_args,
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 864, in render_animation
+    disposable_image = generate(node, args, keys, anim_args, loop_args, controlnet_args, root, frame_idx, sampler_name=scheduled_sampler_name)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1592, in generate
+    image = generate_inner(node, args, keys, anim_args, loop_args, controlnet_args, root, frame, return_sample, sampler_name)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1793, in generate_inner
+    processed = generate_with_node(node, prompt, negative_prompt, args, root, frame, init_images)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1821, in generate_with_node
+    sampler_node, _ = node.getInput(2)
+TypeError: cannot unpack non-iterable NoneType object
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\ainodes_frontend\base\ai_node_base.py", line 202, in getOutput
+    return self.values[object_name]
+KeyError: '2105717599024_output_0'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1929, in deforum_ainodes_adapter
+    test = render_animation(node, args, anim_args, video_args, parseq_args, loop_args, controlnet_args,
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 892, in render_animation
+    image = generate(node, args, keys, anim_args, loop_args, controlnet_args, root, frame_idx, sampler_name=scheduled_sampler_name)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1592, in generate
+    image = generate_inner(node, args, keys, anim_args, loop_args, controlnet_args, root, frame, return_sample, sampler_name)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1793, in generate_inner
+    processed = generate_with_node(node, prompt, negative_prompt, args, root, frame, init_images)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1821, in generate_with_node
+    sampler_node, _ = node.getInput(2)
+TypeError: cannot unpack non-iterable NoneType object
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1929, in deforum_ainodes_adapter
+    test = render_animation(node, args, anim_args, video_args, parseq_args, loop_args, controlnet_args,
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 864, in render_animation
+    disposable_image = generate(node, args, keys, anim_args, loop_args, controlnet_args, root, frame_idx, sampler_name=scheduled_sampler_name)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1592, in generate
+    image = generate_inner(node, args, keys, anim_args, loop_args, controlnet_args, root, frame, return_sample, sampler_name)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1793, in generate_inner
+    processed = generate_with_node(node, prompt, negative_prompt, args, root, frame, init_images)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1821, in generate_with_node
+    sampler_node, _ = node.getInput(2)
+TypeError: cannot unpack non-iterable NoneType object
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1929, in deforum_ainodes_adapter
+    test = render_animation(node, args, anim_args, video_args, parseq_args, loop_args, controlnet_args,
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 892, in render_animation
+    image = generate(node, args, keys, anim_args, loop_args, controlnet_args, root, frame_idx, sampler_name=scheduled_sampler_name)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1592, in generate
+    image = generate_inner(node, args, keys, anim_args, loop_args, controlnet_args, root, frame, return_sample, sampler_name)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1793, in generate_inner
+    processed = generate_with_node(node, prompt, negative_prompt, args, root, frame, init_images)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_deforum_nodes\deforum_helpers\render.py", line 1821, in generate_with_node
+    sampler_node, _ = node.getInput(2)
+TypeError: cannot unpack non-iterable NoneType object
+
+---End of Error---

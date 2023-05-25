@@ -4,6 +4,7 @@ import glob
 
 import sys
 import os
+sys.path.extend([os.path.join("src", "olive")])
 
 
 import subprocess
@@ -28,7 +29,6 @@ from ainodes_frontend import singleton as gs
 import ainodes_frontend.qss.nodeeditor_dark_resources
 from ainodes_frontend.base.settings import save_settings, load_settings
 from ainodes_frontend.node_engine.utils import loadStylesheets
-
 # Set environment variable QT_API to use PySide6
 os.environ["QT_API"] = "pyside6"
 # Install Triton if running on Linux
@@ -40,7 +40,9 @@ if "Linux" in platform.platform():
 else:
     gs.qss = "ainodes_frontend/qss/nodeeditor-dark.qss"
 
-
+sys.path.append("C:/trt86")
+sys.path.append("C:/trt86/lib")
+sys.path.append("C:/trt86/bin")
 def update_all_nodes_req():
     top_folder = "./custom_nodes"
     folders = [folder for folder in os.listdir(top_folder) if os.path.isdir(os.path.join(top_folder, folder))]
