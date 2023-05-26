@@ -9,7 +9,7 @@ https://github.com/CompVis/taming-transformers
 import torch
 import torch.nn as nn
 import numpy as np
-# import pytorch_lightning as pl
+import pytorch_lightning as pl
 from torch.optim.lr_scheduler import LambdaLR
 from einops import rearrange, repeat
 from contextlib import contextmanager, nullcontext
@@ -17,7 +17,7 @@ from functools import partial
 import itertools
 from tqdm import tqdm
 from torchvision.utils import make_grid
-# from pytorch_lightning.utilities.distributed import rank_zero_only
+from pytorch_lightning.utilities.distributed import rank_zero_only
 from omegaconf import ListConfig
 
 from ldm.util import log_txt_as_img, exists, default, ismap, isimage, mean_flat, count_params, instantiate_from_config
@@ -27,7 +27,6 @@ from ldm.models.autoencoder import IdentityFirstStage, AutoencoderKL
 from ldm.modules.diffusionmodules.util import make_beta_schedule, extract_into_tensor, noise_like
 from ldm.models.diffusion.ddim import DDIMSampler
 
-from ainodes_frontend import singleton as gs
 
 __conditioning_keys__ = {'concat': 'c_concat',
                          'crossattn': 'c_crossattn',
@@ -43,8 +42,8 @@ def disabled_train(self, mode=True):
 def uniform_on_device(r1, r2, shape, device):
     return (r1 - r2) * torch.rand(*shape, device=device) + r2
 
-# class DDPM(pl.LightningModule):
-class DDPM(torch.nn.Module):
+
+class DDPM(pl.LightningModule):
     # classic DDPM with Gaussian diffusion, in image space
     def __init__(self,
                  unet_config,
@@ -80,10 +79,6 @@ class DDPM(torch.nn.Module):
                  reset_num_ema_updates=False,
                  ):
         super().__init__()
-
-        self.patches = []
-        self.backup = {}
-
         assert parameterization in ["eps", "x0", "v"], 'currently only supporting "eps" and "x0" and "v"'
         self.parameterization = parameterization
         print(f"{self.__class__.__name__}: Running in {self.parameterization}-prediction mode")
@@ -527,8 +522,8 @@ class LatentDiffusion(DDPM):
     """main class"""
 
     def __init__(self,
-                 first_stage_config={},
-                 cond_stage_config={},
+                 first_stage_config,
+                 cond_stage_config,
                  num_timesteps_cond=None,
                  cond_stage_key="image",
                  cond_stage_trainable=False,
@@ -564,10 +559,8 @@ class LatentDiffusion(DDPM):
             self.scale_factor = scale_factor
         else:
             self.register_buffer('scale_factor', torch.tensor(scale_factor))
-
-        #self.instantiate_first_stage(first_stage_config)
-        #self.instantiate_cond_stage(cond_stage_config)
-
+        self.instantiate_first_stage(first_stage_config)
+        self.instantiate_cond_stage(cond_stage_config)
         self.cond_stage_forward = cond_stage_forward
         self.clip_denoised = False
         self.bbox_tokenizer = None
@@ -591,7 +584,7 @@ class LatentDiffusion(DDPM):
         ids = torch.round(torch.linspace(0, self.num_timesteps - 1, self.num_timesteps_cond)).long()
         self.cond_ids[:self.num_timesteps_cond] = ids
 
-    # @rank_zero_only
+    @rank_zero_only
     @torch.no_grad()
     def on_train_batch_start(self, batch, batch_idx, dataloader_idx):
         # only for very first batch
@@ -668,15 +661,15 @@ class LatentDiffusion(DDPM):
 
     def get_learned_conditioning(self, c):
         if self.cond_stage_forward is None:
-            if hasattr(gs.models["clip"], 'encode') and callable(gs.models["clip"].encode):
-                c = gs.models["clip"].encode(c)
+            if hasattr(self.cond_stage_model, 'encode') and callable(self.cond_stage_model.encode):
+                c = self.cond_stage_model.encode(c)
                 if isinstance(c, DiagonalGaussianDistribution):
                     c = c.mode()
             else:
-                c = gs.models["clip"](c)
+                c = self.cond_stage_model(c)
         else:
-            assert hasattr(gs.models["clip"], self.cond_stage_forward)
-            c = getattr(gs.models["clip"], self.cond_stage_forward)(c)
+            assert hasattr(self.cond_stage_model, self.cond_stage_forward)
+            c = getattr(self.cond_stage_model, self.cond_stage_forward)(c)
         return c
 
     def meshgrid(self, h, w):
@@ -1147,7 +1140,7 @@ class LatentDiffusion(DDPM):
             for i in range(len(c)):
                 c[i] = repeat(c[i], '1 ... -> b ...', b=batch_size).to(self.device)
         else:
-            c = repeat(c, '1 ... -> b ...', b=batch_size).to("cuda")
+            c = repeat(c, '1 ... -> b ...', b=batch_size).to(self.device)
         return c
 
     @torch.no_grad()
@@ -1314,8 +1307,7 @@ class LatentDiffusion(DDPM):
         return x
 
 
-# class DiffusionWrapper(pl.LightningModule):
-class DiffusionWrapper(torch.nn.Module):
+class DiffusionWrapper(pl.LightningModule):
     def __init__(self, diff_model_config, conditioning_key):
         super().__init__()
         self.sequential_cross_attn = diff_model_config.pop("sequential_crossattn", False)
@@ -1323,12 +1315,12 @@ class DiffusionWrapper(torch.nn.Module):
         self.conditioning_key = conditioning_key
         assert self.conditioning_key in [None, 'concat', 'crossattn', 'hybrid', 'adm', 'hybrid-adm', 'crossattn-adm']
 
-    def forward(self, x, t, c_concat: list = None, c_crossattn: list = None, c_adm=None, control=None):
+    def forward(self, x, t, c_concat: list = None, c_crossattn: list = None, c_adm=None):
         if self.conditioning_key is None:
-            out = self.diffusion_model(x, t, control=control)
+            out = self.diffusion_model(x, t)
         elif self.conditioning_key == 'concat':
             xc = torch.cat([x] + c_concat, dim=1)
-            out = self.diffusion_model(xc, t, control=control)
+            out = self.diffusion_model(xc, t)
         elif self.conditioning_key == 'crossattn':
             if not self.sequential_cross_attn:
                 cc = torch.cat(c_crossattn, 1)
@@ -1338,25 +1330,25 @@ class DiffusionWrapper(torch.nn.Module):
                 # TorchScript changes names of the arguments
                 # with argument cc defined as context=cc scripted model will produce
                 # an error: RuntimeError: forward() is missing value for argument 'argument_3'.
-                out = self.scripted_diffusion_model(x, t, cc, control=control)
+                out = self.scripted_diffusion_model(x, t, cc)
             else:
-                out = self.diffusion_model(x, t, context=cc, control=control)
+                out = self.diffusion_model(x, t, context=cc)
         elif self.conditioning_key == 'hybrid':
             xc = torch.cat([x] + c_concat, dim=1)
             cc = torch.cat(c_crossattn, 1)
-            out = self.diffusion_model(xc, t, context=cc, control=control)
+            out = self.diffusion_model(xc, t, context=cc)
         elif self.conditioning_key == 'hybrid-adm':
             assert c_adm is not None
             xc = torch.cat([x] + c_concat, dim=1)
             cc = torch.cat(c_crossattn, 1)
-            out = self.diffusion_model(xc, t, context=cc, y=c_adm, control=control)
+            out = self.diffusion_model(xc, t, context=cc, y=c_adm)
         elif self.conditioning_key == 'crossattn-adm':
             assert c_adm is not None
             cc = torch.cat(c_crossattn, 1)
-            out = self.diffusion_model(x, t, context=cc, y=c_adm, control=control)
+            out = self.diffusion_model(x, t, context=cc, y=c_adm)
         elif self.conditioning_key == 'adm':
             cc = c_crossattn[0]
-            out = self.diffusion_model(x, t, y=cc, control=control)
+            out = self.diffusion_model(x, t, y=cc)
         else:
             raise NotImplementedError()
 
@@ -1806,4 +1798,76 @@ class LatentUpscaleFinetuneDiffusion(LatentFinetuneDiffusion):
     def log_images(self, *args, **kwargs):
         log = super().log_images(*args, **kwargs)
         log["lr"] = rearrange(args[0]["lr"], 'b h w c -> b c h w')
+        return log
+
+
+class ImageEmbeddingConditionedLatentDiffusion(LatentDiffusion):
+    def __init__(self, embedder_config, embedding_key="jpg", embedding_dropout=0.5,
+                 freeze_embedder=True, noise_aug_config=None, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.embed_key = embedding_key
+        self.embedding_dropout = embedding_dropout
+        self._init_embedder(embedder_config, freeze_embedder)
+        self._init_noise_aug(noise_aug_config)
+
+    def _init_embedder(self, config, freeze=True):
+        embedder = instantiate_from_config(config)
+        if freeze:
+            self.embedder = embedder.eval()
+            self.embedder.train = disabled_train
+            for param in self.embedder.parameters():
+                param.requires_grad = False
+
+    def _init_noise_aug(self, config):
+        if config is not None:
+            # use the KARLO schedule for noise augmentation on CLIP image embeddings
+            noise_augmentor = instantiate_from_config(config)
+            assert isinstance(noise_augmentor, nn.Module)
+            noise_augmentor = noise_augmentor.eval()
+            noise_augmentor.train = disabled_train
+            self.noise_augmentor = noise_augmentor
+        else:
+            self.noise_augmentor = None
+
+    def get_input(self, batch, k, cond_key=None, bs=None, **kwargs):
+        outputs = LatentDiffusion.get_input(self, batch, k, bs=bs, **kwargs)
+        z, c = outputs[0], outputs[1]
+        img = batch[self.embed_key][:bs]
+        img = rearrange(img, 'b h w c -> b c h w')
+        c_adm = self.embedder(img)
+        if self.noise_augmentor is not None:
+            c_adm, noise_level_emb = self.noise_augmentor(c_adm)
+            # assume this gives embeddings of noise levels
+            c_adm = torch.cat((c_adm, noise_level_emb), 1)
+        if self.training:
+            c_adm = torch.bernoulli((1. - self.embedding_dropout) * torch.ones(c_adm.shape[0],
+                                                                               device=c_adm.device)[:, None]) * c_adm
+        all_conds = {"c_crossattn": [c], "c_adm": c_adm}
+        noutputs = [z, all_conds]
+        noutputs.extend(outputs[2:])
+        return noutputs
+
+    @torch.no_grad()
+    def log_images(self, batch, N=8, n_row=4, **kwargs):
+        log = dict()
+        z, c, x, xrec, xc = self.get_input(batch, self.first_stage_key, bs=N, return_first_stage_outputs=True,
+                                           return_original_cond=True)
+        log["inputs"] = x
+        log["reconstruction"] = xrec
+        assert self.model.conditioning_key is not None
+        assert self.cond_stage_key in ["caption", "txt"]
+        xc = log_txt_as_img((x.shape[2], x.shape[3]), batch[self.cond_stage_key], size=x.shape[2] // 25)
+        log["conditioning"] = xc
+        uc = self.get_unconditional_conditioning(N, kwargs.get('unconditional_guidance_label', ''))
+        unconditional_guidance_scale = kwargs.get('unconditional_guidance_scale', 5.)
+
+        uc_ = {"c_crossattn": [uc], "c_adm": c["c_adm"]}
+        ema_scope = self.ema_scope if kwargs.get('use_ema_scope', True) else nullcontext
+        with ema_scope(f"Sampling"):
+            samples_cfg, _ = self.sample_log(cond=c, batch_size=N, ddim=True,
+                                             ddim_steps=kwargs.get('ddim_steps', 50), eta=kwargs.get('ddim_eta', 0.),
+                                             unconditional_guidance_scale=unconditional_guidance_scale,
+                                             unconditional_conditioning=uc_, )
+            x_samples_cfg = self.decode_first_stage(samples_cfg)
+            log[f"samplescfg_scale_{unconditional_guidance_scale:.2f}"] = x_samples_cfg
         return log

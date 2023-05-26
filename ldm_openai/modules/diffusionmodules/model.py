@@ -16,10 +16,6 @@ except:
     XFORMERS_IS_AVAILBLE = False
     print("No module 'xformers'. Proceeding without it.")
 
-try:
-    OOM_EXCEPTION = torch.cuda.OutOfMemoryError
-except:
-    OOM_EXCEPTION = Exception
 
 def get_timestep_embedding(timesteps, embedding_dim):
     """
@@ -100,7 +96,6 @@ class ResnetBlock(nn.Module):
         self.out_channels = out_channels
         self.use_conv_shortcut = conv_shortcut
 
-        self.swish = torch.nn.SiLU(inplace=True)
         self.norm1 = Normalize(in_channels)
         self.conv1 = torch.nn.Conv2d(in_channels,
                                      out_channels,
@@ -111,7 +106,7 @@ class ResnetBlock(nn.Module):
             self.temb_proj = torch.nn.Linear(temb_channels,
                                              out_channels)
         self.norm2 = Normalize(out_channels)
-        self.dropout = torch.nn.Dropout(dropout, inplace=True)
+        self.dropout = torch.nn.Dropout(dropout)
         self.conv2 = torch.nn.Conv2d(out_channels,
                                      out_channels,
                                      kernel_size=3,
@@ -134,14 +129,14 @@ class ResnetBlock(nn.Module):
     def forward(self, x, temb):
         h = x
         h = self.norm1(h)
-        h = self.swish(h)
+        h = nonlinearity(h)
         h = self.conv1(h)
 
         if temb is not None:
-            h = h + self.temb_proj(self.swish(temb))[:,:,None,None]
+            h = h + self.temb_proj(nonlinearity(temb))[:,:,None,None]
 
         h = self.norm2(h)
-        h = self.swish(h)
+        h = nonlinearity(h)
         h = self.dropout(h)
         h = self.conv2(h)
 
@@ -190,52 +185,18 @@ class AttnBlock(nn.Module):
 
         # compute attention
         b,c,h,w = q.shape
-        scale = (int(c)**(-0.5))
-
         q = q.reshape(b,c,h*w)
         q = q.permute(0,2,1)   # b,hw,c
         k = k.reshape(b,c,h*w) # b,c,hw
+        w_ = torch.bmm(q,k)     # b,hw,hw    w[b,i,j]=sum_c q[b,i,c]k[b,c,j]
+        w_ = w_ * (int(c)**(-0.5))
+        w_ = torch.nn.functional.softmax(w_, dim=2)
+
+        # attend to values
         v = v.reshape(b,c,h*w)
-
-        r1 = torch.zeros_like(k, device=q.device)
-
-        stats = torch.cuda.memory_stats(q.device)
-        mem_active = stats['active_bytes.all.current']
-        mem_reserved = stats['reserved_bytes.all.current']
-        mem_free_cuda, _ = torch.cuda.mem_get_info(torch.cuda.current_device())
-        mem_free_torch = mem_reserved - mem_active
-        mem_free_total = mem_free_cuda + mem_free_torch
-
-        gb = 1024 ** 3
-        tensor_size = q.shape[0] * q.shape[1] * k.shape[2] * q.element_size()
-        modifier = 3 if q.element_size() == 2 else 2.5
-        mem_required = tensor_size * modifier
-        steps = 1
-
-        if mem_required > mem_free_total:
-            steps = 2**(math.ceil(math.log(mem_required / mem_free_total, 2)))
-
-        while True:
-            try:
-                slice_size = q.shape[1] // steps if (q.shape[1] % steps) == 0 else q.shape[1]
-                for i in range(0, q.shape[1], slice_size):
-                    end = i + slice_size
-                    s1 = torch.bmm(q[:, i:end], k) * scale
-
-                    s2 = torch.nn.functional.softmax(s1, dim=2).permute(0,2,1)
-                    del s1
-
-                    r1[:, :, i:end] = torch.bmm(v, s2)
-                    del s2
-                break
-            except OOM_EXCEPTION as e:
-                steps *= 2
-                if steps > 128:
-                    raise e
-                print("out of memory error, increasing steps and trying again", steps)
-
-        h_ = r1.reshape(b,c,h,w)
-        del r1
+        w_ = w_.permute(0,2,1)   # b,hw,hw (first hw of k, second of q)
+        h_ = torch.bmm(v,w_)     # b, c,hw (hw of q) h_[b,c,j] = sum_i v[b,c,i] w_[b,i,j]
+        h_ = h_.reshape(b,c,h,w)
 
         h_ = self.proj_out(h_)
 
@@ -325,7 +286,7 @@ def make_attn(in_channels, attn_type="vanilla", attn_kwargs=None):
         assert attn_kwargs is None
         return AttnBlock(in_channels)
     elif attn_type == "vanilla-xformers":
-        #print(f"building MemoryEfficientAttnBlock with {in_channels} in_channels...")
+        print(f"building MemoryEfficientAttnBlock with {in_channels} in_channels...")
         return MemoryEfficientAttnBlock(in_channels)
     elif type == "memory-efficient-cross-attn":
         attn_kwargs["query_dim"] = in_channels
@@ -603,8 +564,8 @@ class Decoder(nn.Module):
         block_in = ch*ch_mult[self.num_resolutions-1]
         curr_res = resolution // 2**(self.num_resolutions-1)
         self.z_shape = (1,z_channels,curr_res,curr_res)
-        #print("Working with z of shape {} = {} dimensions.".format(
-        #    self.z_shape, np.prod(self.z_shape)))
+        print("Working with z of shape {} = {} dimensions.".format(
+            self.z_shape, np.prod(self.z_shape)))
 
         # z to block_in
         self.conv_in = torch.nn.Conv2d(z_channels,

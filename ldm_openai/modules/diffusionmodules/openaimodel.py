@@ -409,6 +409,15 @@ class QKVAttention(nn.Module):
         return count_flops_attn(model, _x, y)
 
 
+class Timestep(nn.Module):
+    def __init__(self, dim):
+        super().__init__()
+        self.dim = dim
+
+    def forward(self, t):
+        return timestep_embedding(t, self.dim)
+
+
 class UNetModel(nn.Module):
     """
     The full UNet model with attention and timestep embedding.
@@ -470,6 +479,7 @@ class UNetModel(nn.Module):
         num_attention_blocks=None,
         disable_middle_self_attn=False,
         use_linear_in_transformer=False,
+        adm_in_channels=None,
     ):
         super().__init__()
         if use_spatial_transformer:
@@ -538,6 +548,15 @@ class UNetModel(nn.Module):
             elif self.num_classes == "continuous":
                 print("setting up linear c_adm embedding layer")
                 self.label_emb = nn.Linear(1, time_embed_dim)
+            elif self.num_classes == "sequential":
+                assert adm_in_channels is not None
+                self.label_emb = nn.Sequential(
+                    nn.Sequential(
+                        linear(adm_in_channels, time_embed_dim),
+                        nn.SiLU(),
+                        linear(time_embed_dim, time_embed_dim),
+                    )
+                )
             else:
                 raise ValueError()
 
@@ -753,7 +772,7 @@ class UNetModel(nn.Module):
         self.middle_block.apply(convert_module_to_f32)
         self.output_blocks.apply(convert_module_to_f32)
 
-    def forward(self, x, timesteps=None, context=None, y=None, control=None, **kwargs):
+    def forward(self, x, timesteps=None, context=None, y=None,**kwargs):
         """
         Apply the model to an input batch.
         :param x: an [N x C x ...] Tensor of inputs.
@@ -767,10 +786,6 @@ class UNetModel(nn.Module):
         ), "must specify y if and only if the model is class-conditional"
         hs = []
         t_emb = timestep_embedding(timesteps, self.model_channels, repeat_only=False)
-
-        print(t_emb.shape)
-        print(t_emb.dtype)
-
         emb = self.time_embed(t_emb)
 
         if self.num_classes is not None:
@@ -778,25 +793,12 @@ class UNetModel(nn.Module):
             emb = emb + self.label_emb(y)
 
         h = x.type(self.dtype)
-        for id, module in enumerate(self.input_blocks):
+        for module in self.input_blocks:
             h = module(h, emb, context)
-            if control is not None and 'input' in control and len(control['input']) > 0:
-                ctrl = control['input'].pop()
-                if ctrl is not None:
-                    h += ctrl
             hs.append(h)
         h = self.middle_block(h, emb, context)
-        if control is not None and 'middle' in control and len(control['middle']) > 0:
-            h += control['middle'].pop()
-
         for module in self.output_blocks:
-            hsp = hs.pop()
-            if control is not None and 'output' in control and len(control['output']) > 0:
-                ctrl = control['output'].pop()
-                if ctrl is not None:
-                    hsp += ctrl
-            h = th.cat([h, hsp], dim=1)
-            del hsp
+            h = th.cat([h, hs.pop()], dim=1)
             h = module(h, emb, context)
         h = h.type(x.dtype)
         if self.predict_codebook_ids:

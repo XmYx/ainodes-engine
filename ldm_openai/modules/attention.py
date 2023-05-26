@@ -1,7 +1,5 @@
 from inspect import isfunction
 import math
-
-import psutil
 import torch
 import torch.nn.functional as F
 from torch import nn, einsum
@@ -9,9 +7,7 @@ from einops import rearrange, repeat
 from typing import Optional, Any
 
 from ldm.modules.diffusionmodules.util import checkpoint
-from .sub_quadratic_attention import efficient_dot_product_attention
 
-#from comfy import model_management
 
 try:
     import xformers
@@ -23,11 +19,6 @@ except:
 # CrossAttn precision handling
 import os
 _ATTN_PRECISION = os.environ.get("ATTN_PRECISION", "fp32")
-
-try:
-    OOM_EXCEPTION = torch.cuda.OutOfMemoryError
-except:
-    OOM_EXCEPTION = Exception
 
 def exists(val):
     return val is not None
@@ -151,193 +142,6 @@ class SpatialSelfAttention(nn.Module):
         return x+h_
 
 
-class CrossAttentionBirchSan(nn.Module):
-    def __init__(self, query_dim, context_dim=None, heads=8, dim_head=64, dropout=0.):
-        super().__init__()
-        inner_dim = dim_head * heads
-        context_dim = default(context_dim, query_dim)
-
-        self.scale = dim_head ** -0.5
-        self.heads = heads
-
-        self.to_q = nn.Linear(query_dim, inner_dim, bias=False)
-        self.to_k = nn.Linear(context_dim, inner_dim, bias=False)
-        self.to_v = nn.Linear(context_dim, inner_dim, bias=False)
-
-        self.to_out = nn.Sequential(
-            nn.Linear(inner_dim, query_dim),
-            nn.Dropout(dropout)
-        )
-
-    def forward(self, x, context=None, mask=None):
-        h = self.heads
-
-        query = self.to_q(x)
-        context = default(context, x)
-        key = self.to_k(context)
-        value = self.to_v(context)
-        del context, x
-
-        query = query.unflatten(-1, (self.heads, -1)).transpose(1,2).flatten(end_dim=1)
-        key_t = key.transpose(1,2).unflatten(1, (self.heads, -1)).flatten(end_dim=1)
-        del key
-        value = value.unflatten(-1, (self.heads, -1)).transpose(1,2).flatten(end_dim=1)
-
-        dtype = query.dtype
-        upcast_attention = _ATTN_PRECISION =="fp32" and query.dtype != torch.float32
-        if upcast_attention:
-            bytes_per_token = torch.finfo(torch.float32).bits//8
-        else:
-            bytes_per_token = torch.finfo(query.dtype).bits//8
-        batch_x_heads, q_tokens, _ = query.shape
-        _, _, k_tokens = key_t.shape
-        qk_matmul_size_bytes = batch_x_heads * bytes_per_token * q_tokens * k_tokens
-
-        mem_free_total, mem_free_torch = get_free_memory(query.device, True)
-
-        chunk_threshold_bytes = mem_free_torch * 0.5 #Using only this seems to work better on AMD
-
-        kv_chunk_size_min = None
-
-        #not sure at all about the math here
-        #TODO: tweak this
-        if mem_free_total > 8192 * 1024 * 1024 * 1.3:
-            query_chunk_size_x = 1024 * 4
-        elif mem_free_total > 4096 * 1024 * 1024 * 1.3:
-            query_chunk_size_x = 1024 * 2
-        else:
-            query_chunk_size_x = 1024
-        kv_chunk_size_min_x = None
-        kv_chunk_size_x = (int((chunk_threshold_bytes // (batch_x_heads * bytes_per_token * query_chunk_size_x)) * 2.0) // 1024) * 1024
-        if kv_chunk_size_x < 1024:
-            kv_chunk_size_x = None
-
-        if chunk_threshold_bytes is not None and qk_matmul_size_bytes <= chunk_threshold_bytes:
-            # the big matmul fits into our memory limit; do everything in 1 chunk,
-            # i.e. send it down the unchunked fast-path
-            query_chunk_size = q_tokens
-            kv_chunk_size = k_tokens
-        else:
-            query_chunk_size = query_chunk_size_x
-            kv_chunk_size = kv_chunk_size_x
-            kv_chunk_size_min = kv_chunk_size_min_x
-
-        hidden_states = efficient_dot_product_attention(
-            query,
-            key_t,
-            value,
-            query_chunk_size=query_chunk_size,
-            kv_chunk_size=kv_chunk_size,
-            kv_chunk_size_min=kv_chunk_size_min,
-            use_checkpoint=self.training,
-            upcast_attention=upcast_attention,
-        )
-
-        hidden_states = hidden_states.to(dtype)
-
-        hidden_states = hidden_states.unflatten(0, (-1, self.heads)).transpose(1,2).flatten(start_dim=2)
-
-        out_proj, dropout = self.to_out
-        hidden_states = out_proj(hidden_states)
-        hidden_states = dropout(hidden_states)
-
-        return hidden_states
-
-
-class CrossAttentionDoggettx(nn.Module):
-    def __init__(self, query_dim, context_dim=None, heads=8, dim_head=64, dropout=0.):
-        super().__init__()
-        inner_dim = dim_head * heads
-        context_dim = default(context_dim, query_dim)
-
-        self.scale = dim_head ** -0.5
-        self.heads = heads
-
-        self.to_q = nn.Linear(query_dim, inner_dim, bias=False)
-        self.to_k = nn.Linear(context_dim, inner_dim, bias=False)
-        self.to_v = nn.Linear(context_dim, inner_dim, bias=False)
-
-        self.to_out = nn.Sequential(
-            nn.Linear(inner_dim, query_dim),
-            nn.Dropout(dropout)
-        )
-
-    def forward(self, x, context=None, mask=None):
-        h = self.heads
-
-        q_in = self.to_q(x)
-        context = default(context, x)
-        k_in = self.to_k(context)
-        v_in = self.to_v(context)
-        del context, x
-
-        q, k, v = map(lambda t: rearrange(t, 'b n (h d) -> (b h) n d', h=h), (q_in, k_in, v_in))
-        del q_in, k_in, v_in
-
-        r1 = torch.zeros(q.shape[0], q.shape[1], v.shape[2], device=q.device)
-
-        mem_free_total = get_free_memory(q.device)
-
-        gb = 1024 ** 3
-        tensor_size = q.shape[0] * q.shape[1] * k.shape[1] * q.element_size()
-        modifier = 3 if q.element_size() == 2 else 2.5
-        mem_required = tensor_size * modifier
-        steps = 1
-
-
-        if mem_required > mem_free_total:
-            steps = 2**(math.ceil(math.log(mem_required / mem_free_total, 2)))
-            # print(f"Expected tensor size:{tensor_size/gb:0.1f}GB, cuda free:{mem_free_cuda/gb:0.1f}GB "
-            #      f"torch free:{mem_free_torch/gb:0.1f} total:{mem_free_total/gb:0.1f} steps:{steps}")
-
-        if steps > 64:
-            max_res = math.floor(math.sqrt(math.sqrt(mem_free_total / 2.5)) / 8) * 64
-            raise RuntimeError(f'Not enough memory, use lower resolution (max approx. {max_res}x{max_res}). '
-                               f'Need: {mem_required/64/gb:0.1f}GB free, Have:{mem_free_total/gb:0.1f}GB free')
-
-        # print("steps", steps, mem_required, mem_free_total, modifier, q.element_size(), tensor_size)
-        first_op_done = False
-        cleared_cache = False
-        while True:
-            try:
-                slice_size = q.shape[1] // steps if (q.shape[1] % steps) == 0 else q.shape[1]
-                for i in range(0, q.shape[1], slice_size):
-                    end = i + slice_size
-                    if _ATTN_PRECISION =="fp32":
-                        with torch.autocast(enabled=False, device_type = 'cuda'):
-                            s1 = einsum('b i d, b j d -> b i j', q[:, i:end].float(), k.float()) * self.scale
-                    else:
-                        s1 = einsum('b i d, b j d -> b i j', q[:, i:end], k) * self.scale
-                    first_op_done = True
-
-                    s2 = s1.softmax(dim=-1)
-                    del s1
-
-                    r1[:, i:end] = einsum('b i j, b j d -> b i d', s2, v)
-                    del s2
-                break
-            except OOM_EXCEPTION as e:
-                if first_op_done == False:
-                    torch.cuda.empty_cache()
-                    torch.cuda.ipc_collect()
-                    if cleared_cache == False:
-                        cleared_cache = True
-                        print("out of memory error, emptying cache and trying again")
-                        continue
-                    steps *= 2
-                    if steps > 64:
-                        raise e
-                    print("out of memory error, increasing steps and trying again", steps)
-                else:
-                    raise e
-
-        del q, k, v
-
-        r2 = rearrange(r1, '(b h) n d -> b n (h d)', h=h)
-        del r1
-
-        return self.to_out(r2)
-
 class CrossAttention(nn.Module):
     def __init__(self, query_dim, context_dim=None, heads=8, dim_head=64, dropout=0.):
         super().__init__()
@@ -373,9 +177,9 @@ class CrossAttention(nn.Module):
                 sim = einsum('b i d, b j d -> b i j', q, k) * self.scale
         else:
             sim = einsum('b i d, b j d -> b i j', q, k) * self.scale
-
+        
         del q, k
-
+    
         if exists(mask):
             mask = rearrange(mask, 'b ... -> b (...)')
             max_neg_value = -torch.finfo(sim.dtype).max
@@ -389,12 +193,13 @@ class CrossAttention(nn.Module):
         out = rearrange(out, '(b h) n d -> b n (h d)', h=h)
         return self.to_out(out)
 
+
 class MemoryEfficientCrossAttention(nn.Module):
     # https://github.com/MatthieuTPHR/diffusers/blob/d80b531ff8060ec1ea982b65a1b8df70f73aa67c/src/diffusers/models/attention.py#L223
     def __init__(self, query_dim, context_dim=None, heads=8, dim_head=64, dropout=0.0):
         super().__init__()
-        #print(f"Setting up {self.__class__.__name__}. Query dim is {query_dim}, context_dim is {context_dim} and using "
-        #      f"{heads} heads.")
+        print(f"Setting up {self.__class__.__name__}. Query dim is {query_dim}, context_dim is {context_dim} and using "
+              f"{heads} heads.")
         inner_dim = dim_head * heads
         context_dim = default(context_dim, query_dim)
 
@@ -437,77 +242,23 @@ class MemoryEfficientCrossAttention(nn.Module):
         )
         return self.to_out(out)
 
-class CrossAttentionPytorch(nn.Module):
-    def __init__(self, query_dim, context_dim=None, heads=8, dim_head=64, dropout=0.):
-        super().__init__()
-        inner_dim = dim_head * heads
-        context_dim = default(context_dim, query_dim)
-
-        self.heads = heads
-        self.dim_head = dim_head
-
-        self.to_q = nn.Linear(query_dim, inner_dim, bias=False)
-        self.to_k = nn.Linear(context_dim, inner_dim, bias=False)
-        self.to_v = nn.Linear(context_dim, inner_dim, bias=False)
-
-        self.to_out = nn.Sequential(nn.Linear(inner_dim, query_dim), nn.Dropout(dropout))
-        self.attention_op: Optional[Any] = None
-
-    def forward(self, x, context=None, mask=None):
-        q = self.to_q(x)
-        context = default(context, x)
-        k = self.to_k(context)
-        v = self.to_v(context)
-
-        b, _, _ = q.shape
-        q, k, v = map(
-            lambda t: t.unsqueeze(3)
-            .reshape(b, t.shape[1], self.heads, self.dim_head)
-            .permute(0, 2, 1, 3)
-            .reshape(b * self.heads, t.shape[1], self.dim_head)
-            .contiguous(),
-            (q, k, v),
-        )
-
-        out = torch.nn.functional.scaled_dot_product_attention(q, k, v, attn_mask=None, dropout_p=0.0, is_causal=False)
-
-        if exists(mask):
-            raise NotImplementedError
-        out = (
-            out.unsqueeze(0)
-            .reshape(b, self.heads, out.shape[1], self.dim_head)
-            .permute(0, 2, 1, 3)
-            .reshape(b, out.shape[1], self.heads * self.dim_head)
-        )
-
-        return self.to_out(out)
-
-import sys
-if XFORMERS_IS_AVAILBLE == False or "--disable-xformers" in sys.argv:
-    if "--use-split-cross-attention" in sys.argv:
-        print("Using split optimization for cross attention")
-        CrossAttention = CrossAttentionDoggettx
-    else:
-        if "--use-pytorch-cross-attention" in sys.argv:
-            print("Using pytorch cross attention")
-            torch.backends.cuda.enable_math_sdp(False)
-            CrossAttention = CrossAttentionPytorch
-        else:
-            print("Using sub quadratic optimization for cross attention, if you have memory or speed issues try using: --use-split-cross-attention")
-            CrossAttention = CrossAttentionBirchSan
-else:
-    print("Using xformers cross attention")
-    CrossAttention = MemoryEfficientCrossAttention
 
 class BasicTransformerBlock(nn.Module):
+    ATTENTION_MODES = {
+        "softmax": CrossAttention,  # vanilla attention
+        "softmax-xformers": MemoryEfficientCrossAttention
+    }
     def __init__(self, dim, n_heads, d_head, dropout=0., context_dim=None, gated_ff=True, checkpoint=True,
                  disable_self_attn=False):
         super().__init__()
+        attn_mode = "softmax-xformers" if XFORMERS_IS_AVAILBLE else "softmax"
+        assert attn_mode in self.ATTENTION_MODES
+        attn_cls = self.ATTENTION_MODES[attn_mode]
         self.disable_self_attn = disable_self_attn
-        self.attn1 = CrossAttention(query_dim=dim, heads=n_heads, dim_head=d_head, dropout=dropout,
+        self.attn1 = attn_cls(query_dim=dim, heads=n_heads, dim_head=d_head, dropout=dropout,
                               context_dim=context_dim if self.disable_self_attn else None)  # is a self-attention if not self.disable_self_attn
         self.ff = FeedForward(dim, dropout=dropout, glu=gated_ff)
-        self.attn2 = CrossAttention(query_dim=dim, context_dim=context_dim,
+        self.attn2 = attn_cls(query_dim=dim, context_dim=context_dim,
                               heads=n_heads, dim_head=d_head, dropout=dropout)  # is self-attn if context is none
         self.norm1 = nn.LayerNorm(dim)
         self.norm2 = nn.LayerNorm(dim)
@@ -588,22 +339,3 @@ class SpatialTransformer(nn.Module):
             x = self.proj_out(x)
         return x + x_in
 
-def get_free_memory(dev=None, torch_free_too=False):
-    if dev is None:
-        dev = torch.cuda.current_device()
-
-    if hasattr(dev, 'type') and dev.type == 'cpu':
-        mem_free_total = psutil.virtual_memory().available
-        mem_free_torch = mem_free_total
-    else:
-        stats = torch.cuda.memory_stats(dev)
-        mem_active = stats['active_bytes.all.current']
-        mem_reserved = stats['reserved_bytes.all.current']
-        mem_free_cuda, _ = torch.cuda.mem_get_info(dev)
-        mem_free_torch = mem_reserved - mem_active
-        mem_free_total = mem_free_cuda + mem_free_torch
-
-    if torch_free_too:
-        return (mem_free_total, mem_free_torch)
-    else:
-        return mem_free_total

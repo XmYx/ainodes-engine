@@ -28632,3 +28632,2234 @@ TypeError: cat() received an invalid combination of arguments - got (NoneType, i
 
 
 ---End of Error---
+Timestamp: 2023-05-25 18:24:50
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\ainodes_frontend\base\ai_node_base.py", line 286, in evalImplementationThreadHandler
+    result = self.evalImplementation_thread()
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\torch_nodes\torch_loader_node.py", line 115, in evalImplementation_thread
+    self.loader.load_model(model_name, config_name, inpaint)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\model_loader.py", line 163, in load_model
+    torch.onnx.export(model.model.diffusion_model,  # model being run
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\onnx\utils.py", line 507, in export
+    _export(
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\onnx\utils.py", line 1567, in _export
+    graph, params_dict, torch_out = _model_to_graph(
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\onnx\utils.py", line 1124, in _model_to_graph
+    graph, params, torch_out, module = _create_jit_graph(model, args)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\onnx\utils.py", line 1000, in _create_jit_graph
+    graph, torch_out = _trace_and_get_graph_from_model(model, args)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\onnx\utils.py", line 904, in _trace_and_get_graph_from_model
+    trace_graph, torch_out, inputs_states = torch.jit._get_trace_graph(
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\jit\_trace.py", line 1268, in _get_trace_graph
+    outs = ONNXTracedModule(f, strict, _force_outplace, return_inputs, _return_inputs_states)(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\jit\_trace.py", line 127, in forward
+    graph, out = torch._C._create_graph_by_tracing(
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\jit\_trace.py", line 118, in wrapper
+    outs.append(self.inner(*trace_inputs))
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1492, in _slow_forward
+    result = self.forward(*input, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\ldm\modules\diffusionmodules\openaimodel.py", line 797, in forward
+    h = module(h, emb, context)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1492, in _slow_forward
+    result = self.forward(*input, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\ldm\modules\diffusionmodules\openaimodel.py", line 82, in forward
+    x = layer(x, emb)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1492, in _slow_forward
+    result = self.forward(*input, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\ldm\modules\diffusionmodules\openaimodel.py", line 249, in forward
+    return checkpoint(
+  File "C:\Users\mix\ainodes\ainodes-engine\ldm\modules\diffusionmodules\util.py", line 121, in checkpoint
+    return CheckpointFunction.apply(func, len(inputs), *args)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\autograd\function.py", line 506, in apply
+    return super().apply(*args, **kwargs)  # type: ignore[misc]
+RuntimeError: invalid unordered_map<K, T> key
+
+---End of Error---
+Timestamp: 2023-05-25 19:25:54
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\ainodes_frontend\base\ai_node_base.py", line 286, in evalImplementationThreadHandler
+    result = self.evalImplementation_thread()
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\torch_nodes\torch_loader_node.py", line 115, in evalImplementation_thread
+    self.loader.load_model(model_name, config_name, inpaint)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\model_loader.py", line 194, in load_model
+    gs.models["sd"].model.model.diffusion_model.forward = UNetModel_forward
+KeyError: 'sd'
+
+---End of Error---
+Timestamp: 2023-05-25 19:26:57
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\ainodes_frontend\base\ai_node_base.py", line 286, in evalImplementationThreadHandler
+    result = self.evalImplementation_thread()
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\torch_nodes\torch_loader_node.py", line 115, in evalImplementation_thread
+    self.loader.load_model(model_name, config_name, inpaint)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\model_loader.py", line 194, in load_model
+    gs.models["sd"].model.model.diffusion_model.forward = UNetModel_forward
+KeyError: 'sd'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\torch_nodes\ksampler_node.py", line 161, in evalImplementation_thread
+    sample = common_ksampler(device="cuda",
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_sampler.py", line 60, in common_ksampler
+    samples = sampler.sample(noise, positive_copy, negative_copy, cfg=cfg, latent_image=latent_image, start_step=start_step, last_step=last_step, force_full_denoise=force_full_denoise, denoise_mask=noise_mask, callback=callback, model_key=model_key)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 516, in sample
+    samples = getattr(k_diffusion_sampling, "sample_{}".format(self.sampler))(self.model_k, noise, sigmas, extra_args=extra_args, callback=callback)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\utils\_contextlib.py", line 115, in decorate_context
+    return func(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_diffusion\sampling.py", line 128, in sample_euler
+    denoised = model(x, sigma_hat * s_in, **extra_args)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 255, in forward
+    out = self.inner_model(x, sigma, cond=cond, uncond=uncond, cond_scale=cond_scale, cond_concat=cond_concat)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_diffusion\external.py", line 114, in forward
+    eps = self.get_eps(input * c_in, self.sigma_to_t(sigma), **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_diffusion\external.py", line 140, in get_eps
+    return self.inner_model.apply_model(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 243, in apply_model
+    out = sampling_function(self.inner_model.apply_model, x, timestep, uncond, cond, cond_scale, cond_concat)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 225, in sampling_function
+    cond, uncond = calc_cond_uncond_batch(model_function, cond, uncond, x, timestep, max_total_area, cond_concat)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 202, in calc_cond_uncond_batch
+    output = model_function(input_x, timestep_, cond=c).chunk(batch_chunks)
+  File "C:\Users\mix\ainodes\ainodes-engine\ldm\models\diffusion\ddpm.py", line 858, in apply_model
+    x_recon = self.model(x_noisy, t, **cond)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\ldm\models\diffusion\ddpm.py", line 1335, in forward
+    out = self.diffusion_model(x, t, context=cc)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\model_loader.py", line 1001, in UNetModel_forward
+    engine, ctx, trt_context = build()
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\model_loader.py", line 1051, in build
+    engine = load_engine(engine_file)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\model_loader.py", line 991, in load_engine
+    with open(engine_file_path, "rb") as f, trt.Runtime(TRT_LOGGER) as runtime:
+TypeError: __init__(): incompatible constructor arguments. The following argument types are supported:
+    1. tensorrt.tensorrt.Runtime(logger: tensorrt.tensorrt.ILogger)
+
+Invoked with: <class 'custom_nodes.ainodes_engine_base_nodes.ainodes_backend.model_loader.TRT_LOGGER'>
+
+---End of Error---
+Timestamp: 2023-05-25 19:30:42
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\torch_nodes\ksampler_node.py", line 161, in evalImplementation_thread
+    sample = common_ksampler(device="cuda",
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_sampler.py", line 60, in common_ksampler
+    samples = sampler.sample(noise, positive_copy, negative_copy, cfg=cfg, latent_image=latent_image, start_step=start_step, last_step=last_step, force_full_denoise=force_full_denoise, denoise_mask=noise_mask, callback=callback, model_key=model_key)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 516, in sample
+    samples = getattr(k_diffusion_sampling, "sample_{}".format(self.sampler))(self.model_k, noise, sigmas, extra_args=extra_args, callback=callback)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\utils\_contextlib.py", line 115, in decorate_context
+    return func(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_diffusion\sampling.py", line 128, in sample_euler
+    denoised = model(x, sigma_hat * s_in, **extra_args)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 255, in forward
+    out = self.inner_model(x, sigma, cond=cond, uncond=uncond, cond_scale=cond_scale, cond_concat=cond_concat)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_diffusion\external.py", line 114, in forward
+    eps = self.get_eps(input * c_in, self.sigma_to_t(sigma), **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_diffusion\external.py", line 140, in get_eps
+    return self.inner_model.apply_model(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 243, in apply_model
+    out = sampling_function(self.inner_model.apply_model, x, timestep, uncond, cond, cond_scale, cond_concat)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 225, in sampling_function
+    cond, uncond = calc_cond_uncond_batch(model_function, cond, uncond, x, timestep, max_total_area, cond_concat)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 202, in calc_cond_uncond_batch
+    output = model_function(input_x, timestep_, cond=c).chunk(batch_chunks)
+  File "C:\Users\mix\ainodes\ainodes-engine\ldm\models\diffusion\ddpm.py", line 858, in apply_model
+    x_recon = self.model(x_noisy, t, **cond)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\ldm\models\diffusion\ddpm.py", line 1335, in forward
+    out = self.diffusion_model(x, t, context=cc)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\model_loader.py", line 1001, in UNetModel_forward
+    engine = build()
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\model_loader.py", line 1051, in build
+    engine = load_engine(engine_file)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\model_loader.py", line 991, in load_engine
+    with open(engine_file_path, "rb") as f, trt.Runtime(TRT_LOGGER) as runtime:
+TypeError: __init__(): incompatible constructor arguments. The following argument types are supported:
+    1. tensorrt.tensorrt.Runtime(logger: tensorrt.tensorrt.ILogger)
+
+Invoked with: <class 'custom_nodes.ainodes_engine_base_nodes.ainodes_backend.model_loader.TRT_LOGGER'>
+
+---End of Error---
+Timestamp: 2023-05-25 19:31:37
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\torch_nodes\ksampler_node.py", line 161, in evalImplementation_thread
+    sample = common_ksampler(device="cuda",
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_sampler.py", line 60, in common_ksampler
+    samples = sampler.sample(noise, positive_copy, negative_copy, cfg=cfg, latent_image=latent_image, start_step=start_step, last_step=last_step, force_full_denoise=force_full_denoise, denoise_mask=noise_mask, callback=callback, model_key=model_key)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 516, in sample
+    samples = getattr(k_diffusion_sampling, "sample_{}".format(self.sampler))(self.model_k, noise, sigmas, extra_args=extra_args, callback=callback)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\utils\_contextlib.py", line 115, in decorate_context
+    return func(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_diffusion\sampling.py", line 128, in sample_euler
+    denoised = model(x, sigma_hat * s_in, **extra_args)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 255, in forward
+    out = self.inner_model(x, sigma, cond=cond, uncond=uncond, cond_scale=cond_scale, cond_concat=cond_concat)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_diffusion\external.py", line 114, in forward
+    eps = self.get_eps(input * c_in, self.sigma_to_t(sigma), **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_diffusion\external.py", line 140, in get_eps
+    return self.inner_model.apply_model(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 243, in apply_model
+    out = sampling_function(self.inner_model.apply_model, x, timestep, uncond, cond, cond_scale, cond_concat)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 225, in sampling_function
+    cond, uncond = calc_cond_uncond_batch(model_function, cond, uncond, x, timestep, max_total_area, cond_concat)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 202, in calc_cond_uncond_batch
+    output = model_function(input_x, timestep_, cond=c).chunk(batch_chunks)
+  File "C:\Users\mix\ainodes\ainodes-engine\ldm\models\diffusion\ddpm.py", line 858, in apply_model
+    x_recon = self.model(x_noisy, t, **cond)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\ldm\models\diffusion\ddpm.py", line 1335, in forward
+    out = self.diffusion_model(x, t, context=cc)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\model_loader.py", line 1001, in UNetModel_forward
+    for binding in engine:
+TypeError: 'NoneType' object is not iterable
+
+---End of Error---
+Timestamp: 2023-05-25 19:49:37
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\torch_nodes\ksampler_node.py", line 161, in evalImplementation_thread
+    sample = common_ksampler(device="cuda",
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_sampler.py", line 60, in common_ksampler
+    samples = sampler.sample(noise, positive_copy, negative_copy, cfg=cfg, latent_image=latent_image, start_step=start_step, last_step=last_step, force_full_denoise=force_full_denoise, denoise_mask=noise_mask, callback=callback, model_key=model_key)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 516, in sample
+    samples = getattr(k_diffusion_sampling, "sample_{}".format(self.sampler))(self.model_k, noise, sigmas, extra_args=extra_args, callback=callback)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\utils\_contextlib.py", line 115, in decorate_context
+    return func(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_diffusion\sampling.py", line 128, in sample_euler
+    denoised = model(x, sigma_hat * s_in, **extra_args)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 255, in forward
+    out = self.inner_model(x, sigma, cond=cond, uncond=uncond, cond_scale=cond_scale, cond_concat=cond_concat)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_diffusion\external.py", line 114, in forward
+    eps = self.get_eps(input * c_in, self.sigma_to_t(sigma), **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_diffusion\external.py", line 140, in get_eps
+    return self.inner_model.apply_model(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 243, in apply_model
+    out = sampling_function(self.inner_model.apply_model, x, timestep, uncond, cond, cond_scale, cond_concat)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 225, in sampling_function
+    cond, uncond = calc_cond_uncond_batch(model_function, cond, uncond, x, timestep, max_total_area, cond_concat)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 202, in calc_cond_uncond_batch
+    output = model_function(input_x, timestep_, cond=c).chunk(batch_chunks)
+  File "C:\Users\mix\ainodes\ainodes-engine\ldm\models\diffusion\ddpm.py", line 858, in apply_model
+    x_recon = self.model(x_noisy, t, **cond)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\ldm\models\diffusion\ddpm.py", line 1335, in forward
+    out = self.diffusion_model(x, t, context=cc)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\model_loader.py", line 1003, in UNetModel_forward
+    size = trt.volume(trtcontext.get_binding_shape(binding_idx))
+AttributeError: 'NoneType' object has no attribute 'get_binding_shape'
+
+---End of Error---
+Timestamp: 2023-05-25 19:51:08
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\torch_nodes\ksampler_node.py", line 161, in evalImplementation_thread
+    sample = common_ksampler(device="cuda",
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_sampler.py", line 60, in common_ksampler
+    samples = sampler.sample(noise, positive_copy, negative_copy, cfg=cfg, latent_image=latent_image, start_step=start_step, last_step=last_step, force_full_denoise=force_full_denoise, denoise_mask=noise_mask, callback=callback, model_key=model_key)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 516, in sample
+    samples = getattr(k_diffusion_sampling, "sample_{}".format(self.sampler))(self.model_k, noise, sigmas, extra_args=extra_args, callback=callback)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\utils\_contextlib.py", line 115, in decorate_context
+    return func(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_diffusion\sampling.py", line 128, in sample_euler
+    denoised = model(x, sigma_hat * s_in, **extra_args)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 255, in forward
+    out = self.inner_model(x, sigma, cond=cond, uncond=uncond, cond_scale=cond_scale, cond_concat=cond_concat)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_diffusion\external.py", line 114, in forward
+    eps = self.get_eps(input * c_in, self.sigma_to_t(sigma), **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_diffusion\external.py", line 140, in get_eps
+    return self.inner_model.apply_model(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 243, in apply_model
+    out = sampling_function(self.inner_model.apply_model, x, timestep, uncond, cond, cond_scale, cond_concat)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 225, in sampling_function
+    cond, uncond = calc_cond_uncond_batch(model_function, cond, uncond, x, timestep, max_total_area, cond_concat)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 202, in calc_cond_uncond_batch
+    output = model_function(input_x, timestep_, cond=c).chunk(batch_chunks)
+  File "C:\Users\mix\ainodes\ainodes-engine\ldm\models\diffusion\ddpm.py", line 858, in apply_model
+    x_recon = self.model(x_noisy, t, **cond)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\ldm\models\diffusion\ddpm.py", line 1335, in forward
+    out = self.diffusion_model(x, t, context=cc)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\model_loader.py", line 1003, in UNetModel_forward
+    size = trt.volume(trtcontext.get_binding_shape(binding_idx))
+AttributeError: 'NoneType' object has no attribute 'get_binding_shape'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\torch_nodes\ksampler_node.py", line 161, in evalImplementation_thread
+    sample = common_ksampler(device="cuda",
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_sampler.py", line 60, in common_ksampler
+    samples = sampler.sample(noise, positive_copy, negative_copy, cfg=cfg, latent_image=latent_image, start_step=start_step, last_step=last_step, force_full_denoise=force_full_denoise, denoise_mask=noise_mask, callback=callback, model_key=model_key)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 516, in sample
+    samples = getattr(k_diffusion_sampling, "sample_{}".format(self.sampler))(self.model_k, noise, sigmas, extra_args=extra_args, callback=callback)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\utils\_contextlib.py", line 115, in decorate_context
+    return func(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_diffusion\sampling.py", line 128, in sample_euler
+    denoised = model(x, sigma_hat * s_in, **extra_args)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 255, in forward
+    out = self.inner_model(x, sigma, cond=cond, uncond=uncond, cond_scale=cond_scale, cond_concat=cond_concat)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_diffusion\external.py", line 114, in forward
+    eps = self.get_eps(input * c_in, self.sigma_to_t(sigma), **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_diffusion\external.py", line 140, in get_eps
+    return self.inner_model.apply_model(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 243, in apply_model
+    out = sampling_function(self.inner_model.apply_model, x, timestep, uncond, cond, cond_scale, cond_concat)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 225, in sampling_function
+    cond, uncond = calc_cond_uncond_batch(model_function, cond, uncond, x, timestep, max_total_area, cond_concat)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 202, in calc_cond_uncond_batch
+    output = model_function(input_x, timestep_, cond=c).chunk(batch_chunks)
+  File "C:\Users\mix\ainodes\ainodes-engine\ldm\models\diffusion\ddpm.py", line 858, in apply_model
+    x_recon = self.model(x_noisy, t, **cond)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\ldm\models\diffusion\ddpm.py", line 1335, in forward
+    out = self.diffusion_model(x, t, context=cc)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\model_loader.py", line 1012, in UNetModel_forward
+    input_memory = cuda.mem_alloc(input_image.nbytes)
+pycuda._driver.LogicError: explicit_context_dependent failed: invalid device context - no currently active context?
+
+---End of Error---
+Timestamp: 2023-05-25 19:52:02
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\torch_nodes\ksampler_node.py", line 161, in evalImplementation_thread
+    sample = common_ksampler(device="cuda",
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_sampler.py", line 60, in common_ksampler
+    samples = sampler.sample(noise, positive_copy, negative_copy, cfg=cfg, latent_image=latent_image, start_step=start_step, last_step=last_step, force_full_denoise=force_full_denoise, denoise_mask=noise_mask, callback=callback, model_key=model_key)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 516, in sample
+    samples = getattr(k_diffusion_sampling, "sample_{}".format(self.sampler))(self.model_k, noise, sigmas, extra_args=extra_args, callback=callback)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\utils\_contextlib.py", line 115, in decorate_context
+    return func(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_diffusion\sampling.py", line 128, in sample_euler
+    denoised = model(x, sigma_hat * s_in, **extra_args)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 255, in forward
+    out = self.inner_model(x, sigma, cond=cond, uncond=uncond, cond_scale=cond_scale, cond_concat=cond_concat)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_diffusion\external.py", line 114, in forward
+    eps = self.get_eps(input * c_in, self.sigma_to_t(sigma), **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_diffusion\external.py", line 140, in get_eps
+    return self.inner_model.apply_model(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 243, in apply_model
+    out = sampling_function(self.inner_model.apply_model, x, timestep, uncond, cond, cond_scale, cond_concat)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 225, in sampling_function
+    cond, uncond = calc_cond_uncond_batch(model_function, cond, uncond, x, timestep, max_total_area, cond_concat)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 202, in calc_cond_uncond_batch
+    output = model_function(input_x, timestep_, cond=c).chunk(batch_chunks)
+  File "C:\Users\mix\ainodes\ainodes-engine\ldm\models\diffusion\ddpm.py", line 858, in apply_model
+    x_recon = self.model(x_noisy, t, **cond)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\ldm\models\diffusion\ddpm.py", line 1335, in forward
+    out = self.diffusion_model(x, t, context=cc)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\model_loader.py", line 1003, in UNetModel_forward
+    size = trt.volume(trtcontext.get_binding_shape(binding_idx))
+AttributeError: 'NoneType' object has no attribute 'get_binding_shape'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\torch_nodes\ksampler_node.py", line 161, in evalImplementation_thread
+    sample = common_ksampler(device="cuda",
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_sampler.py", line 60, in common_ksampler
+    samples = sampler.sample(noise, positive_copy, negative_copy, cfg=cfg, latent_image=latent_image, start_step=start_step, last_step=last_step, force_full_denoise=force_full_denoise, denoise_mask=noise_mask, callback=callback, model_key=model_key)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 516, in sample
+    samples = getattr(k_diffusion_sampling, "sample_{}".format(self.sampler))(self.model_k, noise, sigmas, extra_args=extra_args, callback=callback)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\utils\_contextlib.py", line 115, in decorate_context
+    return func(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_diffusion\sampling.py", line 128, in sample_euler
+    denoised = model(x, sigma_hat * s_in, **extra_args)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 255, in forward
+    out = self.inner_model(x, sigma, cond=cond, uncond=uncond, cond_scale=cond_scale, cond_concat=cond_concat)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_diffusion\external.py", line 114, in forward
+    eps = self.get_eps(input * c_in, self.sigma_to_t(sigma), **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_diffusion\external.py", line 140, in get_eps
+    return self.inner_model.apply_model(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 243, in apply_model
+    out = sampling_function(self.inner_model.apply_model, x, timestep, uncond, cond, cond_scale, cond_concat)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 225, in sampling_function
+    cond, uncond = calc_cond_uncond_batch(model_function, cond, uncond, x, timestep, max_total_area, cond_concat)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 202, in calc_cond_uncond_batch
+    output = model_function(input_x, timestep_, cond=c).chunk(batch_chunks)
+  File "C:\Users\mix\ainodes\ainodes-engine\ldm\models\diffusion\ddpm.py", line 858, in apply_model
+    x_recon = self.model(x_noisy, t, **cond)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\ldm\models\diffusion\ddpm.py", line 1335, in forward
+    out = self.diffusion_model(x, t, context=cc)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\model_loader.py", line 1012, in UNetModel_forward
+    input_memory = cuda.mem_alloc(input_image.nbytes)
+pycuda._driver.LogicError: explicit_context_dependent failed: invalid device context - no currently active context?
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\torch_nodes\ksampler_node.py", line 161, in evalImplementation_thread
+    sample = common_ksampler(device="cuda",
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_sampler.py", line 60, in common_ksampler
+    samples = sampler.sample(noise, positive_copy, negative_copy, cfg=cfg, latent_image=latent_image, start_step=start_step, last_step=last_step, force_full_denoise=force_full_denoise, denoise_mask=noise_mask, callback=callback, model_key=model_key)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 516, in sample
+    samples = getattr(k_diffusion_sampling, "sample_{}".format(self.sampler))(self.model_k, noise, sigmas, extra_args=extra_args, callback=callback)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\utils\_contextlib.py", line 115, in decorate_context
+    return func(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_diffusion\sampling.py", line 128, in sample_euler
+    denoised = model(x, sigma_hat * s_in, **extra_args)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 255, in forward
+    out = self.inner_model(x, sigma, cond=cond, uncond=uncond, cond_scale=cond_scale, cond_concat=cond_concat)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_diffusion\external.py", line 114, in forward
+    eps = self.get_eps(input * c_in, self.sigma_to_t(sigma), **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_diffusion\external.py", line 140, in get_eps
+    return self.inner_model.apply_model(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 243, in apply_model
+    out = sampling_function(self.inner_model.apply_model, x, timestep, uncond, cond, cond_scale, cond_concat)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 225, in sampling_function
+    cond, uncond = calc_cond_uncond_batch(model_function, cond, uncond, x, timestep, max_total_area, cond_concat)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 202, in calc_cond_uncond_batch
+    output = model_function(input_x, timestep_, cond=c).chunk(batch_chunks)
+  File "C:\Users\mix\ainodes\ainodes-engine\ldm\models\diffusion\ddpm.py", line 858, in apply_model
+    x_recon = self.model(x_noisy, t, **cond)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\ldm\models\diffusion\ddpm.py", line 1335, in forward
+    out = self.diffusion_model(x, t, context=cc)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\model_loader.py", line 1021, in UNetModel_forward
+    trtcontext.set_binding_shape(binding_idx, tensor.shape)
+AttributeError: 'NoneType' object has no attribute 'shape'
+
+---End of Error---
+Timestamp: 2023-05-25 19:53:44
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\torch_nodes\ksampler_node.py", line 161, in evalImplementation_thread
+    sample = common_ksampler(device="cuda",
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_sampler.py", line 60, in common_ksampler
+    samples = sampler.sample(noise, positive_copy, negative_copy, cfg=cfg, latent_image=latent_image, start_step=start_step, last_step=last_step, force_full_denoise=force_full_denoise, denoise_mask=noise_mask, callback=callback, model_key=model_key)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 516, in sample
+    samples = getattr(k_diffusion_sampling, "sample_{}".format(self.sampler))(self.model_k, noise, sigmas, extra_args=extra_args, callback=callback)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\utils\_contextlib.py", line 115, in decorate_context
+    return func(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_diffusion\sampling.py", line 128, in sample_euler
+    denoised = model(x, sigma_hat * s_in, **extra_args)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 255, in forward
+    out = self.inner_model(x, sigma, cond=cond, uncond=uncond, cond_scale=cond_scale, cond_concat=cond_concat)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_diffusion\external.py", line 114, in forward
+    eps = self.get_eps(input * c_in, self.sigma_to_t(sigma), **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_diffusion\external.py", line 140, in get_eps
+    return self.inner_model.apply_model(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 243, in apply_model
+    out = sampling_function(self.inner_model.apply_model, x, timestep, uncond, cond, cond_scale, cond_concat)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 225, in sampling_function
+    cond, uncond = calc_cond_uncond_batch(model_function, cond, uncond, x, timestep, max_total_area, cond_concat)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 202, in calc_cond_uncond_batch
+    output = model_function(input_x, timestep_, cond=c).chunk(batch_chunks)
+  File "C:\Users\mix\ainodes\ainodes-engine\ldm\models\diffusion\ddpm.py", line 858, in apply_model
+    x_recon = self.model(x_noisy, t, **cond)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\ldm\models\diffusion\ddpm.py", line 1335, in forward
+    out = self.diffusion_model(x, t, context=cc)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\model_loader.py", line 1019, in UNetModel_forward
+    trtcontext.set_binding_shape(binding_idx, tensor.shape)
+AttributeError: 'NoneType' object has no attribute 'shape'
+
+---End of Error---
+Timestamp: 2023-05-25 19:56:02
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\torch_nodes\ksampler_node.py", line 161, in evalImplementation_thread
+    sample = common_ksampler(device="cuda",
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_sampler.py", line 60, in common_ksampler
+    samples = sampler.sample(noise, positive_copy, negative_copy, cfg=cfg, latent_image=latent_image, start_step=start_step, last_step=last_step, force_full_denoise=force_full_denoise, denoise_mask=noise_mask, callback=callback, model_key=model_key)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 516, in sample
+    samples = getattr(k_diffusion_sampling, "sample_{}".format(self.sampler))(self.model_k, noise, sigmas, extra_args=extra_args, callback=callback)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\utils\_contextlib.py", line 115, in decorate_context
+    return func(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_diffusion\sampling.py", line 128, in sample_euler
+    denoised = model(x, sigma_hat * s_in, **extra_args)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 255, in forward
+    out = self.inner_model(x, sigma, cond=cond, uncond=uncond, cond_scale=cond_scale, cond_concat=cond_concat)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_diffusion\external.py", line 114, in forward
+    eps = self.get_eps(input * c_in, self.sigma_to_t(sigma), **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_diffusion\external.py", line 140, in get_eps
+    return self.inner_model.apply_model(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 243, in apply_model
+    out = sampling_function(self.inner_model.apply_model, x, timestep, uncond, cond, cond_scale, cond_concat)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 225, in sampling_function
+    cond, uncond = calc_cond_uncond_batch(model_function, cond, uncond, x, timestep, max_total_area, cond_concat)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 202, in calc_cond_uncond_batch
+    output = model_function(input_x, timestep_, cond=c).chunk(batch_chunks)
+  File "C:\Users\mix\ainodes\ainodes-engine\ldm\models\diffusion\ddpm.py", line 858, in apply_model
+    x_recon = self.model(x_noisy, t, **cond)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\ldm\models\diffusion\ddpm.py", line 1335, in forward
+    out = self.diffusion_model(x, t, context=cc)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\model_loader.py", line 1023, in UNetModel_forward
+    input_memory = cuda.mem_alloc(input_image.nbytes)
+pycuda._driver.LogicError: explicit_context_dependent failed: invalid device context - no currently active context?
+
+---End of Error---
+Timestamp: 2023-05-25 19:57:05
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\torch_nodes\ksampler_node.py", line 161, in evalImplementation_thread
+    sample = common_ksampler(device="cuda",
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_sampler.py", line 60, in common_ksampler
+    samples = sampler.sample(noise, positive_copy, negative_copy, cfg=cfg, latent_image=latent_image, start_step=start_step, last_step=last_step, force_full_denoise=force_full_denoise, denoise_mask=noise_mask, callback=callback, model_key=model_key)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 516, in sample
+    samples = getattr(k_diffusion_sampling, "sample_{}".format(self.sampler))(self.model_k, noise, sigmas, extra_args=extra_args, callback=callback)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\utils\_contextlib.py", line 115, in decorate_context
+    return func(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_diffusion\sampling.py", line 128, in sample_euler
+    denoised = model(x, sigma_hat * s_in, **extra_args)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 255, in forward
+    out = self.inner_model(x, sigma, cond=cond, uncond=uncond, cond_scale=cond_scale, cond_concat=cond_concat)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_diffusion\external.py", line 114, in forward
+    eps = self.get_eps(input * c_in, self.sigma_to_t(sigma), **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_diffusion\external.py", line 140, in get_eps
+    return self.inner_model.apply_model(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 243, in apply_model
+    out = sampling_function(self.inner_model.apply_model, x, timestep, uncond, cond, cond_scale, cond_concat)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 225, in sampling_function
+    cond, uncond = calc_cond_uncond_batch(model_function, cond, uncond, x, timestep, max_total_area, cond_concat)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 202, in calc_cond_uncond_batch
+    output = model_function(input_x, timestep_, cond=c).chunk(batch_chunks)
+  File "C:\Users\mix\ainodes\ainodes-engine\ldm\models\diffusion\ddpm.py", line 858, in apply_model
+    x_recon = self.model(x_noisy, t, **cond)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\ldm\models\diffusion\ddpm.py", line 1335, in forward
+    out = self.diffusion_model(x, t, context=cc)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\model_loader.py", line 1023, in UNetModel_forward
+    input_memory = cuda.mem_alloc(input_image.nbytes)
+pycuda._driver.LogicError: explicit_context_dependent failed: invalid device context - no currently active context?
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\torch_nodes\ksampler_node.py", line 161, in evalImplementation_thread
+    sample = common_ksampler(device="cuda",
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_sampler.py", line 60, in common_ksampler
+    samples = sampler.sample(noise, positive_copy, negative_copy, cfg=cfg, latent_image=latent_image, start_step=start_step, last_step=last_step, force_full_denoise=force_full_denoise, denoise_mask=noise_mask, callback=callback, model_key=model_key)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 516, in sample
+    samples = getattr(k_diffusion_sampling, "sample_{}".format(self.sampler))(self.model_k, noise, sigmas, extra_args=extra_args, callback=callback)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\utils\_contextlib.py", line 115, in decorate_context
+    return func(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_diffusion\sampling.py", line 128, in sample_euler
+    denoised = model(x, sigma_hat * s_in, **extra_args)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 255, in forward
+    out = self.inner_model(x, sigma, cond=cond, uncond=uncond, cond_scale=cond_scale, cond_concat=cond_concat)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_diffusion\external.py", line 114, in forward
+    eps = self.get_eps(input * c_in, self.sigma_to_t(sigma), **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_diffusion\external.py", line 140, in get_eps
+    return self.inner_model.apply_model(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 243, in apply_model
+    out = sampling_function(self.inner_model.apply_model, x, timestep, uncond, cond, cond_scale, cond_concat)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 225, in sampling_function
+    cond, uncond = calc_cond_uncond_batch(model_function, cond, uncond, x, timestep, max_total_area, cond_concat)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 202, in calc_cond_uncond_batch
+    output = model_function(input_x, timestep_, cond=c).chunk(batch_chunks)
+  File "C:\Users\mix\ainodes\ainodes-engine\ldm\models\diffusion\ddpm.py", line 858, in apply_model
+    x_recon = self.model(x_noisy, t, **cond)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\ldm\models\diffusion\ddpm.py", line 1335, in forward
+    out = self.diffusion_model(x, t, context=cc)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\model_loader.py", line 1023, in UNetModel_forward
+    input_memory = cuda.mem_alloc(input_image.nbytes)
+pycuda._driver.LogicError: explicit_context_dependent failed: invalid device context - no currently active context?
+
+---End of Error---
+Timestamp: 2023-05-25 19:57:09
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\torch_nodes\ksampler_node.py", line 161, in evalImplementation_thread
+    sample = common_ksampler(device="cuda",
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_sampler.py", line 60, in common_ksampler
+    samples = sampler.sample(noise, positive_copy, negative_copy, cfg=cfg, latent_image=latent_image, start_step=start_step, last_step=last_step, force_full_denoise=force_full_denoise, denoise_mask=noise_mask, callback=callback, model_key=model_key)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 516, in sample
+    samples = getattr(k_diffusion_sampling, "sample_{}".format(self.sampler))(self.model_k, noise, sigmas, extra_args=extra_args, callback=callback)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\utils\_contextlib.py", line 115, in decorate_context
+    return func(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_diffusion\sampling.py", line 128, in sample_euler
+    denoised = model(x, sigma_hat * s_in, **extra_args)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 255, in forward
+    out = self.inner_model(x, sigma, cond=cond, uncond=uncond, cond_scale=cond_scale, cond_concat=cond_concat)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_diffusion\external.py", line 114, in forward
+    eps = self.get_eps(input * c_in, self.sigma_to_t(sigma), **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_diffusion\external.py", line 140, in get_eps
+    return self.inner_model.apply_model(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 243, in apply_model
+    out = sampling_function(self.inner_model.apply_model, x, timestep, uncond, cond, cond_scale, cond_concat)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 225, in sampling_function
+    cond, uncond = calc_cond_uncond_batch(model_function, cond, uncond, x, timestep, max_total_area, cond_concat)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 202, in calc_cond_uncond_batch
+    output = model_function(input_x, timestep_, cond=c).chunk(batch_chunks)
+  File "C:\Users\mix\ainodes\ainodes-engine\ldm\models\diffusion\ddpm.py", line 858, in apply_model
+    x_recon = self.model(x_noisy, t, **cond)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\ldm\models\diffusion\ddpm.py", line 1335, in forward
+    out = self.diffusion_model(x, t, context=cc)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\model_loader.py", line 1023, in UNetModel_forward
+    input_memory = cuda.mem_alloc(input_image.nbytes)
+pycuda._driver.LogicError: explicit_context_dependent failed: invalid device context - no currently active context?
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\torch_nodes\ksampler_node.py", line 161, in evalImplementation_thread
+    sample = common_ksampler(device="cuda",
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_sampler.py", line 60, in common_ksampler
+    samples = sampler.sample(noise, positive_copy, negative_copy, cfg=cfg, latent_image=latent_image, start_step=start_step, last_step=last_step, force_full_denoise=force_full_denoise, denoise_mask=noise_mask, callback=callback, model_key=model_key)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 516, in sample
+    samples = getattr(k_diffusion_sampling, "sample_{}".format(self.sampler))(self.model_k, noise, sigmas, extra_args=extra_args, callback=callback)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\utils\_contextlib.py", line 115, in decorate_context
+    return func(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_diffusion\sampling.py", line 128, in sample_euler
+    denoised = model(x, sigma_hat * s_in, **extra_args)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 255, in forward
+    out = self.inner_model(x, sigma, cond=cond, uncond=uncond, cond_scale=cond_scale, cond_concat=cond_concat)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_diffusion\external.py", line 114, in forward
+    eps = self.get_eps(input * c_in, self.sigma_to_t(sigma), **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_diffusion\external.py", line 140, in get_eps
+    return self.inner_model.apply_model(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 243, in apply_model
+    out = sampling_function(self.inner_model.apply_model, x, timestep, uncond, cond, cond_scale, cond_concat)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 225, in sampling_function
+    cond, uncond = calc_cond_uncond_batch(model_function, cond, uncond, x, timestep, max_total_area, cond_concat)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 202, in calc_cond_uncond_batch
+    output = model_function(input_x, timestep_, cond=c).chunk(batch_chunks)
+  File "C:\Users\mix\ainodes\ainodes-engine\ldm\models\diffusion\ddpm.py", line 858, in apply_model
+    x_recon = self.model(x_noisy, t, **cond)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\ldm\models\diffusion\ddpm.py", line 1335, in forward
+    out = self.diffusion_model(x, t, context=cc)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\model_loader.py", line 1023, in UNetModel_forward
+    input_memory = cuda.mem_alloc(input_image.nbytes)
+pycuda._driver.LogicError: explicit_context_dependent failed: invalid device context - no currently active context?
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\torch_nodes\ksampler_node.py", line 161, in evalImplementation_thread
+    sample = common_ksampler(device="cuda",
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_sampler.py", line 60, in common_ksampler
+    samples = sampler.sample(noise, positive_copy, negative_copy, cfg=cfg, latent_image=latent_image, start_step=start_step, last_step=last_step, force_full_denoise=force_full_denoise, denoise_mask=noise_mask, callback=callback, model_key=model_key)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 516, in sample
+    samples = getattr(k_diffusion_sampling, "sample_{}".format(self.sampler))(self.model_k, noise, sigmas, extra_args=extra_args, callback=callback)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\utils\_contextlib.py", line 115, in decorate_context
+    return func(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_diffusion\sampling.py", line 128, in sample_euler
+    denoised = model(x, sigma_hat * s_in, **extra_args)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 255, in forward
+    out = self.inner_model(x, sigma, cond=cond, uncond=uncond, cond_scale=cond_scale, cond_concat=cond_concat)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_diffusion\external.py", line 114, in forward
+    eps = self.get_eps(input * c_in, self.sigma_to_t(sigma), **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_diffusion\external.py", line 140, in get_eps
+    return self.inner_model.apply_model(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 243, in apply_model
+    out = sampling_function(self.inner_model.apply_model, x, timestep, uncond, cond, cond_scale, cond_concat)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 225, in sampling_function
+    cond, uncond = calc_cond_uncond_batch(model_function, cond, uncond, x, timestep, max_total_area, cond_concat)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 202, in calc_cond_uncond_batch
+    output = model_function(input_x, timestep_, cond=c).chunk(batch_chunks)
+  File "C:\Users\mix\ainodes\ainodes-engine\ldm\models\diffusion\ddpm.py", line 858, in apply_model
+    x_recon = self.model(x_noisy, t, **cond)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\ldm\models\diffusion\ddpm.py", line 1335, in forward
+    out = self.diffusion_model(x, t, context=cc)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\model_loader.py", line 1023, in UNetModel_forward
+    input_memory = cuda.mem_alloc(input_image.nbytes)
+pycuda._driver.LogicError: explicit_context_dependent failed: invalid device context - no currently active context?
+
+---End of Error---
+Timestamp: 2023-05-25 19:57:22
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\torch_nodes\ksampler_node.py", line 161, in evalImplementation_thread
+    sample = common_ksampler(device="cuda",
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_sampler.py", line 60, in common_ksampler
+    samples = sampler.sample(noise, positive_copy, negative_copy, cfg=cfg, latent_image=latent_image, start_step=start_step, last_step=last_step, force_full_denoise=force_full_denoise, denoise_mask=noise_mask, callback=callback, model_key=model_key)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 516, in sample
+    samples = getattr(k_diffusion_sampling, "sample_{}".format(self.sampler))(self.model_k, noise, sigmas, extra_args=extra_args, callback=callback)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\utils\_contextlib.py", line 115, in decorate_context
+    return func(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_diffusion\sampling.py", line 128, in sample_euler
+    denoised = model(x, sigma_hat * s_in, **extra_args)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 255, in forward
+    out = self.inner_model(x, sigma, cond=cond, uncond=uncond, cond_scale=cond_scale, cond_concat=cond_concat)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_diffusion\external.py", line 114, in forward
+    eps = self.get_eps(input * c_in, self.sigma_to_t(sigma), **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_diffusion\external.py", line 140, in get_eps
+    return self.inner_model.apply_model(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 243, in apply_model
+    out = sampling_function(self.inner_model.apply_model, x, timestep, uncond, cond, cond_scale, cond_concat)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 225, in sampling_function
+    cond, uncond = calc_cond_uncond_batch(model_function, cond, uncond, x, timestep, max_total_area, cond_concat)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 202, in calc_cond_uncond_batch
+    output = model_function(input_x, timestep_, cond=c).chunk(batch_chunks)
+  File "C:\Users\mix\ainodes\ainodes-engine\ldm\models\diffusion\ddpm.py", line 858, in apply_model
+    x_recon = self.model(x_noisy, t, **cond)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\ldm\models\diffusion\ddpm.py", line 1335, in forward
+    out = self.diffusion_model(x, t, context=cc)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\model_loader.py", line 1023, in UNetModel_forward
+    input_memory = cuda.mem_alloc(input_image.nbytes)
+pycuda._driver.LogicError: explicit_context_dependent failed: invalid device context - no currently active context?
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\torch_nodes\ksampler_node.py", line 161, in evalImplementation_thread
+    sample = common_ksampler(device="cuda",
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_sampler.py", line 60, in common_ksampler
+    samples = sampler.sample(noise, positive_copy, negative_copy, cfg=cfg, latent_image=latent_image, start_step=start_step, last_step=last_step, force_full_denoise=force_full_denoise, denoise_mask=noise_mask, callback=callback, model_key=model_key)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 516, in sample
+    samples = getattr(k_diffusion_sampling, "sample_{}".format(self.sampler))(self.model_k, noise, sigmas, extra_args=extra_args, callback=callback)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\utils\_contextlib.py", line 115, in decorate_context
+    return func(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_diffusion\sampling.py", line 128, in sample_euler
+    denoised = model(x, sigma_hat * s_in, **extra_args)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 255, in forward
+    out = self.inner_model(x, sigma, cond=cond, uncond=uncond, cond_scale=cond_scale, cond_concat=cond_concat)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_diffusion\external.py", line 114, in forward
+    eps = self.get_eps(input * c_in, self.sigma_to_t(sigma), **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_diffusion\external.py", line 140, in get_eps
+    return self.inner_model.apply_model(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 243, in apply_model
+    out = sampling_function(self.inner_model.apply_model, x, timestep, uncond, cond, cond_scale, cond_concat)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 225, in sampling_function
+    cond, uncond = calc_cond_uncond_batch(model_function, cond, uncond, x, timestep, max_total_area, cond_concat)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 202, in calc_cond_uncond_batch
+    output = model_function(input_x, timestep_, cond=c).chunk(batch_chunks)
+  File "C:\Users\mix\ainodes\ainodes-engine\ldm\models\diffusion\ddpm.py", line 858, in apply_model
+    x_recon = self.model(x_noisy, t, **cond)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\ldm\models\diffusion\ddpm.py", line 1335, in forward
+    out = self.diffusion_model(x, t, context=cc)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\model_loader.py", line 1023, in UNetModel_forward
+    input_memory = cuda.mem_alloc(input_image.nbytes)
+pycuda._driver.LogicError: explicit_context_dependent failed: invalid device context - no currently active context?
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\torch_nodes\ksampler_node.py", line 161, in evalImplementation_thread
+    sample = common_ksampler(device="cuda",
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_sampler.py", line 60, in common_ksampler
+    samples = sampler.sample(noise, positive_copy, negative_copy, cfg=cfg, latent_image=latent_image, start_step=start_step, last_step=last_step, force_full_denoise=force_full_denoise, denoise_mask=noise_mask, callback=callback, model_key=model_key)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 516, in sample
+    samples = getattr(k_diffusion_sampling, "sample_{}".format(self.sampler))(self.model_k, noise, sigmas, extra_args=extra_args, callback=callback)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\utils\_contextlib.py", line 115, in decorate_context
+    return func(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_diffusion\sampling.py", line 128, in sample_euler
+    denoised = model(x, sigma_hat * s_in, **extra_args)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 255, in forward
+    out = self.inner_model(x, sigma, cond=cond, uncond=uncond, cond_scale=cond_scale, cond_concat=cond_concat)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_diffusion\external.py", line 114, in forward
+    eps = self.get_eps(input * c_in, self.sigma_to_t(sigma), **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_diffusion\external.py", line 140, in get_eps
+    return self.inner_model.apply_model(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 243, in apply_model
+    out = sampling_function(self.inner_model.apply_model, x, timestep, uncond, cond, cond_scale, cond_concat)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 225, in sampling_function
+    cond, uncond = calc_cond_uncond_batch(model_function, cond, uncond, x, timestep, max_total_area, cond_concat)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 202, in calc_cond_uncond_batch
+    output = model_function(input_x, timestep_, cond=c).chunk(batch_chunks)
+  File "C:\Users\mix\ainodes\ainodes-engine\ldm\models\diffusion\ddpm.py", line 858, in apply_model
+    x_recon = self.model(x_noisy, t, **cond)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\ldm\models\diffusion\ddpm.py", line 1335, in forward
+    out = self.diffusion_model(x, t, context=cc)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\model_loader.py", line 1023, in UNetModel_forward
+    input_memory = cuda.mem_alloc(input_image.nbytes)
+pycuda._driver.LogicError: explicit_context_dependent failed: invalid device context - no currently active context?
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\torch_nodes\ksampler_node.py", line 161, in evalImplementation_thread
+    sample = common_ksampler(device="cuda",
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_sampler.py", line 60, in common_ksampler
+    samples = sampler.sample(noise, positive_copy, negative_copy, cfg=cfg, latent_image=latent_image, start_step=start_step, last_step=last_step, force_full_denoise=force_full_denoise, denoise_mask=noise_mask, callback=callback, model_key=model_key)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 516, in sample
+    samples = getattr(k_diffusion_sampling, "sample_{}".format(self.sampler))(self.model_k, noise, sigmas, extra_args=extra_args, callback=callback)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\utils\_contextlib.py", line 115, in decorate_context
+    return func(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_diffusion\sampling.py", line 128, in sample_euler
+    denoised = model(x, sigma_hat * s_in, **extra_args)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 255, in forward
+    out = self.inner_model(x, sigma, cond=cond, uncond=uncond, cond_scale=cond_scale, cond_concat=cond_concat)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_diffusion\external.py", line 114, in forward
+    eps = self.get_eps(input * c_in, self.sigma_to_t(sigma), **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_diffusion\external.py", line 140, in get_eps
+    return self.inner_model.apply_model(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 243, in apply_model
+    out = sampling_function(self.inner_model.apply_model, x, timestep, uncond, cond, cond_scale, cond_concat)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 225, in sampling_function
+    cond, uncond = calc_cond_uncond_batch(model_function, cond, uncond, x, timestep, max_total_area, cond_concat)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 202, in calc_cond_uncond_batch
+    output = model_function(input_x, timestep_, cond=c).chunk(batch_chunks)
+  File "C:\Users\mix\ainodes\ainodes-engine\ldm\models\diffusion\ddpm.py", line 858, in apply_model
+    x_recon = self.model(x_noisy, t, **cond)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\ldm\models\diffusion\ddpm.py", line 1335, in forward
+    out = self.diffusion_model(x, t, context=cc)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\model_loader.py", line 1023, in UNetModel_forward
+    input_memory = cuda.mem_alloc(input_image.nbytes)
+pycuda._driver.LogicError: explicit_context_dependent failed: invalid device context - no currently active context?
+
+---End of Error---
+Timestamp: 2023-05-25 19:59:01
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\torch_nodes\ksampler_node.py", line 161, in evalImplementation_thread
+    sample = common_ksampler(device="cuda",
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_sampler.py", line 60, in common_ksampler
+    samples = sampler.sample(noise, positive_copy, negative_copy, cfg=cfg, latent_image=latent_image, start_step=start_step, last_step=last_step, force_full_denoise=force_full_denoise, denoise_mask=noise_mask, callback=callback, model_key=model_key)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 516, in sample
+    samples = getattr(k_diffusion_sampling, "sample_{}".format(self.sampler))(self.model_k, noise, sigmas, extra_args=extra_args, callback=callback)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\utils\_contextlib.py", line 115, in decorate_context
+    return func(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_diffusion\sampling.py", line 128, in sample_euler
+    denoised = model(x, sigma_hat * s_in, **extra_args)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 255, in forward
+    out = self.inner_model(x, sigma, cond=cond, uncond=uncond, cond_scale=cond_scale, cond_concat=cond_concat)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_diffusion\external.py", line 114, in forward
+    eps = self.get_eps(input * c_in, self.sigma_to_t(sigma), **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_diffusion\external.py", line 140, in get_eps
+    return self.inner_model.apply_model(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 243, in apply_model
+    out = sampling_function(self.inner_model.apply_model, x, timestep, uncond, cond, cond_scale, cond_concat)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 225, in sampling_function
+    cond, uncond = calc_cond_uncond_batch(model_function, cond, uncond, x, timestep, max_total_area, cond_concat)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 202, in calc_cond_uncond_batch
+    output = model_function(input_x, timestep_, cond=c).chunk(batch_chunks)
+  File "C:\Users\mix\ainodes\ainodes-engine\ldm\models\diffusion\ddpm.py", line 858, in apply_model
+    x_recon = self.model(x_noisy, t, **cond)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\ldm\models\diffusion\ddpm.py", line 1335, in forward
+    out = self.diffusion_model(x, t, context=cc)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\model_loader.py", line 1021, in UNetModel_forward
+    trtcontext.set_binding_shape(binding_idx, tensor.shape)
+AttributeError: 'NoneType' object has no attribute 'shape'
+
+---End of Error---
+Timestamp: 2023-05-25 20:03:19
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\torch_nodes\ksampler_node.py", line 161, in evalImplementation_thread
+    sample = common_ksampler(device="cuda",
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_sampler.py", line 60, in common_ksampler
+    samples = sampler.sample(noise, positive_copy, negative_copy, cfg=cfg, latent_image=latent_image, start_step=start_step, last_step=last_step, force_full_denoise=force_full_denoise, denoise_mask=noise_mask, callback=callback, model_key=model_key)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 516, in sample
+    samples = getattr(k_diffusion_sampling, "sample_{}".format(self.sampler))(self.model_k, noise, sigmas, extra_args=extra_args, callback=callback)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\utils\_contextlib.py", line 115, in decorate_context
+    return func(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_diffusion\sampling.py", line 128, in sample_euler
+    denoised = model(x, sigma_hat * s_in, **extra_args)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 255, in forward
+    out = self.inner_model(x, sigma, cond=cond, uncond=uncond, cond_scale=cond_scale, cond_concat=cond_concat)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_diffusion\external.py", line 114, in forward
+    eps = self.get_eps(input * c_in, self.sigma_to_t(sigma), **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_diffusion\external.py", line 140, in get_eps
+    return self.inner_model.apply_model(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 243, in apply_model
+    out = sampling_function(self.inner_model.apply_model, x, timestep, uncond, cond, cond_scale, cond_concat)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 225, in sampling_function
+    cond, uncond = calc_cond_uncond_batch(model_function, cond, uncond, x, timestep, max_total_area, cond_concat)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 202, in calc_cond_uncond_batch
+    output = model_function(input_x, timestep_, cond=c).chunk(batch_chunks)
+  File "C:\Users\mix\ainodes\ainodes-engine\ldm\models\diffusion\ddpm.py", line 858, in apply_model
+    x_recon = self.model(x_noisy, t, **cond)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\ldm\models\diffusion\ddpm.py", line 1335, in forward
+    out = self.diffusion_model(x, t, context=cc)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\model_loader.py", line 1025, in UNetModel_forward
+    trtcontext.set_binding_shape(binding_idx, tensor.shape)
+AttributeError: 'NoneType' object has no attribute 'shape'
+
+---End of Error---
+Timestamp: 2023-05-25 20:04:44
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\torch_nodes\ksampler_node.py", line 161, in evalImplementation_thread
+    sample = common_ksampler(device="cuda",
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_sampler.py", line 60, in common_ksampler
+    samples = sampler.sample(noise, positive_copy, negative_copy, cfg=cfg, latent_image=latent_image, start_step=start_step, last_step=last_step, force_full_denoise=force_full_denoise, denoise_mask=noise_mask, callback=callback, model_key=model_key)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 516, in sample
+    samples = getattr(k_diffusion_sampling, "sample_{}".format(self.sampler))(self.model_k, noise, sigmas, extra_args=extra_args, callback=callback)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\utils\_contextlib.py", line 115, in decorate_context
+    return func(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_diffusion\sampling.py", line 128, in sample_euler
+    denoised = model(x, sigma_hat * s_in, **extra_args)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 255, in forward
+    out = self.inner_model(x, sigma, cond=cond, uncond=uncond, cond_scale=cond_scale, cond_concat=cond_concat)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_diffusion\external.py", line 114, in forward
+    eps = self.get_eps(input * c_in, self.sigma_to_t(sigma), **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_diffusion\external.py", line 140, in get_eps
+    return self.inner_model.apply_model(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 243, in apply_model
+    out = sampling_function(self.inner_model.apply_model, x, timestep, uncond, cond, cond_scale, cond_concat)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 225, in sampling_function
+    cond, uncond = calc_cond_uncond_batch(model_function, cond, uncond, x, timestep, max_total_area, cond_concat)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 202, in calc_cond_uncond_batch
+    output = model_function(input_x, timestep_, cond=c).chunk(batch_chunks)
+  File "C:\Users\mix\ainodes\ainodes-engine\ldm\models\diffusion\ddpm.py", line 858, in apply_model
+    x_recon = self.model(x_noisy, t, **cond)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\ldm\models\diffusion\ddpm.py", line 1335, in forward
+    out = self.diffusion_model(x, t, context=cc)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\model_loader.py", line 1030, in UNetModel_forward
+    input_memory = cuda.mem_alloc(input_image.nbytes)
+pycuda._driver.LogicError: explicit_context_dependent failed: invalid device context - no currently active context?
+
+---End of Error---
+Timestamp: 2023-05-25 20:07:32
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\torch_nodes\ksampler_node.py", line 161, in evalImplementation_thread
+    sample = common_ksampler(device="cuda",
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_sampler.py", line 60, in common_ksampler
+    samples = sampler.sample(noise, positive_copy, negative_copy, cfg=cfg, latent_image=latent_image, start_step=start_step, last_step=last_step, force_full_denoise=force_full_denoise, denoise_mask=noise_mask, callback=callback, model_key=model_key)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 516, in sample
+    samples = getattr(k_diffusion_sampling, "sample_{}".format(self.sampler))(self.model_k, noise, sigmas, extra_args=extra_args, callback=callback)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\utils\_contextlib.py", line 115, in decorate_context
+    return func(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_diffusion\sampling.py", line 128, in sample_euler
+    denoised = model(x, sigma_hat * s_in, **extra_args)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 255, in forward
+    out = self.inner_model(x, sigma, cond=cond, uncond=uncond, cond_scale=cond_scale, cond_concat=cond_concat)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_diffusion\external.py", line 114, in forward
+    eps = self.get_eps(input * c_in, self.sigma_to_t(sigma), **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_diffusion\external.py", line 140, in get_eps
+    return self.inner_model.apply_model(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 243, in apply_model
+    out = sampling_function(self.inner_model.apply_model, x, timestep, uncond, cond, cond_scale, cond_concat)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 225, in sampling_function
+    cond, uncond = calc_cond_uncond_batch(model_function, cond, uncond, x, timestep, max_total_area, cond_concat)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 202, in calc_cond_uncond_batch
+    output = model_function(input_x, timestep_, cond=c).chunk(batch_chunks)
+  File "C:\Users\mix\ainodes\ainodes-engine\ldm\models\diffusion\ddpm.py", line 858, in apply_model
+    x_recon = self.model(x_noisy, t, **cond)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\ldm\models\diffusion\ddpm.py", line 1335, in forward
+    out = self.diffusion_model(x, t, context=cc)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\model_loader.py", line 1029, in UNetModel_forward
+    trtcontext.set_binding_shape(binding_idx, tensor.shape)
+AttributeError: 'NoneType' object has no attribute 'shape'
+
+---End of Error---
+Timestamp: 2023-05-25 20:12:25
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\torch_nodes\ksampler_node.py", line 161, in evalImplementation_thread
+    sample = common_ksampler(device="cuda",
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_sampler.py", line 60, in common_ksampler
+    samples = sampler.sample(noise, positive_copy, negative_copy, cfg=cfg, latent_image=latent_image, start_step=start_step, last_step=last_step, force_full_denoise=force_full_denoise, denoise_mask=noise_mask, callback=callback, model_key=model_key)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 516, in sample
+    samples = getattr(k_diffusion_sampling, "sample_{}".format(self.sampler))(self.model_k, noise, sigmas, extra_args=extra_args, callback=callback)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\utils\_contextlib.py", line 115, in decorate_context
+    return func(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_diffusion\sampling.py", line 128, in sample_euler
+    denoised = model(x, sigma_hat * s_in, **extra_args)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 255, in forward
+    out = self.inner_model(x, sigma, cond=cond, uncond=uncond, cond_scale=cond_scale, cond_concat=cond_concat)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_diffusion\external.py", line 114, in forward
+    eps = self.get_eps(input * c_in, self.sigma_to_t(sigma), **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_diffusion\external.py", line 140, in get_eps
+    return self.inner_model.apply_model(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 243, in apply_model
+    out = sampling_function(self.inner_model.apply_model, x, timestep, uncond, cond, cond_scale, cond_concat)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 225, in sampling_function
+    cond, uncond = calc_cond_uncond_batch(model_function, cond, uncond, x, timestep, max_total_area, cond_concat)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 202, in calc_cond_uncond_batch
+    output = model_function(input_x, timestep_, cond=c).chunk(batch_chunks)
+  File "C:\Users\mix\ainodes\ainodes-engine\ldm\models\diffusion\ddpm.py", line 858, in apply_model
+    x_recon = self.model(x_noisy, t, **cond)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\ldm\models\diffusion\ddpm.py", line 1335, in forward
+    out = self.diffusion_model(x, t, context=cc)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\model_loader.py", line 221, in UNetModel_forward
+    self.ctx.push()
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1630, in __getattr__
+    raise AttributeError("'{}' object has no attribute '{}'".format(
+AttributeError: 'ModelLoader' object has no attribute 'ctx'
+
+---End of Error---
+Timestamp: 2023-05-25 20:12:45
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\torch_nodes\ksampler_node.py", line 161, in evalImplementation_thread
+    sample = common_ksampler(device="cuda",
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_sampler.py", line 60, in common_ksampler
+    samples = sampler.sample(noise, positive_copy, negative_copy, cfg=cfg, latent_image=latent_image, start_step=start_step, last_step=last_step, force_full_denoise=force_full_denoise, denoise_mask=noise_mask, callback=callback, model_key=model_key)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 516, in sample
+    samples = getattr(k_diffusion_sampling, "sample_{}".format(self.sampler))(self.model_k, noise, sigmas, extra_args=extra_args, callback=callback)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\utils\_contextlib.py", line 115, in decorate_context
+    return func(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_diffusion\sampling.py", line 128, in sample_euler
+    denoised = model(x, sigma_hat * s_in, **extra_args)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 255, in forward
+    out = self.inner_model(x, sigma, cond=cond, uncond=uncond, cond_scale=cond_scale, cond_concat=cond_concat)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_diffusion\external.py", line 114, in forward
+    eps = self.get_eps(input * c_in, self.sigma_to_t(sigma), **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_diffusion\external.py", line 140, in get_eps
+    return self.inner_model.apply_model(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 243, in apply_model
+    out = sampling_function(self.inner_model.apply_model, x, timestep, uncond, cond, cond_scale, cond_concat)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 225, in sampling_function
+    cond, uncond = calc_cond_uncond_batch(model_function, cond, uncond, x, timestep, max_total_area, cond_concat)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 202, in calc_cond_uncond_batch
+    output = model_function(input_x, timestep_, cond=c).chunk(batch_chunks)
+  File "C:\Users\mix\ainodes\ainodes-engine\ldm\models\diffusion\ddpm.py", line 858, in apply_model
+    x_recon = self.model(x_noisy, t, **cond)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\ldm\models\diffusion\ddpm.py", line 1335, in forward
+    out = self.diffusion_model(x, t, context=cc)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\model_loader.py", line 221, in UNetModel_forward
+    self.ctx.push()
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1630, in __getattr__
+    raise AttributeError("'{}' object has no attribute '{}'".format(
+AttributeError: 'ModelLoader' object has no attribute 'ctx'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\torch_nodes\ksampler_node.py", line 161, in evalImplementation_thread
+    sample = common_ksampler(device="cuda",
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_sampler.py", line 60, in common_ksampler
+    samples = sampler.sample(noise, positive_copy, negative_copy, cfg=cfg, latent_image=latent_image, start_step=start_step, last_step=last_step, force_full_denoise=force_full_denoise, denoise_mask=noise_mask, callback=callback, model_key=model_key)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 516, in sample
+    samples = getattr(k_diffusion_sampling, "sample_{}".format(self.sampler))(self.model_k, noise, sigmas, extra_args=extra_args, callback=callback)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\utils\_contextlib.py", line 115, in decorate_context
+    return func(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_diffusion\sampling.py", line 128, in sample_euler
+    denoised = model(x, sigma_hat * s_in, **extra_args)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 255, in forward
+    out = self.inner_model(x, sigma, cond=cond, uncond=uncond, cond_scale=cond_scale, cond_concat=cond_concat)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_diffusion\external.py", line 114, in forward
+    eps = self.get_eps(input * c_in, self.sigma_to_t(sigma), **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_diffusion\external.py", line 140, in get_eps
+    return self.inner_model.apply_model(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 243, in apply_model
+    out = sampling_function(self.inner_model.apply_model, x, timestep, uncond, cond, cond_scale, cond_concat)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 225, in sampling_function
+    cond, uncond = calc_cond_uncond_batch(model_function, cond, uncond, x, timestep, max_total_area, cond_concat)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 202, in calc_cond_uncond_batch
+    output = model_function(input_x, timestep_, cond=c).chunk(batch_chunks)
+  File "C:\Users\mix\ainodes\ainodes-engine\ldm\models\diffusion\ddpm.py", line 858, in apply_model
+    x_recon = self.model(x_noisy, t, **cond)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\ldm\models\diffusion\ddpm.py", line 1335, in forward
+    out = self.diffusion_model(x, t, context=cc)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\model_loader.py", line 267, in UNetModel_forward
+    output_buffer = torch.asarray(output_buffer.detach(), dtype=torch.float16, device="cuda").reshape(x.shape)
+AttributeError: 'numpy.ndarray' object has no attribute 'detach'
+
+---End of Error---
+Timestamp: 2023-05-25 20:47:20
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\torch_nodes\ksampler_node.py", line 161, in evalImplementation_thread
+    sample = common_ksampler(device="cuda",
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_sampler.py", line 60, in common_ksampler
+    samples = sampler.sample(noise, positive_copy, negative_copy, cfg=cfg, latent_image=latent_image, start_step=start_step, last_step=last_step, force_full_denoise=force_full_denoise, denoise_mask=noise_mask, callback=callback, model_key=model_key)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 516, in sample
+    samples = getattr(k_diffusion_sampling, "sample_{}".format(self.sampler))(self.model_k, noise, sigmas, extra_args=extra_args, callback=callback)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\utils\_contextlib.py", line 115, in decorate_context
+    return func(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_diffusion\sampling.py", line 128, in sample_euler
+    denoised = model(x, sigma_hat * s_in, **extra_args)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 255, in forward
+    out = self.inner_model(x, sigma, cond=cond, uncond=uncond, cond_scale=cond_scale, cond_concat=cond_concat)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_diffusion\external.py", line 114, in forward
+    eps = self.get_eps(input * c_in, self.sigma_to_t(sigma), **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_diffusion\external.py", line 140, in get_eps
+    return self.inner_model.apply_model(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 243, in apply_model
+    out = sampling_function(self.inner_model.apply_model, x, timestep, uncond, cond, cond_scale, cond_concat)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 225, in sampling_function
+    cond, uncond = calc_cond_uncond_batch(model_function, cond, uncond, x, timestep, max_total_area, cond_concat)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 202, in calc_cond_uncond_batch
+    output = model_function(input_x, timestep_, cond=c).chunk(batch_chunks)
+  File "C:\Users\mix\ainodes\ainodes-engine\ldm\models\diffusion\ddpm.py", line 858, in apply_model
+    x_recon = self.model(x_noisy, t, **cond)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\ldm\models\diffusion\ddpm.py", line 1335, in forward
+    out = self.diffusion_model(x, t, context=cc)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\model_loader.py", line 233, in UNetModel_forward
+    for binding in self.engine:
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1630, in __getattr__
+    raise AttributeError("'{}' object has no attribute '{}'".format(
+AttributeError: 'ModelLoader' object has no attribute 'engine'
+
+---End of Error---
+Timestamp: 2023-05-25 21:02:18
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\torch_nodes\ksampler_node.py", line 168, in evalImplementation_thread
+    sample = common_ksampler(device="cuda",
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_sampler.py", line 60, in common_ksampler
+    samples = sampler.sample(noise, positive_copy, negative_copy, cfg=cfg, latent_image=latent_image, start_step=start_step, last_step=last_step, force_full_denoise=force_full_denoise, denoise_mask=noise_mask, callback=callback, model_key=model_key)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 516, in sample
+    samples = getattr(k_diffusion_sampling, "sample_{}".format(self.sampler))(self.model_k, noise, sigmas, extra_args=extra_args, callback=callback)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\utils\_contextlib.py", line 115, in decorate_context
+    return func(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_diffusion\sampling.py", line 128, in sample_euler
+    denoised = model(x, sigma_hat * s_in, **extra_args)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 255, in forward
+    out = self.inner_model(x, sigma, cond=cond, uncond=uncond, cond_scale=cond_scale, cond_concat=cond_concat)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_diffusion\external.py", line 114, in forward
+    eps = self.get_eps(input * c_in, self.sigma_to_t(sigma), **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_diffusion\external.py", line 140, in get_eps
+    return self.inner_model.apply_model(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 243, in apply_model
+    out = sampling_function(self.inner_model.apply_model, x, timestep, uncond, cond, cond_scale, cond_concat)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 225, in sampling_function
+    cond, uncond = calc_cond_uncond_batch(model_function, cond, uncond, x, timestep, max_total_area, cond_concat)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 202, in calc_cond_uncond_batch
+    output = model_function(input_x, timestep_, cond=c).chunk(batch_chunks)
+  File "C:\Users\mix\ainodes\ainodes-engine\ldm\models\diffusion\ddpm.py", line 858, in apply_model
+    x_recon = self.model(x_noisy, t, **cond)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+TypeError: DiffusionWrapper.forward() got an unexpected keyword argument 'control'
+
+---End of Error---
+Timestamp: 2023-05-25 21:02:19
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\torch_nodes\ksampler_node.py", line 168, in evalImplementation_thread
+    sample = common_ksampler(device="cuda",
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_sampler.py", line 60, in common_ksampler
+    samples = sampler.sample(noise, positive_copy, negative_copy, cfg=cfg, latent_image=latent_image, start_step=start_step, last_step=last_step, force_full_denoise=force_full_denoise, denoise_mask=noise_mask, callback=callback, model_key=model_key)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 516, in sample
+    samples = getattr(k_diffusion_sampling, "sample_{}".format(self.sampler))(self.model_k, noise, sigmas, extra_args=extra_args, callback=callback)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\utils\_contextlib.py", line 115, in decorate_context
+    return func(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_diffusion\sampling.py", line 128, in sample_euler
+    denoised = model(x, sigma_hat * s_in, **extra_args)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 255, in forward
+    out = self.inner_model(x, sigma, cond=cond, uncond=uncond, cond_scale=cond_scale, cond_concat=cond_concat)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_diffusion\external.py", line 114, in forward
+    eps = self.get_eps(input * c_in, self.sigma_to_t(sigma), **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\k_diffusion\external.py", line 140, in get_eps
+    return self.inner_model.apply_model(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 243, in apply_model
+    out = sampling_function(self.inner_model.apply_model, x, timestep, uncond, cond, cond_scale, cond_concat)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 225, in sampling_function
+    cond, uncond = calc_cond_uncond_batch(model_function, cond, uncond, x, timestep, max_total_area, cond_concat)
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\ainodes_backend\samplers.py", line 202, in calc_cond_uncond_batch
+    output = model_function(input_x, timestep_, cond=c).chunk(batch_chunks)
+  File "C:\Users\mix\ainodes\ainodes-engine\ldm\models\diffusion\ddpm.py", line 858, in apply_model
+    x_recon = self.model(x_noisy, t, **cond)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1502, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\nn\modules\module.py", line 1511, in _call_impl
+    return forward_call(*args, **kwargs)
+TypeError: DiffusionWrapper.forward() got an unexpected keyword argument 'control'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\ainodes_frontend\base\ai_node_base.py", line 286, in evalImplementationThreadHandler
+    result = self.evalImplementation_thread()
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\image_nodes\image_op_node.py", line 159, in evalImplementation_thread
+    for pixmap in pixmap_list:
+TypeError: 'NoneType' object is not iterable
+
+---End of Error---
+Timestamp: 2023-05-25 21:11:50
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\ainodes_frontend\base\ai_node_base.py", line 205, in getOutput
+    return self.values[object_name]
+KeyError: '2281191206736_output_0'
+
+---End of Error---
+Timestamp: 2023-05-25 21:11:50
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\ainodes_frontend\base\ai_node_base.py", line 205, in getOutput
+    return self.values[object_name]
+KeyError: '2281191206736_output_0'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\ainodes_frontend\base\ai_node_base.py", line 286, in evalImplementationThreadHandler
+    result = self.evalImplementation_thread()
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\torch_nodes\controlnet_apply_node.py", line 98, in evalImplementation_thread
+    for image in image_list:
+TypeError: 'NoneType' object is not iterable
+
+---End of Error---
+Timestamp: 2023-05-25 21:11:51
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\ainodes_frontend\base\ai_node_base.py", line 205, in getOutput
+    return self.values[object_name]
+KeyError: '2281191206736_output_0'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\ainodes_frontend\base\ai_node_base.py", line 286, in evalImplementationThreadHandler
+    result = self.evalImplementation_thread()
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\torch_nodes\controlnet_apply_node.py", line 98, in evalImplementation_thread
+    for image in image_list:
+TypeError: 'NoneType' object is not iterable
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\torch_nodes\ksampler_node.py", line 125, in evalImplementation_thread
+    if len(cond_list) < len(latent_list):
+TypeError: object of type 'NoneType' has no len()
+
+---End of Error---
+Timestamp: 2023-05-25 21:11:51
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\ainodes_frontend\base\ai_node_base.py", line 205, in getOutput
+    return self.values[object_name]
+KeyError: '2281191206736_output_0'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\ainodes_frontend\base\ai_node_base.py", line 286, in evalImplementationThreadHandler
+    result = self.evalImplementation_thread()
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\torch_nodes\controlnet_apply_node.py", line 98, in evalImplementation_thread
+    for image in image_list:
+TypeError: 'NoneType' object is not iterable
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\torch_nodes\ksampler_node.py", line 125, in evalImplementation_thread
+    if len(cond_list) < len(latent_list):
+TypeError: object of type 'NoneType' has no len()
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\ainodes_frontend\base\ai_node_base.py", line 286, in evalImplementationThreadHandler
+    result = self.evalImplementation_thread()
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\image_nodes\image_op_node.py", line 159, in evalImplementation_thread
+    for pixmap in pixmap_list:
+TypeError: 'NoneType' object is not iterable
+
+---End of Error---
+Timestamp: 2023-05-25 21:12:09
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\ainodes_frontend\base\ai_node_base.py", line 205, in getOutput
+    return self.values[object_name]
+KeyError: '2281191206736_output_0'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\ainodes_frontend\base\ai_node_base.py", line 286, in evalImplementationThreadHandler
+    result = self.evalImplementation_thread()
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\torch_nodes\controlnet_apply_node.py", line 98, in evalImplementation_thread
+    for image in image_list:
+TypeError: 'NoneType' object is not iterable
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\torch_nodes\ksampler_node.py", line 125, in evalImplementation_thread
+    if len(cond_list) < len(latent_list):
+TypeError: object of type 'NoneType' has no len()
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\ainodes_frontend\base\ai_node_base.py", line 286, in evalImplementationThreadHandler
+    result = self.evalImplementation_thread()
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\image_nodes\image_op_node.py", line 159, in evalImplementation_thread
+    for pixmap in pixmap_list:
+TypeError: 'NoneType' object is not iterable
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\ainodes_frontend\base\ai_node_base.py", line 286, in evalImplementationThreadHandler
+    result = self.evalImplementation_thread()
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\image_nodes\image_op_node.py", line 159, in evalImplementation_thread
+    for pixmap in pixmap_list:
+TypeError: 'NoneType' object is not iterable
+
+---End of Error---
+Timestamp: 2023-05-25 21:12:16
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\ainodes_frontend\base\ai_node_base.py", line 205, in getOutput
+    return self.values[object_name]
+KeyError: '2281191206736_output_0'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\ainodes_frontend\base\ai_node_base.py", line 286, in evalImplementationThreadHandler
+    result = self.evalImplementation_thread()
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\torch_nodes\controlnet_apply_node.py", line 98, in evalImplementation_thread
+    for image in image_list:
+TypeError: 'NoneType' object is not iterable
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\torch_nodes\ksampler_node.py", line 125, in evalImplementation_thread
+    if len(cond_list) < len(latent_list):
+TypeError: object of type 'NoneType' has no len()
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\ainodes_frontend\base\ai_node_base.py", line 286, in evalImplementationThreadHandler
+    result = self.evalImplementation_thread()
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\image_nodes\image_op_node.py", line 159, in evalImplementation_thread
+    for pixmap in pixmap_list:
+TypeError: 'NoneType' object is not iterable
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\ainodes_frontend\base\ai_node_base.py", line 286, in evalImplementationThreadHandler
+    result = self.evalImplementation_thread()
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\image_nodes\image_op_node.py", line 159, in evalImplementation_thread
+    for pixmap in pixmap_list:
+TypeError: 'NoneType' object is not iterable
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\ainodes_frontend\base\ai_node_base.py", line 286, in evalImplementationThreadHandler
+    result = self.evalImplementation_thread()
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\image_nodes\image_op_node.py", line 159, in evalImplementation_thread
+    for pixmap in pixmap_list:
+TypeError: 'NoneType' object is not iterable
+
+---End of Error---
+Timestamp: 2023-05-25 21:12:30
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\ainodes_frontend\base\ai_node_base.py", line 205, in getOutput
+    return self.values[object_name]
+KeyError: '2281191206736_output_0'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\ainodes_frontend\base\ai_node_base.py", line 286, in evalImplementationThreadHandler
+    result = self.evalImplementation_thread()
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\torch_nodes\controlnet_apply_node.py", line 98, in evalImplementation_thread
+    for image in image_list:
+TypeError: 'NoneType' object is not iterable
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\torch_nodes\ksampler_node.py", line 125, in evalImplementation_thread
+    if len(cond_list) < len(latent_list):
+TypeError: object of type 'NoneType' has no len()
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\ainodes_frontend\base\ai_node_base.py", line 286, in evalImplementationThreadHandler
+    result = self.evalImplementation_thread()
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\image_nodes\image_op_node.py", line 159, in evalImplementation_thread
+    for pixmap in pixmap_list:
+TypeError: 'NoneType' object is not iterable
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\ainodes_frontend\base\ai_node_base.py", line 286, in evalImplementationThreadHandler
+    result = self.evalImplementation_thread()
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\image_nodes\image_op_node.py", line 159, in evalImplementation_thread
+    for pixmap in pixmap_list:
+TypeError: 'NoneType' object is not iterable
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\ainodes_frontend\base\ai_node_base.py", line 286, in evalImplementationThreadHandler
+    result = self.evalImplementation_thread()
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\image_nodes\image_op_node.py", line 159, in evalImplementation_thread
+    for pixmap in pixmap_list:
+TypeError: 'NoneType' object is not iterable
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\ainodes_frontend\base\ai_node_base.py", line 286, in evalImplementationThreadHandler
+    result = self.evalImplementation_thread()
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\image_nodes\image_op_node.py", line 159, in evalImplementation_thread
+    for pixmap in pixmap_list:
+TypeError: 'NoneType' object is not iterable
+
+---End of Error---
+Timestamp: 2023-05-25 21:13:00
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\ainodes_frontend\base\ai_node_base.py", line 205, in getOutput
+    return self.values[object_name]
+KeyError: '2281191206736_output_0'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\ainodes_frontend\base\ai_node_base.py", line 286, in evalImplementationThreadHandler
+    result = self.evalImplementation_thread()
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\torch_nodes\controlnet_apply_node.py", line 98, in evalImplementation_thread
+    for image in image_list:
+TypeError: 'NoneType' object is not iterable
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\torch_nodes\ksampler_node.py", line 125, in evalImplementation_thread
+    if len(cond_list) < len(latent_list):
+TypeError: object of type 'NoneType' has no len()
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\ainodes_frontend\base\ai_node_base.py", line 286, in evalImplementationThreadHandler
+    result = self.evalImplementation_thread()
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\image_nodes\image_op_node.py", line 159, in evalImplementation_thread
+    for pixmap in pixmap_list:
+TypeError: 'NoneType' object is not iterable
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\ainodes_frontend\base\ai_node_base.py", line 286, in evalImplementationThreadHandler
+    result = self.evalImplementation_thread()
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\image_nodes\image_op_node.py", line 159, in evalImplementation_thread
+    for pixmap in pixmap_list:
+TypeError: 'NoneType' object is not iterable
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\ainodes_frontend\base\ai_node_base.py", line 286, in evalImplementationThreadHandler
+    result = self.evalImplementation_thread()
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\image_nodes\image_op_node.py", line 159, in evalImplementation_thread
+    for pixmap in pixmap_list:
+TypeError: 'NoneType' object is not iterable
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\ainodes_frontend\base\ai_node_base.py", line 286, in evalImplementationThreadHandler
+    result = self.evalImplementation_thread()
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\image_nodes\image_op_node.py", line 159, in evalImplementation_thread
+    for pixmap in pixmap_list:
+TypeError: 'NoneType' object is not iterable
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\ainodes_frontend\base\ai_node_base.py", line 286, in evalImplementationThreadHandler
+    result = self.evalImplementation_thread()
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\torch_nodes\controlnet_apply_node.py", line 98, in evalImplementation_thread
+    for image in image_list:
+TypeError: 'NoneType' object is not iterable
+
+---End of Error---
+Timestamp: 2023-05-25 21:13:01
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\ainodes_frontend\base\ai_node_base.py", line 205, in getOutput
+    return self.values[object_name]
+KeyError: '2281191206736_output_0'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\ainodes_frontend\base\ai_node_base.py", line 286, in evalImplementationThreadHandler
+    result = self.evalImplementation_thread()
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\torch_nodes\controlnet_apply_node.py", line 98, in evalImplementation_thread
+    for image in image_list:
+TypeError: 'NoneType' object is not iterable
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\torch_nodes\ksampler_node.py", line 125, in evalImplementation_thread
+    if len(cond_list) < len(latent_list):
+TypeError: object of type 'NoneType' has no len()
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\ainodes_frontend\base\ai_node_base.py", line 286, in evalImplementationThreadHandler
+    result = self.evalImplementation_thread()
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\image_nodes\image_op_node.py", line 159, in evalImplementation_thread
+    for pixmap in pixmap_list:
+TypeError: 'NoneType' object is not iterable
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\ainodes_frontend\base\ai_node_base.py", line 286, in evalImplementationThreadHandler
+    result = self.evalImplementation_thread()
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\image_nodes\image_op_node.py", line 159, in evalImplementation_thread
+    for pixmap in pixmap_list:
+TypeError: 'NoneType' object is not iterable
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\ainodes_frontend\base\ai_node_base.py", line 286, in evalImplementationThreadHandler
+    result = self.evalImplementation_thread()
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\image_nodes\image_op_node.py", line 159, in evalImplementation_thread
+    for pixmap in pixmap_list:
+TypeError: 'NoneType' object is not iterable
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\ainodes_frontend\base\ai_node_base.py", line 286, in evalImplementationThreadHandler
+    result = self.evalImplementation_thread()
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\image_nodes\image_op_node.py", line 159, in evalImplementation_thread
+    for pixmap in pixmap_list:
+TypeError: 'NoneType' object is not iterable
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\ainodes_frontend\base\ai_node_base.py", line 286, in evalImplementationThreadHandler
+    result = self.evalImplementation_thread()
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\torch_nodes\controlnet_apply_node.py", line 98, in evalImplementation_thread
+    for image in image_list:
+TypeError: 'NoneType' object is not iterable
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\torch_nodes\ksampler_node.py", line 125, in evalImplementation_thread
+    if len(cond_list) < len(latent_list):
+TypeError: object of type 'NoneType' has no len()
+
+---End of Error---
+Timestamp: 2023-05-25 21:13:01
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\ainodes_frontend\base\ai_node_base.py", line 205, in getOutput
+    return self.values[object_name]
+KeyError: '2281191206736_output_0'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\ainodes_frontend\base\ai_node_base.py", line 286, in evalImplementationThreadHandler
+    result = self.evalImplementation_thread()
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\torch_nodes\controlnet_apply_node.py", line 98, in evalImplementation_thread
+    for image in image_list:
+TypeError: 'NoneType' object is not iterable
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\torch_nodes\ksampler_node.py", line 125, in evalImplementation_thread
+    if len(cond_list) < len(latent_list):
+TypeError: object of type 'NoneType' has no len()
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\ainodes_frontend\base\ai_node_base.py", line 286, in evalImplementationThreadHandler
+    result = self.evalImplementation_thread()
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\image_nodes\image_op_node.py", line 159, in evalImplementation_thread
+    for pixmap in pixmap_list:
+TypeError: 'NoneType' object is not iterable
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\ainodes_frontend\base\ai_node_base.py", line 286, in evalImplementationThreadHandler
+    result = self.evalImplementation_thread()
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\image_nodes\image_op_node.py", line 159, in evalImplementation_thread
+    for pixmap in pixmap_list:
+TypeError: 'NoneType' object is not iterable
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\ainodes_frontend\base\ai_node_base.py", line 286, in evalImplementationThreadHandler
+    result = self.evalImplementation_thread()
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\image_nodes\image_op_node.py", line 159, in evalImplementation_thread
+    for pixmap in pixmap_list:
+TypeError: 'NoneType' object is not iterable
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\ainodes_frontend\base\ai_node_base.py", line 286, in evalImplementationThreadHandler
+    result = self.evalImplementation_thread()
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\image_nodes\image_op_node.py", line 159, in evalImplementation_thread
+    for pixmap in pixmap_list:
+TypeError: 'NoneType' object is not iterable
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\ainodes_frontend\base\ai_node_base.py", line 286, in evalImplementationThreadHandler
+    result = self.evalImplementation_thread()
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\torch_nodes\controlnet_apply_node.py", line 98, in evalImplementation_thread
+    for image in image_list:
+TypeError: 'NoneType' object is not iterable
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\torch_nodes\ksampler_node.py", line 125, in evalImplementation_thread
+    if len(cond_list) < len(latent_list):
+TypeError: object of type 'NoneType' has no len()
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\ainodes_frontend\base\ai_node_base.py", line 286, in evalImplementationThreadHandler
+    result = self.evalImplementation_thread()
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\image_nodes\image_op_node.py", line 159, in evalImplementation_thread
+    for pixmap in pixmap_list:
+TypeError: 'NoneType' object is not iterable
+
+---End of Error---
+Timestamp: 2023-05-25 21:13:13
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\ainodes_frontend\base\ai_node_base.py", line 205, in getOutput
+    return self.values[object_name]
+KeyError: '2281191206736_output_0'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\ainodes_frontend\base\ai_node_base.py", line 286, in evalImplementationThreadHandler
+    result = self.evalImplementation_thread()
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\torch_nodes\controlnet_apply_node.py", line 98, in evalImplementation_thread
+    for image in image_list:
+TypeError: 'NoneType' object is not iterable
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\torch_nodes\ksampler_node.py", line 125, in evalImplementation_thread
+    if len(cond_list) < len(latent_list):
+TypeError: object of type 'NoneType' has no len()
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\ainodes_frontend\base\ai_node_base.py", line 286, in evalImplementationThreadHandler
+    result = self.evalImplementation_thread()
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\image_nodes\image_op_node.py", line 159, in evalImplementation_thread
+    for pixmap in pixmap_list:
+TypeError: 'NoneType' object is not iterable
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\ainodes_frontend\base\ai_node_base.py", line 286, in evalImplementationThreadHandler
+    result = self.evalImplementation_thread()
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\image_nodes\image_op_node.py", line 159, in evalImplementation_thread
+    for pixmap in pixmap_list:
+TypeError: 'NoneType' object is not iterable
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\ainodes_frontend\base\ai_node_base.py", line 286, in evalImplementationThreadHandler
+    result = self.evalImplementation_thread()
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\image_nodes\image_op_node.py", line 159, in evalImplementation_thread
+    for pixmap in pixmap_list:
+TypeError: 'NoneType' object is not iterable
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\ainodes_frontend\base\ai_node_base.py", line 286, in evalImplementationThreadHandler
+    result = self.evalImplementation_thread()
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\image_nodes\image_op_node.py", line 159, in evalImplementation_thread
+    for pixmap in pixmap_list:
+TypeError: 'NoneType' object is not iterable
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\ainodes_frontend\base\ai_node_base.py", line 286, in evalImplementationThreadHandler
+    result = self.evalImplementation_thread()
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\torch_nodes\controlnet_apply_node.py", line 98, in evalImplementation_thread
+    for image in image_list:
+TypeError: 'NoneType' object is not iterable
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\torch_nodes\ksampler_node.py", line 125, in evalImplementation_thread
+    if len(cond_list) < len(latent_list):
+TypeError: object of type 'NoneType' has no len()
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\ainodes_frontend\base\ai_node_base.py", line 286, in evalImplementationThreadHandler
+    result = self.evalImplementation_thread()
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\image_nodes\image_op_node.py", line 159, in evalImplementation_thread
+    for pixmap in pixmap_list:
+TypeError: 'NoneType' object is not iterable
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\ainodes_frontend\base\ai_node_base.py", line 286, in evalImplementationThreadHandler
+    result = self.evalImplementation_thread()
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\torch_nodes\controlnet_apply_node.py", line 98, in evalImplementation_thread
+    for image in image_list:
+TypeError: 'NoneType' object is not iterable
+
+---End of Error---
+Timestamp: 2023-05-25 21:13:14
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\ainodes_frontend\base\ai_node_base.py", line 205, in getOutput
+    return self.values[object_name]
+KeyError: '2281191206736_output_0'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\ainodes_frontend\base\ai_node_base.py", line 286, in evalImplementationThreadHandler
+    result = self.evalImplementation_thread()
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\torch_nodes\controlnet_apply_node.py", line 98, in evalImplementation_thread
+    for image in image_list:
+TypeError: 'NoneType' object is not iterable
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\torch_nodes\ksampler_node.py", line 125, in evalImplementation_thread
+    if len(cond_list) < len(latent_list):
+TypeError: object of type 'NoneType' has no len()
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\ainodes_frontend\base\ai_node_base.py", line 286, in evalImplementationThreadHandler
+    result = self.evalImplementation_thread()
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\image_nodes\image_op_node.py", line 159, in evalImplementation_thread
+    for pixmap in pixmap_list:
+TypeError: 'NoneType' object is not iterable
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\ainodes_frontend\base\ai_node_base.py", line 286, in evalImplementationThreadHandler
+    result = self.evalImplementation_thread()
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\image_nodes\image_op_node.py", line 159, in evalImplementation_thread
+    for pixmap in pixmap_list:
+TypeError: 'NoneType' object is not iterable
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\ainodes_frontend\base\ai_node_base.py", line 286, in evalImplementationThreadHandler
+    result = self.evalImplementation_thread()
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\image_nodes\image_op_node.py", line 159, in evalImplementation_thread
+    for pixmap in pixmap_list:
+TypeError: 'NoneType' object is not iterable
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\ainodes_frontend\base\ai_node_base.py", line 286, in evalImplementationThreadHandler
+    result = self.evalImplementation_thread()
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\image_nodes\image_op_node.py", line 159, in evalImplementation_thread
+    for pixmap in pixmap_list:
+TypeError: 'NoneType' object is not iterable
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\ainodes_frontend\base\ai_node_base.py", line 286, in evalImplementationThreadHandler
+    result = self.evalImplementation_thread()
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\torch_nodes\controlnet_apply_node.py", line 98, in evalImplementation_thread
+    for image in image_list:
+TypeError: 'NoneType' object is not iterable
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\torch_nodes\ksampler_node.py", line 125, in evalImplementation_thread
+    if len(cond_list) < len(latent_list):
+TypeError: object of type 'NoneType' has no len()
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\ainodes_frontend\base\ai_node_base.py", line 286, in evalImplementationThreadHandler
+    result = self.evalImplementation_thread()
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\image_nodes\image_op_node.py", line 159, in evalImplementation_thread
+    for pixmap in pixmap_list:
+TypeError: 'NoneType' object is not iterable
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\ainodes_frontend\base\ai_node_base.py", line 286, in evalImplementationThreadHandler
+    result = self.evalImplementation_thread()
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\torch_nodes\controlnet_apply_node.py", line 98, in evalImplementation_thread
+    for image in image_list:
+TypeError: 'NoneType' object is not iterable
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\torch_nodes\ksampler_node.py", line 125, in evalImplementation_thread
+    if len(cond_list) < len(latent_list):
+TypeError: object of type 'NoneType' has no len()
+
+---End of Error---
+Timestamp: 2023-05-25 21:13:14
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\ainodes_frontend\base\ai_node_base.py", line 205, in getOutput
+    return self.values[object_name]
+KeyError: '2281191206736_output_0'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\ainodes_frontend\base\ai_node_base.py", line 286, in evalImplementationThreadHandler
+    result = self.evalImplementation_thread()
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\torch_nodes\controlnet_apply_node.py", line 98, in evalImplementation_thread
+    for image in image_list:
+TypeError: 'NoneType' object is not iterable
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\torch_nodes\ksampler_node.py", line 125, in evalImplementation_thread
+    if len(cond_list) < len(latent_list):
+TypeError: object of type 'NoneType' has no len()
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\ainodes_frontend\base\ai_node_base.py", line 286, in evalImplementationThreadHandler
+    result = self.evalImplementation_thread()
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\image_nodes\image_op_node.py", line 159, in evalImplementation_thread
+    for pixmap in pixmap_list:
+TypeError: 'NoneType' object is not iterable
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\ainodes_frontend\base\ai_node_base.py", line 286, in evalImplementationThreadHandler
+    result = self.evalImplementation_thread()
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\image_nodes\image_op_node.py", line 159, in evalImplementation_thread
+    for pixmap in pixmap_list:
+TypeError: 'NoneType' object is not iterable
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\ainodes_frontend\base\ai_node_base.py", line 286, in evalImplementationThreadHandler
+    result = self.evalImplementation_thread()
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\image_nodes\image_op_node.py", line 159, in evalImplementation_thread
+    for pixmap in pixmap_list:
+TypeError: 'NoneType' object is not iterable
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\ainodes_frontend\base\ai_node_base.py", line 286, in evalImplementationThreadHandler
+    result = self.evalImplementation_thread()
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\image_nodes\image_op_node.py", line 159, in evalImplementation_thread
+    for pixmap in pixmap_list:
+TypeError: 'NoneType' object is not iterable
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\ainodes_frontend\base\ai_node_base.py", line 286, in evalImplementationThreadHandler
+    result = self.evalImplementation_thread()
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\torch_nodes\controlnet_apply_node.py", line 98, in evalImplementation_thread
+    for image in image_list:
+TypeError: 'NoneType' object is not iterable
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\torch_nodes\ksampler_node.py", line 125, in evalImplementation_thread
+    if len(cond_list) < len(latent_list):
+TypeError: object of type 'NoneType' has no len()
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\ainodes_frontend\base\ai_node_base.py", line 286, in evalImplementationThreadHandler
+    result = self.evalImplementation_thread()
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\image_nodes\image_op_node.py", line 159, in evalImplementation_thread
+    for pixmap in pixmap_list:
+TypeError: 'NoneType' object is not iterable
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\ainodes_frontend\base\ai_node_base.py", line 286, in evalImplementationThreadHandler
+    result = self.evalImplementation_thread()
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\torch_nodes\controlnet_apply_node.py", line 98, in evalImplementation_thread
+    for image in image_list:
+TypeError: 'NoneType' object is not iterable
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\torch_nodes\ksampler_node.py", line 125, in evalImplementation_thread
+    if len(cond_list) < len(latent_list):
+TypeError: object of type 'NoneType' has no len()
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\ainodes_frontend\base\ai_node_base.py", line 286, in evalImplementationThreadHandler
+    result = self.evalImplementation_thread()
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\image_nodes\image_op_node.py", line 159, in evalImplementation_thread
+    for pixmap in pixmap_list:
+TypeError: 'NoneType' object is not iterable
+
+---End of Error---

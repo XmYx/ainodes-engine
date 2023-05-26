@@ -12,9 +12,9 @@ import platform
 import argparse
 from types import SimpleNamespace
 
-from PySide6.QtCore import Qt
-from PySide6.QtGui import QPixmap
-from PySide6.QtWidgets import QSplashScreen
+from qtpy.QtCore import Qt
+from qtpy.QtGui import QPixmap
+from qtpy.QtWidgets import QSplashScreen
 from qtpy import QtCore, QtQuick, QtWidgets
 from qtpy.QtQuick import QSGRendererInterface
 from qtpy.QtCore import QCoreApplication
@@ -225,9 +225,9 @@ if __name__ == "__main__":
     wnd.show()
     wnd.nodesListWidget.addMyItems()
     wnd.onFileNew()
-    if args.torch2 == True:
-        from custom_nodes.ainodes_engine_base_nodes.ainodes_backend.sd_optimizations.sd_hijack import apply_optimizations
-        apply_optimizations()
+    #if args.torch2 == True:
+    #    from custom_nodes.ainodes_engine_base_nodes.ainodes_backend.sd_optimizations.sd_hijack import apply_optimizations
+    #    apply_optimizations()
     if args.forcewindowupdate:
         # Create a timer to trigger the update every second
         timer = QtCore.QTimer()

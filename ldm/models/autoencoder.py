@@ -1,5 +1,5 @@
 import torch
-import pytorch_lightning as pl
+# import pytorch_lightning as pl
 import torch.nn.functional as F
 from contextlib import contextmanager
 
@@ -9,8 +9,8 @@ from ldm.modules.distributions.distributions import DiagonalGaussianDistribution
 from ldm.util import instantiate_from_config
 from ldm.modules.ema import LitEma
 
-
-class AutoencoderKL(pl.LightningModule):
+# class AutoencoderKL(pl.LightningModule):
+class AutoencoderKL(torch.nn.Module):
     def __init__(self,
                  ddconfig,
                  lossconfig,
@@ -50,7 +50,11 @@ class AutoencoderKL(pl.LightningModule):
             self.init_from_ckpt(ckpt_path, ignore_keys=ignore_keys)
 
     def init_from_ckpt(self, path, ignore_keys=list()):
-        sd = torch.load(path, map_location="cpu")["state_dict"]
+        if path.lower().endswith(".safetensors"):
+            import safetensors.torch
+            sd = safetensors.torch.load_file(path, device="cpu")
+        else:
+            sd = torch.load(path, map_location="cpu")["state_dict"]
         keys = list(sd.keys())
         for k in keys:
             for ik in ignore_keys:
