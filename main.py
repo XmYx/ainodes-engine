@@ -223,9 +223,9 @@ if __name__ == "__main__":
     wnd.show()
     wnd.nodesListWidget.addMyItems()
     wnd.onFileNew()
-    if args.torch2 == True:
-        from custom_nodes.ainodes_engine_base_nodes.ainodes_backend.sd_optimizations.sd_hijack import apply_optimizations
-        apply_optimizations()
+    #if args.torch2 == True:
+    #    from custom_nodes.ainodes_engine_base_nodes.ainodes_backend.sd_optimizations.sd_hijack import apply_optimizations
+    #    apply_optimizations()
     if args.forcewindowupdate:
         # Create a timer to trigger the update every second
         timer = QtCore.QTimer()

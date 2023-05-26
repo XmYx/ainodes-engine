@@ -44,6 +44,8 @@ class QDMGraphicsEdge(QGraphicsPathItem):
         self.initAssets()
         self.initUI()
 
+        self.offset = 10
+
     def initUI(self):
         """Set up this ``QGraphicsPathItem``"""
         self.setFlag(QGraphicsItem.ItemIsSelectable)
@@ -141,7 +143,12 @@ class QDMGraphicsEdge(QGraphicsPathItem):
         :param y: y position
         :type y: ``float``
         """
-        self.posSource = [x + 10, y]
+
+        if self.edge.start_socket.is_input:
+            x -= self.offset
+        else:
+            x += self.offset
+        self.posSource = [x, y]
 
     def setDestination(self, x:float, y:float):
         """ Set destination point
@@ -151,7 +158,12 @@ class QDMGraphicsEdge(QGraphicsPathItem):
         :param y: y position
         :type y: ``float``
         """
-        self.posDestination = [x - 10, y]
+        if self.edge.start_socket.is_input:
+            x += self.offset
+        else:
+            x -= self.offset
+
+        self.posDestination = [x, y]
 
     def boundingRect(self) -> QRectF:
         """Defining Qt' bounding rectangle"""
