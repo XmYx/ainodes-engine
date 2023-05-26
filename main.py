@@ -105,6 +105,7 @@ gs.metas = "output/metas"
 gs.system.textual_inversion_dir = "models/embeddings"
 gs.error_stack = []
 gs.should_run = True
+gs.loaded_kandinsky = ""
 
 try:
     import xformers
