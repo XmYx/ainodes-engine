@@ -6,20 +6,14 @@ import numpy as np
 from einops import rearrange
 from typing import Optional, Any
 
-from ldm.modules.attention import MemoryEfficientCrossAttention
+from ..attention import MemoryEfficientCrossAttention
+from ..sub_quadratic_attention import OOM_EXCEPTION
 
-try:
-    import xformers
-    import xformers.ops
-    XFORMERS_IS_AVAILBLE = True
-except:
-    XFORMERS_IS_AVAILBLE = False
-    print("No module 'xformers'. Proceeding without it.")
+#from comfy import model_management
 
-try:
-    OOM_EXCEPTION = torch.cuda.OutOfMemoryError
-except:
-    OOM_EXCEPTION = Exception
+#if model_management.xformers_enabled_vae():
+#    import xformers
+#    import xformers.ops
 
 def get_timestep_embedding(timesteps, embedding_dim):
     """
@@ -81,10 +75,11 @@ class Downsample(nn.Module):
                                         stride=2,
                                         padding=0)
 
-    def forward(self, x):
+    def forward(self, x, already_padded=False):
         if self.with_conv:
-            pad = (0,1,0,1)
-            x = torch.nn.functional.pad(x, pad, mode="constant", value=0)
+            if not already_padded:
+                pad = (0,1,0,1)
+                x = torch.nn.functional.pad(x, pad, mode="constant", value=0)
             x = self.conv(x)
         else:
             x = torch.nn.functional.avg_pool2d(x, kernel_size=2, stride=2)
@@ -153,6 +148,41 @@ class ResnetBlock(nn.Module):
 
         return x+h
 
+def slice_attention(q, k, v):
+    r1 = torch.zeros_like(k, device=q.device)
+    scale = (int(q.shape[-1])**(-0.5))
+
+    #mem_free_total = model_management.get_free_memory(q.device)
+
+    gb = 1024 ** 3
+    tensor_size = q.shape[0] * q.shape[1] * k.shape[2] * q.element_size()
+    modifier = 3 if q.element_size() == 2 else 2.5
+    mem_required = tensor_size * modifier
+    steps = 1
+
+    #if mem_required > mem_free_total:
+    #    steps = 2**(math.ceil(math.log(mem_required / mem_free_total, 2)))
+
+    while True:
+        try:
+            slice_size = q.shape[1] // steps if (q.shape[1] % steps) == 0 else q.shape[1]
+            for i in range(0, q.shape[1], slice_size):
+                end = i + slice_size
+                s1 = torch.bmm(q[:, i:end], k) * scale
+
+                s2 = torch.nn.functional.softmax(s1, dim=2).permute(0,2,1)
+                del s1
+
+                r1[:, :, i:end] = torch.bmm(v, s2)
+                del s2
+            break
+        except OOM_EXCEPTION as e:
+            steps *= 2
+            if steps > 128:
+                raise e
+            print("out of memory error, increasing steps and trying again", steps)
+
+    return r1
 
 class AttnBlock(nn.Module):
     def __init__(self, in_channels):
@@ -190,53 +220,15 @@ class AttnBlock(nn.Module):
 
         # compute attention
         b,c,h,w = q.shape
-        scale = (int(c)**(-0.5))
 
         q = q.reshape(b,c,h*w)
         q = q.permute(0,2,1)   # b,hw,c
         k = k.reshape(b,c,h*w) # b,c,hw
         v = v.reshape(b,c,h*w)
 
-        r1 = torch.zeros_like(k, device=q.device)
-
-        stats = torch.cuda.memory_stats(q.device)
-        mem_active = stats['active_bytes.all.current']
-        mem_reserved = stats['reserved_bytes.all.current']
-        mem_free_cuda, _ = torch.cuda.mem_get_info(torch.cuda.current_device())
-        mem_free_torch = mem_reserved - mem_active
-        mem_free_total = mem_free_cuda + mem_free_torch
-
-        gb = 1024 ** 3
-        tensor_size = q.shape[0] * q.shape[1] * k.shape[2] * q.element_size()
-        modifier = 3 if q.element_size() == 2 else 2.5
-        mem_required = tensor_size * modifier
-        steps = 1
-
-        if mem_required > mem_free_total:
-            steps = 2**(math.ceil(math.log(mem_required / mem_free_total, 2)))
-
-        while True:
-            try:
-                slice_size = q.shape[1] // steps if (q.shape[1] % steps) == 0 else q.shape[1]
-                for i in range(0, q.shape[1], slice_size):
-                    end = i + slice_size
-                    s1 = torch.bmm(q[:, i:end], k) * scale
-
-                    s2 = torch.nn.functional.softmax(s1, dim=2).permute(0,2,1)
-                    del s1
-
-                    r1[:, :, i:end] = torch.bmm(v, s2)
-                    del s2
-                break
-            except OOM_EXCEPTION as e:
-                steps *= 2
-                if steps > 128:
-                    raise e
-                print("out of memory error, increasing steps and trying again", steps)
-
+        r1 = slice_attention(q, k, v)
         h_ = r1.reshape(b,c,h,w)
         del r1
-
         h_ = self.proj_out(h_)
 
         return x+h_
@@ -306,6 +298,57 @@ class MemoryEfficientAttnBlock(nn.Module):
         out = self.proj_out(out)
         return x+out
 
+class MemoryEfficientAttnBlockPytorch(nn.Module):
+    def __init__(self, in_channels):
+        super().__init__()
+        self.in_channels = in_channels
+
+        self.norm = Normalize(in_channels)
+        self.q = torch.nn.Conv2d(in_channels,
+                                 in_channels,
+                                 kernel_size=1,
+                                 stride=1,
+                                 padding=0)
+        self.k = torch.nn.Conv2d(in_channels,
+                                 in_channels,
+                                 kernel_size=1,
+                                 stride=1,
+                                 padding=0)
+        self.v = torch.nn.Conv2d(in_channels,
+                                 in_channels,
+                                 kernel_size=1,
+                                 stride=1,
+                                 padding=0)
+        self.proj_out = torch.nn.Conv2d(in_channels,
+                                        in_channels,
+                                        kernel_size=1,
+                                        stride=1,
+                                        padding=0)
+        self.attention_op: Optional[Any] = None
+
+    def forward(self, x):
+        h_ = x
+        h_ = self.norm(h_)
+        q = self.q(h_)
+        k = self.k(h_)
+        v = self.v(h_)
+
+        # compute attention
+        B, C, H, W = q.shape
+        q, k, v = map(
+            lambda t: t.view(B, 1, C, -1).transpose(2, 3).contiguous(),
+            (q, k, v),
+        )
+
+        try:
+            out = torch.nn.functional.scaled_dot_product_attention(q, k, v, attn_mask=None, dropout_p=0.0, is_causal=False)
+            out = out.transpose(2, 3).reshape(B, C, H, W)
+        except model_management.OOM_EXCEPTION as e:
+            print("scaled_dot_product_attention OOMed: switched to slice attention")
+            out = slice_attention(q.view(B, -1, C), k.view(B, -1, C).transpose(1, 2), v.view(B, -1, C).transpose(1, 2)).reshape(B, C, H, W)
+
+        out = self.proj_out(out)
+        return x+out
 
 class MemoryEfficientCrossAttentionWrapper(MemoryEfficientCrossAttention):
     def forward(self, x, context=None, mask=None):
@@ -318,15 +361,19 @@ class MemoryEfficientCrossAttentionWrapper(MemoryEfficientCrossAttention):
 
 def make_attn(in_channels, attn_type="vanilla", attn_kwargs=None):
     assert attn_type in ["vanilla", "vanilla-xformers", "memory-efficient-cross-attn", "linear", "none"], f'attn_type {attn_type} unknown'
-    if XFORMERS_IS_AVAILBLE and attn_type == "vanilla":
-        attn_type = "vanilla-xformers"
+    #if model_management.xformers_enabled_vae() and attn_type == "vanilla":
+    #    attn_type = "vanilla-xformers"
+    #if model_management.pytorch_attention_enabled() and attn_type == "vanilla":
+    attn_type = "vanilla-pytorch"
     print(f"making attention of type '{attn_type}' with {in_channels} in_channels")
     if attn_type == "vanilla":
         assert attn_kwargs is None
         return AttnBlock(in_channels)
     elif attn_type == "vanilla-xformers":
-        #print(f"building MemoryEfficientAttnBlock with {in_channels} in_channels...")
+        print(f"building MemoryEfficientAttnBlock with {in_channels} in_channels...")
         return MemoryEfficientAttnBlock(in_channels)
+    elif attn_type == "vanilla-pytorch":
+        return MemoryEfficientAttnBlockPytorch(in_channels)
     elif type == "memory-efficient-cross-attn":
         attn_kwargs["query_dim"] = in_channels
         return MemoryEfficientCrossAttentionWrapper(**attn_kwargs)
@@ -557,20 +604,21 @@ class Encoder(nn.Module):
     def forward(self, x):
         # timestep embedding
         temb = None
-
+        pad = (0,1,0,1)
+        x = torch.nn.functional.pad(x, pad, mode="constant", value=0)
+        already_padded = True
         # downsampling
-        hs = [self.conv_in(x)]
+        h = self.conv_in(x)
         for i_level in range(self.num_resolutions):
             for i_block in range(self.num_res_blocks):
-                h = self.down[i_level].block[i_block](hs[-1], temb)
+                h = self.down[i_level].block[i_block](h, temb)
                 if len(self.down[i_level].attn) > 0:
                     h = self.down[i_level].attn[i_block](h)
-                hs.append(h)
             if i_level != self.num_resolutions-1:
-                hs.append(self.down[i_level].downsample(hs[-1]))
+                h = self.down[i_level].downsample(h, already_padded)
+                already_padded = False
 
         # middle
-        h = hs[-1]
         h = self.mid.block_1(h, temb)
         h = self.mid.attn_1(h)
         h = self.mid.block_2(h, temb)
@@ -603,8 +651,8 @@ class Decoder(nn.Module):
         block_in = ch*ch_mult[self.num_resolutions-1]
         curr_res = resolution // 2**(self.num_resolutions-1)
         self.z_shape = (1,z_channels,curr_res,curr_res)
-        #print("Working with z of shape {} = {} dimensions.".format(
-        #    self.z_shape, np.prod(self.z_shape)))
+        print("Working with z of shape {} = {} dimensions.".format(
+            self.z_shape, np.prod(self.z_shape)))
 
         # z to block_in
         self.conv_in = torch.nn.Conv2d(z_channels,

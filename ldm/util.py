@@ -1,13 +1,47 @@
 import importlib
 
+import psutil
 import torch
 from torch import optim
 import numpy as np
 
 from inspect import isfunction
 from PIL import Image, ImageDraw, ImageFont
+def get_free_memory(dev=None, torch_free_too=False):
+    global xpu_available
+    global directml_enabled
+    if dev is None:
+        dev = get_torch_device()
 
+    if hasattr(dev, 'type') and (dev.type == 'cpu' or dev.type == 'mps'):
+        mem_free_total = psutil.virtual_memory().available
+        mem_free_torch = mem_free_total
+    else:
+        """if directml_enabled:
+            mem_free_total = 1024 * 1024 * 1024 #TODO
+            mem_free_torch = mem_free_total
+        elif xpu_available:
+            mem_free_total = torch.xpu.get_device_properties(dev).total_memory - torch.xpu.memory_allocated(dev)
+            mem_free_torch = mem_free_total
+        else:"""
+        stats = torch.cuda.memory_stats(dev)
+        mem_active = stats['active_bytes.all.current']
+        mem_reserved = stats['reserved_bytes.all.current']
+        mem_free_cuda, _ = torch.cuda.mem_get_info(dev)
+        mem_free_torch = mem_reserved - mem_active
+        mem_free_total = mem_free_cuda + mem_free_torch
 
+    if torch_free_too:
+        return (mem_free_total, mem_free_torch)
+    else:
+        return mem_free_total
+def get_torch_device():
+    return torch.cuda.current_device()
+
+def get_torch_device_name(device):
+    if hasattr(device, 'type'):
+        return "{}".format(device.type)
+    return "CUDA {}: {}".format(device, torch.cuda.get_device_name(device))
 def log_txt_as_img(wh, xc, size=10):
     # wh a tuple of (width, height)
     # xc a list of captions to plot

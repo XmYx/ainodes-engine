@@ -498,3 +498,295 @@ class AiApiNode(AiNode):
         except Exception as e:
             print(e, self)
 
+
+class AiDummyNode(Node):
+    icon = ""
+    op_code = 0
+    op_title = "Undefined"
+    content_label = ""
+    content_label_objname = "calc_node_bg"
+    category = "default"
+    input_socket_name = ["EXEC"]
+    output_socket_name = ["EXEC"]
+    help_text = "Default help text"
+    GraphicsNode_class = CalcGraphicsNode
+    NodeContent_class = CalcContent
+    sockets = None
+
+    def __init__(self, scene, inputs=[2, 2], outputs=[1]):
+        # self.threadpool = QThreadPool()
+        """
+         Initialize the AiNode class with a scene, inputs, and outputs.
+
+         Args:
+             scene (QGraphicsScene): The scene where the node is displayed.
+             inputs (list): A list of input sockets, with values representing their types.
+                           1: EXEC
+                           2: LATENT
+                           3: CONDITIONING
+                           5: IMAGE
+                           6: DATA
+                           (4 is not used yet)
+                           Defaults to [2,2].
+             outputs (list): A list of output sockets, with values representing their types.
+                           1: EXEC
+                           2: LATENT
+                           3: CONDITIONING
+                           5: IMAGE
+                           6: DATA
+                           (4 is not used yet)
+                           Defaults to [1].
+         """
+        super().__init__(scene, self.__class__.op_title, inputs, outputs)
+        self.set_socket_names()
+        self.value = None
+        self.output_values = {}
+        self.values = {}
+        self.busy = False
+        self.init_done = None
+
+    def set_socket_names(self):
+        """
+        Internal function to set socket names, override in your custom node pack to add additional socket types
+        """
+
+        return
+    def update_all_sockets(self):
+        return
+        for socket in self.outputs + self.inputs:
+            socket.setSocketPosition()
+        self.updateConnectedEdges()
+
+    def getID(self, index):
+        """
+        Generate a unique ID for the output socket with the given index.
+
+        Args:
+            index (int): The index of the output socket.
+
+        Returns:
+            str: The unique ID for the output socket.
+        """
+        return f"{id(self)}_output_{index}"
+
+    def setOutput(self, index, value):
+        return
+        """
+        Set the value of the output socket with the given index.
+
+        Args:
+            index (int): The index of the output socket.
+            value: The value to be set for the output socket.
+        """
+        object_name = self.getID(index)
+
+        self.values[object_name] = value
+
+    def getOutput(self, index):
+        return
+        """
+         Get the value of the output socket with the given index.
+
+         Args:
+             index (int): The index of the output socket.
+
+         Returns:
+             The value of the output socket, or None if it does not exist.
+         """
+        object_name = self.getID(index)
+        try:
+            return self.values[object_name]
+        except:
+            done = handle_ainodes_exception()
+
+            print(f"Value doesnt exist yet, make sure to validate the node: {self.op_title}")
+            return None
+
+    def getInputData(self, index=0):
+        return
+
+        """
+        Get the data from the connected input socket specified by 'index'.
+
+        :param index: The index of the input socket to get data from.
+        :type index: int
+        :return: The data from the connected input socket, or None if the socket is not connected.
+        :rtype: Any or None
+        """
+        try:
+            if len(self.getInputs(index)) > 0:
+                node, index = self.getInput(index)
+                data = node.getOutput(index)
+                return data
+            else:
+                return None
+        except Exception as e:
+            done = handle_ainodes_exception()
+
+            print(f"Error in getInputData: {e}")
+            return None
+
+    def initSettings(self):
+        """
+        Initialize settings for the node, such as input and output socket positions.
+        """
+        super().initSettings()
+        self.input_socket_position = LEFT_BOTTOM
+        self.output_socket_position = RIGHT_BOTTOM
+
+    @QtCore.Slot()
+    def evalImplementation(self, index=0, *args, **kwargs):
+        return
+    def evalImplementationThreadHandler(self, *args, **kwargs):
+        return
+
+    @QtCore.Slot()
+    def evalImplementation_thread(self):
+        return None
+
+    @QtCore.Slot(object)
+    def onWorkerFinished(self, result):
+        return
+
+    def eval(self, index=0):
+        return
+
+    def executeChild(self, output_index=0):
+        """
+        Execute the child node connected to the output socket with the given index.
+
+        Args:
+            output_index (int): The index of the output socket. Defaults to 0.
+
+        Returns:
+            None
+        """
+        return
+
+    def onInputChanged(self, socket=None):
+        """
+        Handle the event when an input socket value is changed.
+
+        Args:
+            socket: The input socket that changed.
+        """
+        print("%s::__onInputChanged" % self.__class__.__name__)
+        # self.markDirty(True)
+
+    def update_vars(self, data):
+
+        return
+
+    def serialize(self):
+        """
+        Serialize the node's data into a dictionary.
+
+        Returns:
+            dict: The serialized data of the node.
+        """
+        res = super().serialize()
+        res['op_code'] = self.__class__.op_code
+        res['content_label_objname'] = self.__class__.content_label_objname
+        return res
+
+    def deserialize(self, data, hashmap={}, restore_id=True):
+        """
+        Deserialize the node's data from a dictionary.
+
+        Args:
+            data (dict): The serialized data of the node.
+            hashmap (dict): A dictionary of node IDs and their corresponding objects.
+            restore_id (bool): Whether to restore the original node ID. Defaults to True.
+
+        Returns:
+            bool: True if deserialization is successful, False otherwise.
+        """
+        res = super().deserialize(data, hashmap, restore_id)
+        # print("Deserialized AiNode '%s'" % self.__class__.__name__, "res:", res)
+        return res
+
+    def remove(self):
+        """
+         Remove the node, clearing the values in its output sockets.
+         """
+        x = 0
+
+        self.values = None
+        self.values = {}
+        super().remove()
+
+
+
+class AiApiNode(AiNode):
+    icon = ""
+    op_code = 0
+    op_title = "Undefined"
+    content_label = ""
+    content_label_objname = "calc_node_bg"
+    category = "default"
+    input_socket_name = ["EXEC"]
+    output_socket_name = ["EXEC"]
+    help_text = "Default help text"
+    GraphicsNode_class = CalcGraphicsNode
+    NodeContent_class = CalcContent
+
+    def __init__(self, scene, inputs=[2, 2], outputs=[1]):
+        """
+         Initialize the AiNode class with a scene, inputs, and outputs.
+
+         Args:
+             scene (QGraphicsScene): The scene where the node is displayed.
+             inputs (list): A list of input sockets, with values representing their types.
+                           1: EXEC
+                           2: LATENT
+                           3: CONDITIONING
+                           5: IMAGE
+                           6: DATA
+                           (4 is not used yet)
+                           Defaults to [2,2].
+             outputs (list): A list of output sockets, with values representing their types.
+                           1: EXEC
+                           2: LATENT
+                           3: CONDITIONING
+                           5: IMAGE
+                           6: DATA
+                           (4 is not used yet)
+                           Defaults to [1].
+         """
+        super().__init__(scene, self.__class__.op_title, inputs, outputs)
+        self.set_socket_names()
+        self.value = None
+        self.output_values = {}
+        # it's really important to mark all nodes Dirty by default
+        self.markDirty()
+        self.values = {}
+        # self.task_queue = Queue()
+        pass
+
+    @QtCore.Slot()
+    def evalImplementation(self, index=0, *args, **kwargs):
+        if self.busy == False:
+            self.busy = True
+            worker = Worker(self.evalImplementation_thread)
+            worker.signals.result.connect(self.onWorkerFinished)
+            self.scene.threadpool.start(worker)
+        return None
+
+    def evalImplementation_thread(self):
+        print(f"PLEASE IMPLEMENT evalImplementation_thread function for {self}")
+        pass
+
+    @QtCore.Slot(object)
+    def onWorkerFinished(self):
+        print(f"PLEASE IMPLEMENT onWorkerFinished function for {self}")
+        pass
+
+    def eval(self, index=0):
+        try:
+            # self.markDirty(True)
+            self.content.eval_signal.emit()
+        except Exception as e:
+            print(e, self)
+
+
+

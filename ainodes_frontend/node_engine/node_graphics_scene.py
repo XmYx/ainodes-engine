@@ -99,12 +99,14 @@ class QDMGraphicsScene(QGraphicsScene):
 
         # draw the lines
         painter.setPen(self._pen_light)
-        try: painter.drawLines(*lines_light)                    # supporting PyQt5
-        except TypeError: painter.drawLines(lines_light)        # supporting PySide2
+        #try: painter.drawLines(*lines_light)                    # supporting PyQt5
+        #except TypeError: painter.drawLines(lines_light)        # supporting PySide2
+        painter.drawLines(lines_light)        # supporting PySide2
 
         painter.setPen(self._pen_dark)
-        try: painter.drawLines(*lines_dark)                     # supporting PyQt5
-        except TypeError: painter.drawLines(lines_dark)         # supporting PySide2
+        #try: painter.drawLines(*lines_dark)                     # supporting PyQt5
+        #except TypeError: painter.drawLines(lines_dark)         # supporting PySide2
+        painter.drawLines(lines_dark)         # supporting PySide2
 
         if DEBUG_STATE:
             try:

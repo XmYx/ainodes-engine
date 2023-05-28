@@ -11,22 +11,16 @@ import platform
 import argparse
 from types import SimpleNamespace
 
-from PySide6.QtCore import Qt
-from PySide6.QtGui import QPixmap
-from PySide6.QtWidgets import QSplashScreen
-from qtpy import QtCore, QtQuick, QtWidgets
-from qtpy.QtQuick import QSGRendererInterface
-from qtpy.QtCore import QCoreApplication
-from qtpy import QtGui
-from qtpy.QtWidgets import QApplication
+from qtpy.QtCore import Qt
+from qtpy.QtGui import QPixmap
+from qtpy.QtWidgets import QSplashScreen
+from qtpy import QtCore, QtQuick, QtGui
 
 subprocess.check_call(["pip", "install", "tqdm"])
 from tqdm import tqdm
 
 from ainodes_frontend import singleton as gs
-
-import ainodes_frontend.qss.nodeeditor_dark_resources
-from ainodes_frontend.base.settings import save_settings, load_settings
+from ainodes_frontend.base.settings import load_settings
 from ainodes_frontend.node_engine.utils import loadStylesheets
 
 # Set environment variable QT_API to use PySide6
@@ -106,6 +100,7 @@ gs.system.textual_inversion_dir = "models/embeddings"
 gs.error_stack = []
 gs.should_run = True
 gs.loaded_kandinsky = ""
+gs.loaded_hypernetworks = []
 
 try:
     import xformers
@@ -133,6 +128,27 @@ parser.add_argument("--torch2", action="store_true")
 parser.add_argument("--no_console", action="store_true")
 parser.add_argument("--highdpi", action="store_true")
 parser.add_argument("--forcewindowupdate", action="store_true")
+parser.add_argument('--use_opengl_es', action='store_true',
+                    help='Enables the use of OpenGL ES instead of desktop OpenGL')
+parser.add_argument('--enable_high_dpi_scaling', action='store_true',
+                    help='Enables high-DPI scaling for the application')
+parser.add_argument('--use_high_dpi_pixmaps', action='store_true',
+                    help='Uses high-DPI pixmaps to render images on high-resolution displays')
+parser.add_argument('--disable_window_context_help_button', action='store_true',
+                    help='Disables the context-sensitive help button in the window\'s title bar')
+parser.add_argument('--use_stylesheet_propagation_in_widget_styles', action='store_true',
+                    help='Enables the propagation of style sheets to child widgets')
+parser.add_argument('--dont_create_native_widget_siblings', action='store_true',
+                    help='Prevents the creation of native sibling widgets for custom widgets')
+parser.add_argument('--plugin_application', action='store_true',
+                    help='Specifies that the application is a plugin rather than a standalone executable')
+parser.add_argument('--use_direct3d_by_default', action='store_true',
+                    help='Specifies that Direct3D should be used as the default rendering system on Windows')
+parser.add_argument('--mac_plugin_application', action='store_true',
+                    help='Specifies that the application is a macOS plugin rather than a standalone executable')
+parser.add_argument('--disable_shader_disk_cache', action='store_true',
+                    help='Disables the caching of compiled shader programs to disk')
+
 args = parser.parse_args()
 gs.args = args
 
@@ -143,7 +159,10 @@ if not args.local_hf:
     os.environ["HF_HOME"] = "hf_cache"
 
 if args.highdpi:
-# Set up high-quality QSurfaceFormat object with OpenGL 3.3 and 8x antialiasing
+    print("Setting up Hardware Accelerated GUI")
+    from qtpy.QtQuick import QSGRendererInterface
+    # Set up high-quality QSurfaceFormat object with OpenGL 3.3 and 8x antialiasing
+
     qs_format = QtGui.QSurfaceFormat()
     qs_format.setVersion(3, 3)
     qs_format.setSamples(8)
@@ -177,8 +196,39 @@ def check_repo_update(folder_path):
     except subprocess.CalledProcessError as e:
         print(e)
         return None
+
+from qtpy.QtWidgets import QApplication
+
+def set_application_attributes(args):
+    if args.use_opengl_es:
+        QApplication.setAttribute(Qt.ApplicationAttribute.AA_UseOpenGLES)
+    if args.enable_high_dpi_scaling:
+        QApplication.setAttribute(Qt.ApplicationAttribute.AA_EnableHighDpiScaling)
+    if args.use_high_dpi_pixmaps:
+        QApplication.setAttribute(Qt.ApplicationAttribute.AA_UseHighDpiPixmaps)
+    if args.disable_window_context_help_button:
+        QApplication.setAttribute(Qt.ApplicationAttribute.AA_DisableWindowContextHelpButton)
+    if args.use_stylesheet_propagation_in_widget_styles:
+        QApplication.setAttribute(Qt.ApplicationAttribute.AA_UseStyleSheetPropagationInWidgetStyles)
+    if args.dont_create_native_widget_siblings:
+        QApplication.setAttribute(Qt.ApplicationAttribute.AA_DontCreateNativeWidgetSiblings)
+    if args.plugin_application:
+        QApplication.setAttribute(Qt.ApplicationAttribute.AA_PluginApplication)
+    if args.use_direct3d_by_default:
+        QApplication.setAttribute(Qt.ApplicationAttribute.AA_MSWindowsUseDirect3DByDefault)
+    if args.mac_plugin_application:
+        QApplication.setAttribute(Qt.ApplicationAttribute.AA_MacPluginApplication)
+    if args.disable_shader_disk_cache:
+        QApplication.setAttribute(Qt.ApplicationAttribute.AA_DisableShaderDiskCache)
+
+
+
+#QApplication.setAttribute(QtCore.Qt.ApplicationAttribute.AA_UseOpenGLES)
+
 # make app
-app = QApplication(sys.argv)
+ainodes_qapp = QApplication(sys.argv)
+ # Sets the default graphics backend to system, which will be used for on-screen widgets and QPixmaps. The available systems are "native", "raster" and "opengl".
+
 splash_pix = QPixmap("ainodes_frontend/qss/icon.ico")  # Replace "splash.png" with the path to your splash screen image
 splash = QSplashScreen(splash_pix, Qt.WindowStaysOnTopHint)
 splash.show()
@@ -195,19 +245,22 @@ for folder in os.listdir(base_folder):
         if os.path.isdir(folder_path):
             import_nodes_from_subdirectories(folder_path)
 
+
 if __name__ == "__main__":
     # Create and display the splash screen
     # Enable automatic updates for the entire application
-    if args.highdpi:
-        app.setAttribute(Qt.AA_EnableHighDpiScaling)
 
+    if args.highdpi:
+        ainodes_qapp.setAttribute(Qt.AA_EnableHighDpiScaling)
+
+    from qtpy.QtCore import QCoreApplication
     QCoreApplication.instance().aboutToQuit.connect(eventListener)
-    app.setApplicationName("aiNodes - Engine")
+    ainodes_qapp.setApplicationName("aiNodes - Engine")
     from ainodes_frontend.base import CalculatorWindow
     # Create and show the main window
-    app.setStyle('Fusion')
+    ainodes_qapp.setStyle('Fusion')
 
-    wnd = CalculatorWindow(app)
+    wnd = CalculatorWindow(ainodes_qapp)
     wnd.stylesheet_filename = os.path.join(os.path.dirname(__file__), gs.qss)
     loadStylesheets(
         os.path.join(os.path.dirname(__file__), gs.qss),
@@ -220,7 +273,8 @@ if __name__ == "__main__":
     wnd.setWindowIconText("aiNodes - Engine")
     icon = QtGui.QIcon("ainodes_frontend/qss/icon.ico")
     wnd.setWindowIcon(icon)
-    app.setWindowIcon(icon)
+
+    ainodes_qapp.setWindowIcon(icon)
     wnd.show()
     wnd.nodesListWidget.addMyItems()
     wnd.onFileNew()
@@ -234,4 +288,4 @@ if __name__ == "__main__":
         timer.start(1000)  # 1000 milliseconds = 1 second
     splash.finish(wnd)
 
-    sys.exit(app.exec())
+    sys.exit(ainodes_qapp.exec())

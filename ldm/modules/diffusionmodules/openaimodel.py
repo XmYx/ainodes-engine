@@ -6,7 +6,7 @@ import torch as th
 import torch.nn as nn
 import torch.nn.functional as F
 
-from ldm.modules.diffusionmodules.util import (
+from .util import (
     checkpoint,
     conv_nd,
     linear,
@@ -15,7 +15,7 @@ from ldm.modules.diffusionmodules.util import (
     normalization,
     timestep_embedding,
 )
-from ldm.modules.attention import SpatialTransformer
+from ..attention import SpatialTransformer
 from ldm.util import exists
 
 
@@ -76,16 +76,31 @@ class TimestepEmbedSequential(nn.Sequential, TimestepBlock):
     support it as an extra input.
     """
 
-    def forward(self, x, emb, context=None):
+    def forward(self, x, emb, context=None, transformer_options={}, output_shape=None):
         for layer in self:
             if isinstance(layer, TimestepBlock):
                 x = layer(x, emb)
             elif isinstance(layer, SpatialTransformer):
-                x = layer(x, context)
+                x = layer(x, context, transformer_options)
+            elif isinstance(layer, Upsample):
+                x = layer(x, output_shape=output_shape)
             else:
                 x = layer(x)
         return x
 
+#This is needed because accelerate makes a copy of transformer_options which breaks "current_index"
+def forward_timestep_embed(ts, x, emb, context=None, transformer_options={}, output_shape=None):
+    for layer in ts:
+        if isinstance(layer, TimestepBlock):
+            x = layer(x, emb)
+        elif isinstance(layer, SpatialTransformer):
+            x = layer(x, context, transformer_options)
+            transformer_options["current_index"] += 1
+        elif isinstance(layer, Upsample):
+            x = layer(x, output_shape=output_shape)
+        else:
+            x = layer(x)
+    return x
 
 class Upsample(nn.Module):
     """
@@ -105,14 +120,20 @@ class Upsample(nn.Module):
         if use_conv:
             self.conv = conv_nd(dims, self.channels, self.out_channels, 3, padding=padding)
 
-    def forward(self, x):
+    def forward(self, x, output_shape=None):
         assert x.shape[1] == self.channels
         if self.dims == 3:
-            x = F.interpolate(
-                x, (x.shape[2], x.shape[3] * 2, x.shape[4] * 2), mode="nearest"
-            )
+            shape = [x.shape[2], x.shape[3] * 2, x.shape[4] * 2]
+            if output_shape is not None:
+                shape[1] = output_shape[3]
+                shape[2] = output_shape[4]
         else:
-            x = F.interpolate(x, scale_factor=2, mode="nearest")
+            shape = [x.shape[2] * 2, x.shape[3] * 2]
+            if output_shape is not None:
+                shape[0] = output_shape[2]
+                shape[1] = output_shape[3]
+
+        x = F.interpolate(x, size=shape, mode="nearest")
         if self.use_conv:
             x = self.conv(x)
         return x
@@ -409,6 +430,15 @@ class QKVAttention(nn.Module):
         return count_flops_attn(model, _x, y)
 
 
+class Timestep(nn.Module):
+    def __init__(self, dim):
+        super().__init__()
+        self.dim = dim
+
+    def forward(self, t):
+        return timestep_embedding(t, self.dim)
+
+
 class UNetModel(nn.Module):
     """
     The full UNet model with attention and timestep embedding.
@@ -470,6 +500,7 @@ class UNetModel(nn.Module):
         num_attention_blocks=None,
         disable_middle_self_attn=False,
         use_linear_in_transformer=False,
+        adm_in_channels=None,
     ):
         super().__init__()
         if use_spatial_transformer:
@@ -477,9 +508,9 @@ class UNetModel(nn.Module):
 
         if context_dim is not None:
             assert use_spatial_transformer, 'Fool!! You forgot to use the spatial transformer for your cross-attention conditioning...'
-            from omegaconf.listconfig import ListConfig
-            if type(context_dim) == ListConfig:
-                context_dim = list(context_dim)
+            # from omegaconf.listconfig import ListConfig
+            # if type(context_dim) == ListConfig:
+            #     context_dim = list(context_dim)
 
         if num_heads_upsample == -1:
             num_heads_upsample = num_heads
@@ -538,6 +569,15 @@ class UNetModel(nn.Module):
             elif self.num_classes == "continuous":
                 print("setting up linear c_adm embedding layer")
                 self.label_emb = nn.Linear(1, time_embed_dim)
+            elif self.num_classes == "sequential":
+                assert adm_in_channels is not None
+                self.label_emb = nn.Sequential(
+                    nn.Sequential(
+                        linear(adm_in_channels, time_embed_dim),
+                        nn.SiLU(),
+                        linear(time_embed_dim, time_embed_dim),
+                    )
+                )
             else:
                 raise ValueError()
 
@@ -753,7 +793,7 @@ class UNetModel(nn.Module):
         self.middle_block.apply(convert_module_to_f32)
         self.output_blocks.apply(convert_module_to_f32)
 
-    def forward(self, x, timesteps=None, context=None, y=None, control=None, **kwargs):
+    def forward(self, x, timesteps=None, context=None, y=None, control=None, transformer_options={}, **kwargs):
         """
         Apply the model to an input batch.
         :param x: an [N x C x ...] Tensor of inputs.
@@ -762,6 +802,9 @@ class UNetModel(nn.Module):
         :param y: an [N] Tensor of labels, if class-conditional.
         :return: an [N x C x ...] Tensor of outputs.
         """
+        transformer_options["original_shape"] = list(x.shape)
+        transformer_options["current_index"] = 0
+
         assert (y is not None) == (
             self.num_classes is not None
         ), "must specify y if and only if the model is class-conditional"
@@ -775,13 +818,13 @@ class UNetModel(nn.Module):
 
         h = x.type(self.dtype)
         for id, module in enumerate(self.input_blocks):
-            h = module(h, emb, context)
+            h = forward_timestep_embed(module, h, emb, context, transformer_options)
             if control is not None and 'input' in control and len(control['input']) > 0:
                 ctrl = control['input'].pop()
                 if ctrl is not None:
                     h += ctrl
             hs.append(h)
-        h = self.middle_block(h, emb, context)
+        h = forward_timestep_embed(self.middle_block, h, emb, context, transformer_options)
         if control is not None and 'middle' in control and len(control['middle']) > 0:
             h += control['middle'].pop()
 
@@ -791,9 +834,14 @@ class UNetModel(nn.Module):
                 ctrl = control['output'].pop()
                 if ctrl is not None:
                     hsp += ctrl
+
             h = th.cat([h, hsp], dim=1)
             del hsp
-            h = module(h, emb, context)
+            if len(hs) > 0:
+                output_shape = hs[-1].shape
+            else:
+                output_shape = None
+            h = forward_timestep_embed(module, h, emb, context, transformer_options, output_shape)
         h = h.type(x.dtype)
         if self.predict_codebook_ids:
             return self.id_predictor(h)

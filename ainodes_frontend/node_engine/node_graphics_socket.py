@@ -75,38 +75,42 @@ class QDMGraphicsSocket(QGraphicsItem):
 
     def paint(self, painter, QStyleOptionGraphicsItem, widget=None):
 
-        if gs.highlight_sockets:
-            mode = self.socket.node.scene.getView().mode
-            dragged_socket = self.socket.node.scene.getView().dragging.drag_start_socket
-            if mode == 2:
-                if self.socket.node != dragged_socket.node:
-                    if dragged_socket.is_input:
-                        if not self.socket.is_input:
+        #if gs.highlight_sockets:
+        mode = self.socket.node.scene.getView().mode
+        dragged_socket = self.socket.node.scene.getView().dragging.drag_start_socket
+        if mode == 2:
+            #self.radius = 12
+            #self.isHighlighted = True
+            if self.socket.node != dragged_socket.node:
+                if dragged_socket.is_input:
+                    if not self.socket.is_input:
+                        if self.socket.socket_type == dragged_socket.socket_type:
+                            self.radius = 12
+                            self.isHighlighted = True
+                else:
+                    if not dragged_socket.is_input:
+                        if self.socket.is_input:
                             if self.socket.socket_type == dragged_socket.socket_type:
                                 self.radius = 12
                                 self.isHighlighted = True
-                    else:
-                        if not dragged_socket.is_input:
-                            if self.socket.is_input:
-                                if self.socket.socket_type == dragged_socket.socket_type:
-                                    self.radius = 12
-                                    self.isHighlighted = True
-            else:
-                self.radius = 8
+        else:
+            self.radius = 8
+            self.isHighlighted = False
 
         painter.setBrush(self._brush)
         painter.setPen(self._pen if not self.isHighlighted else self._pen_highlight)
         """Painting a circle"""
         #print(self.socket.node, self.socket.is_input)
         # Add text next to the ellipse
-        text = "Test Text"
-        font = QtGui.QFont("Monospace", 12)
-        painter.setFont(font)
-        text_width = painter.fontMetrics().width(text) * 1.13
-        text_height = painter.fontMetrics().height() - 29
+        #text = "Test Text"
+        #font = QtGui.QFont("Monospace", 12)
+        #painter.setFont(font)
+        #text_width = painter.fontMetrics().width(text) * 1.13
+        #text_height = painter.fontMetrics().height() - 29
+        text_width = 71.2
+        text_height = -12
         if self.socket.is_input:
             painter.drawEllipse(-self.radius - 15, -self.radius, 2 * self.radius, 2 * self.radius)
-
             # Set the background color to dark green
             bg_color = QtGui.QColor('darkgreen')
             painter.setBrush(bg_color)
@@ -136,7 +140,6 @@ class QDMGraphicsSocket(QGraphicsItem):
             # Fill the rectangle with the background color
             painter.fillRect(rect, bg_color)
             painter.drawRoundedRect(rect, 3, 3)
-
             painter.drawText(QtCore.QPoint(int(self.radius - text_width - 15), int(-text_height / 2)), f"{self.socket.name}")
 
     def boundingRect(self) -> QRectF:
