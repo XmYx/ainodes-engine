@@ -1,37 +1,44 @@
-@echo off
-
-REM Check if the nodes_env folder exists
-if exist nodes_env do (
-    choice /C YN /M "The 'nodes_env' folder already exists. Do you want to remove it? (Y/N)"
-    if errorlevel 2 goto SkipRemove
-    rmdir /s /q nodes_env
-    :SkipRemove
-)
-
+REM Set variables
+set "PYTHON_ZIP_URL=https://www.python.org/ftp/python/3.10.10/python-3.10.10-embed-amd64.zip"
+set "PYTHON_ZIP_FILE=%~dp0src\python\python-3.10.10-embed-amd64.zip"
+set "PYTHON_EXTRACT_PATH=%~dp0src\python"
 REM Get the full path of the script directory
 set "SCRIPT_DIR=%~dp0"
-
 REM Construct the full path to the Python Scripts directory
-set "PYTHON_SCRIPTS_DIR=%SCRIPT_DIR%src\python\Scripts"
-
+set "PYTHON_DIR=%SCRIPT_DIR%src\python"
+set "PYTHON_LIB_DIR=%PYTHON_DIR%\Lib"
+set "PYTHON_SCRIPTS_DIR=%PYTHON_DIR%\Scripts"
 set "BACKUPPATH=%PATH%"
 
+REM Check if Python executable exists
+if not exist "%PYTHON_EXTRACT_PATH%\python.exe" (
+    echo Python executable not found. Downloading Python embeddable package...
+    mkdir "%PYTHON_EXTRACT_PATH%"
+    curl -o "%PYTHON_ZIP_FILE%" "%PYTHON_ZIP_URL%"
+    echo Extracting Python embeddable package...
+    powershell -Command "Expand-Archive -Path '%PYTHON_ZIP_FILE%' -DestinationPath '%PYTHON_EXTRACT_PATH%' -Force"
+)
+
+REM Install virtualenv using pip
+pip install virtualenv
+
 REM Update the PATH environment variable
-set "PATH=%PYTHON_SCRIPTS_DIR%;%PATH%"
+set "PATH=%PYTHON_SCRIPTS_DIR%;%PYTHON_LIB_DIR%;%PATH%"
 
-REM Run the makesure_pip.py script
-%SCRIPT_DIR%src\python\python.exe %SCRIPT_DIR%get-pip.py
-%SCRIPT_DIR%src\python\python.exe -m pip install virtualenv
-
-
-%SCRIPT_DIR%src\python\python.exe -m virtualenv nodes_env
+REM Install pip
+call "%PYTHON_DIR%\python.exe" "%SCRIPT_DIR%get-pip.py"
 
 REM Activate the virtual environment
-if "%OS%"=="Windows_NT" (
-    call nodes_env\Scripts\activate.bat
-) else (
-    source nodes_env/bin/activate
-)
+call "%PYTHON_SCRIPTS_DIR%\activate.bat"
+
+REM Install virtualenv using pip
+pip install virtualenv
+
+REM Create virtual environment
+virtualenv nodes_env
+
+REM Activate the virtual environment
+call nodes_env\Scripts\activate.bat
 
 REM Install requirements
 pip install -r requirements.txt
@@ -94,4 +101,5 @@ if %ERRORLEVEL% equ 1 (
     start %SCRIPT_DIR%run_ainodes.bat
 )
 
-
+REM Restore the original PATH environment variable
+set "PATH=%PATH%;%BACKUPPATH%"

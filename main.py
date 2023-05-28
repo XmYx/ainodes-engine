@@ -221,7 +221,7 @@ def set_application_attributes(args):
     if args.disable_shader_disk_cache:
         QApplication.setAttribute(Qt.ApplicationAttribute.AA_DisableShaderDiskCache)
 
-
+set_application_attributes(args)
 
 #QApplication.setAttribute(QtCore.Qt.ApplicationAttribute.AA_UseOpenGLES)
 
