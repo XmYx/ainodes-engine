@@ -22,7 +22,6 @@ call %base_folder%\Scripts\activate.bat
 
 rem Stash and pull changes in the base folder
 cd %base_folder%
-git stash
 git pull
 pip install -r requirements.txt
 cd ..
@@ -33,7 +32,6 @@ cd %custom_nodes_folder%
 for /d %%F in (*_nodes*) do (
   echo Processing %%F
   cd %%F
-  git stash
   git pull
   pip install -r requirements.txt
   cd ..

@@ -33,8 +33,10 @@ if "Linux" in platform.platform():
     gs.qss = "ainodes_frontend/qss/nodeeditor-dark-linux.qss"
 else:
     gs.qss = "ainodes_frontend/qss/nodeeditor-dark.qss"
+    import ctypes
 
-
+    myappid = u'mycompany.myproduct.subproduct.version'  # arbitrary string
+    ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
 def update_all_nodes_req():
     top_folder = "./custom_nodes"
     folders = [folder for folder in os.listdir(top_folder) if os.path.isdir(os.path.join(top_folder, folder))]
@@ -170,10 +172,6 @@ if args.highdpi:
     QtGui.QSurfaceFormat.setDefaultFormat(qs_format)
     QtCore.QCoreApplication.setAttribute(QtCore.Qt.ApplicationAttribute.AA_ShareOpenGLContexts)
     QtQuick.QQuickWindow.setGraphicsApi(QSGRendererInterface.OpenGLRhi)
-def eventListener(*args, **kwargs):
-    print("EVENT")
-
-
 
 def check_repo_update(folder_path):
     repo_path = folder_path
@@ -223,16 +221,18 @@ def set_application_attributes(args):
 
 set_application_attributes(args)
 
-#QApplication.setAttribute(QtCore.Qt.ApplicationAttribute.AA_UseOpenGLES)
 
 # make app
 ainodes_qapp = QApplication(sys.argv)
- # Sets the default graphics backend to system, which will be used for on-screen widgets and QPixmaps. The available systems are "native", "raster" and "opengl".
+from ainodes_frontend.icon import icon
+pixmap = QtGui.QPixmap()
+pixmap.loadFromData(icon)
+appIcon = QtGui.QIcon(pixmap)
+ainodes_qapp.setWindowIcon(appIcon)
 
 splash_pix = QPixmap("ainodes_frontend/qss/icon.ico")  # Replace "splash.png" with the path to your splash screen image
 splash = QSplashScreen(splash_pix, Qt.WindowStaysOnTopHint)
 splash.show()
-
 
 load_settings()
 base_folder = 'custom_nodes'
@@ -245,47 +245,18 @@ for folder in os.listdir(base_folder):
         if os.path.isdir(folder_path):
             import_nodes_from_subdirectories(folder_path)
 
+from ainodes_frontend.base import CalculatorWindow
+ainodes_qapp.setApplicationName("aiNodes - Engine")
 
 if __name__ == "__main__":
-    # Create and display the splash screen
-    # Enable automatic updates for the entire application
-
-    if args.highdpi:
-        ainodes_qapp.setAttribute(Qt.AA_EnableHighDpiScaling)
-
-    from qtpy.QtCore import QCoreApplication
-    QCoreApplication.instance().aboutToQuit.connect(eventListener)
-    ainodes_qapp.setApplicationName("aiNodes - Engine")
-    from ainodes_frontend.base import CalculatorWindow
-    # Create and show the main window
-    ainodes_qapp.setStyle('Fusion')
-
     wnd = CalculatorWindow(ainodes_qapp)
     wnd.stylesheet_filename = os.path.join(os.path.dirname(__file__), gs.qss)
     loadStylesheets(
         os.path.join(os.path.dirname(__file__), gs.qss),
         wnd.stylesheet_filename
     )
-    #if not args.skip_base_nodes:
-    #    wnd.node_packages.list_widget.setCurrentRow(0)
-    #    if not os.path.isdir('custom_nodes/ainodes_engine_base_nodes'):
-    #        wnd.node_packages.download_repository()
-    wnd.setWindowIconText("aiNodes - Engine")
-    icon = QtGui.QIcon("ainodes_frontend/qss/icon.ico")
-    wnd.setWindowIcon(icon)
-
-    ainodes_qapp.setWindowIcon(icon)
     wnd.show()
     wnd.nodesListWidget.addMyItems()
     wnd.onFileNew()
-    #if args.torch2 == True:
-    #    from custom_nodes.ainodes_engine_base_nodes.ainodes_backend.sd_optimizations.sd_hijack import apply_optimizations
-    #    apply_optimizations()
-    if args.forcewindowupdate:
-        # Create a timer to trigger the update every second
-        timer = QtCore.QTimer()
-        timer.timeout.connect(wnd.update)
-        timer.start(1000)  # 1000 milliseconds = 1 second
     splash.finish(wnd)
-
     sys.exit(ainodes_qapp.exec())
