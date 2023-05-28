@@ -1,0 +1,392 @@
+BEGINNING
+Machine Information:
+Operating System: Windows 10
+PIP List:
+Package                      Version
+---------------------------- ------------------------
+absl-py                      1.4.0
+accelerate                   0.17.1
+addict                       2.4.0
+aiohttp                      3.8.4
+aiosignal                    1.3.1
+alembic                      1.11.1
+ansicon                      1.89.0
+antlr4-python3-runtime       4.9.3
+anyio                        3.6.2
+appdirs                      1.4.4
+arrow                        1.2.3
+asttokens                    2.2.1
+astunparse                   1.6.3
+async-timeout                4.0.2
+attrs                        23.1.0
+audioread                    3.0.0
+av                           10.0.0
+backcall                     0.2.0
+basicsr                      1.4.2
+beautifulsoup4               4.12.2
+blessed                      1.20.0
+blobfile                     2.0.2
+boltons                      23.0.0
+cachetools                   5.3.0
+certifi                      2022.12.7
+cffi                         1.15.1
+charset-normalizer           3.1.0
+click                        8.1.3
+clip                         1.0
+cmaes                        0.9.1
+colorama                     0.4.6
+coloredlogs                  15.0.1
+colorlog                     6.7.0
+contourpy                    1.0.7
+croniter                     1.3.14
+cycler                       0.11.0
+dateutils                    0.6.12
+decorator                    5.1.1
+deepdiff                     6.3.0
+deforum                      0.7a0
+diffusers                    0.16.1
+einops                       0.6.0
+executing                    1.2.0
+facexlib                     0.3.0
+fastapi                      0.88.0
+ffmpeg                       1.4
+ffmpeg-python                0.1.7
+filelock                     3.12.0
+filterpy                     1.4.5
+fire                         0.5.0
+flatbuffers                  23.3.3
+font-roboto                  0.0.1
+fonts                        0.0.3
+fonttools                    4.39.3
+frozenlist                   1.3.3
+fsspec                       2023.4.0
+ftfy                         6.1.1
+future                       0.18.3
+fvcore                       0.1.5.post20221221
+gast                         0.5.4
+gdown                        4.7.1
+gfpgan                       1.3.8
+gitdb                        4.0.10
+GitPython                    3.1.31
+google-auth                  2.17.3
+google-auth-oauthlib         0.4.6
+google-pasta                 0.2.0
+greenlet                     2.0.2
+grpcio                       1.54.0
+h11                          0.14.0
+h5py                         3.8.0
+huggingface-hub              0.14.1
+humanfriendly                10.0
+idna                         3.4
+imageio                      2.28.1
+imageio-ffmpeg               0.4.8
+importlib-metadata           6.6.0
+inquirer                     3.1.3
+iopath                       0.1.10
+ipython                      8.12.0
+itsdangerous                 2.1.2
+jedi                         0.18.2
+Jinja2                       3.1.2
+jinxed                       1.2.0
+joblib                       1.2.0
+kandinsky2                   0.0.0
+keras                        2.8.0
+Keras-Preprocessing          1.1.2
+kiwisolver                   1.4.4
+kornia                       0.6.0
+lark                         1.1.5
+lazy_loader                  0.2
+libclang                     16.0.0
+librosa                      0.10.0.post2
+lightning                    2.0.2
+lightning-cloud              0.5.36
+lightning-utilities          0.8.0
+llama-cpp-python             0.1.50
+llvmlite                     0.40.0
+lmdb                         1.4.1
+lxml                         4.9.2
+Mako                         1.2.4
+Markdown                     3.4.3
+markdown-it-py               2.2.0
+MarkupSafe                   2.1.2
+matplotlib                   3.7.1
+matplotlib-inline            0.1.6
+mdurl                        0.1.2
+mpmath                       1.3.0
+msgpack                      1.0.5
+multidict                    6.0.4
+networkx                     3.1
+numba                        0.57.0
+numexpr                      2.8.4
+numpy                        1.23.4
+oauthlib                     3.2.2
+olive-ai                     0.2.1
+omegaconf                    2.3.0
+onnx                         1.14.0
+onnxruntime-directml         1.15.0
+open-clip-torch              2.16.0
+openai                       0.27.6
+opencv-contrib-python        4.7.0.72
+opencv-python                4.7.0.72
+opt-einsum                   3.3.0
+optuna                       3.1.1
+ordered-set                  4.1.0
+packaging                    23.1
+pandas                       1.5.3
+parso                        0.8.3
+pathlib                      1.0.1
+pickleshare                  0.7.5
+Pillow                       9.5.0
+PIMS                         0.6.1
+pip                          23.0.1
+pooch                        1.6.0
+portalocker                  2.7.0
+prompt-toolkit               3.0.38
+protobuf                     3.20.3
+psutil                       5.9.5
+pure-eval                    0.2.2
+py3d                         0.0.87
+pyasn1                       0.5.0
+pyasn1-modules               0.3.0
+pycparser                    2.21
+pycryptodomex                3.17
+pydantic                     1.10.8
+pyDeprecate                  0.3.1
+pydispatch                   1.1.0
+PyDispatcher                 2.0.7
+pyexiv2                      2.8.1
+Pygments                     2.15.1
+PyJWT                        2.7.0
+pyparsing                    3.0.9
+pypng                        0.20220715.0
+pyqtgraph                    0.12.1
+pyreadline3                  3.4.1
+PySide6                      6.2.4
+PySide6-Addons               6.4.2
+PySide6-Essentials           6.4.2
+PySocks                      1.7.1
+python-dateutil              2.8.2
+python-editor                1.0.4
+python-multipart             0.0.6
+pytorch-lightning            1.4.2
+pytz                         2023.3
+PyWavelets                   1.4.1
+pywin32                      306
+PyYAML                       6.0
+QtPy                         2.3.0
+readchar                     4.0.5
+realesrgan                   0.3.0
+regex                        2023.5.4
+requests                     2.28.2
+requests-oauthlib            1.3.1
+rich                         13.3.2
+rsa                          4.9
+safetensors                  0.3.0
+scikit-image                 0.20.0
+scikit-learn                 1.2.2
+scipy                        1.9.1
+sentencepiece                0.1.99
+setuptools                   67.6.1
+shiboken6                    6.2.4
+six                          1.16.0
+slicerator                   1.1.0
+smmap                        5.0.0
+sniffio                      1.3.0
+soundfile                    0.12.1
+soupsieve                    2.4.1
+soxr                         0.3.5
+SQLAlchemy                   2.0.15
+stack-data                   0.6.2
+starlette                    0.22.0
+starsessions                 1.3.0
+sympy                        1.11.1
+tabulate                     0.9.0
+tb-nightly                   2.12.0a20230126
+tensorboard                  2.8.0
+tensorboard-data-server      0.6.1
+tensorboard-plugin-wit       1.8.1
+tensorflow                   2.8.4
+tensorflow-estimator         2.8.0
+tensorflow-io-gcs-filesystem 0.31.0
+tensorrt                     8.6.1
+termcolor                    2.3.0
+threadpoolctl                3.1.0
+tifffile                     2023.4.12
+timm                         0.6.13
+tokenizers                   0.12.1
+tomli                        2.0.1
+torch                        2.1.0.dev20230524+cu121
+torchaudio                   2.1.0.dev20230524+cu121
+torchdiffeq                  0.2.3
+torchmetrics                 0.6.0
+torchsde                     0.2.5
+torchvision                  0.16.0.dev20230524+cu121
+tqdm                         4.65.0
+traitlets                    5.9.0
+trampoline                   0.1.2
+transformers                 4.29.2
+typing_extensions            4.5.0
+urllib3                      1.26.15
+uvicorn                      0.22.0
+wcwidth                      0.2.6
+websocket-client             1.5.2
+websockets                   11.0.3
+Werkzeug                     2.3.3
+wheel                        0.40.0
+wrapt                        1.15.0
+yacs                         0.1.8
+yapf                         0.33.0
+yarl                         1.9.2
+zipp                         3.15.0
+Failed to retrieve envinfo: [WinError 2] The system cannot find the file specified
+
+
+Timestamp: 2023-05-25 17:43:42
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\ainodes_frontend\base\ai_node_base.py", line 205, in getOutput
+    return self.values[object_name]
+KeyError: '1787396815408_output_0'
+
+---End of Error---
+Timestamp: 2023-05-25 17:44:06
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\ainodes_frontend\base\ai_node_base.py", line 205, in getOutput
+    return self.values[object_name]
+KeyError: '1787396815408_output_0'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\ainodes_frontend\base\ai_node_base.py", line 205, in getOutput
+    return self.values[object_name]
+KeyError: '1787396812432_output_2'
+
+---End of Error---
+Timestamp: 2023-05-25 17:54:52
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\ainodes_frontend\base\ai_node_base.py", line 205, in getOutput
+    return self.values[object_name]
+KeyError: '1495081356112_output_0'
+
+---End of Error---
+Timestamp: 2023-05-25 17:55:18
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\ainodes_frontend\base\ai_node_base.py", line 205, in getOutput
+    return self.values[object_name]
+KeyError: '1495081356112_output_0'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\ainodes_frontend\base\ai_node_base.py", line 205, in getOutput
+    return self.values[object_name]
+KeyError: '1495081355536_output_2'
+
+---End of Error---
+Timestamp: 2023-05-25 17:57:14
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\ainodes_frontend\base\ai_node_base.py", line 205, in getOutput
+    return self.values[object_name]
+KeyError: '1495081356112_output_0'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\ainodes_frontend\base\ai_node_base.py", line 205, in getOutput
+    return self.values[object_name]
+KeyError: '1495081355536_output_2'
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\ainodes_frontend\base\ai_node_base.py", line 286, in evalImplementationThreadHandler
+    result = self.evalImplementation_thread()
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\torch_nodes\kandinsky_node.py", line 181, in evalImplementation_thread
+    return_pil_images = gs.models["kandinsky"].generate_text2img(
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\utils\_contextlib.py", line 115, in decorate_context
+    return func(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\kandinsky2\kandinsky2_1_model.py", line 344, in generate_text2img
+    return self.generate_img(
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\utils\_contextlib.py", line 115, in decorate_context
+    return func(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\kandinsky2\kandinsky2_1_model.py", line 248, in generate_img
+    samples = diffusion.p_sample_loop(
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\kandinsky2\model\gaussian_diffusion.py", line 414, in p_sample_loop
+    for sample in self.p_sample_loop_progressive(
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\kandinsky2\model\gaussian_diffusion.py", line 480, in p_sample_loop_progressive
+    callback({"i":i, "denoised":img})
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\torch_nodes\kandinsky_node.py", line 201, in callback
+    if self.content.tensor_preview.isChecked():
+AttributeError: 'KandinskyWidget' object has no attribute 'tensor_preview'
+
+---End of Error---
+Timestamp: 2023-05-25 18:09:20
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\ainodes_frontend\base\ai_node_base.py", line 286, in evalImplementationThreadHandler
+    result = self.evalImplementation_thread()
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\torch_nodes\kandinsky_node.py", line 188, in evalImplementation_thread
+    return_pil_images = gs.models["kandinsky"].generate_text2img(
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\utils\_contextlib.py", line 115, in decorate_context
+    return func(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\kandinsky2\kandinsky2_1_model.py", line 346, in generate_text2img
+    return self.generate_img(
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\utils\_contextlib.py", line 115, in decorate_context
+    return func(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\kandinsky2\kandinsky2_1_model.py", line 277, in generate_img
+    samples, _ = sampler.sample(
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\utils\_contextlib.py", line 115, in decorate_context
+    return func(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\kandinsky2\model\samplers.py", line 454, in sample
+    samples, intermediates = self.plms_sampling(
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\utils\_contextlib.py", line 115, in decorate_context
+    return func(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\kandinsky2\model\samplers.py", line 563, in plms_sampling
+    img_callback(pred_x0, i)
+TypeError: KandinskyNode.callback() takes 2 positional arguments but 3 were given
+
+---End of Error---
+Timestamp: 2023-05-25 18:10:29
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\ainodes_frontend\base\ai_node_base.py", line 286, in evalImplementationThreadHandler
+    result = self.evalImplementation_thread()
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\torch_nodes\kandinsky_node.py", line 188, in evalImplementation_thread
+    return_pil_images = gs.models["kandinsky"].generate_text2img(
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\utils\_contextlib.py", line 115, in decorate_context
+    return func(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\kandinsky2\kandinsky2_1_model.py", line 346, in generate_text2img
+    return self.generate_img(
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\utils\_contextlib.py", line 115, in decorate_context
+    return func(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\kandinsky2\kandinsky2_1_model.py", line 277, in generate_img
+    samples, _ = sampler.sample(
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\utils\_contextlib.py", line 115, in decorate_context
+    return func(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\kandinsky2\model\samplers.py", line 454, in sample
+    samples, intermediates = self.plms_sampling(
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\utils\_contextlib.py", line 115, in decorate_context
+    return func(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\kandinsky2\model\samplers.py", line 563, in plms_sampling
+    img_callback(pred_x0, i)
+TypeError: KandinskyNode.callback() takes 2 positional arguments but 3 were given
+
+---End of Error---
+Traceback (most recent call last):
+  File "C:\Users\mix\ainodes\ainodes-engine\ainodes_frontend\base\ai_node_base.py", line 286, in evalImplementationThreadHandler
+    result = self.evalImplementation_thread()
+  File "C:\Users\mix\ainodes\ainodes-engine\custom_nodes\ainodes_engine_base_nodes\torch_nodes\kandinsky_node.py", line 188, in evalImplementation_thread
+    return_pil_images = gs.models["kandinsky"].generate_text2img(
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\utils\_contextlib.py", line 115, in decorate_context
+    return func(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\kandinsky2\kandinsky2_1_model.py", line 346, in generate_text2img
+    return self.generate_img(
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\utils\_contextlib.py", line 115, in decorate_context
+    return func(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\kandinsky2\kandinsky2_1_model.py", line 277, in generate_img
+    samples, _ = sampler.sample(
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\utils\_contextlib.py", line 115, in decorate_context
+    return func(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\kandinsky2\model\samplers.py", line 454, in sample
+    samples, intermediates = self.plms_sampling(
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\torch\utils\_contextlib.py", line 115, in decorate_context
+    return func(*args, **kwargs)
+  File "C:\Users\mix\ainodes\ainodes-engine\nodes_env\lib\site-packages\kandinsky2\model\samplers.py", line 563, in plms_sampling
+    img_callback({"i": i, "denoised": pred_x0})
+TypeError: KandinskyNode.callback() takes 2 positional arguments but 3 were given
+
+---End of Error---
