@@ -35,10 +35,10 @@ if not exist "%PYTHON_SCRIPTS_DIR%\pip.exe" (
 REM Install virtualenv using pip
 if not exist "%SCRIPT_DIR%nodes_env" (
 	pip install virtualenv
+	REM Create virtual environment
+	%PYTHON_DIR%\python.exe -m virtualenv nodes_env
 )
 
-REM Create virtual environment
-call "%PYTHON_DIR%\python.exe" "virtualenv -p src\Scripts\python.exe nodes_env"
 
 REM Activate the virtual environment
 call "%PYTHON_DIR%nodes_env\Scripts\activate.bat"
