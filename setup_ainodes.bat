@@ -23,7 +23,7 @@ REM Install virtualenv using pip
 pip install virtualenv
 
 REM Update the PATH environment variable
-set "PATH=%PYTHON_SCRIPTS_DIR%;%PYTHON_LIB_DIR%;%PATH%"
+set "PATH=%PYTHON_SCRIPTS_DIR%;%PYTHON_LIB_DIR%;%PYTHON_DIR%;%PATH%"
 
 REM Install pip
 call "%PYTHON_DIR%\python.exe" "%SCRIPT_DIR%get-pip.py"
@@ -90,6 +90,9 @@ set "VBS_SCRIPT=%TEMP%\CreateShortcut.vbs"
 )
 
 cscript //nologo "%VBS_SCRIPT%"
+
+REM Make sure we dont get the pywin32 error
+pip uninstall -y pywin32
 
 REM Clear the screen
 cls
