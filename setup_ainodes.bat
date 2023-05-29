@@ -19,26 +19,32 @@ if not exist "%PYTHON_EXTRACT_PATH%\python.exe" (
     powershell -Command "Expand-Archive -Path '%PYTHON_ZIP_FILE%' -DestinationPath '%PYTHON_EXTRACT_PATH%' -Force"
 )
 
-REM Install virtualenv using pip
-pip install virtualenv
+move "%PYTHON_EXTRACT_PATH%\python310._pth" "%PYTHON_EXTRACT_PATH%\python310_pth.bak"
+copy "%SCRIPT_DIR%config\default_python310._pth" "%PYTHON_EXTRACT_PATH%\python310._pth"
+
 
 REM Update the PATH environment variable
-set "PATH=%PYTHON_SCRIPTS_DIR%;%PYTHON_LIB_DIR%;%PYTHON_DIR%;%PATH%"
+set "PATH=%PYTHON_SCRIPTS_DIR%;%PYTHON_LIB_DIR%;%PYTHON_DIR%"
 
 REM Install pip
-call "%PYTHON_DIR%\python.exe" "%SCRIPT_DIR%get-pip.py"
+if not exist "%PYTHON_SCRIPTS_DIR%\pip.exe" (
+	call "%PYTHON_DIR%\python.exe" "%SCRIPT_DIR%get-pip.py"
+)
 
-REM Activate the virtual environment
-call "%PYTHON_SCRIPTS_DIR%\activate.bat"
 
 REM Install virtualenv using pip
-pip install virtualenv
+if not exist "%SCRIPT_DIR%nodes_env" (
+	pip install virtualenv
+)
 
 REM Create virtual environment
-virtualenv nodes_env
+call "%PYTHON_DIR%\python.exe" "virtualenv -p src\Scripts\python.exe nodes_env"
 
 REM Activate the virtual environment
-call nodes_env\Scripts\activate.bat
+call "%PYTHON_DIR%nodes_env\Scripts\activate.bat"
+
+REM Restore the original PATH environment variable
+set "PATH=%PATH%;%BACKUPPATH%"
 
 REM Install requirements
 pip install -r requirements.txt
@@ -94,15 +100,9 @@ cscript //nologo "%VBS_SCRIPT%"
 REM Make sure we dont get the pywin32 error
 pip uninstall -y pywin32
 
-REM Clear the screen
-cls
-
 REM Notify the user and prompt to run start.bat
 echo The setup process is complete.
 choice /C YN /M "Do you want to run start.bat? (Y/N)"
 if %ERRORLEVEL% equ 1 (
     start %SCRIPT_DIR%run_ainodes.bat
 )
-
-REM Restore the original PATH environment variable
-set "PATH=%PATH%;%BACKUPPATH%"
