@@ -41,7 +41,7 @@ if not exist "%SCRIPT_DIR%nodes_env" (
 
 
 REM Activate the virtual environment
-call "%PYTHON_DIR%nodes_env\Scripts\activate.bat"
+call "%SCRIPT_DIR%nodes_env\Scripts\activate.bat"
 
 REM Restore the original PATH environment variable
 set "PATH=%PATH%;%BACKUPPATH%"
