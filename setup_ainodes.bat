@@ -100,9 +100,18 @@ cscript //nologo "%VBS_SCRIPT%"
 REM Make sure we dont get the pywin32 error
 pip uninstall -y pywin32
 
-REM Notify the user and prompt to run start.bat
-echo The setup process is complete.
-choice /C YN /M "Do you want to run start.bat? (Y/N)"
-if %ERRORLEVEL% equ 1 (
-    start %SCRIPT_DIR%run_ainodes.bat
-)
+cls
+
+echo "AiNodes - Engine installation complete, starting."
+
+REM Create a temporary VBScript file
+set "VBSFile=%TEMP%\RunHidden.vbs"
+echo Set WshShell = CreateObject("WScript.Shell") >> "%VBSFile%"
+echo WshShell.Run chr(34) ^& "%SCRIPT_DIR%run_ainodes.bat" ^& chr(34), 0 >> "%VBSFile%"
+echo Set WshShell = Nothing >> "%VBSFile%"
+
+REM Execute the VBScript silently
+cscript //nologo "%VBSFile%"
+
+REM Delete the temporary VBScript file
+del "%VBSFile%"
