@@ -68,7 +68,7 @@ def create_venv(venv_path):
     try:
         version = check_python_version()
         if "Windows" in platform():
-            subprocess.check_call(["python", "-m", "virtualenv", venv_path, "--python=3.10"])
+            subprocess.check_call(["python", "-m", "virtualenv", venv_path, f"--python={version}"])
         else:
             subprocess.check_call(["python3", "-m", "virtualenv", venv_path])
     except subprocess.CalledProcessError as cpe:

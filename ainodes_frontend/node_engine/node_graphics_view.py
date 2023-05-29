@@ -164,6 +164,7 @@ class QDMGraphicsView(QGraphicsView):
         """Dispatch Qt's mousePress event to corresponding function below"""
         if event.button() == Qt.MiddleButton:
             self.middleMouseButtonPress(event)
+            super().mousePressEvent(event)
         elif event.button() == Qt.LeftButton:
             self.leftMouseButtonPress(event)
         elif event.button() == Qt.RightButton:
@@ -185,8 +186,11 @@ class QDMGraphicsView(QGraphicsView):
 
     def middleMouseButtonPress(self, event: QMouseEvent):
         """When Middle mouse button was pressed"""
+        self.setDragMode(QGraphicsView.ScrollHandDrag)
+
 
         item = self.getItemAtClick(event)
+
 
         # debug printout
         if DEBUG_MMB_SCENE_ITEMS:
@@ -221,7 +225,6 @@ class QDMGraphicsView(QGraphicsView):
         releaseEvent = QMouseEvent(QEvent.MouseButtonRelease, event.localPos(), event.screenPos(),
                                    Qt.LeftButton, Qt.NoButton, event.modifiers())
         super().mouseReleaseEvent(releaseEvent)
-        self.setDragMode(QGraphicsView.ScrollHandDrag)
         fakeEvent = QMouseEvent(event.type(), event.localPos(), event.screenPos(),
                                 Qt.LeftButton, event.buttons() | Qt.LeftButton, event.modifiers())
         super().mousePressEvent(fakeEvent)
@@ -229,6 +232,7 @@ class QDMGraphicsView(QGraphicsView):
 
 
     def middleMouseButtonRelease(self, event: QMouseEvent):
+        print("IM RELEASED")
         """When Middle mouse button was released"""
         fakeEvent = QMouseEvent(event.type(), event.localPos(), event.screenPos(),
                                 Qt.LeftButton, event.buttons() & ~Qt.LeftButton, event.modifiers())
@@ -404,27 +408,27 @@ class QDMGraphicsView(QGraphicsView):
         """Overriden Qt's ``mouseMoveEvent`` handling Scene/View logic"""
         scenepos = self.mapToScene(event.pos())
 
-        try:
-            modified = self.setSocketHighlights(scenepos, highlighted=False, radius=EDGE_SNAPPING_RADIUS+100)
-            if self.isSnappingEnabled(event):
-                _, scenepos = self.snapping.getSnappedToSocketPosition(scenepos)
-            if modified: self.update()
+        #try:
+        modified = self.setSocketHighlights(scenepos, highlighted=False, radius=EDGE_SNAPPING_RADIUS+100)
+        if self.isSnappingEnabled(event):
+            _, scenepos = self.snapping.getSnappedToSocketPosition(scenepos)
+        if modified: self.update()
 
-            if self.mode == MODE_EDGE_DRAG:
-                self.dragging.updateDestination(scenepos.x(), scenepos.y())
+        if self.mode == MODE_EDGE_DRAG:
+            self.dragging.updateDestination(scenepos.x(), scenepos.y())
 
-            #if self.mode == MODE_NODE_DRAG:
-            #    self.edgeIntersect.update(scenepos.x(), scenepos.y())
+        #if self.mode == MODE_NODE_DRAG:
+        #    self.edgeIntersect.update(scenepos.x(), scenepos.y())
 
-            if self.mode == MODE_EDGES_REROUTING:
-                self.rerouting.updateScenePos(scenepos.x(), scenepos.y())
+        if self.mode == MODE_EDGES_REROUTING:
+            self.rerouting.updateScenePos(scenepos.x(), scenepos.y())
 
-            if self.mode == MODE_EDGE_CUT and self.cutline is not None:
-                self.cutline.line_points.append(scenepos)
-                self.cutline.update()
+        if self.mode == MODE_EDGE_CUT and self.cutline is not None:
+            self.cutline.line_points.append(scenepos)
+            self.cutline.update()
 
-        except Exception as e:
-            dumpException()
+        #except Exception as e:
+        #    dumpException()
 
         self.last_scene_mouse_position = scenepos
 

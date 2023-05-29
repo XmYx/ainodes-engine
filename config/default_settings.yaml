@@ -16,6 +16,7 @@ COLORS:
 checkpoints: models/checkpoints
 controlnet: models/controlnet
 embeddings: models/embeddings
+hypernetworks: models/hypernetworks
 loras: models/loras
 output: output
 socket_names:

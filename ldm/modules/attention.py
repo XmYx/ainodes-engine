@@ -1,34 +1,30 @@
 from inspect import isfunction
 import math
-
-import psutil
 import torch
 import torch.nn.functional as F
 from torch import nn, einsum
 from einops import rearrange, repeat
 from typing import Optional, Any
 
-from ldm.modules.diffusionmodules.util import checkpoint
-from .sub_quadratic_attention import efficient_dot_product_attention
+from .diffusionmodules.util import checkpoint
+from .sub_quadratic_attention import efficient_dot_product_attention, OOM_EXCEPTION
 
 #from comfy import model_management
 
-try:
-    import xformers
-    import xformers.ops
-    XFORMERS_IS_AVAILBLE = True
-except:
-    XFORMERS_IS_AVAILBLE = False
+from . import tomesd
+
+#if model_management.xformers_enabled():
+#    import xformers
+#    import xformers.ops
 
 # CrossAttn precision handling
 import os
+
+from ..util import get_free_memory
+
 _ATTN_PRECISION = os.environ.get("ATTN_PRECISION", "fp32")
 
-try:
-    OOM_EXCEPTION = torch.cuda.OutOfMemoryError
-except:
-    OOM_EXCEPTION = Exception
-
+#from comfy.cli_args import args
 def exists(val):
     return val is not None
 
@@ -169,13 +165,17 @@ class CrossAttentionBirchSan(nn.Module):
             nn.Dropout(dropout)
         )
 
-    def forward(self, x, context=None, mask=None):
+    def forward(self, x, context=None, value=None, mask=None):
         h = self.heads
 
         query = self.to_q(x)
         context = default(context, x)
         key = self.to_k(context)
-        value = self.to_v(context)
+        if value is not None:
+            value = self.to_v(value)
+        else:
+            value = self.to_v(context)
+
         del context, x
 
         query = query.unflatten(-1, (self.heads, -1)).transpose(1,2).flatten(end_dim=1)
@@ -201,12 +201,12 @@ class CrossAttentionBirchSan(nn.Module):
 
         #not sure at all about the math here
         #TODO: tweak this
-        if mem_free_total > 8192 * 1024 * 1024 * 1.3:
-            query_chunk_size_x = 1024 * 4
-        elif mem_free_total > 4096 * 1024 * 1024 * 1.3:
-            query_chunk_size_x = 1024 * 2
-        else:
-            query_chunk_size_x = 1024
+        #if mem_free_total > 8192 * 1024 * 1024 * 1.3:
+        #    query_chunk_size_x = 1024 * 4
+        #elif mem_free_total > 4096 * 1024 * 1024 * 1.3:
+        #    query_chunk_size_x = 1024 * 2
+        #else:
+        query_chunk_size_x = 1024
         kv_chunk_size_min_x = None
         kv_chunk_size_x = (int((chunk_threshold_bytes // (batch_x_heads * bytes_per_token * query_chunk_size_x)) * 2.0) // 1024) * 1024
         if kv_chunk_size_x < 1024:
@@ -262,13 +262,17 @@ class CrossAttentionDoggettx(nn.Module):
             nn.Dropout(dropout)
         )
 
-    def forward(self, x, context=None, mask=None):
+    def forward(self, x, context=None, value=None, mask=None):
         h = self.heads
 
         q_in = self.to_q(x)
         context = default(context, x)
         k_in = self.to_k(context)
-        v_in = self.to_v(context)
+        if value is not None:
+            v_in = self.to_v(value)
+            del value
+        else:
+            v_in = self.to_v(context)
         del context, x
 
         q, k, v = map(lambda t: rearrange(t, 'b n (h d) -> (b h) n d', h=h), (q_in, k_in, v_in))
@@ -356,13 +360,17 @@ class CrossAttention(nn.Module):
             nn.Dropout(dropout)
         )
 
-    def forward(self, x, context=None, mask=None):
+    def forward(self, x, context=None, value=None, mask=None):
         h = self.heads
 
         q = self.to_q(x)
         context = default(context, x)
         k = self.to_k(context)
-        v = self.to_v(context)
+        if value is not None:
+            v = self.to_v(value)
+            del value
+        else:
+            v = self.to_v(context)
 
         q, k, v = map(lambda t: rearrange(t, 'b n (h d) -> (b h) n d', h=h), (q, k, v))
 
@@ -393,8 +401,8 @@ class MemoryEfficientCrossAttention(nn.Module):
     # https://github.com/MatthieuTPHR/diffusers/blob/d80b531ff8060ec1ea982b65a1b8df70f73aa67c/src/diffusers/models/attention.py#L223
     def __init__(self, query_dim, context_dim=None, heads=8, dim_head=64, dropout=0.0):
         super().__init__()
-        #print(f"Setting up {self.__class__.__name__}. Query dim is {query_dim}, context_dim is {context_dim} and using "
-        #      f"{heads} heads.")
+        print(f"Setting up {self.__class__.__name__}. Query dim is {query_dim}, context_dim is {context_dim} and using "
+              f"{heads} heads.")
         inner_dim = dim_head * heads
         context_dim = default(context_dim, query_dim)
 
@@ -408,11 +416,15 @@ class MemoryEfficientCrossAttention(nn.Module):
         self.to_out = nn.Sequential(nn.Linear(inner_dim, query_dim), nn.Dropout(dropout))
         self.attention_op: Optional[Any] = None
 
-    def forward(self, x, context=None, mask=None):
+    def forward(self, x, context=None, value=None, mask=None):
         q = self.to_q(x)
         context = default(context, x)
         k = self.to_k(context)
-        v = self.to_v(context)
+        if value is not None:
+            v = self.to_v(value)
+            del value
+        else:
+            v = self.to_v(context)
 
         b, _, _ = q.shape
         q, k, v = map(
@@ -453,19 +465,19 @@ class CrossAttentionPytorch(nn.Module):
         self.to_out = nn.Sequential(nn.Linear(inner_dim, query_dim), nn.Dropout(dropout))
         self.attention_op: Optional[Any] = None
 
-    def forward(self, x, context=None, mask=None):
+    def forward(self, x, context=None, value=None, mask=None):
         q = self.to_q(x)
         context = default(context, x)
         k = self.to_k(context)
-        v = self.to_v(context)
+        if value is not None:
+            v = self.to_v(value)
+            del value
+        else:
+            v = self.to_v(context)
 
         b, _, _ = q.shape
         q, k, v = map(
-            lambda t: t.unsqueeze(3)
-            .reshape(b, t.shape[1], self.heads, self.dim_head)
-            .permute(0, 2, 1, 3)
-            .reshape(b * self.heads, t.shape[1], self.dim_head)
-            .contiguous(),
+            lambda t: t.view(b, -1, self.heads, self.dim_head).transpose(1, 2),
             (q, k, v),
         )
 
@@ -474,30 +486,26 @@ class CrossAttentionPytorch(nn.Module):
         if exists(mask):
             raise NotImplementedError
         out = (
-            out.unsqueeze(0)
-            .reshape(b, self.heads, out.shape[1], self.dim_head)
-            .permute(0, 2, 1, 3)
-            .reshape(b, out.shape[1], self.heads * self.dim_head)
+            out.transpose(1, 2).reshape(b, -1, self.heads * self.dim_head)
         )
 
         return self.to_out(out)
 
-import sys
-if XFORMERS_IS_AVAILBLE == False or "--disable-xformers" in sys.argv:
-    if "--use-split-cross-attention" in sys.argv:
+"""if model_management.xformers_enabled():
+    print("Using xformers cross attention")
+    CrossAttention = MemoryEfficientCrossAttention
+elif model_management.pytorch_attention_enabled():
+    print("Using pytorch cross attention")
+    CrossAttention = CrossAttentionPytorch
+else:
+    if args.use_split_cross_attention:
         print("Using split optimization for cross attention")
         CrossAttention = CrossAttentionDoggettx
     else:
-        if "--use-pytorch-cross-attention" in sys.argv:
-            print("Using pytorch cross attention")
-            torch.backends.cuda.enable_math_sdp(False)
-            CrossAttention = CrossAttentionPytorch
-        else:
-            print("Using sub quadratic optimization for cross attention, if you have memory or speed issues try using: --use-split-cross-attention")
-            CrossAttention = CrossAttentionBirchSan
-else:
-    print("Using xformers cross attention")
-    CrossAttention = MemoryEfficientCrossAttention
+        print("Using sub quadratic optimization for cross attention, if you have memory or speed issues try using: --use-split-cross-attention")"""
+#CrossAttention = CrossAttentionBirchSan
+#CrossAttention = CrossAttentionPytorch
+
 
 class BasicTransformerBlock(nn.Module):
     def __init__(self, dim, n_heads, d_head, dropout=0., context_dim=None, gated_ff=True, checkpoint=True,
@@ -514,12 +522,58 @@ class BasicTransformerBlock(nn.Module):
         self.norm3 = nn.LayerNorm(dim)
         self.checkpoint = checkpoint
 
-    def forward(self, x, context=None):
-        return checkpoint(self._forward, (x, context), self.parameters(), self.checkpoint)
+    def forward(self, x, context=None, transformer_options={}):
+        return checkpoint(self._forward, (x, context, transformer_options), self.parameters(), self.checkpoint)
 
-    def _forward(self, x, context=None):
-        x = self.attn1(self.norm1(x), context=context if self.disable_self_attn else None) + x
-        x = self.attn2(self.norm2(x), context=context) + x
+    def _forward(self, x, context=None, transformer_options={}):
+        current_index = None
+        if "current_index" in transformer_options:
+            current_index = transformer_options["current_index"]
+        if "patches" in transformer_options:
+            transformer_patches = transformer_options["patches"]
+        else:
+            transformer_patches = {}
+
+        n = self.norm1(x)
+        if self.disable_self_attn:
+            context_attn1 = context
+        else:
+            context_attn1 = None
+        value_attn1 = None
+
+        if "attn1_patch" in transformer_patches:
+            patch = transformer_patches["attn1_patch"]
+            if context_attn1 is None:
+                context_attn1 = n
+            value_attn1 = context_attn1
+            for p in patch:
+                n, context_attn1, value_attn1 = p(current_index, n, context_attn1, value_attn1)
+
+        if "tomesd" in transformer_options:
+            m, u = tomesd.get_functions(x, transformer_options["tomesd"]["ratio"], transformer_options["original_shape"])
+            n = u(self.attn1(m(n), context=context_attn1, value=value_attn1))
+        else:
+            n = self.attn1(n, context=context_attn1, value=value_attn1)
+
+        x += n
+        if "middle_patch" in transformer_patches:
+            patch = transformer_patches["middle_patch"]
+            for p in patch:
+                x = p(current_index, x)
+
+        n = self.norm2(x)
+
+        context_attn2 = context
+        value_attn2 = None
+        if "attn2_patch" in transformer_patches:
+            patch = transformer_patches["attn2_patch"]
+            value_attn2 = context_attn2
+            for p in patch:
+                n, context_attn2, value_attn2 = p(current_index, n, context_attn2, value_attn2)
+
+        n = self.attn2(n, context=context_attn2, value=value_attn2)
+
+        x += n
         x = self.ff(self.norm3(x)) + x
         return x
 
@@ -567,7 +621,7 @@ class SpatialTransformer(nn.Module):
             self.proj_out = zero_module(nn.Linear(in_channels, inner_dim))
         self.use_linear = use_linear
 
-    def forward(self, x, context=None):
+    def forward(self, x, context=None, transformer_options={}):
         # note: if no context is given, cross-attention defaults to self-attention
         if not isinstance(context, list):
             context = [context]
@@ -580,7 +634,7 @@ class SpatialTransformer(nn.Module):
         if self.use_linear:
             x = self.proj_in(x)
         for i, block in enumerate(self.transformer_blocks):
-            x = block(x, context=context[i])
+            x = block(x, context=context[i], transformer_options=transformer_options)
         if self.use_linear:
             x = self.proj_out(x)
         x = rearrange(x, 'b (h w) c -> b c h w', h=h, w=w).contiguous()
@@ -588,22 +642,3 @@ class SpatialTransformer(nn.Module):
             x = self.proj_out(x)
         return x + x_in
 
-def get_free_memory(dev=None, torch_free_too=False):
-    if dev is None:
-        dev = torch.cuda.current_device()
-
-    if hasattr(dev, 'type') and dev.type == 'cpu':
-        mem_free_total = psutil.virtual_memory().available
-        mem_free_torch = mem_free_total
-    else:
-        stats = torch.cuda.memory_stats(dev)
-        mem_active = stats['active_bytes.all.current']
-        mem_reserved = stats['reserved_bytes.all.current']
-        mem_free_cuda, _ = torch.cuda.mem_get_info(dev)
-        mem_free_torch = mem_reserved - mem_active
-        mem_free_total = mem_free_cuda + mem_free_torch
-
-    if torch_free_too:
-        return (mem_free_total, mem_free_torch)
-    else:
-        return mem_free_total

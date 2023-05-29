@@ -160,10 +160,9 @@ class QDMGraphicsNode(QGraphicsItem):
 
     def hoverLeaveEvent(self, event: 'QGraphicsSceneHoverEvent') -> None:
         """Handle hover effect"""
-        self.hovered = False
+        self.hovered = None
         gs.hovered = None
         gs.hover_node = None
-
         self.update()
 
 
@@ -302,6 +301,7 @@ class QDMGraphicsBGNode(QGraphicsItem):
         self._min_size = 80, 80
         self._sizer.set_pos(*self._min_size)
         self._nodes = [self]
+        self.pressed = None
     def _combined_rect(self, nodes):
         group = self.scene().createItemGroup(nodes)
         rect = group.boundingRect()
@@ -310,6 +310,9 @@ class QDMGraphicsBGNode(QGraphicsItem):
 
 
     def mousePressEvent(self, event):
+
+        print(event.button())
+
         if event.button() == QtCore.Qt.LeftButton:
             pos = event.scenePos()
             rect = QtCore.QRectF(pos.x() - 5, pos.y() - 5, 10, 10)
@@ -326,11 +329,16 @@ class QDMGraphicsBGNode(QGraphicsItem):
 
             self._nodes += self.get_nodes(False)
             [n.doSelect(True) for n in self._nodes]
+            self.pressed = True
+
+        elif event.button() == QtCore.Qt.MiddleButton:
+            super().mousePressEvent(event)
     def mouseReleaseEvent(self, event):
         super(QDMGraphicsBGNode, self).mouseReleaseEvent(event)
         self.setFlag(QtWidgets.QGraphicsItem.ItemIsMovable, True)
         [n.doSelect(False) for n in self._nodes]
         self._nodes = [self]
+        self.pressed = None
     def get_nodes(self, inc_intersects=False):
         mode = {True: QtCore.Qt.IntersectsItemShape,
                 False: QtCore.Qt.ContainsItemShape}
@@ -423,34 +431,12 @@ class QDMGraphicsBGNode(QGraphicsItem):
         super().mouseMoveEvent(event)
 
         # optimize me! just update the selected nodes
-        for node in self.scene().scene.nodes:
-            if node.grNode.isSelected():
-                node.updateConnectedEdges()
-        self._was_moved = True
-
-    """def mouseReleaseEvent(self, event):
-        """"""Overriden event to handle when we moved, selected or deselected this `Node`""""""
-        super().mouseReleaseEvent(event)
-
-        # handle when grNode moved
-        if self._was_moved:
-            self._was_moved = False
-            self.node.scene.history.storeHistory("Node moved", setModified=True)
-
-            self.node.scene.resetLastSelectedStates()
-            self.doSelect()     # also trigger itemSelected when node was moved
-
-            # we need to store the last selected state, because moving does also select the nodes
-            self.node.scene._last_selected_items = self.node.scene.getSelectedItems()
-
-            # now we want to skip storing selection
-            return
-
-        # handle when grNode was clicked on
-        if self._last_selected_state != self.isSelected() or self.node.scene._last_selected_items != self.node.scene.getSelectedItems():
-            self.node.scene.resetLastSelectedStates()
-            self._last_selected_state = self.isSelected()
-            self.onSelected()"""
+        if self.pressed:
+            print("MOVED WHILE PRESSED")
+            for node in self.scene().scene.nodes:
+                if node.grNode.isSelected():
+                    node.updateConnectedEdges()
+            self._was_moved = True
 
     def mouseDoubleClickEvent(self, event):
         """Overriden event for doubleclick. Resend to `Node::onDoubleClicked`"""
@@ -460,18 +446,18 @@ class QDMGraphicsBGNode(QGraphicsItem):
         if ok:
             self.title = text
             self.node.title = text
-        self.node.onDoubleClicked(event)
+        #self.node.onDoubleClicked(event)
 
     def hoverEnterEvent(self, event: 'QGraphicsSceneHoverEvent') -> None:
         """Handle hover effect"""
         self._sizer.set_pos(self.width,self.height)
         self.hovered = True
-        self.update()
+        #self.update()
 
     def hoverLeaveEvent(self, event: 'QGraphicsSceneHoverEvent') -> None:
         """Handle hover effect"""
         self.hovered = False
-        self.update()
+        #self.update()
 
 
     def boundingRect(self) -> QRectF:
@@ -539,15 +525,15 @@ class QDMGraphicsBGNode(QGraphicsItem):
         path_outline = QPainterPath()
         path_outline.addRoundedRect(-1, -1, self.width+2, self.height+2, self.edge_roundness, self.edge_roundness)
         painter.setBrush(Qt.NoBrush)
-        if self.hovered:
+        """if self.hovered:
             painter.setPen(Qt.GlobalColor.darkGreen)
             #painter.setPen(self._pen_hovered)
             painter.drawPath(path_outline.simplified())
             #painter.setPen(self._pen_default)
             painter.drawPath(path_outline.simplified())
-        else:
-            painter.setPen(self._pen_default if not self.isSelected() else self._pen_selected)
-            painter.drawPath(path_outline.simplified())
+        else:"""
+        painter.setPen(self._pen_default if not self.isSelected() else self._pen_selected)
+        painter.drawPath(path_outline.simplified())
     def on_sizer_pos_changed(self, pos):
         self._width = pos.x() + self._sizer.size
         self._height = pos.y() + self._sizer.size

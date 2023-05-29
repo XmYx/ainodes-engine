@@ -190,3 +190,6 @@ models/checkpoints/22h02.safetensors
 
 config/settings.yaml
 config/cache.json
+
+src/python/
+src/

@@ -56,10 +56,10 @@ class NodeEditorWindow(QMainWindow):
 
     def createStatusBar(self):
         """Create Status bar and connect to `Graphics View` scenePosChanged event"""
-        self.statusBar().showMessage("")
+        self.statusBar().showMessage("aiNodes Ready")
         self.status_mouse_pos = QLabel("")
-        self.statusBar().addPermanentWidget(self.status_mouse_pos)
-        self.nodeeditor.view.scenePosChanged.connect(self.onScenePosChanged)
+        #self.statusBar().addPermanentWidget(self.status_mouse_pos)
+        #self.nodeeditor.view.scenePosChanged.connect(self.onScenePosChanged)
 
     def createActions(self):
         """Create basic `File` and `Edit` actions"""
@@ -234,7 +234,8 @@ class NodeEditorWindow(QMainWindow):
         :param y: new cursor y position
         :type y:
         """
-        self.status_mouse_pos.setText("Scene Pos: [%d, %d]" % (x, y))
+        return
+        #self.status_mouse_pos.setText("Scene Pos: [%d, %d]" % (x, y))
 
     def getFileDialogDirectory(self):
         directory = os.getcwd()

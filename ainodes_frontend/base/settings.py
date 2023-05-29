@@ -72,6 +72,7 @@ def save_settings():
         'socket_names': socket_names,
         'COLORS': [color_to_hex(color) for color in SOCKET_COLORS],
         'checkpoints': gs.checkpoints,
+        'hypernetworks': gs.hypernetworks,
         'vae': gs.vae,
         'controlnet': gs.controlnet,
         'embeddings': gs.embeddings,
@@ -102,6 +103,7 @@ def load_settings():
             socket_names = settings['socket_names']
             SOCKET_COLORS = [hex_to_color(hex_string) for hex_string in settings['COLORS']]
             gs.checkpoints = settings['checkpoints']
+            gs.hypernetworks = settings['hypernetworks']
             gs.vae = settings['vae']
             gs.controlnet = settings['controlnet']
             gs.embeddings = settings['embeddings']
