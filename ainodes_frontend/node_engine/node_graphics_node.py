@@ -311,7 +311,7 @@ class QDMGraphicsBGNode(QGraphicsItem):
 
     def mousePressEvent(self, event):
 
-        print(event.button())
+        #print(event.button())
 
         if event.button() == QtCore.Qt.LeftButton:
             pos = event.scenePos()
@@ -432,7 +432,7 @@ class QDMGraphicsBGNode(QGraphicsItem):
 
         # optimize me! just update the selected nodes
         if self.pressed:
-            print("MOVED WHILE PRESSED")
+            #print("MOVED WHILE PRESSED")
             for node in self.scene().scene.nodes:
                 if node.grNode.isSelected():
                     node.updateConnectedEdges()

@@ -232,7 +232,7 @@ class QDMGraphicsView(QGraphicsView):
 
 
     def middleMouseButtonRelease(self, event: QMouseEvent):
-        print("IM RELEASED")
+        #print("IM RELEASED")
         """When Middle mouse button was released"""
         fakeEvent = QMouseEvent(event.type(), event.localPos(), event.screenPos(),
                                 Qt.LeftButton, event.buttons() & ~Qt.LeftButton, event.modifiers())
