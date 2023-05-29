@@ -29,9 +29,8 @@
 <p>To get started with the Ainodes Engine, follow the steps below:</p>
 
 <ol>
-  <li>Clone the repository by running <code>git clone https://github.com/XmYx/ainodes-engine</code> in your terminal or command prompt.</li>
-  <li>After cloning the repository, navigate to the root directory of the project.</li>
-  <li>On Windows, run <code>run.bat</code> to launch the app, and on Linux, run <code>python launcher.py</code>.</li>
+  <li>Windows:</li>
+  <li>Download the 1 Click Installer from the releases on the right menu and run it in a folder of your choice</li>
   <li>Once the app is up and running, you can start creating and managing your node graphs with ease.</li>
 </ol>
 
