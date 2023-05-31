@@ -8,12 +8,12 @@
 
 <h2>📚 Table of Contents</h2>
 
-- [Features](#-features)
+- [Introduction](#-intro)
 - [Installation / Running the App](#-installation--running-the-app)
 - [Contributing](#-contributing)
-- [Acknowledgments](#-acknowledgments)
+- [Acknowledgments](#-features)
 - [License](#-license)
-<a name="-features"></a>
+<a name="-intro"></a>
 <h2>🚀 Features</h2>
 
 <ul>
@@ -64,8 +64,8 @@ Once the app is up and running, you can start check the File - Example Graphs op
 
 <p>Contributions to the Ainodes Engine are welcome and appreciated. If you find any bugs or issues with the app, please feel free to open an issue or submit a pull request.</p>
 
-<h2>🙌 Acknowledgments</h2>
-<a name="-acknowledgments"></a>
+<h2>🙌 Features</h2>
+<a name="-features"></a>
 <p>aiNodes is an open source desktop ai based image / motion generator, editor suite designed to be flexible, and with an Unreal-like execution chain. It natively supports:</p>
 
 <ol>
