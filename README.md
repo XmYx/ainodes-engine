@@ -14,7 +14,7 @@
 - [Acknowledgments](#-features)
 - [License](#-license)
 <a name="-intro"></a>
-<h2>🚀 Features</h2>
+<h2>🚀 Introduction</h2>
 
 <ul>
   <li>Full modularity - download node packs on runtime</li>
