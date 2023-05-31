@@ -29,12 +29,36 @@
 <p>To get started with the Ainodes Engine, follow the steps below:</p>
 
 <ol>
+  <li>Requirements:</li>
+  <li>Python 3.10</li>
+  <li>Git</li>
+  <li>nVidia GPU with CUDA and drivers installed</li>
+</ol>
+
+<ol>
   <li>Windows:</li>
   <li>Download the 1 Click Installer from the releases on the right menu and run it in a folder of your choice</li>
   <li>Once the app is up and running, you can start creating and managing your node graphs with ease.</li>
 </ol>
 
-<p>(Optional) create a virtual environment, install requirements, and run <code>python main.py</code>.</p>
+Linux:
+```shell
+git clone https://github.com/XmYx/ainodes-engine
+cd ainodes-engine
+python -m venv nodes_env
+source nodes_env/bin/activate
+pip install -r requirements.txt
+cd custom_nodes
+git clone https://github.com/XmYx/ainodes_engine_base_nodes
+cd ainodes_engine_base_nodes
+pip install -r requirements.txt
+cd ..
+git clone https://github.com/XmYx/ainodes_engine_deforum_nodes
+cd ainodes_engine_deforum_nodes
+pip install -r requirements.txt
+```
+Once the app is up and running, you can start check the File - Example Graphs option to start creating, and you can also access your model folders from the File menu.
+
 <a name="-contributing"></a>
 <h2>🤝 Contributing</h2>
 
@@ -42,14 +66,34 @@
 
 <h2>🙌 Acknowledgments</h2>
 <a name="-acknowledgments"></a>
-<p>Ainodes Engine is built on top of the Qt Node Graph Engine and is inspired by the ComfyUI web-based node engine repository. We appreciate the contributions of the creators and contributors of these projects.</p>
+<p>aiNodes is an open source desktop ai based image / motion generator, editor suite designed to be flexible, and with an Unreal-like execution chain. It natively supports:</p>
+
+<ol>
+  <li>Deforum</li>
+  <li>Stable Diffusion 1.5 / 2.0 / 2.1</li>
+  <li>Kandinsky</li>
+  <li>ControlNet</li>
+  <li>LORAs</li>
+  <li>Ti Embeddings</li>
+  <li>Hypernetworks</li>
+  <li>Background Separation</li>
+  <li>Human matting / masking</li>
+  <li>Compositing</li>
+  <li>Drag and Drop (from discord too)</li>
+  <li>Graph saving as metadata in the image file</li>
+  <li>Graph loading from image metadata</li>
+</ol>
+
+This project came to life thanks to many great backend functions borrowed from ComfyUI, and adapted to work in this unique, 
+live, controllable manner with a strict user declared execution chain, leading to data values possible to be iterated at
+different points in time in your pipeline.
+
 <a name="-license"></a>
 <h2>📄 License</h2>
 
-<p>This project is licensed under the MIT License. See the <a href="LICENSE">LICENSE</a> file for details.</p>
+<p>This project is licensed under the L-GPL License. See the <a href="LICENSE">LICENSE</a> file for details.</p>
 
 <p align="center">
-  <img src="https://visitor-badge.glitch.me/badge?page_id=XmYx.ainodes-engine" alt="Visitor Counter">
   <img src="https://img.shields.io/github/stars/XmYx/ainodes-engine" alt="Stars">
   <img src="https://img.shields.io/github/forks/XmYx/ainodes-engine" alt="Forks">
 </p>
