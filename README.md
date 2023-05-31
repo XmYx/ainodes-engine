@@ -35,8 +35,8 @@
   <li>nVidia GPU with CUDA and drivers installed</li>
 </ol>
 
+ Windows:
 <ol>
-  <li>Windows:</li>
   <li>Download the 1 Click Installer from the releases on the right menu and run it in a folder of your choice</li>
   <li>Once the app is up and running, you can start creating and managing your node graphs with ease.</li>
 </ol>
