@@ -2,7 +2,7 @@
 
 <img src="docs/main.png" alt="Main Image">
 
-<p>Ainodes Engine is a simple and easy-to-use Python-based node engine that is built on top of the popular Qt Node Graph Engine. The project is designed to provide users with an intuitive and user-friendly platform for creating and managing node graphs with ease.</p>
+<p>aiNodes is a simple and easy-to-use Python-based AI image / motion picture generator node engine.</p>
 
 <p>The engine comes packed with various features and functionalities, and some of the backend and nodes are heavily inspired by ComfyUI, a web-based node engine repository.</p>
 
@@ -24,14 +24,14 @@
   <li>Easy node creation with IDE annotations</li>
 </ul>
 <a name="-installation--running-the-app"></a>
-<h2>🔧 Installation / Running the App</h2>
+<h2>🔧 Install / Running the App</h2>
 
-<p>To get started with the Ainodes Engine, follow the steps below:</p>
+<p>To get started with aiNodes, follow the steps below:</p>
 
+Requirements:
 <ol>
-  <li>Requirements:</li>
-  <li>Python 3.10</li>
-  <li>Git</li>
+  <li>Python 3.10 (https://www.python.org/ftp/python/3.10.0/python-3.10.0-amd64.exe)</li>
+  <li>Git (https://github.com/git-for-windows/git/releases/download/v2.40.1.windows.1/Git-2.40.1-64-bit.exe)</li>
   <li>nVidia GPU with CUDA and drivers installed</li>
 </ol>
 
