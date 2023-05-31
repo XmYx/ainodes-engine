@@ -38,7 +38,7 @@
  Windows:
 <ol>
   <li>Download the 1 Click Installer from the releases on the right menu and run it in a folder of your choice</li>
-  <li>Once the app is up and running, you can start creating and managing your node graphs with ease.</li>
+  <li>It will create a virtual environment, and install all dependencies, to start next time, you can use the shortcut on your Desktop.</li>
 </ol>
 
 Linux:
