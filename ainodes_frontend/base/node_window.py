@@ -801,7 +801,7 @@ class CalculatorWindow(NodeEditorWindow):
             subwnd.widget().fileNew()
             icon = QtGui.QIcon("ainodes_frontend/qss/icon.ico")
             subwnd.setWindowIcon(icon)
-            subwnd.setWindowTitle(str("Subgraph"))
+            subwnd.setWindowTitle(str(node.name))
             #subwnd.node = node
             node.graph_window = subwnd
             subwnd.show()

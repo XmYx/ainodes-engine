@@ -503,7 +503,9 @@ class QDMNodeContentWidget(QWidget, Serializable):
                     self.main_layout.addLayout(item)
                 elif isinstance(item, QtWidgets.QWidget):
                     self.main_layout.addWidget(item)
-
+        #self.deafult_run_button = QtWidgets.QPushButton("Evaluate Node")
+        #self.main_layout.addWidget(self.deafult_run_button)
+        #self.deafult_run_button.clicked.connect(self.node.evalImplementation)
         self.setLayout(self.main_layout)
 
 

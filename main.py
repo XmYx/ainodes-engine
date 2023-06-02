@@ -1,5 +1,6 @@
 """ainodes-engine main"""
 import glob
+import signal
 #!/usr/bin/env python3
 
 import sys
@@ -9,8 +10,10 @@ import os
 import subprocess
 import platform
 import argparse
+import time
 from types import SimpleNamespace
 
+from PySide6.QtCore import QCoreApplication
 from qtpy.QtCore import Qt
 from qtpy.QtGui import QPixmap
 from qtpy.QtWidgets import QSplashScreen
@@ -56,7 +59,7 @@ def update_all_nodes_req():
             pbar.update(50)  # Indicate that requirements installation is 50% complete
 
 def import_nodes_from_directory(directory):
-    if "ainodes_backend" not in directory and "backend" not in directory:
+    if "ainodes_backend" not in directory and "backend" not in directory and "_nodes" in directory:
         node_files = glob.glob(os.path.join(directory, "*.py"))
         for node_file in node_files:
             f = os.path.basename(node_file)
@@ -67,13 +70,9 @@ def import_nodes_from_directory(directory):
                 exec(f"from {dir} import {module_name}")
 
 def import_nodes_from_subdirectories(directory):
-    print("Importing from", directory)
-    if "ainodes_backend" not in directory and "backend" not in directory:
 
-                #if return_code != 0:
-                #    error_output = process.stderr.read().strip()
-                #    raise subprocess.CalledProcessError(return_code, command, output=error_output)
-
+    if "ainodes_backend" not in directory and "backend" not in directory and directory.endswith("_nodes"):
+        print("Importing from", directory)
         for subdir in os.listdir(directory):
             subdir_path = os.path.join(directory, subdir)
             if os.path.isdir(subdir_path) and subdir != "base":
@@ -103,6 +102,7 @@ gs.error_stack = []
 gs.should_run = True
 gs.loaded_kandinsky = ""
 gs.loaded_hypernetworks = []
+gs.threads = {}
 
 try:
     import xformers
@@ -248,13 +248,31 @@ for folder in os.listdir(base_folder):
 from ainodes_frontend.base import CalculatorWindow
 ainodes_qapp.setApplicationName("aiNodes - Engine")
 
+
+def cleanup(self):
+    pid = os.getpid()
+    os.kill(pid, signal.CTRL_C_EVENT)
+
+
+def eventListener():
+    print("Quitting")
+    pid = os.getpid()
+    os.kill(pid, signal.CTRL_C_EVENT)
+
+    cleanup()
+    time.sleep(2)
+
 if __name__ == "__main__":
     wnd = CalculatorWindow(ainodes_qapp)
+    ainodes_qapp.aboutToQuit.connect(eventListener)
+
     wnd.stylesheet_filename = os.path.join(os.path.dirname(__file__), gs.qss)
     loadStylesheets(
         os.path.join(os.path.dirname(__file__), gs.qss),
         wnd.stylesheet_filename
     )
+    wnd.cleanup = cleanup
+    signal.signal(signal.SIGINT, lambda *args: QCoreApplication.quit())
     wnd.show()
     wnd.nodesListWidget.addMyItems()
     wnd.onFileNew()
