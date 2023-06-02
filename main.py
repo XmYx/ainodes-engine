@@ -30,7 +30,7 @@ from ainodes_frontend.node_engine.utils import loadStylesheets
 os.environ["QT_API"] = "pyside6"
 # Install Triton if running on Linux
 if "Linux" in platform.platform():
-    print(platform.platform())
+    #print(platform.platform())
     subprocess.check_call(["pip", "install", "triton==2.0.0"])
 if "Linux" in platform.platform():
     gs.qss = "ainodes_frontend/qss/nodeeditor-dark-linux.qss"
@@ -49,7 +49,7 @@ def update_all_nodes_req():
         # command = f"git -C {repository} stash && git -C {repository} pull && pip install -r {repository}/requirements.txt"
         command = f"git -C {repository} pull && pip install -r {repository}/requirements.txt"
 
-        print("RUNNING COMMAND", command)
+        #print("RUNNING COMMAND", command)
 
         with tqdm(total=100, desc=f"Updating {folder}") as pbar:
             result = subprocess.run(command, shell=True, stdout=None, stderr=None,
