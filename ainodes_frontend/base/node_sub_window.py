@@ -44,8 +44,15 @@ class CalculatorSubWindow(NodeEditorWidget):
         #self._search_widget.search_submitted.connect(self._on_search_submitted)
         #print(self._search_widget.isVisible())
         self.scenePos = None
+        self.subgraph = None
         #self.tab_search_toggle()
+    def closeEvent(self, event):
+        if self.subgraph:
+            event.ignore()  # Ignore the close event
+        else:
 
+
+            super().closeEvent(event)
 
 
     def tab_search_toggle(self):
@@ -436,6 +443,7 @@ class CalculatorSubWindow(NodeEditorWidget):
         #self.pos = QtCore.QPointF(event.screenPos())
         self.scenePos = event.scenePos()
         print(self.scenePos)
+
 class NodeListDialog(QtWidgets.QDialog):
     def __init__(self, parent=None):
         super(NodeListDialog, self).__init__(parent)

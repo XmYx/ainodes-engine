@@ -606,7 +606,7 @@ class CalculatorWindow(NodeEditorWindow):
         if not gs.args.no_console:
             self.create_console_widget()
             #self.tabifyDockWidget(self.node_packages, self.console)
-        self.threadpool = QtCore.QThreadPool()
+        #self.threadpool = QtCore.QThreadPool()
 
         #self.parameter_dock = ParameterDock()
         #self.addDockWidget(Qt.LeftDockWidgetArea, self.parameter_dock)
@@ -631,7 +631,7 @@ class CalculatorWindow(NodeEditorWindow):
         self.bdock_widget.setWidget(browser_widget)
         self.addDockWidget(Qt.RightDockWidgetArea, self.bdock_widget)
         self.bdock_widget.setVisible(False)
-
+        self.subgraph = None
     def cleanup(self):
         try:
             self.training_thread.terminate_process()
@@ -682,13 +682,15 @@ class CalculatorWindow(NodeEditorWindow):
         else:
             self.showFullScreen()
     def keyPressEvent(self, event: QtGui.QKeyEvent) -> None:
-        super().keyPressEvent(event)
+
+        #super().keyPressEvent(event)
         if event.key() == 96:
             self.toggleDockWidgets()
-        if event.key() == 16777274:
+        elif event.key() == 16777274:
             self.toggleFullscreen()
         elif event.key() == 16777216:
             self.toggleNodesDock()
+
     def create_console_widget(self):
         # Create a text widget for stdout and stderr
         self.text_widget = NodesConsole()
@@ -793,7 +795,13 @@ class CalculatorWindow(NodeEditorWindow):
             icon = QtGui.QIcon("ainodes_frontend/qss/icon.ico")
             subwnd.setWindowIcon(icon)
             subwnd.show()
+
+            # Install event filter on the subwnd object
+            subwnd.installEventFilter(self)
+
+
         except Exception as e: dumpException(e)
+
     @QtCore.Slot(object)
     def onFileNew_subgraph(self, node):
         try:
@@ -802,11 +810,28 @@ class CalculatorWindow(NodeEditorWindow):
             icon = QtGui.QIcon("ainodes_frontend/qss/icon.ico")
             subwnd.setWindowIcon(icon)
             subwnd.setWindowTitle(str(node.name))
-            #subwnd.node = node
             node.graph_window = subwnd
+            subwnd.subgraph = True
             subwnd.show()
-        except Exception as e: dumpException(e)
 
+            # Install event filter on the subwnd object
+            subwnd.installEventFilter(self)
+
+        except Exception as e:
+            dumpException(e)
+    def eventFilter(self, obj, event):
+        if event.type() == QtCore.QEvent.Close:
+            if obj.subgraph:
+                event.ignore()  # Ignore the close event
+                return True
+            else:
+                nodes = obj.widget().scene.nodes
+                for node in nodes:
+                    if hasattr(node, "graph_window"):
+                        node.graph_window.subgraph = None
+                        node.graph_window.close()
+
+        return super().eventFilter(obj, event)
     @QtCore.Slot(object)
     def onJsonOpen_subgraph(self, node):
 
@@ -830,7 +855,10 @@ class CalculatorWindow(NodeEditorWindow):
                     icon = QtGui.QIcon("ainodes_frontend/qss/icon.png")
                     subwnd.setWindowIcon(icon)
                     node.graph_window = subwnd
+                    subwnd.subgraph = True
                     subwnd.show()
+                    # Install event filter on the subwnd object
+                    subwnd.installEventFilter(self)
 
                 else:
                     nodeeditor.close()
@@ -856,6 +884,9 @@ class CalculatorWindow(NodeEditorWindow):
                             icon = QtGui.QIcon("ainodes_frontend/qss/icon.png")
                             subwnd.setWindowIcon(icon)
                             subwnd.show()
+                            # Install event filter on the subwnd object
+                            subwnd.installEventFilter(self)
+
 
                         else:
                             nodeeditor.close()
@@ -898,6 +929,9 @@ class CalculatorWindow(NodeEditorWindow):
                             nodeeditor.setTitle()
                             subwnd = self.createMdiChild(nodeeditor)
                             subwnd.show()
+                            # Install event filter on the subwnd object
+                            subwnd.installEventFilter(self)
+
                         else:
                             nodeeditor.close()
         except Exception as e: dumpException(e)
@@ -1040,6 +1074,7 @@ class CalculatorWindow(NodeEditorWindow):
         #subwnd.setWindowIcon(self.empty_icon)
         icon = QtGui.QIcon("ainodes_frontend/qss/icon.ico")
         subwnd.setWindowIcon(icon)
+        subwnd.subgraph = None
 
         # node_engine.scene.addItemSelectedListener(self.updateEditMenu)
         # node_engine.scene.addItemsDeselectedListener(self.updateEditMenu)
@@ -1106,6 +1141,7 @@ class CalculatorWindow(NodeEditorWindow):
     def onSubWndClose(self, widget, event):
         existing = self.findMdiChild(widget.filename)
         self.mdiArea.setActiveSubWindow(existing)
+
         if self.maybeSave():
             event.accept()
         else:
