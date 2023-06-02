@@ -450,6 +450,23 @@ class QDMGraphicsView(QGraphicsView):
         :type event: ``QKeyEvent``
         :return:
         """
+
+
+        if event.key() == Qt.Key_Delete:
+            print("goal1")
+            print(event)
+            nodes = self.grScene.scene.nodes
+            print(nodes)
+            for node in nodes:
+                print(node.isSelected())
+                if node.isSelected() == True:
+                    print("found selected node")
+                    if hasattr(node, "graph_window"):
+                        node.graph_window.subgraph = None
+                        node.graph_window.close()
+                        node.graph_window.destroy()
+        super().keyPressEvent(event)
+
         # Use this code below if you wanna have shortcuts in this widget.
         # You want to use this, when you don't have a window which handles these shortcuts for you
 
@@ -492,7 +509,9 @@ class QDMGraphicsView(QGraphicsView):
                     # self.zoom_to_rect(items_rect)
                     self.ensureVisible(items_rect)
                     self.centerOn(items_rect.center())
-        super().keyPressEvent(event)
+
+
+        #super().keyPressEvent(event)
 
     def resetZoomLevel(self):
         """Reset the zoom level to its default value."""
