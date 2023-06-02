@@ -140,6 +140,25 @@ class NodeEditorWidget(QWidget):
             return False
         finally:
             QApplication.restoreOverrideCursor()
+    def jsonLoad(self, json_data, json_name):
+        """Load serialized graph from JSON file
+
+        :param filename: file to load
+        :type filename: ``str``
+        """
+        QApplication.setOverrideCursor(Qt.WaitCursor)
+        try:
+            self.scene.loadFromJson(json_data, json_name)
+            self.filename = json_name
+            self.scene.history.clear()
+            self.scene.history.storeInitialHistoryStamp()
+            return True
+        except Exception as e:
+            dumpException(e)
+            # QApplication.restoreOverrideCursor()
+            return False
+        finally:
+            QApplication.restoreOverrideCursor()
 
 
     def fileSave(self, filename:str=None):

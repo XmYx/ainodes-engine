@@ -1,5 +1,7 @@
 import os
+import subprocess
 import sys
+import threading
 from subprocess import run
 
 import requests
@@ -14,6 +16,7 @@ from ainodes_frontend.base.ai_nodes_listbox import QDMDragListbox
 from ainodes_frontend.base.node_config import CALC_NODES, import_nodes_from_file, import_nodes_from_subdirectories
 from ainodes_frontend.base.node_sub_window import CalculatorSubWindow
 from ainodes_frontend.base.settings import load_settings, save_settings, save_error_log
+from ainodes_frontend.base.webview_widget import BrowserWidget
 from ainodes_frontend.base.worker import Worker
 from ainodes_frontend.node_engine.node_edge import Edge
 from ainodes_frontend.node_engine.node_edge_validators import (
@@ -23,6 +26,7 @@ from ainodes_frontend.node_engine.node_edge_validators import (
 )
 from ainodes_frontend.node_engine.node_editor_window import NodeEditorWindow
 from ainodes_frontend.node_engine.utils_no_qt import dumpException, pp
+from custom_nodes.ainodes_engine_trainer_nodes.training import TrainingThread
 
 #Edge.registerEdgeValidator(edge_validator_debug)
 Edge.registerEdgeValidator(edge_cannot_connect_two_outputs_or_two_inputs)
@@ -357,12 +361,40 @@ class GitHubRepositoriesDialog(QtWidgets.QDockWidget):
 class StreamRedirect(QtCore.QObject):
     text_written = QtCore.Signal(str)
 
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.stdout = sys.stdout
+        self.stderr = sys.stderr
+        self.stdout_lock = threading.Lock()
+        self.stderr_lock = threading.Lock()
+        sys.stdout = self
+        sys.stderr = self
+
     def write(self, text):
-        self.text_written.emit(str(text))
+        self.text_written.emit(text)
 
     def flush(self):
         pass
 
+    def fileno(self):
+        return self.stdout.fileno()
+
+    def decode_output(self, output_bytes):
+        try:
+            decoded_output = output_bytes.decode(sys.stdout.encoding)
+        except UnicodeDecodeError:
+            decoded_output = output_bytes.decode(sys.stdout.encoding, errors='replace')
+        return decoded_output
+
+    def write_stdout(self, output_bytes):
+        with self.stdout_lock:
+            decoded_output = self.decode_output(output_bytes)
+            self.stdout.write(decoded_output)
+
+    def write_stderr(self, output_bytes):
+        with self.stderr_lock:
+            decoded_output = self.decode_output(output_bytes)
+            self.stderr.write(decoded_output)
 class NodesConsole(ConsoleWidget):
     def __init__(self):
         super().__init__()
@@ -516,15 +548,17 @@ class ColorEditor(QtWidgets.QDialog):
 class CalculatorWindow(NodeEditorWindow):
     file_open_signal = QtCore.Signal(object)
     base_repo_signal = QtCore.Signal()
+    file_new_signal = QtCore.Signal(object)
+    json_open_signal = QtCore.Signal(object)
     def __init__(self, parent=None):
         super(CalculatorWindow, self).__init__()
 
 
     def eventListener(self, *args, **kwargs):
+        print("cleaning up")
+        self.cleanup()
         save_settings()
         save_error_log()
-        #self.parent.quit()
-        #super().closeEvent(e)
     def initUI(self):
         #self.setup_defaults()
 
@@ -579,6 +613,8 @@ class CalculatorWindow(NodeEditorWindow):
         #self.addDockWidget(Qt.LeftDockWidgetArea, self.parameter_dock)
 
         self.file_open_signal.connect(self.fileOpen)
+        self.file_new_signal.connect(self.onFileNew_subgraph)
+        self.json_open_signal.connect(self.onJsonOpen_subgraph)
         self.base_repo_signal.connect(self.import_base_repos)
         icon = QtGui.QIcon("ainodes_frontend/qss/icon.png")
         self.setWindowIcon(icon)
@@ -588,7 +624,22 @@ class CalculatorWindow(NodeEditorWindow):
         print(f"|{len(CALC_NODES)} Nodes loaded.|")
         print("------------------")
 
+        # Create a QDockWidget
+        self.bdock_widget = QDockWidget("Embedded Browser", self)
 
+        # Set the BrowserWidget as the central widget of the QDockWidget
+        browser_widget = BrowserWidget()
+        self.bdock_widget.setWidget(browser_widget)
+        self.addDockWidget(Qt.RightDockWidgetArea, self.bdock_widget)
+        self.bdock_widget.setVisible(False)
+
+    def cleanup(self):
+        try:
+            self.training_thread.terminate_process()
+            self.training_thread.join()
+            del self.training_thread
+        except:
+            pass
     def import_base_repos(self):
         """base_repo = 'ainodes_engine_base_nodes'
         import_nodes_from_subdirectories(f"custom_nodes/{base_repo}")
@@ -704,11 +755,20 @@ class CalculatorWindow(NodeEditorWindow):
         self.actSeparator.setSeparator(True)
 
         self.actAbout = QAction("&About", self, statusTip="Show the application's About box", triggered=self.about)
+        self.actBrowser = QAction("&Browser", self, statusTip="Show the application's Browser", triggered=self.browser)
+        self.actTraining = QAction("&Training", self, statusTip="Start Kohya", triggered=self.training_gui)
         self.actColors = QAction("&Change Colors", self, statusTip="Change socket / route color palette", triggered=self.edit_colors)
         self.actRClickMenu = QAction("&Alternate context menu", self, statusTip="Change context menu type", triggered=self.toggle_menu)
         # Create a checkable QAction
         self.actRClickMenu.setCheckable(True)
 
+    def training_gui(self):
+        if hasattr(self, "training_thread"):
+            self.cleanup()
+        gs.threads['lora'] = TrainingThread(self.stdout_redirect)
+        gs.threads['lora'].start()
+    def browser(self):
+        self.bdock_widget.setVisible(not self.bdock_widget.isVisible())
     def toggle_menu(self):
         widget = self.getCurrentNodeEditorWidget()
         if widget is not None:
@@ -734,6 +794,47 @@ class CalculatorWindow(NodeEditorWindow):
             subwnd.setWindowIcon(icon)
             subwnd.show()
         except Exception as e: dumpException(e)
+    @QtCore.Slot(object)
+    def onFileNew_subgraph(self, node):
+        try:
+            subwnd = self.createMdiChild()
+            subwnd.widget().fileNew()
+            icon = QtGui.QIcon("ainodes_frontend/qss/icon.ico")
+            subwnd.setWindowIcon(icon)
+            subwnd.setWindowTitle(str("Subgraph"))
+            #subwnd.node = node
+            node.graph_window = subwnd
+            subwnd.show()
+        except Exception as e: dumpException(e)
+
+    @QtCore.Slot(object)
+    def onJsonOpen_subgraph(self, node):
+
+        json_graph = node.graph_json
+        json_name = node.name
+
+
+        #fnames, filter = QFileDialog.getOpenFileNames(self, 'Open graph from file', f"{self.getFileDialogDirectory()}/graphs", self.getFileDialogFilter())
+
+        try:
+            existing = self.findMdiChild(json_name)
+            if existing:
+                self.mdiArea.setActiveSubWindow(existing)
+            else:
+                # we need to create new subWindow and open the file
+                nodeeditor = CalculatorSubWindow()
+                if nodeeditor.jsonLoad(json_graph, json_name):
+                    self.statusBar().showMessage("File %s loaded" % json_name, 5000)
+                    nodeeditor.setTitle()
+                    subwnd = self.createMdiChild(nodeeditor)
+                    icon = QtGui.QIcon("ainodes_frontend/qss/icon.png")
+                    subwnd.setWindowIcon(icon)
+                    node.graph_window = subwnd
+                    subwnd.show()
+
+                else:
+                    nodeeditor.close()
+        except Exception as e: dumpException(e)
 
 
     def onFileOpen(self):
@@ -758,6 +859,24 @@ class CalculatorWindow(NodeEditorWindow):
 
                         else:
                             nodeeditor.close()
+        except Exception as e: dumpException(e)
+    def onFileOpen_subgraph(self, graph):
+        try:
+            existing = self.findMdiChild(fname)
+            if existing:
+                self.mdiArea.setActiveSubWindow(existing)
+            else:
+                # we need to create new subWindow and open the file
+                nodeeditor = CalculatorSubWindow()
+                if nodeeditor.fileLoad(fname):
+                    self.statusBar().showMessage("File %s loaded" % fname, 5000)
+                    nodeeditor.setTitle()
+                    subwnd = self.createMdiChild(nodeeditor)
+                    icon = QtGui.QIcon("ainodes_frontend/qss/icon.png")
+                    subwnd.setWindowIcon(icon)
+                    subwnd.show()
+                else:
+                    nodeeditor.close()
         except Exception as e: dumpException(e)
     @QtCore.Slot(object)
     def fileOpen(self, file):
@@ -802,6 +921,8 @@ class CalculatorWindow(NodeEditorWindow):
 
         self.helpMenu = self.menuBar().addMenu("&Help")
         self.helpMenu.addAction(self.actAbout)
+        self.helpMenu.addAction(self.actTraining)
+        self.helpMenu.addAction(self.actBrowser)
 
 
         self.editMenu.aboutToShow.connect(self.updateEditMenu)
@@ -1008,8 +1129,6 @@ class CalculatorWindow(NodeEditorWindow):
         for window in self.mdiArea.subWindowList():
             window.widget().setAttribute(Qt.WA_PaintOnScreen, True)
             self.resumeSceneUpdates(window.scene)
-
-
 
     def pauseSceneUpdates(self, scene):
 

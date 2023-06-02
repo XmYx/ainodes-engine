@@ -340,6 +340,21 @@ class Scene(Serializable):
                 raise InvalidFile("%s is not a valid JSON file" % os.path.basename(filename))
             except Exception as e:
                 dumpException(e)
+    def loadFromJson(self, json_data, json_name):
+        """
+        Load `Scene` from a file on disk
+
+        :param filename: from what file to load the `Scene`
+        :type filename: ``str``
+        :raises: :class:`~node_engine.node_scene.InvalidFile` if there was an error decoding JSON file
+        """
+
+        try:
+            self.filename = json_name
+            self.deserialize(json_data)
+            self.has_been_modified = False
+        except Exception as e:
+            dumpException(e)
 
     def getEdgeClass(self):
         """Return the class representing Edge. Override me if needed"""

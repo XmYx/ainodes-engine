@@ -96,13 +96,18 @@ class CalculatorSubWindow(NodeEditorWidget):
             node.eval()
 
     def onHistoryRestored(self):
-        self.doEvalOutputs()
+        pass
+        #self.doEvalOutputs()
 
     def fileLoad(self, filename):
         if super().fileLoad(filename):
-            self.doEvalOutputs()
+            #self.doEvalOutputs()
             return True
-
+        return False
+    def jsonLoad(self, json_data, json_name):
+        if super().jsonLoad(json_data, json_name):
+            #self.doEvalOutputs()
+            return True
         return False
 
     def initNewNodeActions(self):
