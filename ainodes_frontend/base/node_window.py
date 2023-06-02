@@ -26,7 +26,6 @@ from ainodes_frontend.node_engine.node_edge_validators import (
 )
 from ainodes_frontend.node_engine.node_editor_window import NodeEditorWindow
 from ainodes_frontend.node_engine.utils_no_qt import dumpException, pp
-from custom_nodes.ainodes_engine_base_nodes.ainodes_backend.training_thread import TrainingThread
 
 #Edge.registerEdgeValidator(edge_validator_debug)
 Edge.registerEdgeValidator(edge_cannot_connect_two_outputs_or_two_inputs)
@@ -765,6 +764,7 @@ class CalculatorWindow(NodeEditorWindow):
     def training_gui(self):
         if hasattr(self, "training_thread"):
             self.cleanup()
+        from custom_nodes.ainodes_engine_base_nodes.ainodes_backend.training_thread import TrainingThread
         gs.threads['lora'] = TrainingThread(self.stdout_redirect)
         gs.threads['lora'].start()
     def browser(self):
