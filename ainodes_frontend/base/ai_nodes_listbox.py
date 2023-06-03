@@ -1,3 +1,5 @@
+import os
+
 from qtpy import QtWidgets
 from qtpy.QtCore import QSize, Qt, QByteArray, QDataStream, QMimeData, QIODevice, QPoint
 from qtpy.QtGui import QPixmap, QIcon, QDrag
@@ -38,6 +40,14 @@ class QDMDragListbox(QtWidgets.QTreeWidget):
                 categories[node.category] = []
 
             categories[node.category].append((node.op_title, node.icon, node.op_code))
+
+        # Add subgraphs category and files
+        subgraph_category = "Subgraphs"
+        subgraph_folder = "subgraphs"
+        subgraph_files = [f for f in os.listdir(subgraph_folder) if f.endswith(".json")]
+        if subgraph_files:
+            node_categories.append(subgraph_category)
+            categories[subgraph_category] = [(file, None, None) for file in subgraph_files]
         new_list = []
         for category, items in categories.items():
 
@@ -63,26 +73,32 @@ class QDMDragListbox(QtWidgets.QTreeWidget):
         try:
             item = self.currentItem()
             op_code = item.data(0, Qt.UserRole + 1)
-            if op_code is not None:
-                pm = False
-                itemData = QByteArray()
-                dataStream = QDataStream(itemData, QIODevice.WriteOnly)
-                if item.data(0, Qt.UserRole) is not None:
-                    pixmap = QPixmap(item.data(0, Qt.UserRole))
-                    pm = True
-                    dataStream << pixmap
+            #if op_code is not None:
+            pm = False
+            itemData = QByteArray()
+            dataStream = QDataStream(itemData, QIODevice.WriteOnly)
+            if item.data(0, Qt.UserRole) is not None:
+                pixmap = QPixmap(item.data(0, Qt.UserRole))
+                pm = True
+                dataStream << pixmap
+            if op_code:
                 dataStream.writeInt8(op_code)
-                dataStream.writeQString(item.text(0))
+            dataStream.writeQString(item.text(0))
+            # Include JSON file data if available
+            json_file = None
+            if item.parent() and item.parent().text(0).lower() == "subgraphs":
+                json_file = item.text(0)
+                print("ADDING INFO", json_file)
+                dataStream.writeQString(json_file)
+            mimeData = QMimeData()
+            mimeData.setData(LISTBOX_MIMETYPE, itemData)
+            mimeData.setProperty("filename", json_file)
+            drag = QDrag(self)
+            drag.setMimeData(mimeData)
+            if pm == True:
+                drag.setHotSpot(QPoint(pixmap.width() // 2, pixmap.height() // 2))
+                drag.setPixmap(pixmap)
 
-                mimeData = QMimeData()
-                mimeData.setData(LISTBOX_MIMETYPE, itemData)
-
-                drag = QDrag(self)
-                drag.setMimeData(mimeData)
-                if pm == True:
-                    drag.setHotSpot(QPoint(pixmap.width() // 2, pixmap.height() // 2))
-                    drag.setPixmap(pixmap)
-
-                drag.exec_(Qt.MoveAction)
+            drag.exec_(Qt.MoveAction)
 
         except Exception as e: dumpException(e)

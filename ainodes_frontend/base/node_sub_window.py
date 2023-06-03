@@ -1,3 +1,7 @@
+import os
+import time
+
+from PySide6.QtCore import QByteArray
 from qtpy import QtCore
 from qtpy import QtWidgets
 from qtpy.QtCore import QDataStream, QIODevice, Qt
@@ -186,6 +190,19 @@ class CalculatorSubWindow(NodeEditorWidget):
             dataStream >> pixmap
             op_code = dataStream.readInt8()
             text = dataStream.readQString()
+
+            filename = event.mimeData().property("filename")
+            if filename is not None:
+                print("Received filename:", filename)
+                event.ignore()
+                event.setDropAction(Qt.MoveAction)
+                backuptitle = self.filename
+                self.fileLoad(os.path.join("subgraphs", filename))
+                self.filename = backuptitle
+                #time.sleep(0.1)
+                #self.setWindowTitle(backuptitle)
+                return
+                #self.scene.deserialize()
 
             mouse_position = event.pos()
             scene_position = self.scene.grScene.views()[0].mapToScene(mouse_position)

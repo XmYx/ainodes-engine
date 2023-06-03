@@ -67,7 +67,7 @@ class Scene(Serializable):
         self.grScene.itemSelected.connect(self.onItemSelected)
         self.grScene.itemsDeselected.connect(self.onItemsDeselected)
 
-        self.threadpool = QtCore.QThreadPool()
+        #self.threadpool = QtCore.QThreadPool()
 
     @property
     def has_been_modified(self):
@@ -308,6 +308,12 @@ class Scene(Serializable):
         :type filename: ``str``
         """
 
+        try:
+            print(self.grScene.scene.getView().parent().window().mdiArea.activeSubWindow().scene)
+        except:
+            pass
+
+
         if ".json" not in filename:
             filename = f"{filename}.json"
         with open(filename, "w") as file:
@@ -315,8 +321,22 @@ class Scene(Serializable):
             print("saving to", filename, "was successfull.")
 
             self.has_been_modified = False
-            self.filename = filename
 
+            #print("FILENAME WAS", self.grScene, "WILL BE", filename)
+            try:
+                if self.grScene.scene.getView().parent().window().mdiArea.activeSubWindow().subgraph:
+
+                    window = self.grScene.scene.getView().parent().window().mdiArea.activeSubWindow()
+                    print("WINDOW FILENAME", window.widget().filename)
+                    print("SELF FILENAME", self.filename)
+                    self.filename = f"{window.widget().filename}.json"
+                    #self.filename = self.grScene.scene.getView().parent().window().mdiArea.activeSubWindow().widget().scene.filename
+                else:
+                    self.filename = filename
+            except:
+                pass
+
+    window.widget().filename
     def loadFromFile(self, filename: str):
         """
         Load `Scene` from a file on disk
