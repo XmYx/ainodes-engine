@@ -1,4 +1,6 @@
+import json
 import os
+import sys
 import time
 
 from PySide6.QtCore import QByteArray
@@ -17,7 +19,9 @@ from ainodes_frontend.node_engine.node_editor_widget import NodeEditorWidget
 from ainodes_frontend.node_engine.node_graphics_node import QDMGraphicsBGNode
 from ainodes_frontend.node_engine.node_graphics_view import MODE_EDGE_DRAG
 from ainodes_frontend.node_engine.node_node import Node
+from ainodes_frontend.node_engine.node_scene import InvalidFile
 from ainodes_frontend.node_engine.utils import dumpException
+
 
 DEBUG = False
 DEBUG_CONTEXT = False
@@ -192,20 +196,54 @@ class CalculatorSubWindow(NodeEditorWidget):
             text = dataStream.readQString()
 
             filename = event.mimeData().property("filename")
+
+            mouse_position = event.pos()
+            scene_position = self.scene.grScene.views()[0].mapToScene(mouse_position)
+
+
             if filename is not None:
                 print("Received filename:", filename)
+
+                with open(os.path.join("subgraphs", filename), "r") as file:
+                    raw_data = file.read()
+                    try:
+                        if sys.version_info >= (3, 9):
+                            data = json.loads(raw_data)
+                        else:
+                            data = json.loads(raw_data, encoding='utf-8')
+                        node_class = get_class_from_content_label_objname("subgraph_node")
+                        node = node_class(self.scene, data)
+                        curr_win = self.parent()
+                        """try:
+                            
+                            print("CURR WIN SET", curr_win)
+                            win_manager = self.parent().window().mdiArea.setActiveSubWindow(curr_win)
+                            print("WIN MANAGER SET", win_manager)
+                        except:
+                            pass"""
+                        node.onDoubleClicked()
+                        self.parent().window().mdiArea.setActiveSubWindow(curr_win)
+
+                        node.setPos(scene_position.x(), scene_position.y())
+                        self.scene.history.storeHistory("Created node %s" % node.__class__.__name__)
+                        event.ignore()
+                        return
+
+                    except json.JSONDecodeError:
+                        raise InvalidFile("%s is not a valid JSON file" % os.path.basename(filename))
+                    except Exception as e:
+                        dumpException(e)
+
                 event.ignore()
-                event.setDropAction(Qt.MoveAction)
+                """event.setDropAction(Qt.MoveAction)
                 backuptitle = self.filename
                 self.fileLoad(os.path.join("subgraphs", filename))
                 self.filename = backuptitle
                 #time.sleep(0.1)
                 #self.setWindowTitle(backuptitle)
                 return
-                #self.scene.deserialize()
+                #self.scene.deserialize()"""
 
-            mouse_position = event.pos()
-            scene_position = self.scene.grScene.views()[0].mapToScene(mouse_position)
 
             if DEBUG: print("GOT DROP: [%d] '%s'" % (op_code, text), "mouse:", mouse_position, "scene:", scene_position)
 

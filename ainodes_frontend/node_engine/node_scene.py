@@ -336,7 +336,6 @@ class Scene(Serializable):
             except:
                 pass
 
-    window.widget().filename
     def loadFromFile(self, filename: str):
         """
         Load `Scene` from a file on disk
