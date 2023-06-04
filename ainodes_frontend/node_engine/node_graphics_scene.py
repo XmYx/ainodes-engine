@@ -117,3 +117,4 @@ class QDMGraphicsScene(QGraphicsScene):
                 rect_state = QRect(rect.x()+offset, rect.y()+offset, rect.width()-2*offset, rect.height()-2*offset)
                 painter.drawText(rect_state, Qt.AlignRight | Qt.AlignTop, STATE_STRING[self.views()[0].mode].upper())
             except: dumpException()
+

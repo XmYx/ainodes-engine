@@ -257,9 +257,9 @@ class AiNode(Node):
         """
         return 123
 
-    @QtCore.Slot()
+    ##@QtCore.Slot()
     def evalImplementation(self, index=0, *args, **kwargs):
-        if gs.should_run:
+        """if gs.should_run:
             if not self.busy:
                 self.busy = True
                 thread = WorkerThread(target=self.evalImplementationThreadHandler,
@@ -269,6 +269,17 @@ class AiNode(Node):
                 return
         else:
             gs.should_run = True
+            return"""
+        if gs.should_run:
+            if not self.busy:
+                self.busy = True
+                worker = Worker(self.evalImplementationThreadHandler)
+                worker.signals.result.connect(self.onWorkerFinished)
+                self.scene.threadpool.start(worker)
+                return
+            else:
+                return
+        else:
             return
 
         """if self.busy == False:
@@ -289,10 +300,10 @@ class AiNode(Node):
             handle_ainodes_exception()
             return None
 
-    @QtCore.Slot()
+    #@QtCore.Slot()
     def evalImplementation_thread(self):
         return None
-    @QtCore.Slot(object)
+    #@QtCore.Slot(object)
     def onWorkerFinished(self, result):
 
         self.busy = False
@@ -348,7 +359,7 @@ class AiNode(Node):
             try:
                 node = self.getOutputs(output_index)[0]
                 #node.markDirty(True)
-                node.content.eval_signal.emit()
+                node.eval()
             except Exception as e:
                 print("Skipping execution:", e, self)
 
@@ -475,7 +486,7 @@ class AiApiNode(AiNode):
         #self.task_queue = Queue()
         pass
 
-    @QtCore.Slot()
+    #@QtCore.Slot()
     def evalImplementation(self, index=0, *args, **kwargs):
         if self.busy == False:
             self.busy = True
@@ -487,7 +498,7 @@ class AiApiNode(AiNode):
     def evalImplementation_thread(self):
         print(f"PLEASE IMPLEMENT evalImplementation_thread function for {self}")
         pass
-    @QtCore.Slot(object)
+    #@QtCore.Slot(object)
     def onWorkerFinished(self):
         print(f"PLEASE IMPLEMENT onWorkerFinished function for {self}")
         pass
@@ -634,17 +645,17 @@ class AiDummyNode(Node):
         self.input_socket_position = LEFT_BOTTOM
         self.output_socket_position = RIGHT_BOTTOM
 
-    @QtCore.Slot()
+    #@QtCore.Slot()
     def evalImplementation(self, index=0, *args, **kwargs):
         return
     def evalImplementationThreadHandler(self, *args, **kwargs):
         return
 
-    @QtCore.Slot()
+    #@QtCore.Slot()
     def evalImplementation_thread(self):
         return None
 
-    @QtCore.Slot(object)
+    #@QtCore.Slot(object)
     def onWorkerFinished(self, result):
         return
 
@@ -763,7 +774,7 @@ class AiApiNode(AiNode):
         # self.task_queue = Queue()
         pass
 
-    @QtCore.Slot()
+    #@QtCore.Slot()
     def evalImplementation(self, index=0, *args, **kwargs):
         if self.busy == False:
             self.busy = True
@@ -776,7 +787,7 @@ class AiApiNode(AiNode):
         print(f"PLEASE IMPLEMENT evalImplementation_thread function for {self}")
         pass
 
-    @QtCore.Slot(object)
+    #@QtCore.Slot(object)
     def onWorkerFinished(self):
         print(f"PLEASE IMPLEMENT onWorkerFinished function for {self}")
         pass

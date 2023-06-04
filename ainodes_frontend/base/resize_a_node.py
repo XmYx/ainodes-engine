@@ -2,9 +2,9 @@
 """
 A module containing Graphics representation of resizable :class:`~node_engine.node_node.Node`
 """
-from PySide6.QtCore import QEvent
-from PySide6.QtGui import QMouseEvent
-from PySide6.QtWidgets import QGraphicsView
+from qtpy.QtCore import QEvent
+from qtpy.QtGui import QMouseEvent
+from qtpy.QtWidgets import QGraphicsView
 from qtpy import QtWidgets, QtCore, QtGui
 from qtpy.QtCore import Qt, QRectF
 from qtpy.QtGui import QFont, QColor, QPen, QBrush, QPainterPath

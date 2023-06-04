@@ -67,7 +67,7 @@ class Scene(Serializable):
         self.grScene.itemSelected.connect(self.onItemSelected)
         self.grScene.itemsDeselected.connect(self.onItemsDeselected)
 
-        #self.threadpool = QtCore.QThreadPool()
+        self.threadpool = QtCore.QThreadPool()
 
     @property
     def has_been_modified(self):

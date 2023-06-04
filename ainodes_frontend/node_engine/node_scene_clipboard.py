@@ -4,6 +4,7 @@ A module containing all code for working with Clipboard
 """
 from collections import OrderedDict
 
+from ainodes_frontend.base import get_class_from_content_label_objname
 from ainodes_frontend.node_engine.node_edge import Edge
 from ainodes_frontend.node_engine.node_graphics_edge import QDMGraphicsEdge
 
@@ -138,6 +139,11 @@ class SceneClipboard():
             new_node = self.scene.getNodeClassFromData(node_data)(self.scene)
             new_node.deserialize(node_data, hashmap, restore_id=False, *args, **kwargs)
             created_nodes.append(new_node)
+
+            sub_graph_class = get_class_from_content_label_objname("subgraph_node")
+            if isinstance(new_node, sub_graph_class):
+                new_node.force_init()
+
 
             # readjust the new node_engine's position
 

@@ -3,7 +3,7 @@ import os
 import sys
 import time
 
-from PySide6.QtCore import QByteArray
+from qtpy.QtCore import QByteArray
 from qtpy import QtCore
 from qtpy import QtWidgets
 from qtpy.QtCore import QDataStream, QIODevice, Qt
@@ -41,8 +41,8 @@ class CalculatorSubWindow(NodeEditorWidget):
         self.scene.addDropListener(self.onDrop)
         self.scene.setNodeClassSelector(self.getNodeClassFromData)
         self._close_event_listeners = []
-        self.run_all_action = QAction("Run All")
-        self.run_all_action.triggered.connect(self.doRunAll)
+        #self.run_all_action = QAction("Run All")
+        #self.run_all_action.triggered.connect(self.doRunAll)
         """self.stylesheet_filename = os.path.join(os.path.dirname(__file__), "ainodes_frontend/qss/nodeeditor-dark.qss")
         loadStylesheets(
             os.path.join(os.path.dirname(__file__), "ainodes_frontend/qss/nodeeditor-dark.qss"),
@@ -157,12 +157,6 @@ class CalculatorSubWindow(NodeEditorWidget):
             event.acceptProposedAction()
         elif event.mimeData().hasUrls():
             event.acceptProposedAction()
-            print(event.mimeData().hasText())
-            print(event.mimeData().hasHtml())
-            print(event.mimeData().hasUrls())
-            print(event.mimeData().hasImage())
-            print(event.mimeData().hasColor())
-            print(event.mimeData().urls())
             #mime_type = QtCore.QMimeType(event.mimeData().formats()[0])
             #if mime_type.name() == 'image/*' or mime_type.name() == 'video/*':
             #    event.acceptProposedAction()
@@ -173,7 +167,7 @@ class CalculatorSubWindow(NodeEditorWidget):
 
     def onDrop(self, event):
         if event.mimeData().hasUrls():
-            mouse_position = event.pos()
+            mouse_position = event.position().toPoint()
             scene_position = self.scene.grScene.views()[0].mapToScene(mouse_position)
             node = get_class_from_content_label_objname("image_input_node")(self.scene)
             self.scene.history.storeHistory("Created node %s" % node.__class__.__name__)
@@ -192,17 +186,16 @@ class CalculatorSubWindow(NodeEditorWidget):
             dataStream = QDataStream(eventData, QIODevice.ReadOnly)
             pixmap = QPixmap()
             dataStream >> pixmap
-            op_code = dataStream.readInt8()
+            op_code = dataStream.readInt()
             text = dataStream.readQString()
 
             filename = event.mimeData().property("filename")
 
-            mouse_position = event.pos()
+            mouse_position = event.position().toPoint()
             scene_position = self.scene.grScene.views()[0].mapToScene(mouse_position)
 
 
             if filename is not None:
-                print("Received filename:", filename)
 
                 with open(os.path.join("subgraphs", filename), "r") as file:
                     raw_data = file.read()
@@ -226,7 +219,8 @@ class CalculatorSubWindow(NodeEditorWidget):
 
                         node.setPos(scene_position.x(), scene_position.y())
                         self.scene.history.storeHistory("Created node %s" % node.__class__.__name__)
-                        event.ignore()
+                        event.setDropAction(Qt.MoveAction)
+                        event.accept()
                         return
 
                     except json.JSONDecodeError:
@@ -234,7 +228,6 @@ class CalculatorSubWindow(NodeEditorWidget):
                     except Exception as e:
                         dumpException(e)
 
-                event.ignore()
                 """event.setDropAction(Qt.MoveAction)
                 backuptitle = self.filename
                 self.fileLoad(os.path.join("subgraphs", filename))
@@ -248,6 +241,8 @@ class CalculatorSubWindow(NodeEditorWidget):
             if DEBUG: print("GOT DROP: [%d] '%s'" % (op_code, text), "mouse:", mouse_position, "scene:", scene_position)
 
             try:
+                #op_code = int.from_bytes(op_code, byteorder='little', signed=True)
+                print(op_code)
                 node = get_class_from_opcode(op_code)(self.scene)
 
                 #print("NODE CONTENT", node.content)

@@ -40,28 +40,26 @@ class QDMDragListbox(QtWidgets.QTreeWidget):
                 categories[node.category] = []
 
             categories[node.category].append((node.op_title, node.icon, node.op_code))
-
+            last_icon = node.icon
         # Add subgraphs category and files
         subgraph_category = "Subgraphs"
         subgraph_folder = "subgraphs"
         subgraph_files = [f for f in os.listdir(subgraph_folder) if f.endswith(".json")]
+        categories[subgraph_category] = []
         if subgraph_files:
-            node_categories.append(subgraph_category)
-            categories[subgraph_category] = [(file, None, None) for file in subgraph_files]
-        new_list = []
+            for file in subgraph_files:
+                categories[subgraph_category].append((file, "ainodes_frontend/icons/base_nodes/cond.png", "SUB"))
         for category, items in categories.items():
-
             parent = QtWidgets.QTreeWidgetItem(self)
             parent.setText(0, category.capitalize())
             items.sort(key=lambda item: item[0])
             for name, icon, op_code in items:
                 item = QtWidgets.QTreeWidgetItem(parent)
                 item.setText(0, name)
-                pixmap = QPixmap(icon if icon is not None else ".")
+                pixmap = QPixmap(icon)
                 item.setIcon(0, QIcon(pixmap))
                 item.setSizeHint(0, QSize(32, 32))
                 item.setFlags(Qt.ItemIsEnabled | Qt.ItemIsSelectable | Qt.ItemIsDragEnabled)
-
                 # setup data
                 item.setData(0, Qt.UserRole, pixmap)
                 item.setData(0, Qt.UserRole + 1, op_code)
@@ -82,14 +80,18 @@ class QDMDragListbox(QtWidgets.QTreeWidget):
                 pm = True
                 dataStream << pixmap
             if op_code:
-                dataStream.writeInt8(op_code)
+                try:
+                    op_code = int(op_code)
+                except:
+                    op_code = 99
+                dataStream.writeInt(op_code)
+
             dataStream.writeQString(item.text(0))
             # Include JSON file data if available
             json_file = None
             if item.parent() and item.parent().text(0).lower() == "subgraphs":
                 json_file = item.text(0)
-                print("ADDING INFO", json_file)
-                dataStream.writeQString(json_file)
+
             mimeData = QMimeData()
             mimeData.setData(LISTBOX_MIMETYPE, itemData)
             mimeData.setProperty("filename", json_file)

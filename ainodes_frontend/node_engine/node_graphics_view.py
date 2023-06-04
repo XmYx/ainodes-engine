@@ -2,7 +2,8 @@
 """
 A module containing `Graphics View` for NodeEditor
 """
-from PySide6.QtGui import QTransform
+from qtpy.QtOpenGLWidgets import QOpenGLWidget
+from qtpy.QtGui import QTransform
 from qtpy import QtCore, QtWidgets
 from qtpy.QtCore import Signal, QPoint, Qt, QEvent, QPointF, QRectF
 from qtpy.QtGui import QDragEnterEvent, QDropEvent, QMouseEvent, QKeyEvent, QWheelEvent
@@ -42,7 +43,7 @@ DEBUG_MMB_SCENE_ITEMS = False
 DEBUG_MMB_LAST_SELECTIONS = False
 DEBUG_EDGE_INTERSECT = False
 DEBUG_STATE = False
-from qtpy.QtOpenGLWidgets import QOpenGLWidget
+#from qtpy.QtOpenGLWidgets import QOpenGLWidget
 
 
 
@@ -109,7 +110,6 @@ class QDMGraphicsView(QGraphicsView):
         self._drop_listeners = []
 
         self.setViewport(QOpenGLWidget(self))
-
 
     def initUI(self):
         """Set up this ``QGraphicsView``"""
@@ -222,10 +222,10 @@ class QDMGraphicsView(QGraphicsView):
             #return
 
         # faking events for enable MMB dragging the scene
-        releaseEvent = QMouseEvent(QEvent.MouseButtonRelease, event.localPos(), event.screenPos(),
+        releaseEvent = QMouseEvent(QEvent.MouseButtonRelease, event.localPos(), event.scenePosition(),
                                    Qt.LeftButton, Qt.NoButton, event.modifiers())
         super().mouseReleaseEvent(releaseEvent)
-        fakeEvent = QMouseEvent(event.type(), event.localPos(), event.screenPos(),
+        fakeEvent = QMouseEvent(event.type(), event.localPos(), event.scenePosition(),
                                 Qt.LeftButton, event.buttons() | Qt.LeftButton, event.modifiers())
         super().mousePressEvent(fakeEvent)
 
@@ -234,7 +234,7 @@ class QDMGraphicsView(QGraphicsView):
     def middleMouseButtonRelease(self, event: QMouseEvent):
         #print("IM RELEASED")
         """When Middle mouse button was released"""
-        fakeEvent = QMouseEvent(event.type(), event.localPos(), event.screenPos(),
+        fakeEvent = QMouseEvent(event.type(), event.localPos(), event.scenePosition(),
                                 Qt.LeftButton, event.buttons() & ~Qt.LeftButton, event.modifiers())
         super().mouseReleaseEvent(fakeEvent)
         self.setDragMode(QGraphicsView.RubberBandDrag)
@@ -255,7 +255,7 @@ class QDMGraphicsView(QGraphicsView):
         if hasattr(item, "node") or isinstance(item, QDMGraphicsEdge) or item is None:
             if event.modifiers() & Qt.ShiftModifier:
                 event.ignore()
-                fakeEvent = QMouseEvent(QEvent.MouseButtonPress, event.localPos(), event.screenPos(),
+                fakeEvent = QMouseEvent(QEvent.MouseButtonPress, event.localPos(), event.scenePosition(),
                                         Qt.LeftButton, event.buttons() | Qt.LeftButton,
                                         event.modifiers() | Qt.ControlModifier)
                 super().mousePressEvent(fakeEvent)
@@ -453,18 +453,16 @@ class QDMGraphicsView(QGraphicsView):
 
 
         if event.key() == Qt.Key_Delete:
-            print("goal1")
-            print(event)
             nodes = self.grScene.scene.nodes
-            print(nodes)
             for node in nodes:
-                print(node.isSelected())
                 if node.isSelected() == True:
-                    print("found selected node")
                     if hasattr(node, "graph_window"):
-                        node.graph_window.subgraph = None
-                        node.graph_window.close()
-                        node.graph_window.destroy()
+                        try:
+                            node.graph_window.subgraph = None
+                            node.graph_window.close()
+                        except:
+                            pass
+
         super().keyPressEvent(event)
 
         # Use this code below if you wanna have shortcuts in this widget.

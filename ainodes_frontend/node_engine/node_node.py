@@ -322,9 +322,10 @@ class Node(Serializable):
         """
         if hasattr(self, "graph_window"):
             if self.graph_window:
+                self.graph_window.node = None
                 self.graph_window.subgraph = None
                 self.graph_window.close()
-                self.graph_window.destroy()
+                #self.graph_window.destroy()
 
         if DEBUG: print("> Removing Node", self)
         if DEBUG: print(" - remove all edges from sockets")

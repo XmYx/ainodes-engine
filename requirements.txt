@@ -1,5 +1,6 @@
-pyside6==6.4.2
-qtpy==2.3.0
-requests==2.28.2
-pyqtgraph==0.12.1
+pyqt6
+pyqt6-webengine
+qtpy==2.3.1
+requests==2.28.1
+pyqtgraph==0.13.3
 pyyaml

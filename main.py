@@ -1,19 +1,21 @@
 """ainodes-engine main"""
 import glob
-import signal
+import importlib
 #!/usr/bin/env python3
 
 import sys
 import os
 
-
 import subprocess
 import platform
 import argparse
 import time
+import traceback
 from types import SimpleNamespace
+os.environ["QT_API"] = "pyqt6"
+os.environ["FORCE_QT_API"] = "1"
 
-from PySide6.QtCore import QCoreApplication
+from qtpy.QtCore import QCoreApplication
 from qtpy.QtCore import Qt
 from qtpy.QtGui import QPixmap
 from qtpy.QtWidgets import QSplashScreen
@@ -27,10 +29,8 @@ from ainodes_frontend.base.settings import load_settings
 from ainodes_frontend.node_engine.utils import loadStylesheets
 
 # Set environment variable QT_API to use PySide6
-os.environ["QT_API"] = "pyside6"
 # Install Triton if running on Linux
 if "Linux" in platform.platform():
-    #print(platform.platform())
     subprocess.check_call(["pip", "install", "triton==2.0.0"])
 if "Linux" in platform.platform():
     gs.qss = "ainodes_frontend/qss/nodeeditor-dark-linux.qss"
@@ -67,7 +67,9 @@ def import_nodes_from_directory(directory):
                 module_name = os.path.basename(node_file)[:-3].replace('/', '.')
                 dir = directory.replace('/', '.')
                 dir = dir.replace('\\', '.').lstrip('.')
-                exec(f"from {dir} import {module_name}")
+                module = importlib.import_module(f"{dir}.{module_name}")
+
+                #exec(f"from {dir} import {module_name}")
 
 def import_nodes_from_subdirectories(directory):
 
@@ -92,7 +94,7 @@ gs.highlight_sockets = True
 gs.loaded_sd = ""
 gs.current = {}
 gs.loaded_vae = ""
-gs.logging = True
+gs.logging = None
 gs.debug = None
 gs.hovered = None
 gs.loaded_loras = []
@@ -113,10 +115,6 @@ except:
 gs.current["sd_model"] = None
 gs.current["inpaint_model"] = None
 gs.loaded_vae = ""
-
-
-
-
 
 # Parse command line arguments
 parser = argparse.ArgumentParser()
@@ -247,34 +245,20 @@ for folder in os.listdir(base_folder):
 
 from ainodes_frontend.base import CalculatorWindow
 ainodes_qapp.setApplicationName("aiNodes - Engine")
+wnd = CalculatorWindow(ainodes_qapp)
+wnd.stylesheet_filename = os.path.join(os.path.dirname(__file__), gs.qss)
 
+loadStylesheets(
+    os.path.join(os.path.dirname(__file__), gs.qss),
+    wnd.stylesheet_filename
+)
 
-def cleanup(self):
-    pid = os.getpid()
-    os.kill(pid, signal.CTRL_C_EVENT)
+wnd.show()
+wnd.nodesListWidget.addMyItems()
+wnd.onFileNew()
+splash.finish(wnd)
 
-
-def eventListener():
-    print("Quitting")
-    pid = os.getpid()
-    os.kill(pid, signal.CTRL_C_EVENT)
-
-    cleanup()
-    time.sleep(2)
 
 if __name__ == "__main__":
-    wnd = CalculatorWindow(ainodes_qapp)
-    ainodes_qapp.aboutToQuit.connect(eventListener)
 
-    wnd.stylesheet_filename = os.path.join(os.path.dirname(__file__), gs.qss)
-    loadStylesheets(
-        os.path.join(os.path.dirname(__file__), gs.qss),
-        wnd.stylesheet_filename
-    )
-    wnd.cleanup = cleanup
-    signal.signal(signal.SIGINT, lambda *args: QCoreApplication.quit())
-    wnd.show()
-    wnd.nodesListWidget.addMyItems()
-    wnd.onFileNew()
-    splash.finish(wnd)
-    sys.exit(ainodes_qapp.exec())
+    ainodes_qapp.exec_()

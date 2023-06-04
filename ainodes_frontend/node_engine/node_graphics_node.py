@@ -772,8 +772,8 @@ class QDMGraphicsBGInfoNode(QGraphicsItem):
     def initContent(self):
         """Set up the `grContent` - ``QGraphicsProxyWidget`` to have a container for `Graphics Content`"""
         if self.content is not None:
-            self.content.setGeometry(self.edge_padding, self.title_height + self.edge_padding,
-                                 self.width - 2 * self.edge_padding, self.height - 2 * self.edge_padding - self.title_height)
+            self.content.setGeometry(int(self.edge_padding), int(self.title_height + self.edge_padding),
+                                 int(self.width - 2 * self.edge_padding), int(self.height - 2 * self.edge_padding - self.title_height))
 
         # get the QGraphicsProxyWidget when inserted into the grScene
         self.grContent = self.node.scene.grScene.addWidget(self.content)

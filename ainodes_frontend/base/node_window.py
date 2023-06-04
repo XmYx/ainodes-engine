@@ -13,7 +13,8 @@ from qtpy.QtWidgets import QMdiArea, QDockWidget, QAction, QMessageBox, QFileDia
 
 from ainodes_frontend.base import CalcGraphicsNode
 from ainodes_frontend.base.ai_nodes_listbox import QDMDragListbox
-from ainodes_frontend.base.node_config import CALC_NODES, import_nodes_from_file, import_nodes_from_subdirectories
+from ainodes_frontend.base.node_config import CALC_NODES, import_nodes_from_file, import_nodes_from_subdirectories, \
+    get_class_from_content_label_objname
 from ainodes_frontend.base.node_sub_window import CalculatorSubWindow
 from ainodes_frontend.base.settings import load_settings, save_settings, save_error_log
 from ainodes_frontend.base.webview_widget import BrowserWidget
@@ -32,7 +33,6 @@ Edge.registerEdgeValidator(edge_cannot_connect_two_outputs_or_two_inputs)
 Edge.registerEdgeValidator(edge_cannot_connect_input_and_output_of_same_node)
 Edge.registerEdgeValidator(edge_cannot_connect_input_and_output_of_different_type)
 
-from pyqtgraph.console import ConsoleWidget
 
 # images for the dark skin
 DEBUG = False
@@ -59,7 +59,7 @@ class StdoutTextEdit(QtWidgets.QPlainTextEdit):
     def flush(self):
         pass  # no-op, since we're not buffering
 
-    @QtCore.Slot(str)
+    #@QtCore.Slot(str)
     def write_function(self, text):
         # Split the text into lines
         lines = text.splitlines()
@@ -261,7 +261,7 @@ class GitHubRepositoriesDialog(QtWidgets.QDockWidget):
         command = f"git clone https://github.com/{repository} ./custom_nodes/{folder} && pip install -r ./custom_nodes/{folder}/requirements.txt"
         result = run(command, shell=True, stdout=self.parent.text_widget, stderr=self.parent.text_widget)
         return result
-    @QtCore.Slot(object)
+    #@QtCore.Slot(object)
     def download_repository_finished(self, result):
         repository = self.repository_name_label.text()
         folder = repository.split("/")[1]
@@ -291,7 +291,7 @@ class GitHubRepositoriesDialog(QtWidgets.QDockWidget):
         else:
             result = None
         return result
-    @QtCore.Slot(object)
+    #@QtCore.Slot(object)
     def update_repository_finished(self, result):
         repository = self.repository_name_label.text()
         folder = repository.split("/")[1]
@@ -394,6 +394,9 @@ class StreamRedirect(QtCore.QObject):
         with self.stderr_lock:
             decoded_output = self.decode_output(output_bytes)
             self.stderr.write(decoded_output)
+
+from pyqtgraph.console import ConsoleWidget
+
 class NodesConsole(ConsoleWidget):
     def __init__(self):
         super().__init__()
@@ -468,12 +471,14 @@ class NodesConsole(ConsoleWidget):
 
         # Apply the stylesheet to the application
         self.setStyleSheet(stylesheet)
-    def write(self, strn, html=False, scrollToBottom=True):
-        """Write a string into the console.
 
-        If scrollToBottom is 'auto', then the console is automatically scrolled
-        to fit the new text only if it was already at the bottom.
-        """
+    def write(self, strn, html=False, scrollToBottom=True):
+        sys.__stdout__.write(strn)
+        sb = self.output.verticalScrollBar()
+        self.output.insertPlainText(strn)
+        sb.setValue(sb.maximum())
+    """def write(self, strn, html=False, scrollToBottom=True):
+
         isGuiThread = QtCore.QThread.currentThread() == QtCore.QCoreApplication.instance().thread()
         if not isGuiThread:
             sys.__stdout__.write(strn)
@@ -497,7 +502,7 @@ class NodesConsole(ConsoleWidget):
         if scrollToBottom:
             sb.setValue(sb.maximum())
         else:
-            sb.setValue(scroll)
+            sb.setValue(scroll)"""
 
 class ColorEditor(QtWidgets.QDialog):
     def __init__(self, colors, names, parent=None):
@@ -554,7 +559,6 @@ class CalculatorWindow(NodeEditorWindow):
 
 
     def eventListener(self, *args, **kwargs):
-        print("cleaning up")
         self.cleanup()
         save_settings()
         save_error_log()
@@ -695,16 +699,12 @@ class CalculatorWindow(NodeEditorWindow):
         # Create a text widget for stdout and stderr
         self.text_widget = NodesConsole()
         # Set up the StreamRedirect objects
+
         self.stdout_redirect = StreamRedirect()
         self.stderr_redirect = StreamRedirect()
-        #self.stdin_redirect = StreamRedirect()
-        # Connect the text_written signal to the text_widget's append method
         self.stdout_redirect.text_written.connect(self.text_widget.write)
-        #self.stdin_redirect.text_written.connect(self.text_widget.write)
         self.stderr_redirect.text_written.connect(self.text_widget.write)
-        # Redirect stdout and stderr to the StreamRedirect objects
         sys.stdout = self.stdout_redirect
-        #sys.stdin = self.stdin_redirect
         sys.stderr = self.stderr_redirect
 
         self.console = QDockWidget()
@@ -802,7 +802,7 @@ class CalculatorWindow(NodeEditorWindow):
 
         except Exception as e: dumpException(e)
 
-    @QtCore.Slot(object)
+    #@QtCore.Slot(object)
     def onFileNew_subgraph(self, node):
         try:
             subwnd = self.createMdiChild()
@@ -821,24 +821,24 @@ class CalculatorWindow(NodeEditorWindow):
             dumpException(e)
     def eventFilter(self, obj, event):
         if event.type() == QtCore.QEvent.Close:
-            if obj.subgraph:
+            if obj.widget().subgraph:
                 event.ignore()  # Ignore the close event
                 return True
-            else:
-                nodes = obj.widget().scene.nodes
-                for node in nodes:
-                    if hasattr(node, "graph_window"):
-                        node.graph_window.subgraph = None
-                        node.graph_window.close()
+            #else:
+            #    nodes = obj.widget().scene.nodes
+            #    for node in nodes:
+            #        if hasattr(node, "graph_window"):
+            #            node.graph_window.subgraph = None
+            #            node.graph_window.close()
 
         return super().eventFilter(obj, event)
-    @QtCore.Slot(object)
+    #@QtCore.Slot(object)
     def onJsonOpen_subgraph(self, node):
 
         json_graph = node.graph_json
         json_name = node.name
 
-
+        current = self.mdiArea.currentSubWindow()
         #fnames, filter = QFileDialog.getOpenFileNames(self, 'Open graph from file', f"{self.getFileDialogDirectory()}/graphs", self.getFileDialogFilter())
 
         try:
@@ -859,7 +859,7 @@ class CalculatorWindow(NodeEditorWindow):
                     subwnd.show()
                     # Install event filter on the subwnd object
                     subwnd.installEventFilter(self)
-
+                    self.setActiveSubWindow(current)
                 else:
                     nodeeditor.close()
         except Exception as e: dumpException(e)
@@ -909,10 +909,9 @@ class CalculatorWindow(NodeEditorWindow):
                 else:
                     nodeeditor.close()
         except Exception as e: dumpException(e)
-    @QtCore.Slot(object)
+    #@QtCore.Slot(object)
     def fileOpen(self, file):
 
-        print("OPENING")
 
         fnames = [file]
         try:
@@ -1111,7 +1110,6 @@ class CalculatorWindow(NodeEditorWindow):
                 item.node.saved_widgets_and_layouts = []
 
                 for widget in item.content.widget_list:
-                    print(widget)
                     widget.setParent(None)
                     item.node.saved_widgets_and_layouts.append(widget)
                     if isinstance(widget, QtWidgets.QHBoxLayout) or isinstance(widget, QtWidgets.QVBoxLayout):
@@ -1139,11 +1137,22 @@ class CalculatorWindow(NodeEditorWindow):
                             child_layout.setParent(node_item.content.main_layout)
                             break
     def onSubWndClose(self, widget, event):
+
+        nodes = widget.scene.nodes
+        subgr_node = get_class_from_content_label_objname("subgraph_node")
+        node = None
+        for node in nodes:
+            if isinstance(node, subgr_node):
+                node.graph_window.subgraph = None
+
         existing = self.findMdiChild(widget.filename)
         self.mdiArea.setActiveSubWindow(existing)
 
         if self.maybeSave():
             event.accept()
+            for node in nodes:
+                if isinstance(node, subgr_node):
+                    node.graph_window.close()
         else:
             event.ignore()
 
