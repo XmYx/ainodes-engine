@@ -40,15 +40,15 @@ class QDMDragListbox(QtWidgets.QTreeWidget):
                 categories[node.category] = []
 
             categories[node.category].append((node.op_title, node.icon, node.op_code))
-            last_icon = node.icon
         # Add subgraphs category and files
         subgraph_category = "Subgraphs"
         subgraph_folder = "subgraphs"
         subgraph_files = [f for f in os.listdir(subgraph_folder) if f.endswith(".json")]
         categories[subgraph_category] = []
         if subgraph_files:
+            icon = "ainodes_frontend/icons/base_nodes/v2/load_subgraph.png"
             for file in subgraph_files:
-                categories[subgraph_category].append((file, "ainodes_frontend/icons/base_nodes/cond.png", "SUB"))
+                categories[subgraph_category].append((file, icon, "SUB"))
         for category, items in categories.items():
             parent = QtWidgets.QTreeWidgetItem(self)
             parent.setText(0, category.capitalize())

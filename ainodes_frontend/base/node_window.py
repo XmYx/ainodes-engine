@@ -1,4 +1,5 @@
 import os
+import re
 import subprocess
 import sys
 import threading
@@ -472,11 +473,56 @@ class NodesConsole(ConsoleWidget):
         # Apply the stylesheet to the application
         self.setStyleSheet(stylesheet)
 
-    def write(self, strn, html=False, scrollToBottom=True):
+    def write_(self, strn, html=False, scrollToBottom=True):
         sys.__stdout__.write(strn)
         sb = self.output.verticalScrollBar()
-        self.output.insertPlainText(strn)
+
+        # Remove control characters used by tqdm
+        filtered_strn = re.sub(r'\x1b\[.*?[@-~]', '', strn)
+
+        self.output.insertPlainText(filtered_strn)
         sb.setValue(sb.maximum())
+
+    def write(self, strn, style='output', scrollToBottom='auto'):
+
+        isGuiThread = QtCore.QThread.currentThread() == QtCore.QCoreApplication.instance().thread()
+        if not isGuiThread:
+            sys.__stdout__.write(strn)
+            return
+
+        cursor = self.output.textCursor()
+        cursor.movePosition(QtGui.QTextCursor.MoveOperation.End)
+        self.output.setTextCursor(cursor)
+
+        sb = self.output.verticalScrollBar()
+        scroll = sb.value()
+        if scrollToBottom == 'auto':
+            atBottom = scroll == sb.maximum()
+            scrollToBottom = atBottom
+
+        row = cursor.blockNumber()
+        #if style == 'command':
+        #    self._lastCommandRow = row
+
+        if style == 'output':
+            # adjust style for first line of output
+            firstLine, endl, strn = strn.partition('\n')
+            #self._setTextStyle('output_first_line')
+            self.output.insertPlainText(firstLine + endl)
+
+        if len(strn) > 0:
+            #self._setTextStyle(style)
+            self.output.insertPlainText(strn)
+            # return to output style immediately to avoid seeing an extra line of command style
+            #if style != 'output':
+            #    self._setTextStyle('output')
+
+        if scrollToBottom:
+            sb.setValue(sb.maximum())
+        else:
+            sb.setValue(scroll)
+
+
     """def write(self, strn, html=False, scrollToBottom=True):
 
         isGuiThread = QtCore.QThread.currentThread() == QtCore.QCoreApplication.instance().thread()
