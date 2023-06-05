@@ -48,6 +48,8 @@ class QDMGraphicsScene(QGraphicsScene):
         self.initAssets()
         self.setBackgroundBrush(self._color_background)
 
+
+
     def initAssets(self):
         """Initialize ``QObjects`` like ``QColor``, ``QPen`` and ``QBrush``"""
         self._color_background = QColor("#393939")
@@ -117,4 +119,3 @@ class QDMGraphicsScene(QGraphicsScene):
                 rect_state = QRect(rect.x()+offset, rect.y()+offset, rect.width()-2*offset, rect.height()-2*offset)
                 painter.drawText(rect_state, Qt.AlignRight | Qt.AlignTop, STATE_STRING[self.views()[0].mode].upper())
             except: dumpException()
-

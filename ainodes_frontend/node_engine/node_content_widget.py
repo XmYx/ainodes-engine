@@ -3,6 +3,7 @@
 an overridden Text Widget, which can pass a notification to it's parent about being modified."""
 from typing import List
 
+from PyQt6.QtCore import Qt
 from qtpy import QtCore, QtWidgets
 from qtpy import QtGui
 from qtpy.QtWidgets import QWidget, QLabel, QVBoxLayout, QTextEdit
@@ -32,6 +33,7 @@ class QDMNodeContentWidget(QWidget, Serializable):
 
         self.widget_list = []
         self.initUI()
+
         #sshFile = "ainodes_frontend/qss/nodeeditor-dark.qss"
         #with open(sshFile, "r") as fh:
         #    self.setStyleSheet(fh.read())

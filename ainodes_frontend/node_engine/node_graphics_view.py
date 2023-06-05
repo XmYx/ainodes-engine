@@ -111,6 +111,7 @@ class QDMGraphicsView(QGraphicsView):
 
         self.setViewport(QOpenGLWidget(self))
 
+        self.setDragMode(QGraphicsView.NoDrag)
     def initUI(self):
         """Set up this ``QGraphicsView``"""
         #self.setRenderHints(QPainter.Antialiasing | QPainter.HighQualityAntialiasing | QPainter.TextAntialiasing | QPainter.SmoothPixmapTransform)
@@ -607,16 +608,5 @@ class QDMGraphicsView(QGraphicsView):
             if not clamped or self.zoomClamp is False:
                 self.scale(zoomFactor, zoomFactor)
         if gs.hovered:
-
-            #print(event.position())
-
-            #scene_event = QGraphicsSceneWheelEvent(event.position(), event.angleDelta(), event.buttons(), event.modifiers(),
-            #                                       QPointF())
-
-            #scene_event = QGraphicsSceneWheelEvent(event.type())
-            #scene_event.setAccepted(event.isAccepted())
-            #scene_event.setInverted(event.inverted())
-            #gs.hover_node.grNode.wheelEvent(scene_event)
-            #self.setDragMode(QGraphicsView.RubberBandDrag)
+            event.ignore()
             super().wheelEvent(event)
-

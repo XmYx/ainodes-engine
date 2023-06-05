@@ -1233,4 +1233,3 @@ class CalculatorWindow(NodeEditorWindow):
         view = scene.grScene.scene.getView()  # Assuming there is only one view associated with the scene
         view.setViewportUpdateMode(QGraphicsView.FullViewportUpdate)
         view.update()
-

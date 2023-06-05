@@ -67,13 +67,11 @@ class CalcGraphicsNode(QDMGraphicsNode):
             icon_rect = QRectF(self.width - 40, -15, 48.0, 48.0)
             painter.drawImage(icon_rect, QImage(self.icon))
 
-
 class CalcContent(QDMNodeContentWidget):
 
     def initUI(self):
         lbl = QLabel(self.node.content_label, self)
         lbl.setObjectName(self.node.content_label_objname)
-
 class WorkerThread(threading.Thread):
     def __init__(self, target, on_finished):
         super().__init__()

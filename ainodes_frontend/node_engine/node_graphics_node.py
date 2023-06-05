@@ -274,6 +274,7 @@ class QDMGraphicsNode(QGraphicsItem):
         self._height = height
 
 
+
 class QDMGraphicsBGNode(QGraphicsItem):
     """Class describing Graphics representation of :class:`~node_engine.node_node.Node`"""
     def __init__(self, node:'Node', parent:QWidget=None):
