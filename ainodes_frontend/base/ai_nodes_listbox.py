@@ -76,7 +76,7 @@ class QDMDragListbox(QtWidgets.QTreeWidget):
             itemData = QByteArray()
             dataStream = QDataStream(itemData, QIODevice.WriteOnly)
             if item.data(0, Qt.UserRole) is not None:
-                pixmap = QPixmap(item.data(0, Qt.UserRole))
+                pixmap = QPixmap(item.data(0, Qt.UserRole)).scaled(256, 256, aspectRatioMode=Qt.KeepAspectRatio)
                 pm = True
                 dataStream << pixmap
             if op_code:

@@ -65,9 +65,6 @@ class CalcGraphicsNode(QDMGraphicsNode):
 
         if self.icon:
             icon_rect = QRectF(self.width - 40, -15, 48.0, 48.0)
-
-            print(icon_rect)
-
             painter.drawImage(icon_rect, QImage(self.icon))
 
 

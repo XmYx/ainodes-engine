@@ -157,10 +157,6 @@ class CalculatorSubWindow(NodeEditorWidget):
             event.acceptProposedAction()
         elif event.mimeData().hasUrls():
             event.acceptProposedAction()
-            #mime_type = QtCore.QMimeType(event.mimeData().formats()[0])
-            #if mime_type.name() == 'image/*' or mime_type.name() == 'video/*':
-            #    event.acceptProposedAction()
-            #    return
         else:
             # print(" ... denied drag enter event")
             event.setAccepted(False)

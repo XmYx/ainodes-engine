@@ -230,7 +230,7 @@ class Node(Serializable):
         pass
 
     def onDoubleClicked(self, event):
-        print(self.content.isVisible())
+        #print(self.content.isVisible())
 
         self.content.setVisible(not self.content.isVisible())
         """Event handling double click on Graphics Node in `Scene`"""

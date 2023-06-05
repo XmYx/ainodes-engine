@@ -76,7 +76,7 @@ class QDMNodeContentWidget(QWidget, Serializable):
                         widget = widget.widget()
                         if isinstance(widget, QtWidgets.QComboBox):
                             res[f"{widget.objectName()}"] = widget.currentText()
-                            print(res[f"{widget.objectName()}"])
+                            #print(res[f"{widget.objectName()}"])
                         elif isinstance(widget, QtWidgets.QLineEdit):
                             res[f"{widget.objectName()}"] = widget.text()
                         elif isinstance(widget, QtWidgets.QTextEdit):
