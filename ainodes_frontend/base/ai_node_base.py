@@ -64,7 +64,10 @@ class CalcGraphicsNode(QDMGraphicsNode):
         # Paint self.icon at the top-left corner
 
         if self.icon:
-            icon_rect = QRectF(self.width - 28, 0, 24.0, 24.0)
+            icon_rect = QRectF(self.width - 40, -15, 48.0, 48.0)
+
+            print(icon_rect)
+
             painter.drawImage(icon_rect, QImage(self.icon))
 
 
