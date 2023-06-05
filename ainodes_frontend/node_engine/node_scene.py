@@ -369,7 +369,7 @@ class Scene(Serializable):
         """
 
         try:
-            self.filename = json_name
+            self.json_name = json_name
             self.deserialize(json_data)
             self.has_been_modified = False
         except Exception as e:

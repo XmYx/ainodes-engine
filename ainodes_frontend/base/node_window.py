@@ -715,11 +715,11 @@ class CalculatorWindow(NodeEditorWindow):
             consoleVisible = self.console.isVisible()
             self.console.setVisible(not consoleVisible)
 
-        packagesVisible = self.node_packages.isVisible()
+        #packagesVisible = self.node_packages.isVisible()
 
         # Toggle the visibility of the dock widgets
 
-        self.node_packages.setVisible(not packagesVisible)
+        #self.node_packages.setVisible(not packagesVisible)
     def toggleNodesDock(self):
         # Get the current visibility state of the dock widgets
         consoleVisible = self.nodesDock.isVisible()

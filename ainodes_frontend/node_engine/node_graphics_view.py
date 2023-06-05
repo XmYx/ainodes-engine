@@ -292,7 +292,7 @@ class QDMGraphicsView(QGraphicsView):
         if item is None:
             if event.modifiers() & Qt.ControlModifier:
                 self.mode = MODE_EDGE_CUT
-                fakeEvent = QMouseEvent(QEvent.MouseButtonRelease, event.localPos(), event.screenPos(),
+                fakeEvent = QMouseEvent(QEvent.MouseButtonRelease, event.localPos(), event.scenePosition(),
                                         Qt.LeftButton, Qt.NoButton, event.modifiers())
                 super().mouseReleaseEvent(fakeEvent)
                 QApplication.setOverrideCursor(Qt.CrossCursor)

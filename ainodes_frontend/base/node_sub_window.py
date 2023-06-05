@@ -34,20 +34,13 @@ class CalculatorSubWindow(NodeEditorWidget):
         self.setAttribute(Qt.WA_DeleteOnClose)
         self.setTitle()
         self.initNewNodeActions()
-        #self.scene.threadpool = QThreadPool()
         self.scene.addHasBeenModifiedListener(self.setTitle)
         self.scene.history.addHistoryRestoredListener(self.onHistoryRestored)
         self.scene.addDragEnterListener(self.onDragEnter)
         self.scene.addDropListener(self.onDrop)
         self.scene.setNodeClassSelector(self.getNodeClassFromData)
         self._close_event_listeners = []
-        #self.run_all_action = QAction("Run All")
-        #self.run_all_action.triggered.connect(self.doRunAll)
-        """self.stylesheet_filename = os.path.join(os.path.dirname(__file__), "ainodes_frontend/qss/nodeeditor-dark.qss")
-        loadStylesheets(
-            os.path.join(os.path.dirname(__file__), "ainodes_frontend/qss/nodeeditor-dark.qss"),
-            self.stylesheet_filename
-        )"""
+
         #self._search_widget = TabSearchMenuWidget()
         #self._search_widget.search_submitted.connect(self._on_search_submitted)
         #print(self._search_widget.isVisible())
@@ -58,8 +51,6 @@ class CalculatorSubWindow(NodeEditorWidget):
         if self.subgraph:
             event.ignore()  # Ignore the close event
         else:
-
-
             super().closeEvent(event)
 
 
@@ -203,16 +194,8 @@ class CalculatorSubWindow(NodeEditorWidget):
                         node_class = get_class_from_content_label_objname("subgraph_node")
                         node = node_class(self.scene, data)
                         curr_win = self.parent()
-                        """try:
-                            
-                            print("CURR WIN SET", curr_win)
-                            win_manager = self.parent().window().mdiArea.setActiveSubWindow(curr_win)
-                            print("WIN MANAGER SET", win_manager)
-                        except:
-                            pass"""
                         node.onDoubleClicked()
                         self.parent().window().mdiArea.setActiveSubWindow(curr_win)
-
                         node.setPos(scene_position.x(), scene_position.y())
                         self.scene.history.storeHistory("Created node %s" % node.__class__.__name__)
                         event.setDropAction(Qt.MoveAction)
@@ -224,25 +207,12 @@ class CalculatorSubWindow(NodeEditorWidget):
                     except Exception as e:
                         dumpException(e)
 
-                """event.setDropAction(Qt.MoveAction)
-                backuptitle = self.filename
-                self.fileLoad(os.path.join("subgraphs", filename))
-                self.filename = backuptitle
-                #time.sleep(0.1)
-                #self.setWindowTitle(backuptitle)
-                return
-                #self.scene.deserialize()"""
 
 
             if DEBUG: print("GOT DROP: [%d] '%s'" % (op_code, text), "mouse:", mouse_position, "scene:", scene_position)
 
             try:
-                #op_code = int.from_bytes(op_code, byteorder='little', signed=True)
-                print(op_code)
                 node = get_class_from_opcode(op_code)(self.scene)
-
-                #print("NODE CONTENT", node.content)
-
                 node.setPos(scene_position.x(), scene_position.y())
                 self.scene.history.storeHistory("Created node %s" % node.__class__.__name__)
             except Exception as e: dumpException(e)

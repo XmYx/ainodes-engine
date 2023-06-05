@@ -113,6 +113,7 @@ class NodeEditorWidget(QWidget):
         """Empty the scene (create new file)"""
         self.scene.clear()
         self.filename = None
+        self.json_name = None
         self.scene.history.clear()
         self.scene.history.storeInitialHistoryStamp()
 
@@ -149,7 +150,7 @@ class NodeEditorWidget(QWidget):
         QApplication.setOverrideCursor(Qt.WaitCursor)
         try:
             self.scene.loadFromJson(json_data, json_name)
-            self.filename = json_name
+            self.json_name = json_name
             self.scene.history.clear()
             self.scene.history.storeInitialHistoryStamp()
             return True
