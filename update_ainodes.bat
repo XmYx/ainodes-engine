@@ -23,7 +23,6 @@ call %base_folder%\Scripts\activate.bat
 
 rem Stash and pull changes in the base folder
 cd %SCRIPT_DIR%
-git stash
 git pull
 pip install -r requirements.txt
 
@@ -43,4 +42,4 @@ call %base_folder%\Scripts\deactivate.bat
 
 endlocal
 
-call run_ainodes.bat
+call %SCRIPT_DIR%\run_ainodes.bat
