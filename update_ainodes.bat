@@ -4,6 +4,7 @@ setlocal enabledelayedexpansion
 set "base_folder=nodes_env"
 set "custom_nodes_folder=custom_nodes"
 set "repositories_file=repositories.txt"
+set "SCRIPT_DIR=%~dp0"
 
 rem Read repositories from repositories.txt
 for /f "tokens=*" %%A in (%repositories_file%) do (
@@ -21,10 +22,10 @@ rem Activate virtual environment
 call %base_folder%\Scripts\activate.bat
 
 rem Stash and pull changes in the base folder
-cd %base_folder%
+cd %SCRIPT_DIR%
+git stash
 git pull
 pip install -r requirements.txt
-cd ..
 
 rem Process folders in the custom_nodes directory
 cd %custom_nodes_folder%
