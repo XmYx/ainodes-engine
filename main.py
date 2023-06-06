@@ -14,6 +14,7 @@ import traceback
 from types import SimpleNamespace
 os.environ["QT_API"] = "pyqt6"
 os.environ["FORCE_QT_API"] = "1"
+os.environ["QTWEBENGINE_CHROMIUM_FLAGS"] = "--disable-gpu"
 
 from qtpy.QtCore import QCoreApplication
 from qtpy.QtCore import Qt

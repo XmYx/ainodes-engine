@@ -212,6 +212,7 @@ class CalculatorSubWindow(NodeEditorWidget):
             if DEBUG: print("GOT DROP: [%d] '%s'" % (op_code, text), "mouse:", mouse_position, "scene:", scene_position)
 
             try:
+                #node = get_class_from_content_label_objname(node_content_obj_name)
                 node = get_class_from_opcode(op_code)(self.scene)
                 node.setPos(scene_position.x(), scene_position.y())
                 self.scene.history.storeHistory("Created node %s" % node.__class__.__name__)

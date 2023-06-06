@@ -674,7 +674,7 @@ class CalculatorWindow(NodeEditorWindow):
         print("------------------")
 
         # Create a QDockWidget
-        self.bdock_widget = QDockWidget("Embedded Browser", self)
+        self.bdock_widget = QDockWidget("Embedded Browser", None)
 
         # Set the BrowserWidget as the central widget of the QDockWidget
         browser_widget = BrowserWidget()

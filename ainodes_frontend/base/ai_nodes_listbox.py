@@ -7,6 +7,7 @@ from qtpy.QtWidgets import QAbstractItemView
 
 from ainodes_frontend.base.node_config import CALC_NODES, get_class_from_opcode, LISTBOX_MIMETYPE, node_categories
 from ainodes_frontend.node_engine.utils import dumpException
+from ainodes_frontend import singleton as gs
 
 
 class QDMDragListbox(QtWidgets.QTreeWidget):
@@ -48,7 +49,7 @@ class QDMDragListbox(QtWidgets.QTreeWidget):
         if subgraph_files:
             icon = "ainodes_frontend/icons/base_nodes/v2/load_subgraph.png"
             for file in subgraph_files:
-                categories[subgraph_category].append((file, icon, "SUB"))
+                categories[subgraph_category].append((file, icon, gs.nodes["subgraph_node"]['op_code']))
         for category, items in categories.items():
             parent = QtWidgets.QTreeWidgetItem(self)
             parent.setText(0, category.capitalize())
@@ -80,10 +81,11 @@ class QDMDragListbox(QtWidgets.QTreeWidget):
                 pm = True
                 dataStream << pixmap
             if op_code:
-                try:
-                    op_code = int(op_code)
-                except:
-                    op_code = 99
+                #try:
+                #    op_code = int(op_code)
+                #except:
+                #    op_code = 99
+                print("TRIED", op_code)
                 dataStream.writeInt(op_code)
 
             dataStream.writeQString(item.text(0))

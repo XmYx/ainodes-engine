@@ -1,48 +1,58 @@
-from qtpy.QtCore import Qt, QUrl
+import sys
+
+from qtpy import QtWidgets
+from qtpy.QtCore import QUrl
+from qtpy.QtGui import QIcon
+from qtpy.QtWidgets import QLineEdit,QPushButton, QToolBar
+from qtpy.QtWebEngineCore import QWebEnginePage
 from qtpy.QtWebEngineWidgets import QWebEngineView
-from qtpy.QtWidgets import QApplication, QVBoxLayout, QWidget, QLineEdit, QPushButton, QHBoxLayout
 
-class BrowserWidget(QWidget):
-    def __init__(self, parent=None):
-        super().__init__(parent)
 
-        # Create layout for the browser widget
-        layout = QVBoxLayout()
+class BrowserWidget(QtWidgets.QWidget):
+
+    def __init__(self):
+        super().__init__()
+
+        self.setWindowTitle('PyQt6 WebEngineWidgets Example')
+
+        layout = QtWidgets.QVBoxLayout()
         self.setLayout(layout)
 
-        # Create a horizontal layout for the toolbar
-        toolbar_layout = QHBoxLayout()
+        self.toolBar = QToolBar()
+        layout.addWidget(self.toolBar)
 
-        # Create a back button
-        self.back_button = QPushButton("Back")
-        toolbar_layout.addWidget(self.back_button)
+        self.backButton = QPushButton()
+        self.backButton.setIcon(QIcon.fromTheme("go-previous"))
+        self.backButton.clicked.connect(self.back)
+        self.toolBar.addWidget(self.backButton)
 
-        # Create a URL bar
-        self.url_bar = QLineEdit()
-        self.url_bar.returnPressed.connect(self.load_url)
-        toolbar_layout.addWidget(self.url_bar)
+        self.forwardButton = QPushButton()
+        self.forwardButton.setIcon(QIcon.fromTheme("go-next"))
+        self.forwardButton.clicked.connect(self.forward)
+        self.toolBar.addWidget(self.forwardButton)
 
-        # Create a Go button
-        self.go_button = QPushButton("Go")
-        self.go_button.clicked.connect(self.load_url)
-        toolbar_layout.addWidget(self.go_button)
+        self.addressLineEdit = QLineEdit()
+        self.addressLineEdit.returnPressed.connect(self.load)
+        self.toolBar.addWidget(self.addressLineEdit)
 
-        # Add the toolbar layout to the main layout
-        layout.addLayout(toolbar_layout)
+        self.webEngineView = QWebEngineView()
+        self.webEngineView.load(QUrl("http://qt.io"))
+        self.webEngineView.page().titleChanged.connect(self.setWindowTitle)
+        self.webEngineView.page().urlChanged.connect(self.urlChanged)
+        layout.addWidget(self.webEngineView)
 
-        # Create a QWebEngineView
-        self.webview = QWebEngineView()
+        self.addressLineEdit.setText("http://qt.io")
 
-        self.back_button.clicked.connect(self.webview.back)
+    def load(self):
+        url = QUrl.fromUserInput(self.addressLineEdit.text())
+        if url.isValid():
+            self.webEngineView.load(url)
 
+    def back(self):
+        self.webEngineView.page().triggerAction(QWebEnginePage.WebAction.Back)
 
-        layout.addWidget(self.webview)
+    def forward(self):
+        self.webEngineView.page().triggerAction(QWebEnginePage.WebAction.Forward)
 
-        # Load www.google.com
-        self.load_url()
-
-    def load_url(self):
-        url = self.url_bar.text()
-        if not url.startswith("http://") and not url.startswith("https://"):
-            url = "http://" + url
-        self.webview.load(QUrl(url))
+    def urlChanged(self, url):
+        self.addressLineEdit.setText(url.toString())

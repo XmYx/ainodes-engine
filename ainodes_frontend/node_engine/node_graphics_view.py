@@ -4,7 +4,7 @@ A module containing `Graphics View` for NodeEditor
 """
 from qtpy.QtOpenGLWidgets import QOpenGLWidget
 from qtpy.QtGui import QTransform
-from qtpy import QtCore, QtWidgets
+from qtpy import QtCore, QtWidgets, QtGui
 from qtpy.QtCore import Signal, QPoint, Qt, QEvent, QPointF, QRectF
 from qtpy.QtGui import QDragEnterEvent, QDropEvent, QMouseEvent, QKeyEvent, QWheelEvent
 from qtpy.QtWidgets import QGraphicsView, QApplication
@@ -45,8 +45,69 @@ DEBUG_EDGE_INTERSECT = False
 DEBUG_STATE = False
 #from qtpy.QtOpenGLWidgets import QOpenGLWidget
 
+class MiniMapView(QGraphicsView):
+    def __init__(self, scene):
+        super(MiniMapView, self).__init__(scene)
+        self.setRenderHint(QtGui.QPainter.Antialiasing)
+        self.setInteractive(True)
+        self._is_panning = False
+        self._mouse_button_pressed = None
+        self.last_scene_mouse_position = QPoint(0,0)
+        self.zoomInFactor = 1.25
+        self.zoomClamp = False
+        self.zoom = 10
+        self.zoomStep = 0.1
+        self.zoomRange = [0, 10]
+
+    def mousePressEvent(self, event):
+        if event.button() == Qt.MiddleButton:
+            self._mouse_button_pressed = Qt.MiddleButton
+            self._last_mouse_pos = event.pos()
+            self.setCursor(Qt.ClosedHandCursor)
+            self._is_panning = True
+            event.accept()
+        else:
+            super(MiniMapView, self).mousePressEvent(event)
+
+    def mouseMoveEvent(self, event):
+        if self._is_panning and self._mouse_button_pressed == Qt.MiddleButton:
+            delta = event.pos() - self._last_mouse_pos
+            self.horizontalScrollBar().setValue(self.horizontalScrollBar().value() - delta.x())
+            self.verticalScrollBar().setValue(self.verticalScrollBar().value() - delta.y())
+            self._last_mouse_pos = event.pos()
+            event.accept()
+        else:
+            super(MiniMapView, self).mouseMoveEvent(event)
+
+    def mouseReleaseEvent(self, event):
+        if event.button() == Qt.MiddleButton:
+            self.setCursor(Qt.ArrowCursor)
+            self._is_panning = False
+            event.accept()
+        else:
+            super(MiniMapView, self).mouseReleaseEvent(event)
+    def wheelEvent(self, event: QWheelEvent):
+        """overridden Qt's ``wheelEvent``. This handles zooming"""
+        # calculate our zoom Factor
+        zoomOutFactor = 1 / self.zoomInFactor
+
+        # calculate zoom
+        if event.angleDelta().y() > 0:
+            zoomFactor = self.zoomInFactor
+            self.zoom += self.zoomStep
+        else:
+            zoomFactor = zoomOutFactor
+            self.zoom -= self.zoomStep
 
 
+        clamped = False
+        if self.zoom < self.zoomRange[0]: self.zoom, clamped = self.zoomRange[0], True
+        if self.zoom > self.zoomRange[1]: self.zoom, clamped = self.zoomRange[1], True
+
+        # set scene scale
+        if not clamped or self.zoomClamp is False:
+            self.scale(zoomFactor, zoomFactor)
+            #self.mini_map.scale(zoomFactor, zoomFactor)
 
 class QDMGraphicsView(QGraphicsView):
     """Class representing NodeEditor's `Graphics View`"""
@@ -109,14 +170,35 @@ class QDMGraphicsView(QGraphicsView):
         self._drag_enter_listeners = []
         self._drop_listeners = []
 
-        self.setViewport(QOpenGLWidget(self))
+        #self.setViewport(QOpenGLWidget(self))
 
         self.setDragMode(QGraphicsView.NoDrag)
+
+        # Create the mini-map view
+        self.mini_map = MiniMapView(self.grScene)
+        self.mini_map.setParent(self)
+        self.mini_map.setFixedSize(400, 300)  # Set the size as required
+
+        # Configure the mini-map
+        self.mini_map.setRenderHint(QtGui.QPainter.Antialiasing)
+        self.mini_map.setViewportUpdateMode(QGraphicsView.BoundingRectViewportUpdate)
+        self.mini_map.setOptimizationFlag(QGraphicsView.DontAdjustForAntialiasing)
+        self.mini_map.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.mini_map.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+
+        # The scale factor determines how much you want to shrink the scene
+        scale_factor = 0.06  # adjust this value as needed
+        self.mini_map.setTransform(QTransform().scale(scale_factor, scale_factor))
+        self.mini_map.setDragMode(QGraphicsView.NoDrag)
+    def resizeEvent(self, event):
+        # Position the mini-map at the top right corner
+        self.mini_map.move(self.width() - self.mini_map.width(), self.height() - self.mini_map.height())
+        super(QDMGraphicsView, self).resizeEvent(event)
     def initUI(self):
         """Set up this ``QGraphicsView``"""
         #self.setRenderHints(QPainter.Antialiasing | QPainter.HighQualityAntialiasing | QPainter.TextAntialiasing | QPainter.SmoothPixmapTransform)
 
-        #self.setViewportUpdateMode(QGraphicsView.FullViewportUpdate)
+        self.setViewportUpdateMode(QGraphicsView.FullViewportUpdate)
 
         self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
@@ -193,6 +275,15 @@ class QDMGraphicsView(QGraphicsView):
         item = self.getItemAtClick(event)
 
 
+        # faking events for enable MMB dragging the scene
+        releaseEvent = QMouseEvent(QEvent.MouseButtonRelease, event.localPos(), event.scenePosition(),
+                                   Qt.LeftButton, Qt.NoButton, event.modifiers())
+        super().mouseReleaseEvent(releaseEvent)
+        fakeEvent = QMouseEvent(event.type(), event.localPos(), event.scenePosition(),
+                                Qt.LeftButton, event.buttons() | Qt.LeftButton, event.modifiers())
+        super().mousePressEvent(fakeEvent)
+
+
         # debug printout
         if DEBUG_MMB_SCENE_ITEMS:
             if isinstance(item, QDMGraphicsEdge):
@@ -222,21 +313,14 @@ class QDMGraphicsView(QGraphicsView):
             print("scene _last_selected_items:", self.grScene.scene._last_selected_items)
             #return
 
-        # faking events for enable MMB dragging the scene
-        releaseEvent = QMouseEvent(QEvent.MouseButtonRelease, event.localPos(), event.scenePosition(),
-                                   Qt.LeftButton, Qt.NoButton, event.modifiers())
-        super().mouseReleaseEvent(releaseEvent)
-        fakeEvent = QMouseEvent(event.type(), event.localPos(), event.scenePosition(),
-                                Qt.LeftButton, event.buttons() | Qt.LeftButton, event.modifiers())
-        super().mousePressEvent(fakeEvent)
-
-
 
     def middleMouseButtonRelease(self, event: QMouseEvent):
         #print("IM RELEASED")
         """When Middle mouse button was released"""
         fakeEvent = QMouseEvent(event.type(), event.localPos(), event.scenePosition(),
                                 Qt.LeftButton, event.buttons() & ~Qt.LeftButton, event.modifiers())
+        self.mini_map.centerOn(self.mapToScene(self.viewport().rect().center()))
+
         super().mouseReleaseEvent(fakeEvent)
         self.setDragMode(QGraphicsView.RubberBandDrag)
 
@@ -607,6 +691,7 @@ class QDMGraphicsView(QGraphicsView):
             # set scene scale
             if not clamped or self.zoomClamp is False:
                 self.scale(zoomFactor, zoomFactor)
+                #self.mini_map.scale(zoomFactor, zoomFactor)
         if gs.hovered:
             event.ignore()
             super().wheelEvent(event)
