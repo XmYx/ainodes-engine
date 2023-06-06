@@ -282,14 +282,22 @@ class NodeEditorWindow(QMainWindow):
             return True
 
     def onFileSaveAs(self):
+
+        print()
+
         """Handle File Save As operation"""
         current_nodeeditor = self.getCurrentNodeEditorWidget()
         if current_nodeeditor is not None:
-            fname, filter = QFileDialog.getSaveFileName(self, 'Save graph to file', f"{self.getFileDialogDirectory()}/graphs", self.getFileDialogFilter())
+            if current_nodeeditor.json_name:
+                if "Subgraph" in current_nodeeditor.json_name:
+                    dest = "subgraphs"
+            else:
+                dest = "graphs"
+            fname, filter = QFileDialog.getSaveFileName(self, 'Save graph to file', f"{self.getFileDialogDirectory()}/{dest}", self.getFileDialogFilter())
             if fname == '': return False
-
             self.onBeforeSaveAs(current_nodeeditor, fname)
             current_nodeeditor.fileSave(fname)
+            self.window().nodesListWidget.addMyItems()
             self.statusBar().showMessage("Successfully saved as %s" % current_nodeeditor.filename, 5000)
 
             # support for MDI app

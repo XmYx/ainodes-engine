@@ -108,7 +108,25 @@ class MiniMapView(QGraphicsView):
         if not clamped or self.zoomClamp is False:
             self.scale(zoomFactor, zoomFactor)
             #self.mini_map.scale(zoomFactor, zoomFactor)
+class InfoBox(QtWidgets.QWidget):
+    def __init__(self, parent=None):
+        super().__init__()
+        self.setAttribute(QtCore.Qt.WidgetAttribute.WA_TranslucentBackground)
+        self.setContentsMargins(10, 10, 10, 10)
 
+        # Create a layout for the InfoBox
+        layout = QtWidgets.QVBoxLayout(self)
+        layout.setContentsMargins(10, 10, 10, 10)
+
+        # Style the labels and add them to the layout
+        info_style = "QLabel { color: white; background-color: rgba(0, 0, 0, 127); border-radius: 15px; padding: 10px;}"
+        keys = gs.help_items
+        for key in keys:
+            label = QtWidgets.QLabel(key)
+            label.setStyleSheet(info_style)
+            layout.addWidget(label)
+
+        self.setLayout(layout)
 class QDMGraphicsView(QGraphicsView):
     """Class representing NodeEditor's `Graphics View`"""
     #: pyqtSignal emitted when cursor position on the `Scene` has changed
@@ -190,9 +208,19 @@ class QDMGraphicsView(QGraphicsView):
         scale_factor = 0.06  # adjust this value as needed
         self.mini_map.setTransform(QTransform().scale(scale_factor, scale_factor))
         self.mini_map.setDragMode(QGraphicsView.NoDrag)
+
+        # Create the InfoBox and add it to the QGraphicsView
+        self.infoBox = InfoBox()
+        self.infoBoxProxy = QtWidgets.QGraphicsProxyWidget()
+        self.infoBoxProxy.setWidget(self.infoBox)
+        self.infoBoxProxy.setVisible(False)
+
+        self.grScene.addItem(self.infoBoxProxy)
     def resizeEvent(self, event):
         # Position the mini-map at the top right corner
         self.mini_map.move(self.width() - self.mini_map.width(), self.height() - self.mini_map.height())
+        self.infoBoxProxy.setPos(self.viewport().width() - self.infoBox.width(), 0)
+
         super(QDMGraphicsView, self).resizeEvent(event)
     def initUI(self):
         """Set up this ``QGraphicsView``"""
@@ -492,12 +520,15 @@ class QDMGraphicsView(QGraphicsView):
     def mouseMoveEvent(self, event: QMouseEvent):
         """Overriden Qt's ``mouseMoveEvent`` handling Scene/View logic"""
         scenepos = self.mapToScene(event.pos())
-
+        #print(scenepos)
+        self.infoBoxProxy.setPos(scenepos)
         #try:
         modified = self.setSocketHighlights(scenepos, highlighted=False, radius=EDGE_SNAPPING_RADIUS+100)
         if self.isSnappingEnabled(event):
             _, scenepos = self.snapping.getSnappedToSocketPosition(scenepos)
-        if modified: self.update()
+        if modified:
+            self.update()
+
 
         if self.mode == MODE_EDGE_DRAG:
             self.dragging.updateDestination(scenepos.x(), scenepos.y())
@@ -547,7 +578,10 @@ class QDMGraphicsView(QGraphicsView):
                             node.graph_window.close()
                         except:
                             pass
-
+        elif event.key() == Qt.Key_F1:
+            self.infoBoxProxy.setVisible(not self.infoBoxProxy.isVisible())
+        elif event.key() == Qt.Key_F2:
+            self.mini_map.setVisible(not self.mini_map.isVisible())
         super().keyPressEvent(event)
 
         # Use this code below if you wanna have shortcuts in this widget.

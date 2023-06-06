@@ -14,13 +14,13 @@ class QDMDragListbox(QtWidgets.QTreeWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.initUI()
+        self.header().hide()
 
     def initUI(self):
         # init
         self.setIconSize(QSize(32, 32))
         self.setSelectionMode(QAbstractItemView.SingleSelection)
         self.setDragEnabled(True)
-
         self.addMyItems()
         """self.stylesheet_filename = os.path.join(os.path.dirname(__file__), "qss/nodeeditor-dark.qss")
         loadStylesheets(

@@ -2,6 +2,7 @@ import os
 import platform
 import subprocess
 import time
+from types import SimpleNamespace
 
 import yaml
 import traceback
@@ -9,6 +10,8 @@ import traceback
 from qtpy.QtGui import QColor
 
 from ainodes_frontend import singleton as gs
+from ainodes_frontend.base.help import get_help
+
 
 def handle_ainodes_exception():
     traceback_str = traceback.format_exc()
@@ -152,3 +155,41 @@ def setup_defaults():
     gs.loras = "models/loras"
     gs.t2i_adapter = "models/t2i_adapter"
     gs.output = "output"
+
+
+def init_globals():
+    # Initialize global variables
+    gs.obj = {}
+    gs.values = {}
+    gs.current = {}
+    gs.nodes = {}
+    gs.system = SimpleNamespace()
+    gs.busy = False
+    gs.models = {}
+    gs.token = ""
+    gs.use_deforum_loss = None
+    gs.highlight_sockets = True
+    gs.loaded_sd = ""
+    gs.current = {}
+    gs.loaded_vae = ""
+    gs.logging = None
+    gs.debug = None
+    gs.hovered = None
+    gs.loaded_loras = []
+    gs.metas = "output/metas"
+    gs.system.textual_inversion_dir = "models/embeddings"
+    gs.error_stack = []
+    gs.should_run = True
+    gs.loaded_kandinsky = ""
+    gs.loaded_hypernetworks = []
+    gs.threads = {}
+    gs.help_items = get_help()
+    try:
+        import xformers
+        gs.system.xformer = True
+    except:
+        gs.system.xformer = False
+
+    gs.current["sd_model"] = None
+    gs.current["inpaint_model"] = None
+    gs.loaded_vae = ""

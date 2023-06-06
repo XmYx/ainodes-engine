@@ -671,6 +671,8 @@ class CalculatorWindow(NodeEditorWindow):
         print("aiNodes Ready.")
         print("------------------")
         print(f"|{len(CALC_NODES)} Nodes loaded.|")
+        print(f"|  Press F1 for  |")
+        print(f"|       Help     |")
         print("------------------")
 
         # Create a QDockWidget
