@@ -42,4 +42,4 @@ call %base_folder%\Scripts\deactivate.bat
 
 endlocal
 
-call %SCRIPT_DIR%\run_ainodes.bat
+call run_ainodes.bat
