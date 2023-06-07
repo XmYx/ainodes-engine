@@ -71,6 +71,7 @@ Once the app is up and running, you can start check the File - Example Graphs op
 <ol>
   <li>Deforum</li>
   <li>Stable Diffusion 1.5 / 2.0 / 2.1</li>
+  <li>Upscalers</li>
   <li>Kandinsky</li>
   <li>ControlNet</li>
   <li>LORAs</li>
@@ -80,6 +81,7 @@ Once the app is up and running, you can start check the File - Example Graphs op
   <li>Human matting / masking</li>
   <li>Compositing</li>
   <li>Drag and Drop (from discord too)</li>
+  <li>Subgraphs</li>
   <li>Graph saving as metadata in the image file</li>
   <li>Graph loading from image metadata</li>
 </ol>
