@@ -129,6 +129,20 @@ class AiNode(Node):
         self.values = {}
         self.busy = False
         self.init_done = None
+    def initInnerClasses(self):
+        node_content_class = self.getNodeContentClass()
+        graphics_node_class = self.getGraphicsNodeClass()
+        if node_content_class is not None: self.content = node_content_class(self)
+        if graphics_node_class is not None: self.grNode = graphics_node_class(self)
+        if hasattr(self, "dim"):
+            width = self.dim[0]
+            height = self.dim[1]
+            self.grNode.width = width
+            self.grNode.height = height
+            self.content.setMinimumHeight(height)
+            self.content.setMinimumWidth(width)
+        self.grNode.icon = self.icon
+        self.content.eval_signal.connect(self.evalImplementation)
 
     def set_socket_names(self):
         """
@@ -303,13 +317,16 @@ class AiNode(Node):
         return None
     #@QtCore.Slot(object)
     def onWorkerFinished(self, result):
-
         self.busy = False
-        #try:
-        #    self.worker.signals.result.disconnect(self.onWorkerFinished)
-        #    del self.worker
-        #except:
-        #    pass
+        self.markDirty(False)
+        if hasattr(self, "output_data_ports"):
+            for port in self.output_data_ports:
+                self.setOutput(port, result[port])
+
+        self.setOutput(0, result)
+        if hasattr(self, "exec_port"):
+            if len(self.getOutputs(1)) > 0:
+                self.executeChild(output_index=1)
     def eval(self, index=0):
         try:
             self.content.eval_signal.emit()

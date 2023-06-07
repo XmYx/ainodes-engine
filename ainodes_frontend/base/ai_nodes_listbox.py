@@ -80,13 +80,14 @@ class QDMDragListbox(QtWidgets.QTreeWidget):
                 pixmap = QPixmap(item.data(0, Qt.UserRole)).scaled(256, 256, aspectRatioMode=Qt.KeepAspectRatio)
                 pm = True
                 dataStream << pixmap
-            if op_code:
+            print("OPCODE WILL BE", op_code)
+            #if op_code:
                 #try:
                 #    op_code = int(op_code)
                 #except:
                 #    op_code = 99
-                print("TRIED", op_code)
-                dataStream.writeInt(op_code)
+            #print("TRIED", op_code)
+            dataStream.writeInt(int(op_code))
 
             dataStream.writeQString(item.text(0))
             # Include JSON file data if available

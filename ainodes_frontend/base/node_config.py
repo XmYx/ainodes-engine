@@ -17,7 +17,7 @@ class OpCodeNotRegistered(ConfException): pass
 # This should be the maximum opcode used in your project so far
 MAX_OPCODE = 500
 
-OP_NODE_INIT = 1
+#OP_NODE_INIT = 1
 
 
 def get_next_opcode():
@@ -35,6 +35,7 @@ def get_next_opcode():
         if f"OP_NODE_{i}" not in op_node_vars:
             globals()[f"OP_NODE_{i}"] = i
             op_node_vars.append(f"OP_NODE_{i}")
+            print("ADDED NODE", i)
             return i
 
     raise RuntimeError("Could not find a free opcode.")
@@ -61,7 +62,6 @@ def register_node(op_code):
 
 def get_class_from_opcode(op_code):
     if op_code not in CALC_NODES: raise OpCodeNotRegistered("OpCode '%d' is not registered" % op_code)
-
     return CALC_NODES[op_code]
 def get_class_from_content_label_objname(content_label_objname):
     return gs.nodes[content_label_objname]['class']
