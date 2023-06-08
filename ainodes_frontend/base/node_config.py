@@ -33,7 +33,6 @@ def get_next_opcode():
         if f"OP_NODE_{i}" not in op_node_vars:
             globals()[f"OP_NODE_{i}"] = i
             op_node_vars.append(f"OP_NODE_{i}")
-            print("ADDED NODE", i)
             return i
 
     raise RuntimeError("Could not find a free opcode.")

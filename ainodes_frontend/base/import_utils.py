@@ -25,16 +25,24 @@ def update_all_nodes_req():
             pbar.set_description(f"Installing {folder}'s requirements")
             pbar.update(50)  # Indicate that requirements installation is 50% complete
 
+
+
+
 def import_nodes_from_directory(directory):
     if "ainodes_backend" not in directory and "backend" not in directory and "_nodes" in directory:
         node_files = glob.glob(os.path.join(directory, "*.py"))
+
         for node_file in node_files:
             f = os.path.basename(node_file)
             if f != "__init__.py" and "_node" in f:
                 module_name = os.path.basename(node_file)[:-3].replace('/', '.')
                 dir = directory.replace('/', '.')
                 dir = dir.replace('\\', '.').lstrip('.')
+
+
                 module = importlib.import_module(f"{dir}.{module_name}")
+
+
 
 def import_nodes_from_subdirectories(directory):
 

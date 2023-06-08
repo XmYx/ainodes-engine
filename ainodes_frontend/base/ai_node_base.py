@@ -1,6 +1,6 @@
 import threading
 
-from qtpy import QtWidgets, QtCore
+from qtpy import QtWidgets, QtCore, QtGui
 from qtpy.QtCore import QRectF
 from qtpy.QtGui import QImage
 from qtpy.QtWidgets import QLabel
@@ -61,11 +61,11 @@ class CalcGraphicsNode(QDMGraphicsNode):
             QRectF(offset, 0, 24.0, 24.0)
         )
 
-        # Paint self.icon at the top-left corner
+        # Paint self.icon at the top-right corner
 
-        if self.icon:
+        if self.thumbnail:
             icon_rect = QRectF(self.width - 40, -15, 48.0, 48.0)
-            painter.drawImage(icon_rect, QImage(self.icon))
+            painter.drawImage(icon_rect, self.thumbnail)
 
 class CalcContent(QDMNodeContentWidget):
 
@@ -141,7 +141,9 @@ class AiNode(Node):
             self.grNode.height = height
             self.content.setMinimumHeight(height)
             self.content.setMinimumWidth(width)
-        self.grNode.icon = self.icon
+        self.grNode.icon = QtGui.QImage(self.icon)
+        self.grNode.thumbnail = self.grNode.icon.scaled(64, 64, QtCore.Qt.KeepAspectRatio)
+
         self.content.eval_signal.connect(self.evalImplementation)
 
     def set_socket_names(self):
@@ -317,6 +319,8 @@ class AiNode(Node):
         return None
     #@QtCore.Slot(object)
     def onWorkerFinished(self, result):
+
+        print(type(result[0]))
         self.busy = False
         self.markDirty(False)
         if hasattr(self, "output_data_ports"):
@@ -325,7 +329,6 @@ class AiNode(Node):
                 self.setOutput(port, result[x])
                 x += 1
 
-        self.setOutput(0, result)
         if hasattr(self, "exec_port"):
             if len(self.getOutputs(1)) > 0:
                 self.executeChild(output_index=1)

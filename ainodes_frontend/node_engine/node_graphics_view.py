@@ -53,11 +53,11 @@ class MiniMapView(QGraphicsView):
         self._is_panning = False
         self._mouse_button_pressed = None
         self.last_scene_mouse_position = QPoint(0,0)
-        self.zoomInFactor = 1.25
+        self.zoomInFactor = 1.05
         self.zoomClamp = False
         self.zoom = 10
         self.zoomStep = 0.1
-        self.zoomRange = [0, 10]
+        self.zoomRange = [7.5, 9]
 
     def mousePressEvent(self, event):
         if event.button() == Qt.MiddleButton:
@@ -184,11 +184,12 @@ class QDMGraphicsView(QGraphicsView):
         self.zoomStep = 0.1
         self.zoomRange = [0, 10]
 
+
         # listeners
         self._drag_enter_listeners = []
         self._drop_listeners = []
 
-        #self.setViewport(QOpenGLWidget(self))
+        self.setViewport(QOpenGLWidget(self))
 
         self.setDragMode(QGraphicsView.NoDrag)
 
@@ -725,7 +726,7 @@ class QDMGraphicsView(QGraphicsView):
             # set scene scale
             if not clamped or self.zoomClamp is False:
                 self.scale(zoomFactor, zoomFactor)
-                #self.mini_map.scale(zoomFactor, zoomFactor)
+                gs.zoom = self.zoom
         if gs.hovered:
             event.ignore()
             super().wheelEvent(event)

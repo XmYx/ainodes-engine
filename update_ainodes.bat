@@ -3,8 +3,24 @@ setlocal enabledelayedexpansion
 
 set "base_folder=nodes_env"
 set "custom_nodes_folder=custom_nodes"
+set "src_folder=src"
 set "repositories_file=repositories.txt"
+set "src_file=src.txt"
 set "SCRIPT_DIR=%~dp0"
+set "codeformer_folder=src/CodeFormerBasicSR"
+
+rem Read sources from src.txt
+for /f "tokens=*" %%A in (%src_file%) do (
+  set "repository=%%A"
+  echo Cloning repository: !repository!
+
+  rem Go to custom_nodes folder and clone the repository
+  cd %src_folder%
+  git clone https://www.github.com/!repository!
+
+  rem Return to the original directory
+  cd ..
+)
 
 rem Read repositories from repositories.txt
 for /f "tokens=*" %%A in (%repositories_file%) do (
@@ -18,10 +34,19 @@ for /f "tokens=*" %%A in (%repositories_file%) do (
   rem Return to the original directory
   cd ..
 )
+
+
 rem Activate virtual environment
 call %base_folder%\Scripts\activate.bat
 
 rem Stash and pull changes in the base folder
+
+cd %codeformer_folder%
+
+Rem Installing Basicsr for Codeformers
+call python c_basicsr/setup.py develop
+
+
 cd %SCRIPT_DIR%
 git pull
 pip install -r requirements.txt

@@ -6,6 +6,7 @@ REM Get the full path of the script directory
 set "SCRIPT_DIR=%~dp0"
 REM Construct the full path to the Python Scripts directory
 set "PYTHON_DIR=%SCRIPT_DIR%src\python"
+set "SRC_DIR=%SCRIPT_DIR%src"
 set "PYTHON_LIB_DIR=%PYTHON_DIR%\Lib"
 set "PYTHON_SCRIPTS_DIR=%PYTHON_DIR%\Scripts"
 set "BACKUPPATH=%PATH%"
@@ -76,6 +77,28 @@ for /d %%B in (%custom_nodes_folder%\*) do (
     popd
   )
 )
+
+set "src_file=src.txt"
+
+rem Read repositories from repositories.txt
+for /f "tokens=*" %%A in (%src_file%) do (
+  set "repository=%%A"
+  echo Cloning repository: !repository!
+
+  rem Go to custom_nodes folder and clone the repository
+  cd %SRC_DIR%
+  git clone https://www.github.com/!repository!
+
+  rem Return to the original directory
+  cd ..
+)
+
+set "CODEFORMER_DIR=%SRC_DIR%CodeFormerBasicSR"
+cd %CODEFORMER_DIR%
+call python c_basicsr/setup.py develop
+
+cd %SCRIPT_DIR%
+
 
 set "SCRIPT_DIR=%~dp0"
 set "APP_DIR=%SCRIPT_DIR%"
