@@ -14,10 +14,8 @@ class ConfException(Exception): pass
 class InvalidNodeRegistration(ConfException): pass
 class OpCodeNotRegistered(ConfException): pass
 
-# This should be the maximum opcode used in your project so far
+# This should be the maximum opcode
 MAX_OPCODE = 500
-
-#OP_NODE_INIT = 1
 
 
 def get_next_opcode():
@@ -31,7 +29,7 @@ def get_next_opcode():
     op_node_vars.sort()
     # Find the first missing opcode (i.e. the smallest integer greater than
     # MAX_OPCODE that is not already used as an opcode).
-    for i in range(99):
+    for i in range(MAX_OPCODE):
         if f"OP_NODE_{i}" not in op_node_vars:
             globals()[f"OP_NODE_{i}"] = i
             op_node_vars.append(f"OP_NODE_{i}")
@@ -49,9 +47,6 @@ def register_node_now(op_code, class_reference):
     gs.nodes[class_reference.content_label_objname] = {}
     gs.nodes[class_reference.content_label_objname]['op_code'] = op_code
     gs.nodes[class_reference.content_label_objname]['class'] = class_reference
-
-
-    #print(class_reference.content_label_objname)
 
 
 def register_node(op_code):
