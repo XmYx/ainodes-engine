@@ -1,19 +1,25 @@
 """ainodes-engine main"""
 #!/usr/bin/env python3
+import datetime
+start_time = datetime.datetime.now()
+print(f"Start aiNodes, please wait. {start_time}")
 
 import os
 os.environ["QT_API"] = "pyqt6"
 os.environ["FORCE_QT_API"] = "1"
 os.environ["QTWEBENGINE_CHROMIUM_FLAGS"] = "--disable-gpu"
 
-import subprocess
 import platform
 import sys
 
 from qtpy.QtCore import Qt
 from qtpy.QtWidgets import QSplashScreen, QApplication
-from qtpy import QtCore, QtQuick, QtGui
-subprocess.check_call(["pip", "install", "tqdm"])
+from qtpy import QtCore, QtGui
+try:
+    import tqdm
+except:
+    import subprocess
+    subprocess.check_call(["pip", "install", "tqdm"])
 
 from ainodes_frontend import singleton as gs
 from ainodes_frontend.base.settings import load_settings, init_globals
@@ -25,6 +31,7 @@ from ainodes_frontend.base.import_utils import update_all_nodes_req, import_node
 # Set environment variable QT_API to use PySide6
 # Install Triton if running on Linux
 if "Linux" in platform.platform():
+    import subprocess
     subprocess.check_call(["pip", "install", "triton==2.0.0"])
 if "Linux" in platform.platform():
     gs.qss = "ainodes_frontend/qss/nodeeditor-dark-linux.qss"
@@ -55,7 +62,7 @@ if gs.args.highdpi:
     qs_format.setProfile(QtGui.QSurfaceFormat.CoreProfile)
     QtGui.QSurfaceFormat.setDefaultFormat(qs_format)
     QtCore.QCoreApplication.setAttribute(QtCore.Qt.ApplicationAttribute.AA_ShareOpenGLContexts)
-    QtQuick.QQuickWindow.setGraphicsApi(QSGRendererInterface.OpenGLRhi)
+    #QtQuick.QQuickWindow.setGraphicsApi(QSGRendererInterface.OpenGLRhi)
 
 
 set_application_attributes(QApplication, gs.args)
@@ -78,11 +85,14 @@ base_folder = 'custom_nodes'
 if gs.args.update:
     update_all_nodes_req()
 
+
 for folder in os.listdir(base_folder):
     folder_path = os.path.join(base_folder, folder)
     if "__pycache__" not in folder_path and "_nodes" in folder_path:
         if os.path.isdir(folder_path):
             import_nodes_from_subdirectories(folder_path)
+
+
 
 from ainodes_frontend.base import CalculatorWindow
 ainodes_qapp.setApplicationName("aiNodes - Engine")
@@ -100,6 +110,9 @@ wnd.onFileNew()
 splash.finish(wnd)
 
 
-if __name__ == "__main__":
+end_time = datetime.datetime.now()
+print(f"Initialization took: {end_time - start_time}")
 
-    ainodes_qapp.exec_()
+
+if __name__ == "__main__":
+    ainodes_qapp.exec()

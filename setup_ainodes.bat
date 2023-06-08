@@ -93,9 +93,6 @@ for /f "tokens=*" %%A in (%src_file%) do (
   cd ..
 )
 
-set "CODEFORMER_DIR=%SRC_DIR%CodeFormerBasicSR"
-cd %CODEFORMER_DIR%
-call python c_basicsr/setup.py develop
 
 cd %SCRIPT_DIR%
 

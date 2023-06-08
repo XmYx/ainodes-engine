@@ -7,7 +7,6 @@ set "src_folder=src"
 set "repositories_file=repositories.txt"
 set "src_file=src.txt"
 set "SCRIPT_DIR=%~dp0"
-set "codeformer_folder=src/CodeFormerBasicSR"
 
 rem Read sources from src.txt
 for /f "tokens=*" %%A in (%src_file%) do (
@@ -41,10 +40,6 @@ call %base_folder%\Scripts\activate.bat
 
 rem Stash and pull changes in the base folder
 
-cd %codeformer_folder%
-
-Rem Installing Basicsr for Codeformers
-call python c_basicsr/setup.py develop
 
 
 cd %SCRIPT_DIR%
