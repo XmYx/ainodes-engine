@@ -19,6 +19,7 @@ from ainodes_frontend import singleton as gs
 
 class CalcGraphicsNode(QDMGraphicsNode):
     icon = None
+    thumbnail = None
     def initSizes(self):
         """
         Initialize the sizes and padding for the graphical representation of the node.
