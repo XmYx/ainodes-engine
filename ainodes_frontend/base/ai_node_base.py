@@ -84,6 +84,7 @@ class WorkerThread(threading.Thread):
 
 class AiNode(Node):
     icon = ""
+    thumbnail = None
     op_code = 0
     op_title = "Undefined"
     content_label = ""
