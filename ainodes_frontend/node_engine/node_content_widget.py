@@ -268,7 +268,7 @@ class QDMNodeContentWidget(QWidget, Serializable):
         self.widget_list.append(combo_box)
         return combo_box
 
-    def create_line_edit(self, label_text, accessible_name=None, default=None) -> QtWidgets.QLineEdit:
+    def create_line_edit(self, label_text, accessible_name=None, default=None, placeholder=None) -> QtWidgets.QLineEdit:
         """Create a line edit widget with the given label text.
 
         Args:
@@ -283,7 +283,8 @@ class QDMNodeContentWidget(QWidget, Serializable):
             line_edit.setText(default)
         if accessible_name is not None:
             line_edit.setAccessibleName(accessible_name)
-
+        if placeholder is not None:
+            line_edit.setPlaceholderText(placeholder)
         label = QtWidgets.QLabel(label_text)
         layout = QtWidgets.QHBoxLayout()
         layout.addWidget(label)

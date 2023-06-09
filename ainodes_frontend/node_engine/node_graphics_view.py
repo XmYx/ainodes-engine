@@ -189,7 +189,7 @@ class QDMGraphicsView(QGraphicsView):
         self._drag_enter_listeners = []
         self._drop_listeners = []
 
-        self.setViewport(QOpenGLWidget(self))
+        #self.setViewport(QOpenGLWidget(self))
 
         self.setDragMode(QGraphicsView.NoDrag)
 

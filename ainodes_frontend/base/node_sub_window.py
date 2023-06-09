@@ -47,6 +47,7 @@ class CalculatorSubWindow(NodeEditorWidget):
         self.scenePos = None
         self.subgraph = None
         #self.tab_search_toggle()
+
     def closeEvent(self, event):
         if self.subgraph:
             event.ignore()  # Ignore the close event
