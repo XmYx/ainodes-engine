@@ -229,8 +229,8 @@ class DDIMSampler(object):
                                       unconditional_conditioning=unconditional_conditioning,
                                       dynamic_threshold=dynamic_threshold, denoise_function=denoise_function, extra_args=extra_args)
             img, pred_x0 = outs
-            if callback: callback(i)
-            if img_callback: img_callback(pred_x0, i)
+            if img_callback: img_callback({"i":i, "denoised":pred_x0})
+            #if img_callback: img_callback(pred_x0, i)
 
             if index % log_every_t == 0 or index == total_steps - 1:
                 intermediates['x_inter'].append(img)

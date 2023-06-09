@@ -16,6 +16,7 @@ from ainodes_frontend.base.help import get_help
 def handle_ainodes_exception():
     traceback_str = traceback.format_exc()
     gs.error_stack.append(traceback_str)
+    print(traceback_str)
     save_error_log()
     return True
 

@@ -291,7 +291,7 @@ class QDMNodeContentWidget(QWidget, Serializable):
         line_edit.layout = layout
         self.widget_list.append(line_edit)
         return line_edit
-    def create_text_edit(self, label_text) -> QtWidgets.QTextEdit:
+    def create_text_edit(self, label_text, placeholder="") -> QtWidgets.QTextEdit:
         """Create a line edit widget with the given label text.
 
         Args:
@@ -301,6 +301,7 @@ class QDMNodeContentWidget(QWidget, Serializable):
             QtWidgets.QLineEdit: A line edit widget.
         """
         line_edit = QtWidgets.QTextEdit()
+        line_edit.setPlaceholderText(placeholder)
         label = QtWidgets.QLabel(label_text)
         line_edit.setObjectName(label_text)
         layout = QtWidgets.QHBoxLayout()
@@ -482,8 +483,8 @@ class QDMNodeContentWidget(QWidget, Serializable):
 
         if grid:
             # Create a QGridLayout with the specified number of columns
-            grid_layout = QtWidgets.QGridLayout()
-            grid_layout.setSpacing(10)  # Adjust the spacing between items
+            self.grid_layout = QtWidgets.QGridLayout()
+            self.grid_layout.setSpacing(10)  # Adjust the spacing between items
 
             # Add widgets to the grid layout
             for i, item in enumerate(self.widget_list):
@@ -491,13 +492,13 @@ class QDMNodeContentWidget(QWidget, Serializable):
                 column = i % grid
                 if isinstance(item, QtWidgets.QWidget):
                     if isinstance(item, QtWidgets.QComboBox) or isinstance(item, QtWidgets.QLineEdit) or isinstance(item, QtWidgets.QSpinBox) or isinstance(item, QtWidgets.QDoubleSpinBox):
-                        grid_layout.addLayout(item.layout, row, column)
+                        self.grid_layout.addLayout(item.layout, row, column)
                     else:
-                        grid_layout.addWidget(item, row, column)
+                        self.grid_layout.addWidget(item, row, column)
                 elif isinstance(item, QtWidgets.QLayout):
-                    grid_layout.addLayout(item, row, column)
+                    self.grid_layout.addLayout(item, row, column)
 
-            self.main_layout.addLayout(grid_layout)
+            self.main_layout.addLayout(self.grid_layout)
         else:
             # Add items to the main layout without a grid
             for item in self.widget_list:
