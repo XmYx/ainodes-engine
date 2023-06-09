@@ -6,6 +6,7 @@ import threading
 from subprocess import run
 
 import requests
+from PyQt6.QtCore import QPropertyAnimation
 from qtpy import QtWidgets, QtCore, QtGui
 from qtpy.QtCore import Qt, QSignalMapper
 from qtpy.QtGui import QIcon, QKeySequence
@@ -684,6 +685,14 @@ class CalculatorWindow(NodeEditorWindow):
         self.addDockWidget(Qt.RightDockWidgetArea, self.bdock_widget)
         self.bdock_widget.setVisible(False)
         self.subgraph = None
+
+        self.animation = QPropertyAnimation(self.nodesDock, b"geometry")
+
+    def set_nodesDockHeight(self, width):
+        self.nodesDock.setMaximumWidth(width)
+
+    def get_nodesDockHeight(self):
+        return self.nodesDock.maximumWidth()
     def cleanup(self):
         try:
             self.training_thread.terminate_process()
@@ -723,11 +732,24 @@ class CalculatorWindow(NodeEditorWindow):
 
         #self.node_packages.setVisible(not packagesVisible)
     def toggleNodesDock(self):
-        # Get the current visibility state of the dock widgets
         consoleVisible = self.nodesDock.isVisible()
+        #self.nodesDock.setGraphicsEffect(self.animation)
 
-        # Toggle the visibility of the dock widgets
-        self.nodesDock.setVisible(not consoleVisible)
+        self.animation.setDuration(100) # animation duration 1 second
+        if consoleVisible:
+            # If the dock is visible, animate the height to 0
+            self.nodeOrig = self.nodesDock.geometry()
+            self.animation.setStartValue(self.nodesDock.geometry())
+            self.animation.setEndValue(QtCore.QRect(self.nodeOrig.x(),self.nodeOrig.y(),0,self.nodeOrig.height()))
+            self.animation.finished.connect(self.nodesDock.hide)
+        else:
+            self.nodesDock.show()
+            # If the dock is hidden, animate the height from 0 to the original size
+            self.animation.setStartValue(QtCore.QRect(self.nodeOrig.x(),self.nodeOrig.y(),0,self.nodeOrig.height()))
+            self.animation.setEndValue(self.nodeOrig)
+            self.animation.finished.connect(self.nodesDock.show)
+
+        self.animation.start()
     def toggleFullscreen(self):
         if self.isFullScreen():
             self.showNormal()

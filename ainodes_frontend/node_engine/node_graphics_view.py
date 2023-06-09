@@ -2,6 +2,8 @@
 """
 A module containing `Graphics View` for NodeEditor
 """
+from PyQt6.QtCore import QEasingCurve, QPropertyAnimation
+from PyQt6.QtWidgets import QGraphicsOpacityEffect
 from qtpy.QtOpenGLWidgets import QOpenGLWidget
 from qtpy.QtGui import QTransform
 from qtpy import QtCore, QtWidgets, QtGui
@@ -217,6 +219,15 @@ class QDMGraphicsView(QGraphicsView):
         self.infoBoxProxy.setVisible(False)
 
         self.grScene.addItem(self.infoBoxProxy)
+
+        self.effect = QGraphicsOpacityEffect(self)
+        self.animation = QPropertyAnimation(self.effect, b"opacity")
+
+    def set_opacity(self, value):
+        self.effect.setOpacity(value)
+
+    def get_opacity(self):
+        return self.effect.opacity()
     def resizeEvent(self, event):
         # Position the mini-map at the top right corner
         self.mini_map.move(self.width() - self.mini_map.width(), self.height() - self.mini_map.height())
@@ -582,7 +593,29 @@ class QDMGraphicsView(QGraphicsView):
         elif event.key() == Qt.Key_F1:
             self.infoBoxProxy.setVisible(not self.infoBoxProxy.isVisible())
         elif event.key() == Qt.Key_F2:
-            self.mini_map.setVisible(not self.mini_map.isVisible())
+            # self.mini_map.setVisible(not self.mini_map.isVisible())
+
+            if self.mini_map.isVisible():
+                # Prepare the animation for fading out
+                self.mini_map.setGraphicsEffect(self.effect)
+                self.animation.setDuration(500) # animation duration 1 second
+                self.animation.setStartValue(1.0) # fully visible
+                self.animation.setEndValue(0.0) # fully transparent
+                self.animation.setEasingCurve(QEasingCurve.Type.InOutQuad)
+                self.animation.finished.connect(self.mini_map.hide)
+                self.animation.start()
+            else:
+                self.mini_map.show()
+                self.mini_map.setGraphicsEffect(self.effect)
+
+                # Prepare the animation for fading in
+                self.animation.setDuration(500) # animation duration 1 second
+                self.animation.setStartValue(0.0) # fully transparent
+                self.animation.setEndValue(1.0) # fully visible
+                self.animation.setEasingCurve(QEasingCurve.Type.InOutQuad)
+                self.animation.finished.connect(self.mini_map.show)
+                self.animation.start()
+
         super().keyPressEvent(event)
 
         # Use this code below if you wanna have shortcuts in this widget.

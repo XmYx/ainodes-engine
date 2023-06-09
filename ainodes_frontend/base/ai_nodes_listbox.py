@@ -40,7 +40,7 @@ class QDMDragListbox(QtWidgets.QTreeWidget):
                 node_categories.append(node.category)
                 categories[node.category] = []
 
-            categories[node.category].append((node.op_title, node.icon, node.op_code))
+            categories[node.category].append((node.op_title, node.icon, node.op_code, node.help_text))
         # Add subgraphs category and files
         subgraph_category = "Subgraphs"
         subgraph_folder = "subgraphs"
@@ -49,12 +49,12 @@ class QDMDragListbox(QtWidgets.QTreeWidget):
         if subgraph_files:
             icon = "ainodes_frontend/icons/base_nodes/v2/load_subgraph.png"
             for file in subgraph_files:
-                categories[subgraph_category].append((file, icon, gs.nodes["subgraph_node"]['op_code']))
+                categories[subgraph_category].append((file, icon, gs.nodes["subgraph_node"]['op_code'], "Subgraph Nodes"))
         for category, items in categories.items():
             parent = QtWidgets.QTreeWidgetItem(self)
             parent.setText(0, category.capitalize())
             items.sort(key=lambda item: item[0])
-            for name, icon, op_code in items:
+            for name, icon, op_code, help_text in items:
                 item = QtWidgets.QTreeWidgetItem(parent)
                 item.setText(0, name)
                 pixmap = QPixmap(icon)
@@ -62,6 +62,7 @@ class QDMDragListbox(QtWidgets.QTreeWidget):
                 item.setSizeHint(0, QSize(32, 32))
                 item.setFlags(Qt.ItemIsEnabled | Qt.ItemIsSelectable | Qt.ItemIsDragEnabled)
                 # setup data
+                item.setToolTip(0, help_text)
                 item.setData(0, Qt.UserRole, pixmap)
                 item.setData(0, Qt.UserRole + 1, op_code)
         self.sortItems(0, Qt.AscendingOrder)
