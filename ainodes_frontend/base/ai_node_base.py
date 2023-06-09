@@ -320,7 +320,6 @@ class AiNode(Node):
     #@QtCore.Slot(object)
     def onWorkerFinished(self, result):
 
-        print(type(result[0]))
         self.busy = False
         self.markDirty(False)
         if hasattr(self, "output_data_ports"):
