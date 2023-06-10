@@ -57,6 +57,11 @@ git clone https://github.com/XmYx/ainodes_engine_deforum_nodes
 cd ainodes_engine_deforum_nodes
 pip install -r requirements.txt
 ```
+launch with:
+```
+source nodes_env/bin/activate
+python main.py
+```
 Once the app is up and running, you can start check the File - Example Graphs option to start creating, and you can also access your model folders from the File menu.
 
 <a name="-contributing"></a>
