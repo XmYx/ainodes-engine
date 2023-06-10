@@ -324,11 +324,12 @@ class AiNode(Node):
 
         self.busy = False
         self.markDirty(False)
-        if hasattr(self, "output_data_ports"):
-            x = 0
-            for port in self.output_data_ports:
-                self.setOutput(port, result[x])
-                x += 1
+        if result:
+            if hasattr(self, "output_data_ports"):
+                x = 0
+                for port in self.output_data_ports:
+                    self.setOutput(port, result[x])
+                    x += 1
 
         if hasattr(self, "exec_port"):
             if len(self.getOutputs(1)) > 0:
