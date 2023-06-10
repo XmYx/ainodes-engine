@@ -1315,9 +1315,16 @@ class DiffusionWrapper(torch.nn.Module):
         self.sequential_cross_attn = diff_model_config.pop("sequential_crossattn", False)
         self.diffusion_model = instantiate_from_config(diff_model_config)
         self.conditioning_key = conditioning_key
+        self.start_control = 0
+        self.stop_control = 100
         assert self.conditioning_key in [None, 'concat', 'crossattn', 'hybrid', 'adm', 'hybrid-adm', 'crossattn-adm']
 
     def forward(self, x, t, c_concat: list = None, c_crossattn: list = None, c_adm=None, control=None, transformer_options={}):
+        percentage = 100 - (int(t[0]) / 10)
+        if percentage < self.start_control:
+            control = None
+        if percentage > self.stop_control:
+            control = None
         if self.conditioning_key is None:
             out = self.diffusion_model(x, t, control=control, transformer_options=transformer_options)
         elif self.conditioning_key == 'concat':

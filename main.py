@@ -1,6 +1,9 @@
 """ainodes-engine main"""
 #!/usr/bin/env python3
 import datetime
+
+from PyQt6.QtCore import QPropertyAnimation, QEasingCurve
+
 start_time = datetime.datetime.now()
 print(f"Start aiNodes, please wait. {start_time}")
 
@@ -80,6 +83,7 @@ splash_pix = QtGui.QPixmap("ainodes_frontend/qss/icon.ico")  # Replace "splash.p
 splash = QSplashScreen(splash_pix, Qt.WindowStaysOnTopHint)
 splash.show()
 
+
 load_settings()
 base_folder = 'custom_nodes'
 if gs.args.update:
@@ -105,9 +109,23 @@ loadStylesheets(
 )
 
 wnd.show()
+wnd.fade_in_animation()
 wnd.nodesListWidget.addMyItems()
 wnd.onFileNew()
-splash.finish(wnd)
+
+
+#def fade_out_animation():
+splash_fade_animation = QPropertyAnimation(splash, b"windowOpacity")
+splash_fade_animation.setDuration(1500)  # Set the duration of the animation in milliseconds
+splash_fade_animation.setStartValue(1.0)  # Start with opacity 1.0 (fully visible)
+splash_fade_animation.setEndValue(0.0)  # End with opacity 0.0 (transparent)
+splash_fade_animation.setEasingCurve(QEasingCurve.Type.InOutQuad)  # Apply easing curve to the animation
+splash_fade_animation.finished.connect(lambda: splash.finish(wnd))  # Close the splash screen when animation finishes
+splash_fade_animation.start()
+
+
+#fade_out_animation()
+#splash.finish(wnd)
 
 
 end_time = datetime.datetime.now()

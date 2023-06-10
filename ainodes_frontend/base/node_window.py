@@ -6,7 +6,7 @@ import threading
 from subprocess import run
 
 import requests
-from PyQt6.QtCore import QPropertyAnimation
+from PyQt6.QtCore import QPropertyAnimation, QEasingCurve
 from qtpy import QtWidgets, QtCore, QtGui
 from qtpy.QtCore import Qt, QSignalMapper
 from qtpy.QtGui import QIcon, QKeySequence
@@ -687,7 +687,17 @@ class CalculatorWindow(NodeEditorWindow):
         self.subgraph = None
 
         self.animation = QPropertyAnimation(self.nodesDock, b"geometry")
+        self.fade_animation = QPropertyAnimation(self, b"windowOpacity")
 
+        self.setWindowOpacity(0.0)  # Start with transparent window
+
+
+    def fade_in_animation(self):
+        self.fade_animation.setDuration(1500)  # Set the duration of the animation in milliseconds
+        self.fade_animation.setStartValue(0.0)  # Start with opacity 0.0 (transparent)
+        self.fade_animation.setEndValue(1.0)  # End with opacity 1.0 (fully visible)
+        self.fade_animation.setEasingCurve(QEasingCurve.Type.InOutQuad)  # Apply easing curve to the animation
+        self.fade_animation.start()  # Start the animation and delete it when stopped
     def set_nodesDockHeight(self, width):
         self.nodesDock.setMaximumWidth(width)
 
