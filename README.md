@@ -11,7 +11,7 @@
 - [Introduction](#-intro)
 - [Installation / Running the App](#-installation--running-the-app)
 - [Contributing](#-contributing)
-- [Acknowledgments](#-features)
+- [Features](#-features)
 - [License](#-license)
 <a name="-intro"></a>
 <h2>🚀 Introduction</h2>
