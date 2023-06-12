@@ -11,7 +11,7 @@
 - [Introduction](#-intro)
 - [Installation / Running the App](#-installation--running-the-app)
 - [Contributing](#-contributing)
-- [Acknowledgments](#-features)
+- [Features](#-features)
 - [License](#-license)
 <a name="-intro"></a>
 <h2>🚀 Introduction</h2>
@@ -94,6 +94,16 @@ Once the app is up and running, you can start check the File - Example Graphs op
 This project came to life thanks to many great backend functions borrowed from ComfyUI, and adapted to work in this unique, 
 live, controllable manner with a strict user declared execution chain, leading to data values possible to be iterated at
 different points in time in your pipeline.
+
+## 💖 Support the project
+
+This project is made possible thanks to the wonderful open-source community. If you appreciate the work put into this project and would like to contribute to its continued development and maintenance, please consider becoming a patron.
+
+<a href="https://www.patreon.com/deforum_ainodes" target="_blank">
+<img src="https://c5.patreon.com/external/logo/become_a_patron_button.png" alt="Become a Patron">
+</a>
+
+Your support is greatly appreciated!
 
 <a name="-license"></a>
 <h2>📄 License</h2>
