@@ -72,6 +72,7 @@ def hex_to_color(hex_string):
     return QColor(hex_string)
 
 def save_settings():
+    return
     settings = {
         'socket_names': socket_names,
         'COLORS': [color_to_hex(color) for color in SOCKET_COLORS],

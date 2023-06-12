@@ -226,3 +226,5 @@ class QDMGraphicsEdge(QGraphicsPathItem):
         """
         return self.pathCalculator.calcPath()
 
+    def wheelEvent(self, event):
+        event.ignore()

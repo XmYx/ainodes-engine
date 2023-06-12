@@ -512,6 +512,10 @@ class QDMNodeContentWidget(QWidget, Serializable):
         #self.deafult_run_button.clicked.connect(self.node.evalImplementation)
         self.setLayout(self.main_layout)
 
+    def wheelEvent(self, event: QtGui.QWheelEvent):
+        pass
+        #event.ignore()
+        #print("IGNORE IN CONTENT WIDGET")
 
 
 class QDMTextEdit(QTextEdit):

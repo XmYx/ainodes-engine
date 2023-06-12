@@ -103,3 +103,5 @@ class GraphicsEdgePathSquare(GraphicsEdgePathBase):
         path.lineTo(d[0], d[1])
 
         return path
+    def wheelEvent(self, event):
+        event.ignore()

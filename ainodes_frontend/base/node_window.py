@@ -21,6 +21,7 @@ from ainodes_frontend.base.node_sub_window import CalculatorSubWindow
 from ainodes_frontend.base.settings import load_settings, save_settings, save_error_log
 from ainodes_frontend.base.webview_widget import BrowserWidget
 from ainodes_frontend.base.worker import Worker
+from ainodes_frontend.base.yaml_editor import YamlEditorWidget
 from ainodes_frontend.node_engine.node_edge import Edge
 from ainodes_frontend.node_engine.node_edge_validators import (
     edge_cannot_connect_two_outputs_or_two_inputs,
@@ -692,6 +693,7 @@ class CalculatorWindow(NodeEditorWindow):
         self.setWindowOpacity(0.0)  # Start with transparent window
 
 
+
     def fade_in_animation(self):
         self.fade_animation.setDuration(1500)  # Set the duration of the animation in milliseconds
         self.fade_animation.setStartValue(0.0)  # Start with opacity 0.0 (transparent)
@@ -823,7 +825,7 @@ class CalculatorWindow(NodeEditorWindow):
         super().createActions()
         self.actNode = QAction('&Add Node', self, shortcut='Ctrl+L', statusTip="Open new node", triggered=self.onNodeOpen)
         self.actNodePacks = QAction('&Node Packages', self, shortcut='Ctrl+K', statusTip="Download Nodes", triggered=self.show_github_repositories)
-
+        self.actShowSettingsEditor = QAction('&Settings Editor', self, shortcut='Ctrl+J', statusTip="Open Settings", triggered=self.showSettingsEditor)
 
         self.actClose = QAction("Cl&ose", self, statusTip="Close the active window", triggered=self.mdiArea.closeActiveSubWindow)
         self.actCloseAll = QAction("Close &All", self, statusTip="Close all the windows", triggered=self.mdiArea.closeAllSubWindows)
@@ -842,6 +844,15 @@ class CalculatorWindow(NodeEditorWindow):
         self.actRClickMenu = QAction("&Alternate context menu", self, statusTip="Change context menu type", triggered=self.toggle_menu)
         # Create a checkable QAction
         self.actRClickMenu.setCheckable(True)
+    def showSettingsEditor(self):
+
+        self.yaml_editor = YamlEditorWidget()
+
+        settings_path = "config/settings.yaml"
+        settings_path = settings_path if os.path.isfile(settings_path) else "config/default_settings.yaml"
+
+        self.yaml_editor.load_yaml(settings_path)
+        self.yaml_editor.show()
 
     def training_gui(self):
         if hasattr(self, "training_thread"):
@@ -1042,6 +1053,7 @@ class CalculatorWindow(NodeEditorWindow):
 
         self.fileMenu.addAction(self.actNode)
         self.fileMenu.addAction(self.actNodePacks)
+        self.fileMenu.addAction(self.actShowSettingsEditor)
         # Get the index of the action in the fileMenu
         action_index = self.fileMenu.actions().index(self.actNode)
 
@@ -1267,3 +1279,7 @@ class CalculatorWindow(NodeEditorWindow):
         view = scene.grScene.scene.getView()  # Assuming there is only one view associated with the scene
         view.setViewportUpdateMode(QGraphicsView.FullViewportUpdate)
         view.update()
+
+    def wheelEvent(self, event):
+        print("IGNORE IN MAIN WINDOW")
+        event.ignore()

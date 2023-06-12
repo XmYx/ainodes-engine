@@ -54,3 +54,6 @@ class QDMCutLine(QGraphicsItem):
 
         poly = QPolygonF(self.line_points)
         painter.drawPolyline(poly)
+
+    def wheelEvent(self, event):
+        event.ignore()

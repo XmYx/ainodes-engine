@@ -4,6 +4,7 @@ A module containing Graphic representation of :class:`~node_engine.node_scene.Sc
 """
 import math
 
+from qtpy import QtGui, QtWidgets
 from qtpy.QtCore import Signal, QRect, QLine, Qt
 from qtpy.QtGui import QColor, QPen, QFont, QPainter
 from qtpy.QtWidgets import QGraphicsScene, QWidget
@@ -119,3 +120,5 @@ class QDMGraphicsScene(QGraphicsScene):
                 rect_state = QRect(rect.x()+offset, rect.y()+offset, rect.width()-2*offset, rect.height()-2*offset)
                 painter.drawText(rect_state, Qt.AlignRight | Qt.AlignTop, STATE_STRING[self.views()[0].mode].upper())
             except: dumpException()
+    def wheelEvent(self, event: QtGui.QWheelEvent):
+        super().wheelEvent(event)

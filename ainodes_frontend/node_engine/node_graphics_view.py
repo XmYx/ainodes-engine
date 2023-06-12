@@ -761,5 +761,19 @@ class QDMGraphicsView(QGraphicsView):
                 self.scale(zoomFactor, zoomFactor)
                 gs.zoom = self.zoom
         if gs.hovered:
-            event.ignore()
-            super().wheelEvent(event)
+            if gs.hover_node:
+                super().wheelEvent(event)
+
+            # event.ignore()
+            # global_point = self.mapToGlobal(event.scenePosition().toPoint())
+            # widget = self.grScene.widget()
+            # print(widget, isinstance(widget, QtWidgets.QDoubleSpinBox))
+            #
+            # if isinstance(widget, QtWidgets.QSpinBox) or isinstance(widget, QtWidgets.QComboBox):
+            #     widget.wheelEvent(event)
+            # else:
+            #     event.ignore()
+
+            #event.ignore()
+            #print(self.childAt(event.position().toPoint()))
+            #super().wheelEvent(event)

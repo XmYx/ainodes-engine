@@ -30,3 +30,5 @@ socket_names:
 t2i_adapter: models/t2i_adapter
 upscalers: models/upscalers
 vae: models/vae
+opengl: false
+theme: dark

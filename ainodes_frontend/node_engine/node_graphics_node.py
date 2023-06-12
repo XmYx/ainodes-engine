@@ -272,6 +272,8 @@ class QDMGraphicsNode(QGraphicsItem):
     @height.setter
     def height(self, height=0.0):
         self._height = height
+    def wheelEvent(self, event):
+        super().wheelEvent(event)
 
 
 
