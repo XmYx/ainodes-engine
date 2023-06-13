@@ -312,12 +312,15 @@ class QDMGraphicsView(QGraphicsView):
 
         item = self.getItemAtClick(event)
 
+        p = self.mapToScene(event.pos())
 
+        localPos = event.localPos()
+        screenPos = self.mapToScene(event.pos())
         # faking events for enable MMB dragging the scene
-        releaseEvent = QMouseEvent(QEvent.MouseButtonRelease, event.localPos(), event.scenePosition(),
+        releaseEvent = QMouseEvent(QEvent.MouseButtonRelease, localPos, screenPos,
                                    Qt.LeftButton, Qt.NoButton, event.modifiers())
         super().mouseReleaseEvent(releaseEvent)
-        fakeEvent = QMouseEvent(event.type(), event.localPos(), event.scenePosition(),
+        fakeEvent = QMouseEvent(event.type(), localPos, screenPos,
                                 Qt.LeftButton, event.buttons() | Qt.LeftButton, event.modifiers())
         super().mousePressEvent(fakeEvent)
 
@@ -355,6 +358,9 @@ class QDMGraphicsView(QGraphicsView):
     def middleMouseButtonRelease(self, event: QMouseEvent):
         #print("IM RELEASED")
         """When Middle mouse button was released"""
+
+
+        #print(event.localPos(), event.scenePosition())
         fakeEvent = QMouseEvent(event.type(), event.localPos(), event.scenePosition(),
                                 Qt.LeftButton, event.buttons() & ~Qt.LeftButton, event.modifiers())
         self.mini_map.centerOn(self.mapToScene(self.viewport().rect().center()))
@@ -660,6 +666,17 @@ class QDMGraphicsView(QGraphicsView):
                         self.ensureVisible(items_rect)
                         self.centerOn(items_rect.center())
 
+
+
+        modifiers = event.modifiers()
+        if modifiers & Qt.KeyboardModifier.ControlModifier:
+            if event.key() == Qt.Key_Return or event.key() == Qt.Key_Enter:
+                selected_items = self.grScene.selectedItems()
+                if len(selected_items) > 0:
+                    try:
+                        selected_items[0].content.eval_signal.emit()
+                    except:
+                        pass
 
             #super().keyPressEvent(event)
 
