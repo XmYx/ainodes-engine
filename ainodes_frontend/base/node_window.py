@@ -769,13 +769,13 @@ class CalculatorWindow(NodeEditorWindow):
             self.showFullScreen()
     def keyPressEvent(self, event: QtGui.QKeyEvent) -> None:
 
-        #super().keyPressEvent(event)
         if event.key() == 96:
             self.toggleDockWidgets()
         elif event.key() == 16777274:
             self.toggleFullscreen()
         elif event.key() == 16777216:
             self.toggleNodesDock()
+        super().keyPressEvent(event)
 
     def create_console_widget(self):
         # Create a text widget for stdout and stderr

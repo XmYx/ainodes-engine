@@ -186,14 +186,13 @@ class QDMGraphicsView(QGraphicsView):
         self.zoomStep = 0.1
         self.zoomRange = [0, 10]
 
-
         # listeners
         self._drag_enter_listeners = []
         self._drop_listeners = []
 
-        #self.setViewport(QOpenGLWidget(self))
+        self.setViewport(QOpenGLWidget(self))
 
-        self.setDragMode(QGraphicsView.NoDrag)
+        self.setDragMode(QGraphicsView.RubberBandDrag)
 
         # Create the mini-map view
         self.mini_map = MiniMapView(self.grScene)
@@ -287,7 +286,6 @@ class QDMGraphicsView(QGraphicsView):
         """Dispatch Qt's mousePress event to corresponding function below"""
         if event.button() == Qt.MiddleButton:
             self.middleMouseButtonPress(event)
-            super().mousePressEvent(event)
         elif event.button() == Qt.LeftButton:
             self.leftMouseButtonPress(event)
         elif event.button() == Qt.RightButton:
@@ -510,7 +508,7 @@ class QDMGraphicsView(QGraphicsView):
 
         super().mouseReleaseEvent(event)
 
-        self.setDragMode(QGraphicsView.RubberBandDrag)
+        #self.setDragMode(QGraphicsView.RubberBandDrag)
 
     def rightMouseButtonPress(self, event: QMouseEvent):
         """When Right mouse button was pressed"""
@@ -532,7 +530,7 @@ class QDMGraphicsView(QGraphicsView):
     def mouseMoveEvent(self, event: QMouseEvent):
         """Overriden Qt's ``mouseMoveEvent`` handling Scene/View logic"""
         scenepos = self.mapToScene(event.pos())
-        #print(scenepos)
+        #scenepos = event.scenePosition()
         self.infoBoxProxy.setPos(scenepos)
         #try:
         modified = self.setSocketHighlights(scenepos, highlighted=False, radius=EDGE_SNAPPING_RADIUS+100)
@@ -566,6 +564,7 @@ class QDMGraphicsView(QGraphicsView):
 
 
     def keyPressEvent(self, event: QKeyEvent):
+        super().keyPressEvent(event)
         """
         .. note::
             This overridden Qt's method was used for handling key shortcuts, before we implemented proper
@@ -579,90 +578,90 @@ class QDMGraphicsView(QGraphicsView):
         :return:
         """
 
+        if not self.editingFlag:
+            if event.key() == Qt.Key_Delete:
+                nodes = self.grScene.scene.nodes
+                for node in nodes:
+                    if node.isSelected() == True:
+                        if hasattr(node, "graph_window"):
+                            try:
+                                node.graph_window.subgraph = None
+                                node.graph_window.close()
+                            except:
+                                pass
+            elif event.key() == Qt.Key_F1:
+                self.infoBoxProxy.setVisible(not self.infoBoxProxy.isVisible())
+            elif event.key() == Qt.Key_F2:
+                # self.mini_map.setVisible(not self.mini_map.isVisible())
 
-        if event.key() == Qt.Key_Delete:
-            nodes = self.grScene.scene.nodes
-            for node in nodes:
-                if node.isSelected() == True:
-                    if hasattr(node, "graph_window"):
-                        try:
-                            node.graph_window.subgraph = None
-                            node.graph_window.close()
-                        except:
-                            pass
-        elif event.key() == Qt.Key_F1:
-            self.infoBoxProxy.setVisible(not self.infoBoxProxy.isVisible())
-        elif event.key() == Qt.Key_F2:
-            # self.mini_map.setVisible(not self.mini_map.isVisible())
+                if self.mini_map.isVisible():
+                    # Prepare the animation for fading out
+                    self.mini_map.setGraphicsEffect(self.effect)
+                    self.animation.setDuration(500) # animation duration 1 second
+                    self.animation.setStartValue(1.0) # fully visible
+                    self.animation.setEndValue(0.0) # fully transparent
+                    self.animation.setEasingCurve(QEasingCurve.Type.InOutQuad)
+                    self.animation.finished.connect(self.mini_map.hide)
+                    self.animation.start()
+                else:
+                    self.mini_map.show()
+                    self.mini_map.setGraphicsEffect(self.effect)
 
-            if self.mini_map.isVisible():
-                # Prepare the animation for fading out
-                self.mini_map.setGraphicsEffect(self.effect)
-                self.animation.setDuration(500) # animation duration 1 second
-                self.animation.setStartValue(1.0) # fully visible
-                self.animation.setEndValue(0.0) # fully transparent
-                self.animation.setEasingCurve(QEasingCurve.Type.InOutQuad)
-                self.animation.finished.connect(self.mini_map.hide)
-                self.animation.start()
-            else:
-                self.mini_map.show()
-                self.mini_map.setGraphicsEffect(self.effect)
+                    # Prepare the animation for fading in
+                    self.animation.setDuration(500) # animation duration 1 second
+                    self.animation.setStartValue(0.0) # fully transparent
+                    self.animation.setEndValue(1.0) # fully visible
+                    self.animation.setEasingCurve(QEasingCurve.Type.InOutQuad)
+                    self.animation.finished.connect(self.mini_map.show)
+                    self.animation.start()
 
-                # Prepare the animation for fading in
-                self.animation.setDuration(500) # animation duration 1 second
-                self.animation.setStartValue(0.0) # fully transparent
-                self.animation.setEndValue(1.0) # fully visible
-                self.animation.setEasingCurve(QEasingCurve.Type.InOutQuad)
-                self.animation.finished.connect(self.mini_map.show)
-                self.animation.start()
+            #
 
-        super().keyPressEvent(event)
+            # Use this code below if you wanna have shortcuts in this widget.
+            # You want to use this, when you don't have a window which handles these shortcuts for you
 
-        # Use this code below if you wanna have shortcuts in this widget.
-        # You want to use this, when you don't have a window which handles these shortcuts for you
+            # if event.key() == Qt.Key_Delete:
+            #     if not self.editingFlag:
+            #         self.deleteSelected()
+            #     else:
+            #         super().keyPressEvent(event)
+            # elif event.key() == Qt.Key_S and event.modifiers() & Qt.ControlModifier:
+            #     self.grScene.scene.saveToFile("graph.json")
+            # elif event.key() == Qt.Key_L and event.modifiers() & Qt.ControlModifier:
+            #     self.grScene.scene.loadFromFile("graph.json")
+            # elif event.key() == Qt.Key_Z and event.modifiers() & Qt.ControlModifier and not event.modifiers() & Qt.ShiftModifier:
+            #     self.grScene.scene.history.undo()
+            # elif event.key() == Qt.Key_Z and event.modifiers() & Qt.ControlModifier and event.modifiers() & Qt.ShiftModifier:
+            #     self.grScene.scene.history.redo()
+            # elif event.key() == Qt.Key_H:
+            #     print("HISTORY:     len(%d)" % len(self.grScene.scene.history.history_stack),
+            #           " -- current_step", self.grScene.scene.history.history_current_step)
+            #     ix = 0
+            #     for item in self.grScene.scene.history.history_stack:
+            #         print("#", ix, "--", item['desc'])
+            #         ix += 1
+            # else:
 
-        # if event.key() == Qt.Key_Delete:
-        #     if not self.editingFlag:
-        #         self.deleteSelected()
-        #     else:
-        #         super().keyPressEvent(event)
-        # elif event.key() == Qt.Key_S and event.modifiers() & Qt.ControlModifier:
-        #     self.grScene.scene.saveToFile("graph.json")
-        # elif event.key() == Qt.Key_L and event.modifiers() & Qt.ControlModifier:
-        #     self.grScene.scene.loadFromFile("graph.json")
-        # elif event.key() == Qt.Key_Z and event.modifiers() & Qt.ControlModifier and not event.modifiers() & Qt.ShiftModifier:
-        #     self.grScene.scene.history.undo()
-        # elif event.key() == Qt.Key_Z and event.modifiers() & Qt.ControlModifier and event.modifiers() & Qt.ShiftModifier:
-        #     self.grScene.scene.history.redo()
-        # elif event.key() == Qt.Key_H:
-        #     print("HISTORY:     len(%d)" % len(self.grScene.scene.history.history_stack),
-        #           " -- current_step", self.grScene.scene.history.history_current_step)
-        #     ix = 0
-        #     for item in self.grScene.scene.history.history_stack:
-        #         print("#", ix, "--", item['desc'])
-        #         ix += 1
-        # else:
+            selected_items = None
+            handle_f = None
+            if handle_f:
+                if event.key() == Qt.Key_F:
+                    selected_items = self.grScene.selectedItems()
+                    if not selected_items:
+                        items = self.grScene.items()
+                        self.resetZoomLevel()
 
-        selected_items = None
-        handle_f = None
-        if handle_f:
-            if event.key() == Qt.Key_F:
-                selected_items = self.grScene.selectedItems()
-                if not selected_items:
-                    items = self.grScene.items()
-                    self.resetZoomLevel()
+                        items_rect: QtCore.QRectF = items[0].sceneBoundingRect()
+                        for item in items:
+                            item: QtWidgets.QGraphicsItem
+                            items_rect = items_rect.united(item.sceneBoundingRect())
 
-                    items_rect: QtCore.QRectF = items[0].sceneBoundingRect()
-                    for item in items:
-                        item: QtWidgets.QGraphicsItem
-                        items_rect = items_rect.united(item.sceneBoundingRect())
-
-                    # self.zoom_to_rect(items_rect)
-                    self.ensureVisible(items_rect)
-                    self.centerOn(items_rect.center())
+                        # self.zoom_to_rect(items_rect)
+                        self.ensureVisible(items_rect)
+                        self.centerOn(items_rect.center())
 
 
-        #super().keyPressEvent(event)
+            #super().keyPressEvent(event)
 
     def resetZoomLevel(self):
         """Reset the zoom level to its default value."""

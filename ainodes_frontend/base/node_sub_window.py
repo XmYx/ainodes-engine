@@ -47,7 +47,9 @@ class CalculatorSubWindow(NodeEditorWidget):
         self.scenePos = None
         self.subgraph = None
         #self.tab_search_toggle()
-
+    def wheelEvent(self, event):
+        print("IGNORE IN NODE SUB WINDOW")
+        event.ignore()
     def closeEvent(self, event):
         if self.subgraph:
             event.ignore()  # Ignore the close event
@@ -458,9 +460,8 @@ class CalculatorSubWindow(NodeEditorWidget):
                     self.scene.history.storeHistory("Created %s" % new_calc_node.__class__.__name__)
     def mouseMoveEvent(self, event):
         super(CalculatorSubWindow, self).mouseMoveEvent(event)
-        #self.pos = QtCore.QPointF(event.screenPos())
-        self.scenePos = event.scenePos()
-        print(self.scenePos)
+        self.pos = QtCore.QPointF(event.screenPos())
+        self.scenePos = event.screenPos()
 
 class NodeListDialog(QtWidgets.QDialog):
     def __init__(self, parent=None):
