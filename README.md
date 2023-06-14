@@ -4,7 +4,12 @@
 
 <p>aiNodes is a simple and easy-to-use Python-based AI image / motion picture generator node engine.</p>
 
-<p>The engine comes packed with various features and functionalities, and some of the backend and nodes are heavily inspired by ComfyUI, a web-based node engine repository.</p>
+<p>A desktop ai centered node engine with a live execution chain, python code editor node, and plug-in support, officially supported by Deforum.
+We are thankful for many great functions adapted from ComfyUI, and various open-source projects, that make this framework possible to exist.
+
+Please consider becoming a patron if you like this project. There are no benefits or restrictions, but it helps the process greatly.
+Updates are frequent, and the more time I can spare on the project, the greater things can be implemented. Thank you for being here!
+</p>
 
 <h2>📚 Table of Contents</h2>
 
@@ -63,6 +68,7 @@ MacOs:
 ```shell
 git clone https://github.com/XmYx/ainodes-engine
 cd ainodes-engine
+pip install virtualenv
 python -m virtualenv nodes_env -p=3.10
 source nodes_env/bin/activate
 pip install -r requirements.txt
@@ -71,7 +77,6 @@ git clone https://github.com/XmYx/ainodes_engine_base_nodes
 cd ainodes_engine_base_nodes
 pip install torch torchvision
 pip install -r requirements_mac.txt
-cd ..
 ```
 launch with:
 ```
