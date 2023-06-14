@@ -38,11 +38,14 @@ if "Linux" in platform.platform():
     subprocess.check_call(["pip", "install", "triton==2.0.0"])
 if "Linux" in platform.platform():
     gs.qss = "ainodes_frontend/qss/nodeeditor-dark-linux.qss"
-else:
+elif "Windows" in platform.platform():
     gs.qss = "ainodes_frontend/qss/nodeeditor-dark.qss"
     import ctypes
     myappid = u'mycompany.myproduct.subproduct.version'  # arbitrary string
     ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
+else:
+    gs.qss = "ainodes_frontend/qss/nodeeditor-dark.qss"
+
 
 
 init_globals()
