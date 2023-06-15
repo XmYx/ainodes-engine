@@ -533,8 +533,8 @@ class QDMGraphicsView(QGraphicsView):
 
     def mouseMoveEvent(self, event: QMouseEvent):
         """Overriden Qt's ``mouseMoveEvent`` handling Scene/View logic"""
-        #scenepos = self.mapToScene(event.pos())
-        scenepos = event.scenePosition()
+        scenepos = self.mapToScene(event.pos())
+        #scenepos = event.scenePosition()
         self.infoBoxProxy.setPos(scenepos)
         #try:
         modified = self.setSocketHighlights(scenepos, highlighted=False, radius=EDGE_SNAPPING_RADIUS+100)
