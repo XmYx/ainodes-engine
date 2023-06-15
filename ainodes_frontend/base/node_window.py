@@ -7,6 +7,7 @@ from subprocess import run
 
 import requests
 from PyQt6.QtCore import QPropertyAnimation, QEasingCurve
+from PyQt6.QtWidgets import QSplitter
 from qtpy import QtWidgets, QtCore, QtGui
 from qtpy.QtCore import Qt, QSignalMapper
 from qtpy.QtGui import QIcon, QKeySequence
@@ -638,7 +639,11 @@ class CalculatorWindow(NodeEditorWindow):
         self.mdiArea.setDocumentMode(True)
         self.mdiArea.setTabsClosable(True)
         self.mdiArea.setTabsMovable(True)
-        self.setCentralWidget(self.mdiArea)
+        self.createNodesDock()
+        self.splitter = QSplitter(Qt.Orientation.Horizontal, self)
+        self.splitter.addWidget(self.nodesDock)
+        self.splitter.addWidget(self.mdiArea)
+        self.setCentralWidget(self.splitter)
 
         self.mdiArea.subWindowActivated.connect(self.updateMenus)
         self.windowMapper = QSignalMapper(self)
@@ -646,7 +651,7 @@ class CalculatorWindow(NodeEditorWindow):
 
         # Connect the signal mapper to the map slot using a lambda function
         self.windowMapper.mappedInt[int].connect(lambda id: self.setActiveSubWindow(self.subWindowList()[id]))
-        self.createNodesDock()
+
         self.createActions()
         self.createMenus()
         self.createToolBars()
@@ -771,9 +776,9 @@ class CalculatorWindow(NodeEditorWindow):
 
         if event.key() == 96:
             self.toggleDockWidgets()
-        elif event.key() == 16777274:
+        elif event.key() == Qt.Key_F11:
             self.toggleFullscreen()
-        elif event.key() == 16777216:
+        elif event.key() == Qt.Key_Escape:
             self.toggleNodesDock()
         super().keyPressEvent(event)
 
@@ -1154,7 +1159,7 @@ class CalculatorWindow(NodeEditorWindow):
         self.nodesDock.setWidget(self.nodesListWidget)
         self.nodesDock.setFloating(False)
 
-        self.addDockWidget(Qt.LeftDockWidgetArea, self.nodesDock)
+        #self.addDockWidget(Qt.LeftDockWidgetArea, self.nodesDock)
 
     def createStatusBar(self):
         self.statusBar().showMessage("Ready")

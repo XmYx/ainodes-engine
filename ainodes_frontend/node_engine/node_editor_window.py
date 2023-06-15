@@ -58,8 +58,6 @@ class NodeEditorWindow(QMainWindow):
         """Create Status bar and connect to `Graphics View` scenePosChanged event"""
         self.statusBar().showMessage("aiNodes Ready")
         self.status_mouse_pos = QLabel("")
-        #self.statusBar().addPermanentWidget(self.status_mouse_pos)
-        #self.nodeeditor.view.scenePosChanged.connect(self.onScenePosChanged)
 
     def createActions(self):
         """Create basic `File` and `Edit` actions"""
@@ -81,30 +79,16 @@ class NodeEditorWindow(QMainWindow):
     def createMenus(self):
         """Create Menus for `File` and `Edit`"""
         self.createFileMenu()
+        self.createGraphsMenu()
         self.createEditMenu()
 
-    def createFileMenu(self):
-        menubar = self.menuBar()
-        self.fileMenu = menubar.addMenu('&File')
 
-        # Create submenus for graphs and example_graphs
+    def createGraphsMenu(self):
+        menubar = self.menuBar()
+        self.graphsMenu = menubar.addMenu('&Graphs')
         self.graphsSubMenu = QtWidgets.QMenu('Graphs', self)
 
-        self.defaultDirsSubMenu = QtWidgets.QMenu('Model Dirs', self)
-        default_dirs = {"Stills":"output/stills",
-                        "MP4s":"output/mp4s",
-                        "SD Models":gs.checkpoints,
-                        "VAE":gs.vae,
-                        "ControlNet":gs.controlnet,
-                        "Embeddings":gs.embeddings,
-                        "Upscalers":gs.upscalers,
-                        "LORAs":gs.loras,
-                        "T2I Adapters":gs.t2i_adapter}
 
-        for dir_name, dir in default_dirs.items():
-            dir_action = QAction(dir_name, self)
-            dir_action.triggered.connect(partial(open_folder_in_file_browser, os.path.join(os.getcwd(), dir)))
-            self.defaultDirsSubMenu.addAction(dir_action)
 
         # List all JSON files in the graphs and example_graphs folders
         graphs_files = [f for f in os.listdir('graphs') if f.endswith('.json')]
@@ -146,13 +130,39 @@ class NodeEditorWindow(QMainWindow):
                                     file_action_.triggered.connect(partial(self.onFileOpenAction, file_path_))
                                     folder_submenu_.addAction(file_action_)
 
-        self.fileMenu.addMenu(self.defaultDirsSubMenu)
         # Add submenus to the File menu
-        self.fileMenu.addMenu(self.graphsSubMenu)
-        self.fileMenu.addMenu(self.exampleGraphsSubMenu)
+        self.graphsMenu.addMenu(self.graphsSubMenu)
+        self.graphsMenu.addMenu(self.exampleGraphsSubMenu)
+
+
+    def createFileMenu(self):
+        menubar = self.menuBar()
+        self.fileMenu = menubar.addMenu('&File')
+
+        # Create submenus for graphs and example_graphs
 
         # Add other actions to the File menu
         self.fileMenu.addAction(self.actNew)
+        self.fileMenu.addSeparator()
+
+        self.defaultDirsSubMenu = QtWidgets.QMenu('User Directories', self)
+        default_dirs = {"Stills":"output/stills",
+                        "MP4s":"output/mp4s",
+                        "SD Models":gs.checkpoints,
+                        "VAE":gs.vae,
+                        "ControlNet":gs.controlnet,
+                        "Embeddings":gs.embeddings,
+                        "Upscalers":gs.upscalers,
+                        "LORAs":gs.loras,
+                        "T2I Adapters":gs.t2i_adapter}
+
+        for dir_name, dir in default_dirs.items():
+            dir_action = QAction(dir_name, self)
+            dir_action.triggered.connect(partial(open_folder_in_file_browser, os.path.join(os.getcwd(), dir)))
+            self.defaultDirsSubMenu.addAction(dir_action)
+
+        self.fileMenu.addMenu(self.defaultDirsSubMenu)
+
         self.fileMenu.addSeparator()
         self.fileMenu.addAction(self.actOpen)
         self.fileMenu.addAction(self.actSave)
