@@ -6,9 +6,18 @@
 
 <p>A desktop ai centered node engine with a live execution chain, python code editor node, and plug-in support, officially supported by Deforum.
 We are thankful for many great functions adapted from ComfyUI, and various open-source projects, that make this framework possible to exist.
-
+  
+## 💖 Support the project
+  
 Please consider becoming a patron if you like this project. There are no benefits or restrictions, but it helps the process greatly.
 Updates are frequent, and the more time I can spare on the project, the greater things can be implemented. Thank you for being here!
+
+<a href="https://www.patreon.com/deforum_ainodes" target="_blank">
+<img src="https://c5.patreon.com/external/logo/become_a_patron_button.png" alt="Become a Patron">
+</a>
+
+Your support is greatly appreciated!
+
 </p>
 
 <h2>📚 Table of Contents</h2>
@@ -23,8 +32,6 @@ Updates are frequent, and the more time I can spare on the project, the greater 
 
 <ul>
   <li>Full modularity - download node packs on runtime</li>
-  <li>RIFE (Real-Time Intermediate Flow Estimation) support</li>
-  <li>FILM interpolation integration</li>
   <li>Coloured background drop</li>
   <li>Easy node creation with IDE annotations</li>
 </ul>
@@ -115,16 +122,6 @@ Once the app is up and running, you can start check the File - Example Graphs op
 This project came to life thanks to many great backend functions borrowed from ComfyUI, and adapted to work in this unique, 
 live, controllable manner with a strict user declared execution chain, leading to data values possible to be iterated at
 different points in time in your pipeline.
-
-## 💖 Support the project
-
-This project is made possible thanks to the wonderful open-source community. If you appreciate the work put into this project and would like to contribute to its continued development and maintenance, please consider becoming a patron.
-
-<a href="https://www.patreon.com/deforum_ainodes" target="_blank">
-<img src="https://c5.patreon.com/external/logo/become_a_patron_button.png" alt="Become a Patron">
-</a>
-
-Your support is greatly appreciated!
 
 <a name="-license"></a>
 <h2>📄 License</h2>
