@@ -48,7 +48,7 @@ class CalculatorSubWindow(NodeEditorWidget):
         self.subgraph = None
         #self.tab_search_toggle()
     def wheelEvent(self, event):
-        print("IGNORE IN NODE SUB WINDOW")
+        #print("IGNORE IN NODE SUB WINDOW")
         event.ignore()
     def closeEvent(self, event):
         if self.subgraph:

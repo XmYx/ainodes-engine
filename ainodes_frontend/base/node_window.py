@@ -1281,5 +1281,5 @@ class CalculatorWindow(NodeEditorWindow):
         view.update()
 
     def wheelEvent(self, event):
-        print("IGNORE IN MAIN WINDOW")
+        #print("IGNORE IN MAIN WINDOW")
         event.ignore()

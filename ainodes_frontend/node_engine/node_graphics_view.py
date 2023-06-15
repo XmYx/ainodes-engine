@@ -778,7 +778,6 @@ class QDMGraphicsView(QGraphicsView):
             if not clamped or self.zoomClamp is False:
                 self.scale(zoomFactor, zoomFactor)
                 gs.zoom = self.zoom
-            self.update_indicator()
         if gs.hovered:
             if gs.hover_node:
                 super().wheelEvent(event)
