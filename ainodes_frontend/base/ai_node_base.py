@@ -73,6 +73,8 @@ class CalcContent(QDMNodeContentWidget):
     def initUI(self):
         lbl = QLabel(self.node.content_label, self)
         lbl.setObjectName(self.node.content_label_objname)
+
+
 class WorkerThread(threading.Thread):
     def __init__(self, target, on_finished):
         super().__init__()
@@ -141,7 +143,7 @@ class AiNode(Node):
             height = self.dim[1]
             self.grNode.width = width
             self.grNode.height = height
-            self.content.setMinimumHeight(height)
+            self.content.setMinimumHeight(height - 100)
             self.content.setMinimumWidth(width)
         self.grNode.icon = QtGui.QImage(self.icon)
         self.grNode.thumbnail = self.grNode.icon.scaled(64, 64, QtCore.Qt.KeepAspectRatio)
@@ -462,6 +464,7 @@ class AiNode(Node):
         dialog.setLayout(layout)
         dialog.show()
         return dialog
+
 class AiApiNode(AiNode):
     icon = ""
     op_code = 0

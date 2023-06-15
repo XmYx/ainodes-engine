@@ -3,7 +3,8 @@
 A module containing `Graphics View` for NodeEditor
 """
 from PyQt6.QtCore import QEasingCurve, QPropertyAnimation
-from PyQt6.QtWidgets import QGraphicsOpacityEffect
+from PyQt6.QtGui import QPen
+from PyQt6.QtWidgets import QGraphicsOpacityEffect, QGraphicsRectItem, QGraphicsScene
 from qtpy.QtOpenGLWidgets import QOpenGLWidget
 from qtpy.QtGui import QTransform
 from qtpy import QtCore, QtWidgets, QtGui
@@ -60,6 +61,7 @@ class MiniMapView(QGraphicsView):
         self.zoom = 10
         self.zoomStep = 0.1
         self.zoomRange = [7.5, 9]
+
 
     def mousePressEvent(self, event):
         if event.button() == Qt.MiddleButton:
@@ -210,6 +212,7 @@ class QDMGraphicsView(QGraphicsView):
         scale_factor = 0.06  # adjust this value as needed
         self.mini_map.setTransform(QTransform().scale(scale_factor, scale_factor))
         self.mini_map.setDragMode(QGraphicsView.NoDrag)
+        self.mini_map.centerOn(self.mapToScene(self.viewport().rect().center()))
 
         # Create the InfoBox and add it to the QGraphicsView
         self.infoBox = InfoBox()
@@ -307,36 +310,21 @@ class QDMGraphicsView(QGraphicsView):
 
     def middleMouseButtonPress(self, event: QMouseEvent):
         """When Middle mouse button was pressed"""
-        self.setDragMode(QGraphicsView.ScrollHandDrag)
-
 
         item = self.getItemAtClick(event)
-
-        p = self.mapToScene(event.pos())
-
-        localPos = event.localPos()
-        screenPos = self.mapToScene(event.pos())
-        # faking events for enable MMB dragging the scene
-        releaseEvent = QMouseEvent(QEvent.MouseButtonRelease, localPos, screenPos,
-                                   Qt.LeftButton, Qt.NoButton, event.modifiers())
-        super().mouseReleaseEvent(releaseEvent)
-        fakeEvent = QMouseEvent(event.type(), localPos, screenPos,
-                                Qt.LeftButton, event.buttons() | Qt.LeftButton, event.modifiers())
-        super().mousePressEvent(fakeEvent)
-
 
         # debug printout
         if DEBUG_MMB_SCENE_ITEMS:
             if isinstance(item, QDMGraphicsEdge):
                 print("MMB DEBUG:", item.edge, "\n\t", item.edge.grEdge if item.edge.grEdge is not None else None)
-                #return
+                return
 
             if isinstance(item, QDMGraphicsSocket):
                 print("MMB DEBUG:", item.socket, "socket_type:", item.socket.socket_type,
                       "has edges:", "no" if item.socket.edges == [] else "")
                 if item.socket.edges:
                     for edge in item.socket.edges: print("\t", edge)
-                #return
+                return
 
         if DEBUG_MMB_SCENE_ITEMS and (item is None or self.mode == MODE_EDGES_REROUTING):
             print("SCENE:")
@@ -352,7 +340,16 @@ class QDMGraphicsView(QGraphicsView):
 
         if DEBUG_MMB_LAST_SELECTIONS and event.modifiers() & Qt.SHIFT:
             print("scene _last_selected_items:", self.grScene.scene._last_selected_items)
-            #return
+            return
+
+        # faking events for enable MMB dragging the scene
+        releaseEvent = QMouseEvent(QEvent.MouseButtonRelease, event.localPos(), event.scenePosition(),
+                                   Qt.LeftButton, Qt.NoButton, event.modifiers())
+        super().mouseReleaseEvent(releaseEvent)
+        self.setDragMode(QGraphicsView.ScrollHandDrag)
+        fakeEvent = QMouseEvent(event.type(), event.localPos(), event.scenePosition(),
+                                Qt.LeftButton, event.buttons() | Qt.LeftButton, event.modifiers())
+        super().mousePressEvent(fakeEvent)
 
 
     def middleMouseButtonRelease(self, event: QMouseEvent):
@@ -363,8 +360,8 @@ class QDMGraphicsView(QGraphicsView):
         #print(event.localPos(), event.scenePosition())
         fakeEvent = QMouseEvent(event.type(), event.localPos(), event.scenePosition(),
                                 Qt.LeftButton, event.buttons() & ~Qt.LeftButton, event.modifiers())
-        self.mini_map.centerOn(self.mapToScene(self.viewport().rect().center()))
-
+        #self.mini_map.centerOn(self.mapToScene(self.viewport().rect().center()))
+        #self.update_indicator()
         super().mouseReleaseEvent(fakeEvent)
         self.setDragMode(QGraphicsView.RubberBandDrag)
 
@@ -376,7 +373,8 @@ class QDMGraphicsView(QGraphicsView):
         item = self.getItemAtClick(event)
 
         # we store the position of last LMB click
-        self.last_lmb_click_scene_pos = self.mapToScene(event.pos())
+        #self.last_lmb_click_scene_pos = self.mapToScene(event.pos())
+        self.last_lmb_click_scene_pos = event.scenePosition()
 
         # if DEBUG: print("LMB Click on", item, self.debug_modifiers(event))
 
@@ -535,8 +533,8 @@ class QDMGraphicsView(QGraphicsView):
 
     def mouseMoveEvent(self, event: QMouseEvent):
         """Overriden Qt's ``mouseMoveEvent`` handling Scene/View logic"""
-        scenepos = self.mapToScene(event.pos())
-        #scenepos = event.scenePosition()
+        #scenepos = self.mapToScene(event.pos())
+        scenepos = event.scenePosition()
         self.infoBoxProxy.setPos(scenepos)
         #try:
         modified = self.setSocketHighlights(scenepos, highlighted=False, radius=EDGE_SNAPPING_RADIUS+100)
@@ -565,6 +563,7 @@ class QDMGraphicsView(QGraphicsView):
         self.last_scene_mouse_position = scenepos
 
         self.scenePosChanged.emit( int(scenepos.x()), int(scenepos.y()) )
+        self.update_indicator()
 
         super().mouseMoveEvent(event)
 
@@ -677,8 +676,12 @@ class QDMGraphicsView(QGraphicsView):
                         selected_items[0].content.eval_signal.emit()
                     except:
                         pass
-
+        if event.key() == Qt.Key_Space:
+            self.setDragMode(QGraphicsView.ScrollHandDrag)
             #super().keyPressEvent(event)
+    def keyReleaseEvent(self, event) -> None:
+        if event.key() == Qt.Key_Space:
+            self.setDragMode(QGraphicsView.RubberBandDrag)
 
     def resetZoomLevel(self):
         """Reset the zoom level to its default value."""
@@ -776,6 +779,7 @@ class QDMGraphicsView(QGraphicsView):
             if not clamped or self.zoomClamp is False:
                 self.scale(zoomFactor, zoomFactor)
                 gs.zoom = self.zoom
+            self.update_indicator()
         if gs.hovered:
             if gs.hover_node:
                 super().wheelEvent(event)
