@@ -116,6 +116,7 @@ def load_settings():
             gs.loras = settings['loras']
             gs.t2i_adapter = settings['t2i_adapter']
             gs.output = settings['output']
+            gs.opengl = settings['opengl']
             save_settings()
         except:
             setup_defaults()

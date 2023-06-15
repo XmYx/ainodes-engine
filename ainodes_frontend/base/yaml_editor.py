@@ -3,6 +3,7 @@ from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QLabel, QLineEdit, QPushButton, QMessageBox, QFileDialog, QComboBox, \
     QCheckBox, QHBoxLayout, QLayout
 
+
 folder_options = [
     "checkpoints",
     "controlnet",
@@ -94,6 +95,9 @@ class YamlEditorWidget(QWidget):
         with open(file_path, 'w') as file:
             yaml.safe_dump(self.values, file)
         QMessageBox.information(self, 'Success', 'YAML file saved successfully.')
+        from ainodes_frontend.base import load_settings
+
+        load_settings()
         self.close()
 
     def save_widgets_from_layout(self, layout):

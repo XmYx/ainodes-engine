@@ -23,6 +23,8 @@ try:
 except:
     import subprocess
     subprocess.check_call(["pip", "install", "tqdm"])
+    import tqdm
+
 
 from ainodes_frontend import singleton as gs
 from ainodes_frontend.base.settings import load_settings, init_globals
@@ -37,9 +39,33 @@ if "Linux" in platform.platform():
     import subprocess
     subprocess.check_call(["pip", "install", "triton==2.0.0"])
 if "Linux" in platform.platform():
-    gs.qss = "ainodes_frontend/qss/nodeeditor-dark-linux.qss"
+
+    try:
+        try:
+            from gi.repository import Gtk
+        except:
+            subprocess.check_call(["pip", "install", "pygobject"])
+            from gi.repository import Gtk
+
+        # Get the current GTK settings
+        settings = Gtk.Settings.get_default()
+        gtk_theme = settings.get_property("gtk-theme-name")
+        # Check the GTK theme
+        if gtk_theme.endswith("dark"):
+            qss_file = "ainodes_frontend/qss/nodeeditor-dark-linux.qss"
+        else:
+            qss_file = "ainodes_frontend/qss/nodeeditor.qss"
+    except:
+        gs.qss = "ainodes_frontend/qss/nodeeditor-dark-linux.qss"
 elif "Windows" in platform.platform():
-    gs.qss = "ainodes_frontend/qss/nodeeditor-dark.qss"
+
+    settings = QtCore.QSettings('HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize',
+                         QtCore.QSettings.Format.NativeFormat)
+    theme = settings.value('AppsUseLightTheme')
+    if theme == 0:
+        gs.qss = "ainodes_frontend/qss/nodeeditor-dark.qss"
+    else:
+        gs.qss = "ainodes_frontend/qss/nodeeditor.qss"
     import ctypes
     myappid = u'mycompany.myproduct.subproduct.version'  # arbitrary string
     ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
