@@ -32,8 +32,6 @@ Your support is greatly appreciated!
 
 <ul>
   <li>Full modularity - download node packs on runtime</li>
-  <li>RIFE (Real-Time Intermediate Flow Estimation) support</li>
-  <li>FILM interpolation integration</li>
   <li>Coloured background drop</li>
   <li>Easy node creation with IDE annotations</li>
 </ul>
