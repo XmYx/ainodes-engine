@@ -563,7 +563,6 @@ class QDMGraphicsView(QGraphicsView):
         self.last_scene_mouse_position = scenepos
 
         self.scenePosChanged.emit( int(scenepos.x()), int(scenepos.y()) )
-        self.update_indicator()
 
         super().mouseMoveEvent(event)
 
