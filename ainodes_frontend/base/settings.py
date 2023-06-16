@@ -147,7 +147,7 @@ def setup_defaults():
                       1: "EXEC",
                       2: "LATENT",
                       3: "COND",
-                      4: "EMPTY",
+                      4: "PIPE/COND",
                       5: "IMAGE",
                       6: "DATA"}
     gs.checkpoints = "models/checkpoints"

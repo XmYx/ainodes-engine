@@ -1,6 +1,6 @@
 import sys
 
-from qtpy import QtWidgets
+from qtpy import QtWidgets, QtWebEngineWidgets
 from qtpy.QtCore import QUrl
 from qtpy.QtGui import QIcon
 from qtpy.QtWidgets import QLineEdit,QPushButton, QToolBar
@@ -36,6 +36,8 @@ class BrowserWidget(QtWidgets.QWidget):
         self.toolBar.addWidget(self.addressLineEdit)
 
         self.webEngineView = QWebEngineView()
+        self.webEngineView.settings().setAttribute(QtWebEngineWidgets.QWebEngineSettings.WebAttribute.WebGLEnabled, True)
+
         self.webEngineView.load(QUrl("http://qt.io"))
         self.webEngineView.page().titleChanged.connect(self.setWindowTitle)
         self.webEngineView.page().urlChanged.connect(self.urlChanged)

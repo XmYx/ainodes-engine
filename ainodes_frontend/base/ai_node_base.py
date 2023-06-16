@@ -111,6 +111,7 @@ class AiNode(Node):
                            1: EXEC
                            2: LATENT
                            3: CONDITIONING
+                           4: PIPE/MODEL
                            5: IMAGE
                            6: DATA
                            (4 is not used yet)
@@ -119,6 +120,7 @@ class AiNode(Node):
                            1: EXEC
                            2: LATENT
                            3: CONDITIONING
+                           4: PIPE/MODEL
                            5: IMAGE
                            6: DATA
                            (4 is not used yet)
@@ -159,7 +161,7 @@ class AiNode(Node):
             sockets = {1: "EXEC",
                        2: "LATENT",
                        3: "COND",
-                       4: "EMPTY",
+                       4: "PIPE/MODEL",
                        5: "IMAGE",
                        6: "DATA"}
         else:
@@ -330,12 +332,15 @@ class AiNode(Node):
             if hasattr(self, "output_data_ports"):
                 x = 0
                 for port in self.output_data_ports:
+
+                    print("SETTING", x, port)
+
                     self.setOutput(port, result[x])
                     x += 1
 
         if hasattr(self, "exec_port"):
-            if len(self.getOutputs(1)) > 0:
-                self.executeChild(output_index=1)
+            if len(self.getOutputs(self.exec_port)) > 0:
+                self.executeChild(output_index=self.exec_port)
     def eval(self, index=0):
         try:
             self.content.eval_signal.emit()
