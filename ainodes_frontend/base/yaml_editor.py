@@ -1,3 +1,5 @@
+import functools
+
 import yaml
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QLabel, QLineEdit, QPushButton, QMessageBox, QFileDialog, QComboBox, \
@@ -70,7 +72,7 @@ class YamlEditorWidget(QWidget):
                 layout.addWidget(line_edit)
                 if key in folder_options:
                     browse_button = QPushButton('Browse...')
-                    browse_button.clicked.connect(lambda: self.browse(line_edit))
+                    browse_button.clicked.connect(functools.partial(self.browse, line_edit))
                     layout.addWidget(browse_button)
                 self.layout.addLayout(layout)
 
