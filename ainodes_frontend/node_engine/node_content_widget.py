@@ -444,6 +444,12 @@ class QDMNodeContentWidget(QWidget, Serializable):
         """
         button_layout = QtWidgets.QHBoxLayout()
         for widget in buttons:
+
+            if isinstance(widget, QtWidgets.QCheckBox):
+                palette = QtGui.QPalette()
+                palette.setColor(QtGui.QPalette.WindowText, QtGui.QColor("white"))
+                palette.setColor(QtGui.QPalette.Disabled, QtGui.QPalette.WindowText, QtGui.QColor("black"))
+                widget.setPalette(palette)
             button_layout.addWidget(widget)
         self.widget_list.append(button_layout)
         return button_layout

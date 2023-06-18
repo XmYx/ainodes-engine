@@ -19,12 +19,20 @@ SOCKET_COLORS = [
     QColor("#FF888888"),
     QColor("#FFFF7700"),
     QColor("#FF52e220"),
-    QColor("#FF0056a6"),
-    QColor("#FFa86db1"),
-    QColor("#FFb54747"),
-    QColor("#FFdbe220"),
+    QColor("#66FF99"),
+    QColor("#FFFF99"),
+    QColor("#333300"),
+    QColor("#993366"),
     QColor("#FF888888"),
 ]
+
+
+model_colors = {0:SOCKET_COLORS[9],
+                1:SOCKET_COLORS[10],
+                2:SOCKET_COLORS[11],
+                3:SOCKET_COLORS[12],
+                4:SOCKET_COLORS[13],
+}
 
 class QDMGraphicsSocket(QGraphicsItem):
     """Class representing Graphic `Socket` in ``QGraphicsScene``"""
@@ -48,12 +56,27 @@ class QDMGraphicsSocket(QGraphicsItem):
 
     def getSocketColor(self, key):
         """Returns the ``QColor`` for this ``key``"""
+
+        print(self.socket.name)
+        print(model_colors[0])
+        if self.socket.name == "UNET":
+            return model_colors[0]
+        elif self.socket.name == "CLIP":
+            return model_colors[1]
+        elif self.socket.name == "VAE":
+            return model_colors[2]
+        elif self.socket.name == "CONTROLNET":
+            return model_colors[3]
+
+
         if type(key) == int: return SOCKET_COLORS[key]
         elif type(key) == str: return QColor(key)
         return Qt.transparent
 
     def changeSocketType(self):
         """Change the Socket Type"""
+
+
         self._color_background = self.getSocketColor(self.socket_type)
         self._brush = QBrush(self._color_background)
         # print("Socket changed to:", self._color_background.getRgbF())

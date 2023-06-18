@@ -99,8 +99,8 @@ class QDMGraphicsEdge(QGraphicsPathItem):
     def setColorFromSockets(self) -> bool:
         """Change color according to connected sockets. Returns ``True`` if color can be determined"""
         socket_type_start = self.edge.start_socket.socket_type
-        socket_type_end = self.edge.end_socket.socket_type
-        if socket_type_start != socket_type_end: return False
+        #socket_type_end = self.edge.end_socket.socket_type
+        #if socket_type_start != socket_type_end: return False
         self.changeColor(self.edge.start_socket.grSocket.getSocketColor(socket_type_start))
 
     def onSelected(self):
@@ -180,6 +180,9 @@ class QDMGraphicsEdge(QGraphicsPathItem):
     def paint(self, painter, QStyleOptionGraphicsItem, widget=None):
         """Qt's overridden method to paint this Graphics Edge. Path calculated
             in :func:`~node_engine.node_graphics_edge.QDMGraphicsEdge.calcPath` method"""
+        if self._color == self._default_color:
+            self.setColorFromSockets()
+
         self.setPath(self.calcPath())
 
         painter.setBrush(Qt.NoBrush)
@@ -194,7 +197,8 @@ class QDMGraphicsEdge(QGraphicsPathItem):
             painter.setPen(self._pen if not self.isSelected() else self._pen_selected)
         if self.edge.end_socket is not None:
             key = self.edge.end_socket.grSocket.socket_type
-            color = SOCKET_COLORS[key]
+            #color = SOCKET_COLORS[key]
+            color = self._color
             pen = QPen(color)
             pen.setWidth(3)  # Set the width to 3 pixels
             painter.setPen(pen)
