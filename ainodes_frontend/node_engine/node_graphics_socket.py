@@ -20,7 +20,7 @@ SOCKET_COLORS = [
     QColor("#FFFF7700"),
     QColor("#FF52e220"),
     QColor("#66FF99"),
-    QColor("#FFFF99"),
+    QColor("#0099CC"), #VAE
     QColor("#333300"),
     QColor("#993366"),
     QColor("#FF888888"),
