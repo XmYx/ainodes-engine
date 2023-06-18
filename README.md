@@ -132,3 +132,9 @@ different points in time in your pipeline.
   <img src="https://img.shields.io/github/stars/XmYx/ainodes-engine" alt="Stars">
   <img src="https://img.shields.io/github/forks/XmYx/ainodes-engine" alt="Forks">
 </p>
+<pre>
+<code>
+Mention on <a href="https://vjun.io/vdmo/node-based-stable-diffusion-toolkits-2i1j">vjun.io</a>
+HU Tutorial by <a href="https://youtu.be/QD7aMacE2f4">mp3pintyo</a>
+</code>
+</pre>
