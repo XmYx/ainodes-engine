@@ -62,6 +62,10 @@ class Socket(Serializable):
         self.socket_type = socket_type
         self.count_on_this_node_side = count_on_this_node_side
         self.is_multi_edges = multi_edges
+
+        if self.name == "EXEC":
+            self.is_multi_edges = False
+
         self.is_input = is_input
         self.is_output = not self.is_input
 

@@ -107,13 +107,13 @@ class QDMGraphicsSocket(QGraphicsItem):
             if self.socket.node != dragged_socket.node:
                 if dragged_socket.is_input:
                     if not self.socket.is_input:
-                        if self.socket.socket_type == dragged_socket.socket_type:
+                        if self.socket.name == dragged_socket.name:
                             self.radius = 12
                             self.isHighlighted = True
                 else:
                     if not dragged_socket.is_input:
                         if self.socket.is_input:
-                            if self.socket.socket_type == dragged_socket.socket_type:
+                            if self.socket.name == dragged_socket.name:
                                 self.radius = 12
                                 self.isHighlighted = True
         else:

@@ -62,7 +62,7 @@ def edge_cannot_connect_input_and_output_of_same_node(input: 'Socket', output:'S
 def edge_cannot_connect_input_and_output_of_different_type(input: 'Socket', output: 'Socket') -> bool:
     """Edge is invalid if it connects sockets with different colors"""
 
-    if input.socket_type != output.socket_type:
+    if input.name != output.name:
         print_error("Connecting sockets with different colors")
         return False
 
