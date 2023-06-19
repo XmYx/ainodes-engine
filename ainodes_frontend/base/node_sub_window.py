@@ -335,7 +335,45 @@ class CalculatorSubWindow(NodeEditorWidget):
         new_calc_node.grNode.doSelect(True)
         new_calc_node.grNode.onSelected()
 
+    def add_to_categories(self, categories, category, value):
+        parts = category.split('/')
+        if len(parts) == 1:
+            if category not in categories:
+                categories[category] = {"_items": []}
+            categories[category]["_items"].append(value)
+        else:
+            if parts[0] not in categories:
+                categories[parts[0]] = {"_items": []}
+            self.add_to_categories(categories[parts[0]], '/'.join(parts[1:]), value)
     def initNodesContextMenu(self, event):
+        menu = QMenu()
+
+        keys = list(CALC_NODES.keys())
+        keys.sort()
+        categories = {}
+        for key in keys:
+            node = get_class_from_opcode(key)
+            self.add_to_categories(categories, node.category, (node.op_title, node.icon, node.op_code))
+
+        self.create_submenus(menu, categories)
+
+        return menu
+
+    def create_submenus(self, parent_menu, categories):
+        for category, items_or_subcategories in sorted(categories.items()):
+            if category == "_items":
+                for name, icon, op_code in items_or_subcategories:
+                    action = QAction(name, self)
+                    action.setData(op_code)
+                    pixmap = QPixmap(icon if icon is not None else ".")
+                    action.setIcon(QIcon(pixmap))
+                    parent_menu.addAction(action)
+            else:
+                submenu = QMenu(category.capitalize(), parent_menu)
+                parent_menu.addMenu(submenu)
+                self.create_submenus(submenu, items_or_subcategories)
+
+    def initNodesContextMenu_(self, event):
         menu = QMenu()
 
         # create submenus for categories
@@ -432,9 +470,9 @@ class CalculatorSubWindow(NodeEditorWidget):
 
     def handleNewNodeContextMenu(self, event):
         if self.context_menu_style == 'modern':
-            self.handleNewNodeContextMenuFunction(event)
-        else:
             self.handleNewNodeContextMenu_orig(event)
+        else:
+            self.handleNewNodeContextMenuFunction(event)
     def handleNewNodeContextMenuFunction(self, event):
         if DEBUG_CONTEXT: print("CONTEXT: EMPTY SPACE")
         nodes_dialog = self.init_nodes_list_widget(event)

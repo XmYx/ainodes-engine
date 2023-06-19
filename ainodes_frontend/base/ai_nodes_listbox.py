@@ -30,6 +30,63 @@ class QDMDragListbox(QtWidgets.QTreeWidget):
 
     def addMyItems(self):
         self.clear()
+        categories = {}
+
+        keys = list(CALC_NODES.keys())
+        keys.sort()
+        for key in keys:
+            node = get_class_from_opcode(key)
+            self.add_to_categories(categories, node.category, (node.op_title, node.icon, node.op_code, node.help_text))
+
+        self.populate_tree(categories)
+
+        self.addSubgraphItems(categories)
+        self.sortItems(0, Qt.AscendingOrder)
+
+    def add_to_categories(self, categories, category, value):
+        parts = category.split('/')
+        if len(parts) == 1:
+            if category not in categories:
+                categories[category] = {"_items": []}
+            categories[category]["_items"].append(value)
+        else:
+            if parts[0] not in categories:
+                categories[parts[0]] = {"_items": []}
+
+            self.add_to_categories(categories[parts[0]], '/'.join(parts[1:]), value)
+
+    def populate_tree(self, categories, parent=None):
+        for category, items_or_subcategories in sorted(categories.items()):
+            if category == "_items":
+                continue
+
+            if parent is None:
+                current_parent = QtWidgets.QTreeWidgetItem(self)
+            else:
+                current_parent = QtWidgets.QTreeWidgetItem(parent)
+
+            current_parent.setText(0, category.capitalize())
+
+            if "_items" in items_or_subcategories:
+                items = items_or_subcategories["_items"]
+                items.sort(key=lambda item: item[0])
+                for name, icon, op_code, help_text in items:
+                    item = QtWidgets.QTreeWidgetItem(current_parent)
+                    item.setText(0, name)
+                    pixmap = QPixmap(icon)
+                    item.setIcon(0, QIcon(pixmap))
+                    item.setSizeHint(0, QSize(32, 32))
+                    item.setFlags(Qt.ItemIsEnabled | Qt.ItemIsSelectable | Qt.ItemIsDragEnabled)
+                    # setup data
+                    item.setToolTip(0, help_text)
+                    item.setData(0, Qt.UserRole, pixmap)
+                    item.setData(0, Qt.UserRole + 1, op_code)
+
+            if isinstance(items_or_subcategories, dict):
+                self.populate_tree(items_or_subcategories, current_parent)
+
+    def addMyItems_old(self):
+        self.clear()
         categories = {category: [] for category in node_categories}
 
         keys = list(CALC_NODES.keys())
@@ -41,15 +98,7 @@ class QDMDragListbox(QtWidgets.QTreeWidget):
                 categories[node.category] = []
 
             categories[node.category].append((node.op_title, node.icon, node.op_code, node.help_text))
-        # Add subgraphs category and files
-        subgraph_category = "Subgraphs"
-        subgraph_folder = "subgraphs"
-        subgraph_files = [f for f in os.listdir(subgraph_folder) if f.endswith(".json")]
-        categories[subgraph_category] = []
-        if subgraph_files:
-            icon = "ainodes_frontend/icons/base_nodes/v2/load_subgraph.png"
-            for file in subgraph_files:
-                categories[subgraph_category].append((file, icon, gs.nodes["subgraph_node"]['op_code'], "Subgraph Nodes"))
+
         for category, items in categories.items():
             parent = QtWidgets.QTreeWidgetItem(self)
             parent.setText(0, category.capitalize())
@@ -65,9 +114,20 @@ class QDMDragListbox(QtWidgets.QTreeWidget):
                 item.setToolTip(0, help_text)
                 item.setData(0, Qt.UserRole, pixmap)
                 item.setData(0, Qt.UserRole + 1, op_code)
+        self.addSubgraphItems(categories)
         self.sortItems(0, Qt.AscendingOrder)
 
 
+    def addSubgraphItems(self, categories):
+        # Add subgraphs category and files
+        subgraph_category = "Subgraphs"
+        subgraph_folder = "subgraphs"
+        subgraph_files = [f for f in os.listdir(subgraph_folder) if f.endswith(".json")]
+        categories[subgraph_category] = []
+        if subgraph_files:
+            icon = "ainodes_frontend/icons/base_nodes/v2/load_subgraph.png"
+            for file in subgraph_files:
+                categories[subgraph_category].append((file, icon, gs.nodes["subgraph_node"]['op_code'], "Subgraph Nodes"))
 
     def startDrag(self, *args, **kwargs):
         try:

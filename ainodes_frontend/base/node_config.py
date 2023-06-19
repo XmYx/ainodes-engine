@@ -15,7 +15,7 @@ class InvalidNodeRegistration(ConfException): pass
 class OpCodeNotRegistered(ConfException): pass
 
 # This should be the maximum opcode
-MAX_OPCODE = 500
+MAX_OPCODE = 10000
 
 
 def get_next_opcode():

@@ -163,7 +163,8 @@ class AiNode(Node):
                        3: "COND",
                        4: "PIPE/MODEL",
                        5: "IMAGE",
-                       6: "DATA"}
+                       6: "DATA",
+                       7: "STRING"}
         else:
             sockets = self.sockets
 
