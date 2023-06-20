@@ -292,7 +292,7 @@ class QDMNodeContentWidget(QWidget, Serializable):
         line_edit.layout = layout
         self.widget_list.append(line_edit)
         return line_edit
-    def create_text_edit(self, label_text, placeholder="") -> QtWidgets.QTextEdit:
+    def create_text_edit(self, label_text, placeholder="", default="") -> QtWidgets.QTextEdit:
         """Create a line edit widget with the given label text.
 
         Args:
@@ -302,6 +302,7 @@ class QDMNodeContentWidget(QWidget, Serializable):
             QtWidgets.QLineEdit: A line edit widget.
         """
         line_edit = QtWidgets.QTextEdit()
+        line_edit.setText(default)
         line_edit.setPlaceholderText(placeholder)
         label = QtWidgets.QLabel(label_text)
         line_edit.setObjectName(label_text)

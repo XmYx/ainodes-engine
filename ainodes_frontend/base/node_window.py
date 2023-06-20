@@ -225,7 +225,7 @@ class GitHubRepositoriesDialog(QtWidgets.QDockWidget):
         for repository in repositories:
             item = QtWidgets.QListWidgetItem(repository)
             folder = repository.split("/")[1]
-            if os.path.isdir(f"custom_nodes/{folder}"):
+            if os.path.isdir(f"ai_nodes/{folder}"):
                 item.setBackground(Qt.darkGreen)
                 item.setForeground(Qt.white)
                 self.update_button.setVisible(True)
@@ -246,7 +246,7 @@ class GitHubRepositoriesDialog(QtWidgets.QDockWidget):
         icon_pixmap.loadFromData(requests.get(icon_url).content)
         self.repository_icon_label.setPixmap(icon_pixmap)
         self.repository_icon_label.setScaledContents(True)
-        if os.path.isdir(f"./custom_nodes/{folder}"):
+        if os.path.isdir(f"./ai_nodes/{folder}"):
             self.list_widget.currentItem().setBackground(Qt.darkGreen)
             self.update_button.show()
             self.download_button.hide()
@@ -262,7 +262,7 @@ class GitHubRepositoriesDialog(QtWidgets.QDockWidget):
     def download_repository_thread(self, progress_callback=None):
         repository = self.repository_name_label.text()
         folder = repository.split("/")[1]
-        command = f"git clone https://github.com/{repository} ./custom_nodes/{folder} && pip install -r ./custom_nodes/{folder}/requirements.txt"
+        command = f"git clone https://github.com/{repository} ./ai_nodes/{folder} && pip install -r ./ai_nodes/{folder}/requirements.txt"
         result = run(command, shell=True, stdout=self.parent.text_widget, stderr=self.parent.text_widget)
         return result
     #@QtCore.Slot(object)
@@ -270,7 +270,7 @@ class GitHubRepositoriesDialog(QtWidgets.QDockWidget):
         repository = self.repository_name_label.text()
         folder = repository.split("/")[1]
         if result.returncode == 0:
-            import_nodes_from_subdirectories(f"./custom_nodes/{folder}")
+            import_nodes_from_subdirectories(f"./ai_nodes/{folder}")
             self.parent.nodesListWidget.addMyItems()
             QtWidgets.QMessageBox.information(self, "Download Complete", f"{repository} was downloaded successfully.")
             self.list_widget.currentItem().setBackground(Qt.darkGreen)
@@ -288,9 +288,9 @@ class GitHubRepositoriesDialog(QtWidgets.QDockWidget):
     def update_repository_thread(self, progress_callback=None):
         repository = self.repository_name_label.text()
         folder = repository.split("/")[1]
-        #command = f"git -C ./custom_nodes/{folder} stash && git -C ./custom_nodes/{folder} pull && pip install -r ./custom_nodes/{folder}/requirements.txt"
+        #command = f"git -C ./ai_nodes/{folder} stash && git -C ./ai_nodes/{folder} pull && pip install -r ./ai_nodes/{folder}/requirements.txt"
         if self.skip_update == False:
-            command = f"git -C ./custom_nodes/{folder} pull && pip install -r ./custom_nodes/{folder}/requirements.txt"
+            command = f"git -C ./ai_nodes/{folder} pull && pip install -r ./ai_nodes/{folder}/requirements.txt"
             result = run(command, shell=True, stdout=self.parent.text_widget, stderr=self.parent.text_widget)
         else:
             result = None
@@ -301,7 +301,7 @@ class GitHubRepositoriesDialog(QtWidgets.QDockWidget):
         folder = repository.split("/")[1]
         if result != None:
             if result.returncode == 0:
-                import_nodes_from_subdirectories(f"./custom_nodes/{folder}")
+                import_nodes_from_subdirectories(f"./ai_nodes/{folder}")
                 self.parent.nodesListWidget.addMyItems()
                 QtWidgets.QMessageBox.information(self, "Update Complete", f"{repository} was updated successfully.")
                 self.list_widget.currentItem().setBackground(Qt.darkGreen)
@@ -311,7 +311,7 @@ class GitHubRepositoriesDialog(QtWidgets.QDockWidget):
                 QtWidgets.QMessageBox.critical(self, "Update Failed",
                                      f"An error occurred while updating {repository}:\n{result.stderr.decode()}")
         elif result == None:
-            import_nodes_from_subdirectories(f"./custom_nodes/{folder}")
+            import_nodes_from_subdirectories(f"./ai_nodes/{folder}")
             self.parent.nodesListWidget.addMyItems()
             #QtWidgets.QMessageBox.information(self, "Import Complete", f"{repository} was imported successfully.")
             self.list_widget.currentItem().setBackground(Qt.darkGreen)
@@ -356,10 +356,10 @@ class GitHubRepositoriesDialog(QtWidgets.QDockWidget):
 
     def import_base_repositories(self):
         base_repo = 'ainodes_engine_base_nodes'
-        import_nodes_from_subdirectories(f"custom_nodes/{base_repo}")
-        if os.path.isdir('custom_nodes/ainodes_engine_deforum_nodes'):
+        import_nodes_from_subdirectories(f"ai_nodes/{base_repo}")
+        if os.path.isdir('ai_nodes/ainodes_engine_deforum_nodes'):
             deforum_repo = 'ainodes_engine_deforum_nodes'
-            import_nodes_from_subdirectories(f"custom_nodes/{deforum_repo}")
+            import_nodes_from_subdirectories(f"ai_nodes/{deforum_repo}")
 
 class StreamRedirect(QtCore.QObject):
     text_written = QtCore.Signal(str)
@@ -719,12 +719,12 @@ class CalculatorWindow(NodeEditorWindow):
             pass
     def import_base_repos(self):
         """base_repo = 'ainodes_engine_base_nodes'
-        import_nodes_from_subdirectories(f"custom_nodes/{base_repo}")
-        if os.path.isdir('custom_nodes/ainodes_engine_deforum_nodes'):
+        import_nodes_from_subdirectories(f"ai_nodes/{base_repo}")
+        if os.path.isdir('ai_nodes/ainodes_engine_deforum_nodes'):
             deforum_repo = 'ainodes_engine_deforum_nodes'
-            import_nodes_from_subdirectories(f"custom_nodes/{deforum_repo}")"""
+            import_nodes_from_subdirectories(f"ai_nodes/{deforum_repo}")"""
 
-        base_folder = 'custom_nodes'
+        base_folder = 'ai_nodes'
         for folder in os.listdir(base_folder):
             folder_path = os.path.join(base_folder, folder)
             if "__pycache__" not in folder_path and "_nodes" in folder_path:
@@ -862,7 +862,7 @@ class CalculatorWindow(NodeEditorWindow):
     def training_gui(self):
         if hasattr(self, "training_thread"):
             self.cleanup()
-        from custom_nodes.ainodes_engine_base_nodes.ainodes_backend.training_thread import TrainingThread
+        from ai_nodes.ainodes_engine_base_nodes.ainodes_backend.training_thread import TrainingThread
         gs.threads['lora'] = TrainingThread(self.stdout_redirect)
         gs.threads['lora'].start()
     def browser(self):
@@ -879,7 +879,7 @@ class CalculatorWindow(NodeEditorWindow):
         return None
     def onNodeOpen(self):
         """Handle File Open operation"""
-        fname, filter = QFileDialog.getOpenFileName(None, 'Open graph from file', f"{self.getFileDialogDirectory()}/ainodes_frontend/custom_nodes", 'Python Files (*.py)')
+        fname, filter = QFileDialog.getOpenFileName(None, 'Open graph from file', f"{self.getFileDialogDirectory()}/ainodes_frontend/ai_nodes", 'Python Files (*.py)')
         if fname != '' and os.path.isfile(fname):
             import_nodes_from_file(fname)
             self.nodesListWidget.addMyItems()

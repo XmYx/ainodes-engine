@@ -114,7 +114,7 @@ splash.show()
 
 
 load_settings()
-base_folder = 'custom_nodes'
+base_folder = 'ai_nodes'
 if gs.args.update:
     update_all_nodes_req()
 
