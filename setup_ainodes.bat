@@ -55,14 +55,15 @@ setlocal enabledelayedexpansion
 set "repositories_file=repositories.txt"
 set "custom_nodes_folder=ai_nodes"
 
-rem Read repositories from repositories.txt
-for /f "tokens=*" %%A in (%repositories_file%) do (
+rem Read repositories and branch names from repositories.txt
+for /f "tokens=1,2" %%A in (%repositories_file%) do (
   set "repository=%%A"
-  echo Cloning repository: !repository!
+  set "branch=%%B"
+  echo Cloning repository: !repository! Branch: !branch!
 
   rem Go to ai_nodes folder and clone the repository
   cd %custom_nodes_folder%
-  git clone https://www.github.com/!repository!
+  git clone -b !branch! https://www.github.com/!repository!
 
   rem Return to the original directory
   cd ..
