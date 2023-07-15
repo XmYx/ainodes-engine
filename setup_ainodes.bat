@@ -53,22 +53,23 @@ pip install -r requirements.txt
 setlocal enabledelayedexpansion
 
 set "repositories_file=repositories.txt"
-set "custom_nodes_folder=custom_nodes"
+set "custom_nodes_folder=ai_nodes"
 
-rem Read repositories from repositories.txt
-for /f "tokens=*" %%A in (%repositories_file%) do (
+rem Read repositories and branch names from repositories.txt
+for /f "tokens=1,2" %%A in (%repositories_file%) do (
   set "repository=%%A"
-  echo Cloning repository: !repository!
+  set "branch=%%B"
+  echo Cloning repository: !repository! Branch: !branch!
 
-  rem Go to custom_nodes folder and clone the repository
+  rem Go to ai_nodes folder and clone the repository
   cd %custom_nodes_folder%
-  git clone https://www.github.com/!repository!
+  git clone -b !branch! https://www.github.com/!repository!
 
   rem Return to the original directory
   cd ..
 )
 
-rem Go into each top subdirectory of custom_nodes and run pip install
+rem Go into each top subdirectory of ai_nodes and run pip install
 for /d %%B in (%custom_nodes_folder%\*) do (
   echo Installing requirements in directory: %%B
   if exist "%%B\requirements.txt" (
@@ -85,7 +86,7 @@ for /f "tokens=*" %%A in (%src_file%) do (
   set "repository=%%A"
   echo Cloning repository: !repository!
 
-  rem Go to custom_nodes folder and clone the repository
+  rem Go to ai_nodes folder and clone the repository
   cd %SRC_DIR%
   git clone https://www.github.com/!repository!
 

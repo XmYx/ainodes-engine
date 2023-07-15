@@ -2,7 +2,7 @@
 setlocal enabledelayedexpansion
 
 set "base_folder=nodes_env"
-set "custom_nodes_folder=custom_nodes"
+set "custom_nodes_folder=ai_nodes"
 set "src_folder=src"
 set "repositories_file=repositories.txt"
 set "src_file=src.txt"
@@ -13,7 +13,7 @@ for /f "tokens=*" %%A in (%src_file%) do (
   set "repository=%%A"
   echo Cloning repository: !repository!
 
-  rem Go to custom_nodes folder and clone the repository
+  rem Go to ai_nodes folder and clone the repository
   cd %src_folder%
   git clone https://www.github.com/!repository!
 
@@ -26,7 +26,7 @@ for /f "tokens=*" %%A in (%repositories_file%) do (
   set "repository=%%A"
   echo Cloning repository: !repository!
 
-  rem Go to custom_nodes folder and clone the repository
+  rem Go to ai_nodes folder and clone the repository
   cd %custom_nodes_folder%
   git clone https://www.github.com/!repository!
 
@@ -46,7 +46,7 @@ cd %SCRIPT_DIR%
 git pull
 pip install -r requirements.txt
 
-rem Process folders in the custom_nodes directory
+rem Process folders in the ai_nodes directory
 cd %custom_nodes_folder%
 
 for /d %%F in (*_nodes*) do (

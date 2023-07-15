@@ -292,7 +292,7 @@ class QDMNodeContentWidget(QWidget, Serializable):
         line_edit.layout = layout
         self.widget_list.append(line_edit)
         return line_edit
-    def create_text_edit(self, label_text, placeholder="") -> QtWidgets.QTextEdit:
+    def create_text_edit(self, label_text, placeholder="", default="") -> QtWidgets.QTextEdit:
         """Create a line edit widget with the given label text.
 
         Args:
@@ -302,6 +302,7 @@ class QDMNodeContentWidget(QWidget, Serializable):
             QtWidgets.QLineEdit: A line edit widget.
         """
         line_edit = QtWidgets.QTextEdit()
+        line_edit.setText(default)
         line_edit.setPlaceholderText(placeholder)
         label = QtWidgets.QLabel(label_text)
         line_edit.setObjectName(label_text)
@@ -350,7 +351,7 @@ class QDMNodeContentWidget(QWidget, Serializable):
         self.widget_list.append(label)
         return label
 
-    def create_spin_box(self, label_text, min_val, max_val, default_val, step_value=1, accessible_name=None) -> QtWidgets.QSpinBox:
+    def create_spin_box(self, label_text, min_val, max_val, default_val, step=1, accessible_name=None) -> QtWidgets.QSpinBox:
         """Create a spin box widget with the given label text, minimum value, maximum value, default value, and step value.
 
         Args:
@@ -358,7 +359,7 @@ class QDMNodeContentWidget(QWidget, Serializable):
             min_val (int): Minimum value of the spin box.
             max_val (int): Maximum value of the spin box.
             default_val (int): Default value of the spin box.
-            step_value (int, optional): Step value of the spin box. Defaults to 1.
+            step (int, optional): Step value of the spin box. Defaults to 1.
 
         Returns:
             QtWidgets.QSpinBox: A spin box widget.
@@ -367,7 +368,7 @@ class QDMNodeContentWidget(QWidget, Serializable):
         spin_box.setMinimum(min_val)
         spin_box.setMaximum(max_val)
         spin_box.setValue(default_val)
-        spin_box.setSingleStep(step_value)
+        spin_box.setSingleStep(step)
         spin_box.setObjectName(label_text)
         if accessible_name is not None:
             spin_box.setAccessibleName(accessible_name)

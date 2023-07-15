@@ -62,9 +62,11 @@ def edge_cannot_connect_input_and_output_of_same_node(input: 'Socket', output:'S
 def edge_cannot_connect_input_and_output_of_different_type(input: 'Socket', output: 'Socket') -> bool:
     """Edge is invalid if it connects sockets with different colors"""
     if input.socket_type == 4: # Special check for model sub category
-        if input.name != output.name:
-            print(f"Trying to connect a(n) {output.name} output to a(n) {input.name} input")
-            return False
+        can_connect = False
+        if input.name in output.name or output.name in input.name:
+            #print(f"Trying to connect a(n) {output.name} output to a(n) {input.name} input")
+            can_connect = True
+        return can_connect
     if input.socket_type != output.socket_type:
         print_error("Connecting sockets with different colors")
         return False

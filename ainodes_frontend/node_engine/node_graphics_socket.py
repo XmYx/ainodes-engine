@@ -57,7 +57,7 @@ class QDMGraphicsSocket(QGraphicsItem):
     def getSocketColor(self, key):
         """Returns the ``QColor`` for this ``key``"""
 
-        if self.socket.name == "UNET":
+        if self.socket.name == "MODEL":
             return model_colors[0]
         elif self.socket.name == "CLIP":
             return model_colors[1]

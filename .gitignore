@@ -181,7 +181,7 @@ output/stills
 output/gifs
 graphs/
 models/other
-custom_nodes/
+ai_nodes/
 
 # vscode
 .vscode

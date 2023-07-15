@@ -8,7 +8,7 @@ from tqdm import tqdm
 
 
 def update_all_nodes_req():
-    top_folder = "./custom_nodes"
+    top_folder = "./ai_nodes"
     folders = [folder for folder in os.listdir(top_folder) if os.path.isdir(os.path.join(top_folder, folder))]
 
     for folder in tqdm(folders, desc="Folders"):
@@ -39,7 +39,7 @@ def import_nodes_from_directory(directory):
                 dir = directory.replace('/', '.')
                 dir = dir.replace('\\', '.').lstrip('.')
 
-
+                print(f"{dir}.{module_name}")
                 module = importlib.import_module(f"{dir}.{module_name}")
 
 

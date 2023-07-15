@@ -61,7 +61,7 @@ pip install virtualenv
 python -m virtualenv nodes_env -p=3.10
 source nodes_env/bin/activate
 pip install -r requirements.txt
-cd custom_nodes
+cd ai_nodes
 git clone https://github.com/XmYx/ainodes_engine_base_nodes
 cd ainodes_engine_base_nodes
 pip install -r requirements.txt
@@ -79,7 +79,7 @@ pip install virtualenv
 python -m virtualenv nodes_env -p=3.10
 source nodes_env/bin/activate
 pip install -r requirements.txt
-cd custom_nodes
+cd ai_nodes
 git clone https://github.com/XmYx/ainodes_engine_base_nodes
 cd ainodes_engine_base_nodes
 pip install torch torchvision
