@@ -1,14 +1,55 @@
 # -*- coding: utf-8 -*-
 """A module containing the base class for the Node's content graphical representation. It also contains an example of
 an overridden Text Widget, which can pass a notification to it's parent about being modified."""
+import re
 from typing import List
 
 from PyQt6.QtCore import Qt
+from PyQt6.QtGui import QKeyEvent, QTextCursor
 from qtpy import QtCore, QtWidgets
 from qtpy import QtGui
 from qtpy.QtWidgets import QWidget, QLabel, QVBoxLayout, QTextEdit
 
 from ainodes_frontend.node_engine.node_serializable import Serializable
+class CustomTextEdit(QTextEdit):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.word_pattern = re.compile(r'\((.*?):([\d.]+)\)')
+
+    def keyPressEvent(self, event: QKeyEvent):
+        if event.modifiers() == Qt.KeyboardModifier.ControlModifier and event.key() in (Qt.Key.Key_Up, Qt.Key.Key_Down):
+            self.handle_word_weighting(event.key())
+        else:
+            super().keyPressEvent(event)
+
+    def handle_word_weighting(self, key):
+        cursor = self.textCursor()
+        if cursor.hasSelection():
+            text = cursor.selectedText()
+            match = self.word_pattern.fullmatch(text)
+            if match:
+                word = match.group(1)
+                weight = float(match.group(2))
+                if key == Qt.Key.Key_Up:
+                    weight += 0.1
+                elif key == Qt.Key.Key_Down:
+                    weight -= 0.1
+                weight = max(0.0, weight)  # weight should not go below 0
+                new_text = f"({word}:{weight:.1f})"
+            else:
+                new_text = f"({text}:1.0)" if key == Qt.Key.Key_Up else f"({text}:0.9)"
+
+            # Remember the current position of the selection
+            start = cursor.selectionStart()
+            end = cursor.selectionEnd()
+
+            # Replace the text
+            cursor.insertText(new_text)
+
+            # Reselect the text
+            cursor.setPosition(start, QTextCursor.MoveMode.MoveAnchor)
+            cursor.setPosition(start + len(new_text), QTextCursor.MoveMode.KeepAnchor)
+            self.setTextCursor(cursor)
 
 
 class QDMNodeContentWidget(QWidget, Serializable):
@@ -83,6 +124,8 @@ class QDMNodeContentWidget(QWidget, Serializable):
                             res[f"{widget.objectName()}"] = widget.text()
                         elif isinstance(widget, QtWidgets.QTextEdit):
                             res[f"{widget.objectName()}"] = widget.toPlainText()
+                        elif isinstance(widget, CustomTextEdit):
+                            res[f"{widget.objectName()}"] = widget.toPlainText()
                         elif isinstance(widget, QtWidgets.QSpinBox) or isinstance(widget, QtWidgets.QDoubleSpinBox):
                             res[f"{widget.objectName()}"] = str(widget.value())
                         elif isinstance(widget, QtWidgets.QSlider):
@@ -97,6 +140,8 @@ class QDMNodeContentWidget(QWidget, Serializable):
                 elif isinstance(widget, QtWidgets.QLineEdit):
                     res[f"{widget.objectName()}"] = widget.text()
                 elif isinstance(widget, QtWidgets.QTextEdit):
+                    res[f"{widget.objectName()}"] = widget.toPlainText()
+                elif isinstance(widget, CustomTextEdit):
                     res[f"{widget.objectName()}"] = widget.toPlainText()
                 elif isinstance(widget, QtWidgets.QSpinBox) or isinstance(widget, QtWidgets.QDoubleSpinBox):
                     res[f"{widget.objectName()}"] = str(widget.value())
@@ -126,6 +171,8 @@ class QDMNodeContentWidget(QWidget, Serializable):
                                 widget.setText(str(data[f"{widget.objectName()}"]))
                             elif isinstance(widget, QTextEdit):
                                 widget.setPlainText(str(data[f"{widget.objectName()}"]))
+                            elif isinstance(widget, CustomTextEdit):
+                                widget.setPlainText(str(data[f"{widget.objectName()}"]))
                             elif isinstance(widget, QtWidgets.QSpinBox):
                                 widget.setValue(int(data[f"{widget.objectName()}"]))
                             elif isinstance(widget, QtWidgets.QDoubleSpinBox):
@@ -150,6 +197,8 @@ class QDMNodeContentWidget(QWidget, Serializable):
                     elif isinstance(widget, QtWidgets.QLineEdit):
                         widget.setText(str(data[f"{widget.objectName()}"]))
                     elif isinstance(widget, QTextEdit):
+                        widget.setPlainText(str(data[f"{widget.objectName()}"]))
+                    elif isinstance(widget, CustomTextEdit):
                         widget.setPlainText(str(data[f"{widget.objectName()}"]))
                     elif isinstance(widget, QtWidgets.QSpinBox):
                         widget.setValue(int(data[f"{widget.objectName()}"]))
@@ -301,7 +350,7 @@ class QDMNodeContentWidget(QWidget, Serializable):
         Returns:
             QtWidgets.QLineEdit: A line edit widget.
         """
-        line_edit = QtWidgets.QTextEdit()
+        line_edit = CustomTextEdit()
         line_edit.setText(default)
         line_edit.setPlaceholderText(placeholder)
         label = QtWidgets.QLabel(label_text)

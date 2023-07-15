@@ -242,7 +242,7 @@ class AiNode(Node):
         try:
             if len(self.getInputs(index)) > 0:
                 node, index = self.getInput(index)
-                data = node.getOutput(index)
+                return node.getOutput(index)
                 return data
             else:
                 return None
@@ -658,7 +658,7 @@ class AiDummyNode(Node):
         try:
             if len(self.getInputs(index)) > 0:
                 node, index = self.getInput(index)
-                data = node.getOutput(index)
+                return node.getOutput(index)
                 return data
             else:
                 return None
