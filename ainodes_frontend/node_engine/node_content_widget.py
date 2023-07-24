@@ -11,10 +11,37 @@ from qtpy import QtGui
 from qtpy.QtWidgets import QWidget, QLabel, QVBoxLayout, QTextEdit
 
 from ainodes_frontend.node_engine.node_serializable import Serializable
-class CustomTextEdit(QTextEdit):
+
+class CustomSpinBox(QtWidgets.QSpinBox):
+    set_signal = QtCore.Signal(int)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+
+
+class CustomTextEdit(QtWidgets.QTextEdit):
+
+    set_signal = QtCore.Signal(str)
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.word_pattern = re.compile(r'\((.*?):([\d.]+)\)')
+
+    def set(self, value):
+        try:
+            value = str(value)
+        except:
+            value = "Invalid Input"
+        self.set_signal.emit(value)
+
+    def get(self, html=False):
+        if html:
+            return self.toHtml()
+        else:
+            return self.toPlainText()
+
+
+    def set_text(self, text: str = ""):
+        self.setText(text)
 
     def keyPressEvent(self, event: QKeyEvent):
         if event.modifiers() == Qt.KeyboardModifier.ControlModifier and event.key() in (Qt.Key.Key_Up, Qt.Key.Key_Down):
@@ -132,6 +159,7 @@ class QDMNodeContentWidget(QWidget, Serializable):
                             res[f"{widget.objectName()}"] = str(widget.value())
                         elif isinstance(widget, QtWidgets.QCheckBox):
                             res[f"{widget.objectName()}"] = str(widget.isChecked())
+                            print(res[f"{widget.objectName()}"])
             elif isinstance(item, QtWidgets.QWidget):
                 widget = item
                 if isinstance(widget, QtWidgets.QComboBox):
@@ -149,6 +177,7 @@ class QDMNodeContentWidget(QWidget, Serializable):
                     res[f"{widget.objectName()}"] = str(widget.value())
                 elif isinstance(widget, QtWidgets.QCheckBox):
                     res[f"{widget.objectName()}"] = str(widget.isChecked())
+
         return res
 
 
@@ -180,7 +209,10 @@ class QDMNodeContentWidget(QWidget, Serializable):
                             elif isinstance(widget, QtWidgets.QSlider):
                                 widget.setValue(data[f"{widget.objectName()}"])
                             elif isinstance(widget, QtWidgets.QCheckBox):
-                                widget.setChecked(bool(data[f"{widget.objectName()}"]))
+                                print(value)
+                                print(widget.objectName())
+                                value = data[f"{widget.objectName()}"]
+                                widget.setChecked(True) if value == "True" else widget.setChecked(False)
             elif isinstance(item, QtWidgets.QWidget):
                 widget = item
                 try:
@@ -359,6 +391,7 @@ class QDMNodeContentWidget(QWidget, Serializable):
         layout.addWidget(label)
         layout.addWidget(line_edit)
         line_edit.layout = layout
+        line_edit.set_signal.connect(line_edit.set_text)
         self.widget_list.append(line_edit)
         return line_edit
 

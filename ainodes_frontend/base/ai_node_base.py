@@ -189,6 +189,10 @@ class AiNode(Node):
             socket.setSocketPosition()
         self.updateConnectedEdges()
 
+    def get(self):
+        res = self.content.serialize()
+        print(res)
+        return res
     def getID(self, index):
         """
         Generate a unique ID for the output socket with the given index.
