@@ -135,6 +135,7 @@ class AiNode(Node):
         self.values = {}
         self.busy = False
         self.init_done = None
+        self.exec_port = len(self.outputs) - 1
     def initInnerClasses(self):
         node_content_class = self.getNodeContentClass()
         graphics_node_class = self.getGraphicsNodeClass()

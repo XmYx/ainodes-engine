@@ -43,6 +43,11 @@ class CustomTextEdit(QtWidgets.QTextEdit):
     def set_text(self, text: str = ""):
         self.setText(text)
 
+    def mousePressEvent(self, e: QtGui.QMouseEvent) -> None:
+        super().mousePressEvent(e)
+        [n.doSelect(False) for n in self.parent().node.scene.nodes] # if n != self.parent().node]
+        self.parent().node.doSelect(True)
+
     def keyPressEvent(self, event: QKeyEvent):
         if event.modifiers() == Qt.KeyboardModifier.ControlModifier and event.key() in (Qt.Key.Key_Up, Qt.Key.Key_Down):
             self.handle_word_weighting(event.key())
@@ -325,7 +330,7 @@ class QDMNodeContentWidget(QWidget, Serializable):
             self.node.markDirty(True)
             self.node.eval()"""
 
-    def create_combo_box(self, items, label_text, accessible_name=None) -> QtWidgets.QComboBox:
+    def create_combo_box(self, items, label_text, accessible_name=None, spawn=None) -> QtWidgets.QComboBox:
         """Create a combo box widget with the given items and label text.
 
         Args:
@@ -347,9 +352,12 @@ class QDMNodeContentWidget(QWidget, Serializable):
         layout.addWidget(combo_box)
         combo_box.layout = layout
         self.widget_list.append(combo_box)
-        return combo_box
+        if spawn:
+            setattr(self, spawn, combo_box)
+        else:
+            return combo_box
 
-    def create_line_edit(self, label_text, accessible_name=None, default=None, placeholder=None) -> QtWidgets.QLineEdit:
+    def create_line_edit(self, label_text, accessible_name=None, default=None, placeholder=None, spawn=None) -> QtWidgets.QLineEdit:
         """Create a line edit widget with the given label text.
 
         Args:
@@ -372,8 +380,11 @@ class QDMNodeContentWidget(QWidget, Serializable):
         layout.addWidget(line_edit)
         line_edit.layout = layout
         self.widget_list.append(line_edit)
-        return line_edit
-    def create_text_edit(self, label_text, placeholder="", default="") -> QtWidgets.QTextEdit:
+        if spawn:
+            setattr(self, spawn, line_edit)
+        else:
+            return line_edit
+    def create_text_edit(self, label_text, placeholder="", default="", spawn=None) -> QtWidgets.QTextEdit:
         """Create a line edit widget with the given label text.
 
         Args:
@@ -393,10 +404,14 @@ class QDMNodeContentWidget(QWidget, Serializable):
         line_edit.layout = layout
         line_edit.set_signal.connect(line_edit.set_text)
         self.widget_list.append(line_edit)
-        return line_edit
+        if spawn:
+            setattr(self, spawn, line_edit)
+        else:
+            return line_edit
 
 
-    def create_list_view(self, label_text) -> QtWidgets.QListWidget:
+
+    def create_list_view(self, label_text, spawn=None) -> QtWidgets.QListWidget:
         """Create a list widget with the given label text.
 
         Args:
@@ -413,10 +428,13 @@ class QDMNodeContentWidget(QWidget, Serializable):
         layout.addWidget(list_view)
         list_view.layout = layout
         self.widget_list.append(list_view)
-        return list_view
+        if spawn:
+            setattr(self, spawn, list_view)
+        else:
+            return list_view
 
 
-    def create_label(self, label_text) -> QtWidgets.QLabel:
+    def create_label(self, label_text, spawn=None) -> QtWidgets.QLabel:
         """Create a label widget with the given label text.
 
         Args:
@@ -431,9 +449,13 @@ class QDMNodeContentWidget(QWidget, Serializable):
         layout.addWidget(label)
         label.layout = layout
         self.widget_list.append(label)
-        return label
+        if spawn:
+            setattr(self, spawn, label)
+        else:
+            return label
 
-    def create_spin_box(self, label_text, min_val, max_val, default_val, step=1, accessible_name=None) -> QtWidgets.QSpinBox:
+
+    def create_spin_box(self, label_text, min_val, max_val, default_val, step=1, accessible_name=None, spawn=None) -> QtWidgets.QSpinBox:
         """Create a spin box widget with the given label text, minimum value, maximum value, default value, and step value.
 
         Args:
@@ -460,8 +482,11 @@ class QDMNodeContentWidget(QWidget, Serializable):
         layout.addWidget(spin_box)
         spin_box.layout = layout
         self.widget_list.append(spin_box)
-        return spin_box
-    def create_double_spin_box(self, label_text:str, min_val:float =0.0, max_val:float=10.0, step:float=0.01, default_val:float=1.0, accessible_name=None ) -> QtWidgets.QDoubleSpinBox:
+        if spawn:
+            setattr(self, spawn, spin_box)
+        else:
+            return spin_box
+    def create_double_spin_box(self, label_text:str, min_val:float =0.0, max_val:float=10.0, step:float=0.01, default_val:float=1.0, accessible_name=None, spawn=None) -> QtWidgets.QDoubleSpinBox:
         """Create a double spin box widget with the given label text, minimum value, maximum value, step, and default value.
 
          Args:
@@ -488,9 +513,12 @@ class QDMNodeContentWidget(QWidget, Serializable):
         layout.addWidget(double_spin_box)
         double_spin_box.layout = layout
         self.widget_list.append(double_spin_box)
-        return double_spin_box
+        if spawn:
+            setattr(self, spawn, double_spin_box)
+        else:
+            return double_spin_box
 
-    def create_check_box(self, label_text, checked=False, accessible_name=None) -> QtWidgets.QCheckBox:
+    def create_check_box(self, label_text, checked=False, accessible_name=None, spawn=None) -> QtWidgets.QCheckBox:
         """Create a double spin box widget with the given label text, minimum value, maximum value, step, and default value.
 
          Args:
@@ -514,9 +542,12 @@ class QDMNodeContentWidget(QWidget, Serializable):
         palette.setColor(QtGui.QPalette.Disabled, QtGui.QPalette.WindowText, QtGui.QColor("black"))
         check_box.setPalette(palette)
         self.widget_list.append(check_box)
-        return check_box
+        if spawn:
+            setattr(self, spawn, check_box)
+        else:
+            return check_box
 
-    def create_button_layout(self, buttons:List[QtWidgets.QPushButton]) -> QtWidgets.QHBoxLayout:
+    def create_button_layout(self, buttons:List[QtWidgets.QPushButton], spawn=None) -> QtWidgets.QHBoxLayout:
         """Create a horizontal button layout containing the given buttons.
 
         Args:
@@ -535,9 +566,12 @@ class QDMNodeContentWidget(QWidget, Serializable):
                 widget.setPalette(palette)
             button_layout.addWidget(widget)
         self.widget_list.append(button_layout)
-        return button_layout
+        if spawn:
+            setattr(self, spawn, button_layout)
+        else:
+            return button_layout
 
-    def create_progress_bar(self, label_text, min_val, max_val, default_val) -> QtWidgets.QProgressBar:
+    def create_progress_bar(self, label_text, min_val, max_val, default_val, spawn=None) -> QtWidgets.QProgressBar:
         """Create a progress bar widget with the given label text, minimum value, maximum value, and default value.
 
         Args:
@@ -560,7 +594,10 @@ class QDMNodeContentWidget(QWidget, Serializable):
         layout.addWidget(progress_bar)
         progress_bar.layout = layout
         self.widget_list.append(layout)
-        return progress_bar
+        if spawn:
+            setattr(self, spawn, progress_bar)
+        else:
+            return progress_bar
 
     def create_main_layout(self, grid=None) -> None:
         """
