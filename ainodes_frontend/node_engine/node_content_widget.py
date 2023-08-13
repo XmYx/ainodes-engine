@@ -608,7 +608,7 @@ class QDMNodeContentWidget(QWidget, Serializable):
 
         if self.node.use_gpu:
             from ainodes_frontend import singleton as gs
-            self.create_combo_box(gs.available_gpus, "Select GPU", spawn="gpuid")
+            self.create_combo_box(gs.available_gpus, "Select GPU", spawn="gpu_id")
 
         self.main_layout = QtWidgets.QVBoxLayout(self)
         self.main_layout.setContentsMargins(15, 15, 15, 25)
