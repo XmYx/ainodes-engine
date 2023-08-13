@@ -99,6 +99,7 @@ class AiNode(Node):
     GraphicsNode_class = CalcGraphicsNode
     NodeContent_class = CalcContent
     sockets = None
+    use_gpu = False
 
     def __init__(self, scene, inputs=[2,2], outputs=[1]):
         #self.threadpool = QThreadPool()
@@ -150,7 +151,6 @@ class AiNode(Node):
             self.content.setMinimumWidth(width)
         self.grNode.icon = QtGui.QImage(self.icon)
         self.grNode.thumbnail = self.grNode.icon.scaled(64, 64, QtCore.Qt.KeepAspectRatio)
-
         self.content.eval_signal.connect(self.evalImplementation)
 
     def set_socket_names(self):

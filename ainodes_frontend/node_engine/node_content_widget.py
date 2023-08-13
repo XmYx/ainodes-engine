@@ -605,6 +605,11 @@ class QDMNodeContentWidget(QWidget, Serializable):
         The layout is a QVBoxLayout with custom margins and will be set as the layout for the widget.
         If grid parameter is provided, a QGridLayout with grid number of columns will be created.
         """
+
+        if self.node.use_gpu:
+            from ainodes_frontend import singleton as gs
+            self.create_combo_box(gs.available_gpus, "Select GPU", spawn="gpuid")
+
         self.main_layout = QtWidgets.QVBoxLayout(self)
         self.main_layout.setContentsMargins(15, 15, 15, 25)
 

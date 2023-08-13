@@ -9,3 +9,9 @@
                     cls.__instance = super().__new__(cls)
         return cls.__instance"""
 
+import torch
+
+def get_available_gpus():
+    return [str(i) for i in range(torch.cuda.device_count())]
+
+available_gpus = get_available_gpus()
