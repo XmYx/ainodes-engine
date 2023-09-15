@@ -786,7 +786,6 @@ class CalculatorWindow(NodeEditorWindow):
         # Create a text widget for stdout and stderr
         self.text_widget = NodesConsole()
         # Set up the StreamRedirect objects
-
         self.stdout_redirect = StreamRedirect()
         self.stderr_redirect = StreamRedirect()
         self.stdout_redirect.text_written.connect(self.text_widget.write)

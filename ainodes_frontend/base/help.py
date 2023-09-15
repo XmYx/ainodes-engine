@@ -3,6 +3,7 @@
 
 def get_help():
     return ["aiNodes - Help",
+            "Home - Show Search"
             "F1 - Hide / Show Help",
             "F2 - Hide / Show MiniMap",
             "F11 - FullScreen",

@@ -25,6 +25,41 @@ from ainodes_frontend.node_engine.utils import dumpException
 
 DEBUG = False
 DEBUG_CONTEXT = False
+from ainodes_frontend import singleton as gs
+
+
+class NodeSearchDialog(QtWidgets.QDialog):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.initUI()
+
+    def initUI(self):
+        self.layout = QtWidgets.QVBoxLayout()
+
+        # Search box
+        self.search_box = QtWidgets.QLineEdit()
+        self.search_box.textChanged.connect(self.on_search)
+        self.layout.addWidget(self.search_box)
+
+        # List to display search results
+        self.list_widget = QtWidgets.QListWidget()
+        self.list_widget.itemDoubleClicked.connect(self.accept)
+        self.layout.addWidget(self.list_widget)
+
+        self.setLayout(self.layout)
+
+    def on_search(self):
+        query = self.search_box.text().lower()
+        self.list_widget.clear()
+
+        # Assuming CALC_NODES is a dictionary where the key is the node name
+        # Modify this as per your actual data structure
+        results = [key for key, _ in gs.node_dict.items() if query in key.lower()]
+
+        self.list_widget.addItems(results)
+
+    def get_selected_node(self):
+        return gs.node_dict[self.list_widget.currentItem().text()]
 
 
 class CalculatorSubWindow(NodeEditorWidget):
@@ -35,7 +70,7 @@ class CalculatorSubWindow(NodeEditorWidget):
         self.setTitle()
         self.initNewNodeActions()
         self.scene.addHasBeenModifiedListener(self.setTitle)
-        self.scene.history.addHistoryRestoredListener(self.onHistoryRestored)
+        self.scene.history.addHistoryRestoredListener(  self.onHistoryRestored)
         self.scene.addDragEnterListener(self.onDragEnter)
         self.scene.addDropListener(self.onDrop)
         self.scene.setNodeClassSelector(self.getNodeClassFromData)
@@ -56,7 +91,27 @@ class CalculatorSubWindow(NodeEditorWidget):
         else:
             super().closeEvent(event)
 
+    def keyPressEvent(self, event):
 
+        print(event.key())
+
+        if event.key() == Qt.Key_Home:
+
+            print("tab")
+
+            self.show_search_dialog()
+        super().keyPressEvent(event)
+
+    def show_search_dialog(self):
+        search_dialog = NodeSearchDialog()
+        result = search_dialog.exec_()
+
+        if result == QtWidgets.QDialog.Accepted:
+            node_name = search_dialog.get_selected_node()
+            # Create and place the node on the scene at the last known mouse position
+            # You might need to adapt this based on your actual implementation
+            node = get_class_from_opcode(node_name)(self.scene)
+            #node.setPos(self.last_mouse_position.x(), self.last_mouse_position.y())
     def tab_search_toggle(self):
         state = self._search_widget.isVisible()
         if state == False:

@@ -31,13 +31,14 @@ class QDMDragListbox(QtWidgets.QTreeWidget):
     def addMyItems(self):
         self.clear()
         categories = {}
+        gs.node_dict = {}
         self.addSubgraphItems(categories)
         keys = list(CALC_NODES.keys())
         keys.sort()
         for key in keys:
             node = get_class_from_opcode(key)
             self.add_to_categories(categories, node.category, (node.op_title, node.icon, node.op_code, node.help_text))
-
+            gs.node_dict[node.op_title] = node.op_code
         self.populate_tree(categories)
 
 
