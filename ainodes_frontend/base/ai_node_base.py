@@ -192,7 +192,6 @@ class AiNode(Node):
 
     def get(self):
         res = self.content.serialize()
-        print(res)
         return res
     def getID(self, index):
         """
@@ -338,9 +337,6 @@ class AiNode(Node):
             if hasattr(self, "output_data_ports"):
                 x = 0
                 for port in self.output_data_ports:
-
-                    print("SETTING", x, port)
-
                     self.setOutput(port, result[x])
                     x += 1
 

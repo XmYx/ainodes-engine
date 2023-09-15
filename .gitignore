@@ -194,3 +194,8 @@ config/cache.json
 src/python/
 src/
 logs/
+*.png
+*.txt
+*.jpg
+*.bin
+*.pkl

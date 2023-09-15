@@ -61,20 +61,20 @@ class CalculatorSubWindow(NodeEditorWidget):
         state = self._search_widget.isVisible()
         if state == False:
             self._search_widget.setVisible(state)
-            print(self._search_widget.isVisible())
+            #print(self._search_widget.isVisible())
             #self.setFocus()
             #return
         state = True
         if self.scenePos:
-            print(self.scenePos.y())
+            #print(self.scenePos.y())
 
             pos = QtCore.QPoint(int(self.width() / 2),
                                                int(self.height() / 2))
-            print(pos)
+            #print(pos)
             rect = self._search_widget.rect()
             #new_pos = QtCore.QPoint(int(pos.x() - rect.width() / 2),
             #                        int(pos.y() - rect.height() / 2))
-            print(pos)
+            #print(pos)
             self._search_widget.move(pos)
             self._search_widget.setVisible(state)
             self._search_widget.setFocus()

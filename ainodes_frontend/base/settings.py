@@ -108,6 +108,7 @@ def load_settings():
             socket_names = settings['socket_names']
             SOCKET_COLORS = [hex_to_color(hex_string) for hex_string in settings['COLORS']]
             gs.checkpoints = settings['checkpoints']
+            gs.checkpoints_xl = settings.get("checkpoints_xl", "models/checkpoints_xl")
             gs.hypernetworks = settings['hypernetworks']
             gs.vae = settings['vae']
             gs.controlnet = settings['controlnet']

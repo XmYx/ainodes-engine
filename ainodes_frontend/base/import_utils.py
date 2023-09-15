@@ -39,7 +39,7 @@ def import_nodes_from_directory(directory):
                 dir = directory.replace('/', '.')
                 dir = dir.replace('\\', '.').lstrip('.')
 
-                print(f"{dir}.{module_name}")
+                #print(f"{dir}.{module_name}")
                 module = importlib.import_module(f"{dir}.{module_name}")
 
 

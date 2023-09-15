@@ -149,7 +149,7 @@ class QDMDragListbox(QtWidgets.QTreeWidget):
                 pixmap = QPixmap(item.data(0, Qt.UserRole)).scaled(256, 256, aspectRatioMode=Qt.KeepAspectRatio)
                 pm = True
                 dataStream << pixmap
-            print("OPCODE WILL BE", op_code)
+            #print("OPCODE WILL BE", op_code)
             #if op_code:
                 #try:
                 #    op_code = int(op_code)
