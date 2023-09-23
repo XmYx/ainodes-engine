@@ -141,8 +141,9 @@ class SceneClipboard():
             created_nodes.append(new_node)
 
             sub_graph_class = get_class_from_content_label_objname("subgraph_node")
-            if isinstance(new_node, sub_graph_class):
-                new_node.force_init()
+            if sub_graph_class is not None:
+                if isinstance(new_node, sub_graph_class):
+                    new_node.force_init()
 
 
             # readjust the new node_engine's position

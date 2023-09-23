@@ -16,7 +16,7 @@ def get_help():
             "subgraph output node within your\n"
             "subgraph. These provide the entry\n"
             "and exit points from subgraphs,\n"
-            "and allow you to have complicated\n"
+            "and allow you to have complicated\n" 
             "pipelines hidden in a single node."]
 
 

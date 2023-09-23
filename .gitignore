@@ -199,3 +199,5 @@ logs/
 *.jpg
 *.bin
 *.pkl
+
+.ignore/

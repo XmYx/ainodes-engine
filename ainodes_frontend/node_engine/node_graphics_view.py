@@ -2,9 +2,9 @@
 """
 A module containing `Graphics View` for NodeEditor
 """
-from PyQt6.QtCore import QEasingCurve, QPropertyAnimation
-from PyQt6.QtGui import QPen
-from PyQt6.QtWidgets import QGraphicsOpacityEffect, QGraphicsRectItem, QGraphicsScene
+from qtpy.QtCore import QEasingCurve, QPropertyAnimation
+from qtpy.QtGui import QPen
+from qtpy.QtWidgets import QGraphicsOpacityEffect, QGraphicsRectItem, QGraphicsScene
 from qtpy.QtOpenGLWidgets import QOpenGLWidget
 from qtpy.QtGui import QTransform
 from qtpy import QtCore, QtWidgets, QtGui

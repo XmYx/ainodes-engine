@@ -93,13 +93,14 @@ class CalculatorSubWindow(NodeEditorWidget):
 
     def keyPressEvent(self, event):
 
-        print(event.key())
 
         if event.key() == Qt.Key_Home:
 
-            print("tab")
 
             self.show_search_dialog()
+        elif event.key() == Qt.Key_End:
+            print("END")
+            self.scene.noderunner.start()
         super().keyPressEvent(event)
 
     def show_search_dialog(self):

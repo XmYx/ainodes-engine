@@ -7,11 +7,14 @@ import os
 import sys
 from collections import OrderedDict
 
+from qtpy.QtCore import QThreadPool, QRunnable
 from qtpy import QtCore
 
+from ainodes_frontend.base import AiNode
 from ainodes_frontend.node_engine.node_edge import Edge
 from ainodes_frontend.node_engine.node_graphics_scene import QDMGraphicsScene
 from ainodes_frontend.node_engine.node_node import Node
+from ainodes_frontend.node_engine.node_runner import NodeRunner
 from ainodes_frontend.node_engine.node_scene_clipboard import SceneClipboard
 from ainodes_frontend.node_engine.node_scene_history import SceneHistory
 from ainodes_frontend.node_engine.node_serializable import Serializable
@@ -21,6 +24,7 @@ DEBUG_REMOVE_WARNINGS = False
 
 
 class InvalidFile(Exception): pass
+
 
 
 class Scene(Serializable):
@@ -39,6 +43,7 @@ class Scene(Serializable):
         super().__init__()
         self.nodes = []
         self.edges = []
+        self.noderunner = NodeRunner(self.nodes, self)
 
         # current filename assigned to this scene
         self.filename = None
@@ -95,6 +100,8 @@ class Scene(Serializable):
         """Set up Graphics Scene Instance"""
         self.grScene = QDMGraphicsScene(self)
         self.grScene.setGrScene(self.scene_width, self.scene_height)
+
+
 
     def getNodeByID(self, node_id: int):
         """

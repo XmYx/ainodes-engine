@@ -10,14 +10,11 @@ set "PYTHON_LIB_DIR=%PYTHON_DIR%\Lib"
 set "PYTHON_SCRIPTS_DIR=%PYTHON_DIR%\Scripts"
 set "PATH=%PYTHON_SCRIPTS_DIR%;%PYTHON_LIB_DIR%;%PYTHON_DIR%;%PATH%"
 
+set CONDA_ROOT_PREFIX=%cd%\installer_files\conda
+set INSTALL_ENV_DIR=%cd%\nodes_env
 
-set "VBS_SCRIPT=%TEMP%\RunPythonScript.vbs"
->"%VBS_SCRIPT%" (
-    echo Set oWS = CreateObject("WScript.Shell"^)
-    echo oWS.Run "cmd /C %SCRIPT_DIR%nodes_env/Scripts/activate.bat & %SCRIPT_DIR%nodes_env/Scripts/python.exe ""%PYTHON_SCRIPT%""", 0
-)
+@rem activate installer env
+call "%CONDA_ROOT_PREFIX%\condabin\conda.bat" activate "%INSTALL_ENV_DIR%" || ( echo. && echo Miniconda hook not found. && goto end )
 
-cscript //nologo "%VBS_SCRIPT%"
-del "%VBS_SCRIPT%"
-
-endlocal
+@rem setup installer env
+call python main.py %*

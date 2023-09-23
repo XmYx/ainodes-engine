@@ -130,14 +130,16 @@ class QDMDragListbox(QtWidgets.QTreeWidget):
         # Add subgraphs category and files
         subgraph_category = "Subgraphs"
         subgraph_folder = "subgraphs"
-        subgraph_files = [f for f in os.listdir(subgraph_folder) if f.endswith(".json")]
-        categories[subgraph_category] = {"_items": []}
-        if subgraph_files:
-            icon = "ainodes_frontend/icons/base_nodes/v2/load_subgraph.png"
-            for file in subgraph_files:
-                categories[subgraph_category]["_items"].append(
-                    (file, icon, gs.nodes["subgraph_node"]['op_code'], "Subgraph Nodes"))
-
+        if os.path.isdir(subgraph_folder):
+            subgraph_files = [f for f in os.listdir(subgraph_folder) if f.endswith(".json")]
+            categories[subgraph_category] = {"_items": []}
+            if subgraph_files:
+                icon = "ainodes_frontend/icons/base_nodes/v2/load_subgraph.png"
+                for file in subgraph_files:
+                    categories[subgraph_category]["_items"].append(
+                        (file, icon, gs.nodes["subgraph_node"]['op_code'], "Subgraph Nodes"))
+        else:
+            os.makedirs(subgraph_folder, exist_ok=True)
     def startDrag(self, *args, **kwargs):
         try:
             item = self.currentItem()

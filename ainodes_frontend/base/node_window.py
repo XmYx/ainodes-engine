@@ -6,8 +6,8 @@ import threading
 from subprocess import run
 
 import requests
-from PyQt6.QtCore import QPropertyAnimation, QEasingCurve
-from PyQt6.QtWidgets import QSplitter
+from qtpy.QtCore import QPropertyAnimation, QEasingCurve
+from qtpy.QtWidgets import QSplitter
 from qtpy import QtWidgets, QtCore, QtGui
 from qtpy.QtCore import Qt, QSignalMapper
 from qtpy.QtGui import QIcon, QKeySequence
@@ -41,7 +41,6 @@ Edge.registerEdgeValidator(edge_cannot_connect_input_and_output_of_different_typ
 # images for the dark skin
 DEBUG = False
 from ainodes_frontend import singleton as gs
-
 load_settings()
 
 gs.loaded_models = {}
@@ -700,7 +699,7 @@ class CalculatorWindow(NodeEditorWindow):
 
 
     def fade_in_animation(self):
-        self.fade_animation.setDuration(1500)  # Set the duration of the animation in milliseconds
+        self.fade_animation.setDuration(500)  # Set the duration of the animation in milliseconds
         self.fade_animation.setStartValue(0.0)  # Start with opacity 0.0 (transparent)
         self.fade_animation.setEndValue(1.0)  # End with opacity 1.0 (fully visible)
         self.fade_animation.setEasingCurve(QEasingCurve.Type.InOutQuad)  # Apply easing curve to the animation
@@ -842,6 +841,10 @@ class CalculatorWindow(NodeEditorWindow):
         self.actSeparator.setSeparator(True)
 
         self.actAbout = QAction("&About", self, statusTip="Show the application's About box", triggered=self.about)
+
+
+
+        #self.actAbout = QAction("&About", self, statusTip="Show the application's About box", triggered=self.about)
         self.actBrowser = QAction("&Browser", self, statusTip="Show the application's Browser", triggered=self.browser)
         self.actTraining = QAction("&Training", self, statusTip="Start Kohya", triggered=self.training_gui)
         self.actColors = QAction("&Change Colors", self, statusTip="Change socket / route color palette", triggered=self.edit_colors)

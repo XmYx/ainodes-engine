@@ -213,8 +213,8 @@ class AiNode(Node):
             value: The value to be set for the output socket.
         """
         object_name = self.getID(index)
-
-        self.values[object_name] = value
+        setattr(self, object_name, value)
+        #self.values[object_name] = value
     def getOutput(self, index):
         """
          Get the value of the output socket with the given index.
@@ -225,7 +225,12 @@ class AiNode(Node):
          Returns:
              The value of the output socket, or None if it does not exist.
          """
+
         object_name = self.getID(index)
+        if hasattr(self, object_name):
+            return getattr(self, object_name)
+        else:
+            return None
         try:
             return self.values[object_name]
         except:
@@ -329,7 +334,7 @@ class AiNode(Node):
     def evalImplementation_thread(self):
         return None
     #@QtCore.Slot(object)
-    def onWorkerFinished(self, result):
+    def onWorkerFinished(self, result, exec=True):
 
         self.busy = False
         self.markDirty(False)
@@ -339,10 +344,13 @@ class AiNode(Node):
                 for port in self.output_data_ports:
                     self.setOutput(port, result[x])
                     x += 1
+        # self.content.update()
+        # self.content.finished.emit()
+        if exec:
+            if hasattr(self, "exec_port"):
+                if len(self.getOutputs(self.exec_port)) > 0:
+                    self.executeChild(output_index=self.exec_port)
 
-        if hasattr(self, "exec_port"):
-            if len(self.getOutputs(self.exec_port)) > 0:
-                self.executeChild(output_index=self.exec_port)
     def eval(self, index=0):
         try:
             self.content.eval_signal.emit()
@@ -471,6 +479,26 @@ class AiNode(Node):
         dialog.setLayout(layout)
         dialog.show()
         return dialog
+    def can_run(self):
+        if len(self.inputs) == 0:
+            return True
+
+        for socket in self.inputs:
+            for edge in socket.edges:
+                if hasattr(edge, 'start_socket'):
+                    if hasattr(edge.start_socket, 'node'):
+                        if edge.start_socket.node != self:
+                            if edge.start_socket.node.isDirty():
+                                #print(f"Node {self} cannot run because connected node {edge.start_socket.node} is dirty.")
+                                return False
+                elif hasattr(edge, 'end_socket'):
+                    if hasattr(edge.end_socket, 'node'):
+                        if edge.end_socket.node != self:
+                            if edge.end_socket.node.isDirty():
+                                #print(f"Node {self} cannot run because connected node {edge.end_socket.node} is dirty.")
+
+                                return False
+        return True
 
 class AiApiNode(AiNode):
     icon = ""

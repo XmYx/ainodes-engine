@@ -362,10 +362,13 @@ class Node(Serializable):
         if self._is_dirty: self.onMarkedDirty()
     def onMarkedDirty(self):
         """Called when this `Node` has been marked as `Dirty`. This method is supposed to be overridden"""
+        self.markDescendantsDirty(True)
+
+        self.scene.getView().update()
         pass
 
     def markChildrenDirty(self, new_value: bool=True):
-        return
+        #return
         """Mark all first level children of this `Node` to be `Dirty`. Not this `Node` it self. Not other descendants
 
         :param new_value: ``True`` if children should be `Dirty`. ``False`` if you want to un-dirty children
@@ -373,9 +376,12 @@ class Node(Serializable):
         """
         for other_node in self.getChildrenNodes():
             other_node.markDirty(new_value)
+            if other_node == self:
+                break
+
 
     def markDescendantsDirty(self, new_value: bool=True):
-        return
+        #return
         """Mark all children and descendants of this `Node` to be `Dirty`. Not this `Node` it self
 
         :param new_value: ``True`` if children and descendants should be `Dirty`. ``False`` if you want to un-dirty children and descendants
@@ -384,6 +390,8 @@ class Node(Serializable):
         for other_node in self.getChildrenNodes():
             other_node.markDirty(new_value)
             other_node.markDescendantsDirty(new_value)
+            if other_node == self:
+                break
 
     def isInvalid(self) -> bool:
         """Is this node marked as `Invalid`?

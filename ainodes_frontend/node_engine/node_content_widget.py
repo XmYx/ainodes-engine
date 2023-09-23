@@ -4,8 +4,9 @@ an overridden Text Widget, which can pass a notification to it's parent about be
 import re
 from typing import List
 
-from PyQt6.QtCore import Qt
-from PyQt6.QtGui import QKeyEvent, QTextCursor
+from PyQt6.QtWidgets import QSpinBox, QDoubleSpinBox, QLineEdit, QComboBox
+from qtpy.QtCore import Qt
+from qtpy.QtGui import QKeyEvent, QTextCursor
 from qtpy import QtCore, QtWidgets
 from qtpy import QtGui
 from qtpy.QtWidgets import QWidget, QLabel, QVBoxLayout, QTextEdit
@@ -87,7 +88,7 @@ class CustomTextEdit(QtWidgets.QTextEdit):
 class QDMNodeContentWidget(QWidget, Serializable):
     eval_signal = QtCore.Signal()
     mark_dirty_signal = QtCore.Signal()
-
+    finished = QtCore.Signal()
     """Base class for representation of the Node's graphics content. This class also provides layout
     for other widgets inside of a :py:class:`~node_engine.node_node.Node`"""
     def __init__(self, node:'Node', parent:QWidget=None):
@@ -106,6 +107,17 @@ class QDMNodeContentWidget(QWidget, Serializable):
 
         self.widget_list = []
         self.initUI()
+        for created_widget in self.widget_list:
+            if isinstance(created_widget, (QSpinBox, QDoubleSpinBox)):
+                created_widget.valueChanged.connect(self.mark_node_dirty)
+            elif isinstance(created_widget, (QLineEdit, QTextEdit)):
+                created_widget.textChanged.connect(self.mark_node_dirty)
+            elif isinstance(created_widget, QComboBox):
+                created_widget.currentIndexChanged.connect(self.mark_node_dirty)
+    @QtCore.Slot()
+    def mark_node_dirty(self, value=None):
+        # print("marking")
+        self.node.markDirty(True)
 
         #sshFile = "ainodes_frontend/qss/nodeeditor-dark.qss"
         #with open(sshFile, "r") as fh:
