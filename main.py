@@ -2,7 +2,10 @@
 #!/usr/bin/env python3
 import datetime
 
+import yaml
 from qtpy.QtCore import QPropertyAnimation, QEasingCurve
+
+from ainodes_frontend.base.settings import Settings, save_settings, load_settings
 
 start_time = datetime.datetime.now()
 print(f"Start aiNodes, please wait. {start_time}")
@@ -27,7 +30,6 @@ except:
 
 
 from ainodes_frontend import singleton as gs
-from ainodes_frontend.base.settings import load_settings, init_globals
 from ainodes_frontend.node_engine.utils import loadStylesheets
 from ainodes_frontend.base.args import get_args
 from ainodes_frontend.base.import_utils import update_all_nodes_req, import_nodes_from_subdirectories, \
@@ -77,8 +79,9 @@ else:
 
 
 if __name__ == "__main__":
+    from ainodes_frontend.base import settings
 
-    init_globals()
+    settings.init_globals()
 
     gs.args = get_args()
 
@@ -117,6 +120,7 @@ if __name__ == "__main__":
     splash.show()
 
     load_settings()
+
     base_folder = 'ai_nodes'
     if gs.args.update:
         update_all_nodes_req()

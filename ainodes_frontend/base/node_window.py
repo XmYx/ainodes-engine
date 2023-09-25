@@ -19,7 +19,7 @@ from ainodes_frontend.base.ai_nodes_listbox import QDMDragListbox
 from ainodes_frontend.base.node_config import CALC_NODES, import_nodes_from_file, import_nodes_from_subdirectories, \
     get_class_from_content_label_objname
 from ainodes_frontend.base.node_sub_window import CalculatorSubWindow
-from ainodes_frontend.base.settings import load_settings, save_settings, save_error_log
+from ainodes_frontend.base.settings import save_settings, save_error_log
 from ainodes_frontend.base.webview_widget import BrowserWidget
 from ainodes_frontend.base.worker import Worker
 from ainodes_frontend.base.yaml_editor import YamlEditorWidget
@@ -42,7 +42,7 @@ Edge.registerEdgeValidator(edge_cannot_connect_input_and_output_of_different_typ
 DEBUG = False
 from ainodes_frontend import singleton as gs
 
-load_settings()
+#load_settings()
 
 gs.loaded_models = {}
 gs.models = {}
@@ -729,15 +729,14 @@ class CalculatorWindow(NodeEditorWindow):
 
 
     def edit_colors(self):
-        editor = ColorEditor(gs.SOCKET_COLORS, gs.socket_names)
+        editor = ColorEditor(gs.prefs.SOCKET_COLORS, gs.prefs.socket_names)
         result = editor.exec_()
         if result == QtWidgets.QDialog.Accepted:
             gs.SOCKET_COLORS = editor.get_updated_colors()
     def toggleDockWidgets(self):
         # Get the current visibility state of the dock widgets
         if not gs.args.no_console:
-            consoleVisible = self.console.isVisible()
-            self.console.setVisible(not consoleVisible)
+            self.console.setVisible(not self.console.isVisible())
 
         #packagesVisible = self.node_packages.isVisible()
 
@@ -770,12 +769,22 @@ class CalculatorWindow(NodeEditorWindow):
             self.showFullScreen()
     def keyPressEvent(self, event: QtGui.QKeyEvent) -> None:
 
-        if event.key() == 96:
+        pressed_sequence = QKeySequence(int(event.modifiers().value) | int(event.key()))
+
+        if pressed_sequence == QKeySequence(gs.prefs.keybindings['console']['shortcut']):
             self.toggleDockWidgets()
-        elif event.key() == Qt.Key_F11:
+        elif pressed_sequence == QKeySequence(gs.prefs.keybindings['fullscreen']['shortcut']):
             self.toggleFullscreen()
-        elif event.key() == Qt.Key_Escape:
+        elif pressed_sequence == QKeySequence(gs.prefs.keybindings['node_list']['shortcut']):
             self.toggleNodesDock()
+
+        # if event.key() == 96:
+        #     self.toggleDockWidgets()
+        #
+        # elif event.key() == Qt.Key_F11:
+        #     self.toggleFullscreen()
+        # elif event.key() == Qt.Key_Escape:
+        #     self.toggleNodesDock()
         super().keyPressEvent(event)
 
     def create_console_widget(self):
@@ -849,8 +858,8 @@ class CalculatorWindow(NodeEditorWindow):
         # Create a checkable QAction
         self.actRClickMenu.setCheckable(True)
     def showSettingsEditor(self):
-        if not hasattr(self, 'yaml_editor'):
-            self.yaml_editor = YamlEditorWidget()
+        #if not hasattr(self, 'yaml_editor'):
+        self.yaml_editor = YamlEditorWidget()
 
         settings_path = "config/settings.yaml"
         settings_path = settings_path if os.path.isfile(settings_path) else "config/default_settings.yaml"

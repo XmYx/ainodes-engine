@@ -150,13 +150,13 @@ class NodeEditorWindow(QMainWindow):
         self.defaultDirsSubMenu = QtWidgets.QMenu('User Directories', self)
         default_dirs = {"Stills":"output/stills",
                         "MP4s":"output/mp4s",
-                        "SD Models":gs.checkpoints,
-                        "VAE":gs.vae,
-                        "ControlNet":gs.controlnet,
-                        "Embeddings":gs.embeddings,
-                        "Upscalers":gs.upscalers,
-                        "LORAs":gs.loras,
-                        "T2I Adapters":gs.t2i_adapter}
+                        "SD Models":gs.prefs.checkpoints,
+                        "VAE":gs.prefs.vae,
+                        "ControlNet":gs.prefs.controlnet,
+                        "Embeddings":gs.prefs.embeddings,
+                        "Upscalers":gs.prefs.upscalers,
+                        "LORAs":gs.prefs.loras,
+                        "T2I Adapters":gs.prefs.t2i_adapter}
 
         for dir_name, dir in default_dirs.items():
             dir_action = QAction(dir_name, self)

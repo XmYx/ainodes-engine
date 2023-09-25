@@ -29,15 +29,9 @@ class NodeRunner:
         self.parent = parent
 
     def reorder_nodes(self):
-        """Reorder starting_nodes to prioritize ImagePreviewNode instances that can run, followed by other nodes that can run, and then nodes that cannot run."""
-        from ai_nodes.ainodes_engine_base_nodes.image_nodes.image_preview_node import ImagePreviewNode
+        """Reorder starting_nodes to prioritize nodes that can run."""
+        self.starting_nodes.sort(key=lambda node: not node.can_run())
 
-        def sorting_key(node):
-            is_image_preview = isinstance(node, ImagePreviewNode)
-            can_run = node.can_run()
-            return (not (is_image_preview and can_run), not can_run, not is_image_preview)
-
-        self.starting_nodes.sort(key=sorting_key)
     def run_next(self):
         if not self.starting_nodes:
             self.starting_nodes = [node for node in self.skipped_nodes if node.can_run() and node.isDirty() and node not in self.processed_nodes]

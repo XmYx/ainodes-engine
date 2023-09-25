@@ -3,6 +3,7 @@ import os
 import sys
 import time
 
+from PyQt6.QtGui import QKeySequence
 from qtpy.QtCore import QByteArray
 from qtpy import QtCore
 from qtpy import QtWidgets
@@ -92,15 +93,20 @@ class CalculatorSubWindow(NodeEditorWidget):
             super().closeEvent(event)
 
     def keyPressEvent(self, event):
+        pressed_sequence = QKeySequence(int(event.modifiers().value) | int(event.key()))
 
-
-        if event.key() == Qt.Key_Home:
-
-
+        if pressed_sequence == QKeySequence(gs.prefs.keybindings['search']['shortcut']):
             self.show_search_dialog()
-        elif event.key() == Qt.Key_End:
-            print("END")
+        elif pressed_sequence == QKeySequence(gs.prefs.keybindings['run']['shortcut']):
+            print("Running Nodes")
             self.scene.noderunner.start()
+        # if event.key() == Qt.Key_Home:
+        #
+        #
+        #     self.show_search_dialog()
+        # elif event.key() == Qt.Key_End:
+        #     print("END")
+        #     self.scene.noderunner.start()
         super().keyPressEvent(event)
 
     def show_search_dialog(self):

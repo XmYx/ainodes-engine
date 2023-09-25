@@ -11,6 +11,7 @@ from qtpy.QtGui import QColor
 
 from ainodes_frontend import singleton as gs
 from ainodes_frontend.base.help import get_help
+from ainodes_frontend.base.yaml_editor import DEFAULT_KEYBINDINGS
 
 
 def handle_ainodes_exception():
@@ -72,49 +73,52 @@ def hex_to_color(hex_string):
     return QColor(hex_string)
 
 def save_settings(settings):
-    # return
-    # settings = {
-    #     'socket_names': socket_names,
-    #     'COLORS': [color_to_hex(color) for color in SOCKET_COLORS],
-    #     'checkpoints': gs.checkpoints,
-    #     'hypernetworks': gs.hypernetworks,
-    #     'vae': gs.vae,
-    #     'controlnet': gs.controlnet,
-    #     'embeddings': gs.embeddings,
-    #     'upscalers': gs.upscalers,
-    #     'loras': gs.loras,
-    #     't2i_adapter': gs.t2i_adapter,
-    #     'output': gs.output,
-    # 
-    # }
+    settings_dict = settings.to_dict()
     with open('config/settings.yaml', 'w') as file:
-        yaml.dump(settings, file, indent=4)
-
+        yaml.dump(settings_dict, file, indent=4)
 
 class Settings:
     def __init__(self):
         # Default values
         self.socket_names = []
         self.SOCKET_COLORS = []
-        self.checkpoints = ""
+        self.checkpoints = "models/checkpoints"
         self.checkpoints_xl = "models/checkpoints_xl"
-        self.hypernetworks = ""
-        self.vae = ""
-        self.controlnet = ""
-        self.embeddings = ""
-        self.upscalers = ""
-        self.loras = ""
-        self.t2i_adapter = ""
-        self.output = ""
+        self.hypernetworks = "models/hypernetworks"
+        self.vae = "models/vae"
+        self.controlnet = "models/controlnet"
+        self.embeddings = "models/embeddings"
+        self.upscalers = "models/other"
+        self.loras = "models/loras"
+        self.t2i_adapter = "models/t2i"
+        self.output = "output"
         self.opengl = ""
+        self.keybindings = DEFAULT_KEYBINDINGS
 
     def load_from_dict(self, settings_dict):
         for key, value in settings_dict.items():
-            if hasattr(self, key):
-                setattr(self, key, value)
+            setattr(self, key, value)
         # Additional processing for specific settings
         if 'COLORS' in settings_dict:
             self.SOCKET_COLORS = [hex_to_color(hex_string) for hex_string in settings_dict['COLORS']]
+    def to_dict(self):
+        settings_dict = {
+            'socket_names': self.socket_names,
+            'COLORS': [color_to_hex(color) for color in self.SOCKET_COLORS],
+            'checkpoints': self.checkpoints,
+            'hypernetworks': self.hypernetworks,
+            'vae': self.vae,
+            'controlnet': self.controlnet,
+            'embeddings': self.embeddings,
+            'upscalers': self.upscalers,
+            'loras': self.loras,
+            't2i_adapter': self.t2i_adapter,
+            'output': self.output,
+            'keybindings': self.keybindings if hasattr(self, 'keybindings') else {}
+            # Add any new settings here...
+        }
+        return settings_dict
+    #return settings
 
 def load_settings():
     settings = Settings()
@@ -126,16 +130,15 @@ def load_settings():
 
     with open(path, 'r') as file:
         settings_dict = yaml.safe_load(file)
-        try:
-            settings.load_from_dict(settings_dict)
-            save_settings(settings)  # Modify your save_settings function to take a Settings object
-        except:
-            settings_dict = setup_defaults()
-            settings.load_from_dict(settings_dict)
-            save_settings(settings)  # Modify your save_settings function to take a Settings object
-    gs.prefs = settings
-    #return settings
+        # try:
+        settings.load_from_dict(settings_dict)
 
+        save_settings(settings)  # Modify your save_settings function to take a Settings object
+        # except:
+        #     settings_dict = setup_defaults()
+        #     settings.load_from_dict(settings_dict)
+        #     save_settings(settings)  # Modify your save_settings function to take a Settings object
+    gs.prefs = settings
 
 # def load_settings():
 #     global SOCKET_COLORS
@@ -150,17 +153,17 @@ def load_settings():
 #         try:
 #             socket_names = settings['socket_names']
 #             SOCKET_COLORS = [hex_to_color(hex_string) for hex_string in settings['COLORS']]
-#             gs.checkpoints = settings['checkpoints']
+#             gs.prefs.checkpoints = settings['checkpoints']
 #             gs.checkpoints_xl = settings.get("checkpoints_xl", "models/checkpoints_xl")
 #             gs.hypernetworks = settings['hypernetworks']
 #             gs.vae = settings['vae']
 #             gs.controlnet = settings['controlnet']
-#             gs.embeddings = settings['embeddings']
+#             gs.prefs.embeddings = settings['embeddings']
 #             gs.upscalers = settings['upscalers']
-#             gs.loras = settings['loras']
-#             gs.t2i_adapter = settings['t2i_adapter']
+#             gs.prefs.loras = settings['loras']
+#             gs.prefs.t2i_adapter = settings['t2i_adapter']
 #             gs.output = settings['output']
-#             gs.opengl = settings['opengl']
+#             gs.prefs.opengl = settings['opengl']
 #             save_settings()
 #         except:
 #             setup_defaults()
@@ -231,7 +234,7 @@ def init_globals():
     gs.loaded_kandinsky = ""
     gs.loaded_hypernetworks = []
     gs.threads = {}
-    gs.help_items = get_help()
+    #gs.help_items = get_help()
     try:
         import xformers
         gs.system.xformer = True

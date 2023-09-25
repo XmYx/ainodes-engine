@@ -489,13 +489,13 @@ class AiNode(Node):
                     if hasattr(edge.start_socket, 'node'):
                         if edge.start_socket.node != self:
                             if edge.start_socket.node.isDirty():
-                                #print(f"Node {self} cannot run because connected node {edge.start_socket.node} is dirty.")
+                                print(f"Node {self} cannot run because connected node {edge.start_socket.node} is dirty.")
                                 return False
                 elif hasattr(edge, 'end_socket'):
                     if hasattr(edge.end_socket, 'node'):
                         if edge.end_socket.node != self:
                             if edge.end_socket.node.isDirty():
-                                #print(f"Node {self} cannot run because connected node {edge.end_socket.node} is dirty.")
+                                print(f"Node {self} cannot run because connected node {edge.end_socket.node} is dirty.")
 
                                 return False
         return True
