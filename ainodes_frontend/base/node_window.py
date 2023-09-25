@@ -41,6 +41,7 @@ Edge.registerEdgeValidator(edge_cannot_connect_input_and_output_of_different_typ
 # images for the dark skin
 DEBUG = False
 from ainodes_frontend import singleton as gs
+
 load_settings()
 
 gs.loaded_models = {}
@@ -617,12 +618,6 @@ class CalculatorWindow(NodeEditorWindow):
         self.name_company = 'aiNodes'
         self.name_product = 'AI Node Editor'
 
-        #self.stylesheet_filename = os.path.join(os.path.dirname(__file__), gs.qss)
-        #loadStylesheets(
-        #    os.path.join(os.path.dirname(__file__), gs.qss),
-        #    self.stylesheet_filename
-        #)
-
         self.empty_icon = QIcon("")
 
         if DEBUG:
@@ -638,7 +633,9 @@ class CalculatorWindow(NodeEditorWindow):
         self.mdiArea.setDocumentMode(True)
         self.mdiArea.setTabsClosable(True)
         self.mdiArea.setTabsMovable(True)
+
         self.createNodesDock()
+
         self.splitter = QSplitter(Qt.Orientation.Horizontal, self)
         self.splitter.addWidget(self.nodesDock)
         self.splitter.addWidget(self.mdiArea)
@@ -852,8 +849,8 @@ class CalculatorWindow(NodeEditorWindow):
         # Create a checkable QAction
         self.actRClickMenu.setCheckable(True)
     def showSettingsEditor(self):
-
-        self.yaml_editor = YamlEditorWidget()
+        if not hasattr(self, 'yaml_editor'):
+            self.yaml_editor = YamlEditorWidget()
 
         settings_path = "config/settings.yaml"
         settings_path = settings_path if os.path.isfile(settings_path) else "config/default_settings.yaml"
