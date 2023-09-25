@@ -201,3 +201,5 @@ logs/
 *.pkl
 
 .ignore/
+installer_files/
+models/
