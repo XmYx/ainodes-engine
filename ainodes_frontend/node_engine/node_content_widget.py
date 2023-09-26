@@ -163,7 +163,6 @@ class QDMNodeContentWidget(QWidget, Serializable):
                         widget = widget.widget()
                         if isinstance(widget, QtWidgets.QComboBox):
                             res[f"{widget.objectName()}"] = widget.currentText()
-                            #print(res[f"{widget.objectName()}"])
                         elif isinstance(widget, QtWidgets.QLineEdit):
                             res[f"{widget.objectName()}"] = widget.text()
                         elif isinstance(widget, QtWidgets.QTextEdit):
@@ -176,12 +175,10 @@ class QDMNodeContentWidget(QWidget, Serializable):
                             res[f"{widget.objectName()}"] = str(widget.value())
                         elif isinstance(widget, QtWidgets.QCheckBox):
                             res[f"{widget.objectName()}"] = str(widget.isChecked())
-                            print(res[f"{widget.objectName()}"])
             elif isinstance(item, QtWidgets.QWidget):
                 widget = item
                 if isinstance(widget, QtWidgets.QComboBox):
                     res[f"{widget.objectName()}"] = widget.currentText()
-                    #print(res[f"{widget.objectName()}"])
                 elif isinstance(widget, QtWidgets.QLineEdit):
                     res[f"{widget.objectName()}"] = widget.text()
                 elif isinstance(widget, QtWidgets.QTextEdit):
@@ -226,8 +223,6 @@ class QDMNodeContentWidget(QWidget, Serializable):
                             elif isinstance(widget, QtWidgets.QSlider):
                                 widget.setValue(data[f"{widget.objectName()}"])
                             elif isinstance(widget, QtWidgets.QCheckBox):
-                                #print(value)
-                                #print(widget.objectName())
                                 value = data[f"{widget.objectName()}"]
                                 widget.setChecked(True) if value == "True" else widget.setChecked(False)
             elif isinstance(item, QtWidgets.QWidget):
