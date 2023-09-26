@@ -78,15 +78,26 @@ class NodeRunner:
         self.pool.start(worker)
 
     def start(self):
-        # print("Trying to start")
+        # Clear the processed nodes
         self.processed_nodes.clear()
 
+        # Mark nodes with 'seed' as dirty
         for node in self.parent.nodes:
             if hasattr(node.content, 'seed'):
                 node.markDirty()
 
+        # Prepare the initial list of starting nodes
         self.starting_nodes = [node for node in self.parent.nodes if
                                isinstance(node, AiNode) and node.isDirty() and node not in self.processed_nodes]
-        # print(self.starting_nodes)
 
+        # Check for SubgraphNode instances and add their nodes to starting_nodes
+        for node in self.parent.nodes:
+            from ai_nodes.ainodes_engine_base_nodes.subgraph_nodes.subgraph_node import SubgraphNode
+            if isinstance(node, SubgraphNode):  # Assuming 'nodes' is the attribute that holds the list of nodes for a SubgraphNode
+                nodes_to_check = node.get_nodes()
+                for node in nodes_to_check:
+
+                    self.starting_nodes.append(node)
+
+        # Start processing
         self.run_next()
