@@ -1,5 +1,7 @@
+import gc
 import threading
 
+import torch
 from qtpy import QtWidgets, QtCore, QtGui
 from qtpy.QtCore import QRectF
 from qtpy.QtGui import QImage
@@ -204,6 +206,7 @@ class AiNode(Node):
             str: The unique ID for the output socket.
         """
         return f"{id(self)}_output_{index}"
+
     def setOutput(self, index, value):
         """
         Set the value of the output socket with the given index.
@@ -213,6 +216,16 @@ class AiNode(Node):
             value: The value to be set for the output socket.
         """
         object_name = self.getID(index)
+
+        # If the old value is a torch tensor and is on the GPU, delete it
+        old_value = getattr(self, object_name, None)
+        if isinstance(old_value, torch.Tensor) and old_value.is_cuda:
+            del old_value
+            torch.cuda.empty_cache()
+        else:
+            del old_value
+            gc.collect()
+
         setattr(self, object_name, value)
         #self.values[object_name] = value
     def getOutput(self, index):

@@ -31,6 +31,16 @@ class QDMDragListbox(QtWidgets.QWidget):  # subclassing from QWidget now
         self.tree_widget.setSelectionMode(QAbstractItemView.SingleSelection)
         self.tree_widget.setDragEnabled(True)
         self.tree_widget.header().hide()
+
+        def replace_call(object, new_func):
+            def call_with_self(*args, **kwargs):
+                return new_func(object, *args, **kwargs)
+
+            return call_with_self
+
+        self.tree_widget.startDrag = replace_call(self.tree_widget, start_tree_widget_drag)
+
+
         self.layout.addWidget(self.tree_widget)
 
         self.setLayout(self.layout)
@@ -43,6 +53,12 @@ class QDMDragListbox(QtWidgets.QWidget):  # subclassing from QWidget now
                 child = item.child(i)
                 collapse_all_items(child)
             item.setExpanded(False)
+
+        def make_all_items_visible(item):
+            for i in range(item.childCount()):
+                child = item.child(i)
+                make_all_items_visible(child)
+            item.setHidden(False)
 
         def recursive_filter(item):
             matches = False
@@ -66,21 +82,24 @@ class QDMDragListbox(QtWidgets.QWidget):  # subclassing from QWidget now
         # Make all items visible first
         for i in range(self.tree_widget.topLevelItemCount()):
             topLevelItem = self.tree_widget.topLevelItem(i)
-            topLevelItem.setHidden(False)
-            for j in range(topLevelItem.childCount()):
-                child = topLevelItem.child(j)
-                child.setHidden(False)
+            make_all_items_visible(topLevelItem)
+
+        # If query is empty, reset the tree and return
+        if not query:
+            for i in range(self.tree_widget.topLevelItemCount()):
+                topLevelItem = self.tree_widget.topLevelItem(i)
+                collapse_all_items(topLevelItem)
+            return
 
         # Collapse all items
         for i in range(self.tree_widget.topLevelItemCount()):
             topLevelItem = self.tree_widget.topLevelItem(i)
             collapse_all_items(topLevelItem)
 
-        # If query is not empty, apply the filtering and expand matching items
-        if query:
-            for i in range(self.tree_widget.topLevelItemCount()):
-                topLevelItem = self.tree_widget.topLevelItem(i)
-                recursive_filter(topLevelItem)
+        # Apply the filtering and expand matching items
+        for i in range(self.tree_widget.topLevelItemCount()):
+            topLevelItem = self.tree_widget.topLevelItem(i)
+            recursive_filter(topLevelItem)
 
     def addMyItems(self):
         self.tree_widget.clear()
@@ -162,42 +181,42 @@ class QDMDragListbox(QtWidgets.QWidget):  # subclassing from QWidget now
                         (file, icon, gs.nodes["subgraph_node"]['op_code'], "Subgraph Nodes"))
         else:
             os.makedirs(subgraph_folder, exist_ok=True)
-    def startDrag(self, *args, **kwargs):
-        try:
-            item = self.tree_widget.currentItem()
-            op_code = item.data(0, Qt.UserRole + 1)
-            #if op_code is not None:
-            pm = False
-            itemData = QByteArray()
-            dataStream = QDataStream(itemData, QIODevice.WriteOnly)
-            if item.data(0, Qt.UserRole) is not None:
-                pixmap = QPixmap(item.data(0, Qt.UserRole)).scaled(256, 256, aspectRatioMode=Qt.KeepAspectRatio)
-                pm = True
-                dataStream << pixmap
-            #print("OPCODE WILL BE", op_code)
-            #if op_code:
-                #try:
-                #    op_code = int(op_code)
-                #except:
-                #    op_code = 99
-            #print("TRIED", op_code)
-            dataStream.writeInt(int(op_code))
+def start_tree_widget_drag(self, *args, **kwargs):
+    try:
+        item = self.currentItem()
+        op_code = item.data(0, Qt.UserRole + 1)
+        #if op_code is not None:
+        pm = False
+        itemData = QByteArray()
+        dataStream = QDataStream(itemData, QIODevice.WriteOnly)
+        if item.data(0, Qt.UserRole) is not None:
+            pixmap = QPixmap(item.data(0, Qt.UserRole)).scaled(256, 256, aspectRatioMode=Qt.KeepAspectRatio)
+            pm = True
+            dataStream << pixmap
+        #print("OPCODE WILL BE", op_code)
+        #if op_code:
+            #try:
+            #    op_code = int(op_code)
+            #except:
+            #    op_code = 99
+        #print("TRIED", op_code)
+        dataStream.writeInt(int(op_code))
 
-            dataStream.writeQString(item.text(0))
-            # Include JSON file data if available
-            json_file = None
-            if item.parent() and item.parent().text(0).lower() == "subgraphs":
-                json_file = item.text(0)
+        dataStream.writeQString(item.text(0))
+        # Include JSON file data if available
+        json_file = None
+        if item.parent() and item.parent().text(0).lower() == "subgraphs":
+            json_file = item.text(0)
 
-            mimeData = QMimeData()
-            mimeData.setData(LISTBOX_MIMETYPE, itemData)
-            mimeData.setProperty("filename", json_file)
-            drag = QDrag(self)
-            drag.setMimeData(mimeData)
-            if pm == True:
-                drag.setHotSpot(QPoint(pixmap.width() // 2, pixmap.height() // 2))
-                drag.setPixmap(pixmap)
+        mimeData = QMimeData()
+        mimeData.setData(LISTBOX_MIMETYPE, itemData)
+        mimeData.setProperty("filename", json_file)
+        drag = QDrag(self)
+        drag.setMimeData(mimeData)
+        if pm == True:
+            drag.setHotSpot(QPoint(pixmap.width() // 2, pixmap.height() // 2))
+            drag.setPixmap(pixmap)
 
-            drag.exec(Qt.MoveAction)
+        drag.exec_(Qt.MoveAction)
 
-        except Exception as e: dumpException(e)
+    except Exception as e: dumpException(e)
