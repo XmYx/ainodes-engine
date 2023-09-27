@@ -30,14 +30,40 @@ class NodeRunner:
 
     def reorder_nodes(self):
         """Reorder starting_nodes to prioritize nodes that can run."""
+
+        # Check if the node is part of any SubgraphNode's nodes list
+        from ai_nodes.ainodes_engine_base_nodes.subgraph_nodes.subgraph_node import SubgraphNode
+        def is_part_of_subgraph(node):
+            for n in self.parent.nodes:
+
+                if isinstance(n, SubgraphNode) and hasattr(n, 'nodes') and node in n.nodes:
+                    return True
+            return False
+
         def sorting_key(node):
             from ai_nodes.ainodes_engine_base_nodes.image_nodes.image_preview_node import ImagePreviewNode
 
             is_image_preview = isinstance(node, ImagePreviewNode)
+            is_subgraph = isinstance(node, SubgraphNode)
+            part_of_subgraph = is_part_of_subgraph(node)
             can_run = node.can_run()
-            return (not (is_image_preview and can_run), not can_run, not is_image_preview)
+
+            # Prioritize by:
+            # 1. Nodes that are part of a SubgraphNode's nodes list
+            # 2. Image preview nodes that can run
+            # 3. Nodes that can run
+            # 4. Image preview nodes
+            # 5. Subgraph nodes
+            return (
+                not part_of_subgraph,
+                not (is_image_preview and can_run),
+                not can_run,
+                not is_image_preview,
+                is_subgraph
+            )
 
         self.starting_nodes.sort(key=sorting_key)
+
     def run_next(self):
         if not self.starting_nodes:
             self.starting_nodes = [node for node in self.skipped_nodes if node.can_run() and node.isDirty() and node not in self.processed_nodes]

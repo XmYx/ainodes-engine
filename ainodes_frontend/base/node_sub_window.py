@@ -560,7 +560,7 @@ class CalculatorSubWindow(NodeEditorWidget):
                     self.scene.history.storeHistory("Created %s" % new_calc_node.__class__.__name__)
     def mouseMoveEvent(self, event):
         super(CalculatorSubWindow, self).mouseMoveEvent(event)
-        self.pos = QtCore.QPointF(event.screenPos())
+        self.pos = QtCore.QPointF(event.scenePosition())
         self.scenePos = event.scenePosition()
 
 class NodeListDialog(QtWidgets.QDialog):

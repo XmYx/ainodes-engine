@@ -32,3 +32,4 @@ upscalers: models/upscalers
 vae: models/vae
 opengl: false
 theme: dark
+use_exec: false

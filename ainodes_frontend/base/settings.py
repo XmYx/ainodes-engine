@@ -94,6 +94,8 @@ class Settings:
         self.output = "output"
         self.opengl = ""
         self.keybindings = DEFAULT_KEYBINDINGS
+        self.use_exec = False
+        self.opengl = False
 
     def load_from_dict(self, settings_dict):
         for key, value in settings_dict.items():
@@ -114,7 +116,9 @@ class Settings:
             'loras': self.loras,
             't2i_adapter': self.t2i_adapter,
             'output': self.output,
-            'keybindings': self.keybindings if hasattr(self, 'keybindings') else {}
+            'keybindings': self.keybindings if hasattr(self, 'keybindings') else {},
+            'use_exec':self.use_exec,
+            'opengl':self.opengl
             # Add any new settings here...
         }
         return settings_dict
@@ -205,6 +209,7 @@ def setup_defaults():
     "loras" : "models/loras",
     "t2i_adapter" : "models/t2i_adapter",
     "output" : "output",
+    "use_exec":False
     }
 
 

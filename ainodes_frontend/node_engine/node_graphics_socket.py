@@ -95,7 +95,8 @@ class QDMGraphicsSocket(QGraphicsItem):
         self._brush = QBrush(self._color_background)
 
     def paint(self, painter, QStyleOptionGraphicsItem, widget=None):
-        if self.socket.name != 'EXEC':
+
+        if self.socket.name != 'EXEC' or gs.prefs.use_exec:
             #if gs.highlight_sockets:
             mode = self.socket.node.scene.getView().mode
             dragged_socket = self.socket.node.scene.getView().dragging.drag_start_socket

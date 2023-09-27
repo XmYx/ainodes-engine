@@ -150,23 +150,30 @@ class YamlEditorWidget(QWidget):
             line_edit.setText(folder_path)
 
     def save_yaml(self):
-        self.save_widgets_from_layout(self.layout)
+        # Save values from settings layout
+        self.save_widgets_from_layout(self.settings_layout)
 
-        for key in self.values['keybindings']:
-            key_sequence_edit = self.findChild(QKeySequenceEdit, f"keybinding_{key}")
-            if key_sequence_edit:
-                #print(f"Found key_sequence_edit for {key}")
-                new_shortcut = key_sequence_edit.keySequence().toString()
-                #print(f"New shortcut for {key}: {new_shortcut}")
-                self.values['keybindings'][key]['shortcut'] = new_shortcut
-            # else:
-            #     print(f"Did not find key_sequence_edit for {key}")
+        # Save values from keybindings layout
+        for i in range(self.keybindings_layout.count()):
+            item = self.keybindings_layout.itemAt(i)
+            layout = item.layout()
+            if layout:
+                for j in range(layout.count()):
+                    widget = layout.itemAt(j).widget()
+                    if isinstance(widget, QKeySequenceEdit):
+                        key = widget.objectName().replace("keybinding_", "")
+                        new_shortcut = widget.keySequence().toString()
+                        if "keybindings" not in self.values:
+                            self.values["keybindings"] = {}
+                        if key not in self.values["keybindings"]:
+                            self.values["keybindings"][key] = {}
+                        self.values["keybindings"][key]["shortcut"] = new_shortcut
+                        self.values["keybindings"][key]["name"] = DEFAULT_KEYBINDINGS[key]["name"]
+
+        # The rest of the saving process remains the same
         file_path = "config/settings.yaml"
-
         with open(file_path, 'w') as file:
             yaml.safe_dump(self.values, file)
-
-        #print(self.values)
 
         QMessageBox.information(self, 'Success', 'YAML file saved successfully.')
 
@@ -195,7 +202,7 @@ class YamlEditorWidget(QWidget):
                     value = widget.currentText()
                     self.values[key] = value
 
-            elif isinstance(item, QLayout):
-                self.save_widgets_from_layout(item.layout())
+            # elif isinstance(item, QLayout):
+            #     self.save_widgets_from_layout(item.layout())
     def cancel(self):
         self.close()
