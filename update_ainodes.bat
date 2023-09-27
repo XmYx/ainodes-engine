@@ -35,14 +35,18 @@ for /f "tokens=*" %%A in (%repositories_file%) do (
 )
 
 
-rem Activate virtual environment
-call %base_folder%\Scripts\activate.bat
-
-rem Stash and pull changes in the base folder
-
 
 
 cd %SCRIPT_DIR%
+
+set CONDA_ROOT_PREFIX=%cd%\installer_files\conda
+set INSTALL_ENV_DIR=%cd%\nodes_env
+
+
+@rem activate installer env
+call "%CONDA_ROOT_PREFIX%\condabin\conda.bat" activate "%INSTALL_ENV_DIR%" || ( echo. && echo Miniconda hook not found. && goto end )
+
+
 git pull
 pip install -r requirements.txt
 

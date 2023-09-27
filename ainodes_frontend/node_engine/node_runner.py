@@ -1,7 +1,7 @@
 from PyQt6.QtCore import QThreadPool, QRunnable
 
 from ainodes_frontend.base import AiNode
-
+from ainodes_frontend import singleton as gs
 
 class NodeWorker(QRunnable):
     def __init__(self, node):
@@ -71,6 +71,7 @@ class NodeRunner:
 
             # If still no nodes can be processed, return
             if not self.starting_nodes:
+                gs.prefs.autorun = False
                 return
 
         # Reorder nodes to prioritize nodes that can run
@@ -79,7 +80,7 @@ class NodeRunner:
         node_to_run = self.starting_nodes.pop(0)  # Since we've reordered, the first node can run
         self.processed_nodes.append(node_to_run)  # Mark the node as processed
 
-        print(f"Processing Node: {node_to_run}")
+        #print(f"Processing Node: {node_to_run}")
         worker = NodeWorker(node_to_run)
 
         def on_node_finished():
@@ -104,6 +105,7 @@ class NodeRunner:
         self.pool.start(worker)
 
     def start(self):
+        gs.prefs.autorun = True
         # Clear the processed nodes
         self.processed_nodes.clear()
 
@@ -111,6 +113,9 @@ class NodeRunner:
         for node in self.parent.nodes:
             if hasattr(node.content, 'seed'):
                 node.markDirty()
+            if hasattr(node, 'make_dirty'):
+                if node.make_dirty:
+                    node.markDirty()
 
         # Prepare the initial list of starting nodes
         self.starting_nodes = [node for node in self.parent.nodes if
@@ -122,7 +127,6 @@ class NodeRunner:
             if isinstance(node, SubgraphNode):  # Assuming 'nodes' is the attribute that holds the list of nodes for a SubgraphNode
                 nodes_to_check = node.get_nodes()
                 for node in nodes_to_check:
-
                     self.starting_nodes.append(node)
 
         # Start processing

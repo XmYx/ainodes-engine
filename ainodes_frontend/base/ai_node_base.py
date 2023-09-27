@@ -729,7 +729,7 @@ class AiDummyNode(Node):
         return None
 
     #@QtCore.Slot(object)
-    def onWorkerFinished(self, result):
+    def onWorkerFinished(self, result, exec=True):
         return
 
     def eval(self, index=0):
