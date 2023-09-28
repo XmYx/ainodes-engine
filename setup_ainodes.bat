@@ -24,7 +24,6 @@ set TEMP=%cd%\installer_files
 set INSTALL_DIR=%cd%\installer_files
 set CONDA_ROOT_PREFIX=%cd%\installer_files\conda
 set INSTALL_ENV_DIR=%cd%\nodes_env
-
 set INSTALL_ENV_NAME=nodes_env
 set MINICONDA_DOWNLOAD_URL=https://repo.anaconda.com/miniconda/Miniconda3-py310_23.3.1-0-Windows-x86_64.exe
 set conda_exists=F

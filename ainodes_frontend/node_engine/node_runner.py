@@ -48,15 +48,24 @@ class NodeRunner:
             part_of_subgraph = is_part_of_subgraph(node)
             can_run = node.can_run()
 
+            # Check if all input nodes of the ImagePreviewNode are not dirty
+            all_inputs_not_dirty = True
+            if is_image_preview:
+                for input_socket in node.inputs:
+                    for edge in input_socket.edges:
+                        if edge.start_socket.node.isDirty():
+                            all_inputs_not_dirty = False
+                            break
+
             # Prioritize by:
             # 1. Nodes that are part of a SubgraphNode's nodes list
-            # 2. Image preview nodes that can run
+            # 2. Image preview nodes that can run and all their input nodes are not dirty
             # 3. Nodes that can run
             # 4. Image preview nodes
             # 5. Subgraph nodes
             return (
                 not part_of_subgraph,
-                not (is_image_preview and can_run),
+                not (is_image_preview and can_run and all_inputs_not_dirty),
                 not can_run,
                 not is_image_preview,
                 is_subgraph
