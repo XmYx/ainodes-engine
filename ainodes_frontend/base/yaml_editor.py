@@ -1,11 +1,11 @@
 import functools
+import os
 
 import yaml
 from PyQt6.QtGui import QKeySequence
 from PyQt6.QtWidgets import QTabWidget, QKeySequenceEdit
-from qtpy.QtCore import Qt
 from qtpy.QtWidgets import QWidget, QVBoxLayout, QLabel, QLineEdit, QPushButton, QMessageBox, QFileDialog, QComboBox, \
-    QCheckBox, QHBoxLayout, QLayout
+    QCheckBox, QHBoxLayout
 
 
 folder_options = [
@@ -44,6 +44,9 @@ DEFAULT_KEYBINDINGS = {
     "fullscreen": {"name":"Fullscreen",
              "shortcut":"F11"}
 }
+def get_yaml_files_in_user_dir():
+    directory = 'config/user'
+    return [f for f in os.listdir(directory) if os.path.isfile(os.path.join(directory, f)) and f.endswith('.yaml')]
 
 class YamlEditorWidget(QWidget):
     def __init__(self, parent=None):
@@ -67,6 +70,65 @@ class YamlEditorWidget(QWidget):
         self.settings_layout = QVBoxLayout(self.settings_widget)
         self.keybindings_layout = QVBoxLayout(self.keybindings_widget)
 
+        # Create a dropdown (QComboBox) for the YAML files
+        self.user_profiles_dropdown = QComboBox()
+        self.user_profiles_dropdown.addItems(get_yaml_files_in_user_dir())
+        self.layout.addWidget(self.user_profiles_dropdown)
+
+        # Create a QLineEdit for the user to input a new profile name
+        self.new_profile_name_edit = QLineEdit()
+        self.new_profile_name_edit.setPlaceholderText("Enter new profile name")
+        self.layout.addWidget(self.new_profile_name_edit)
+
+        # Create a save button to save current settings as a new profile
+        self.save_profile_button = QPushButton('Save as New Profile')
+        self.save_profile_button.clicked.connect(self.save_as_new_profile)
+        self.layout.addWidget(self.save_profile_button)
+        self.user_profiles_dropdown.currentIndexChanged.connect(self.load_selected_profile)
+        # Add save and cancel buttons to the main layout (not inside tabs)
+        save_button = QPushButton('Save')
+        save_button.clicked.connect(self.save_yaml)
+        cancel_button = QPushButton('Cancel')
+        cancel_button.clicked.connect(self.cancel)
+
+        self.layout.addWidget(save_button)
+        self.layout.addWidget(cancel_button)
+
+    def load_selected_profile(self, index):
+        if index == -1:  # No item selected
+            return
+
+        # Get the selected profile's file name
+        selected_profile_name = self.user_profiles_dropdown.currentText()
+        file_path = os.path.join('config/user', selected_profile_name)
+
+        # Clear current widgets from settings_layout
+        while self.settings_layout.count():
+            child = self.settings_layout.takeAt(0)
+            if child.widget():
+                child.widget().deleteLater()
+
+        # Clear current widgets from keybindings_layout
+        while self.keybindings_layout.count():
+            child = self.keybindings_layout.takeAt(0)
+            if child.widget():
+                child.widget().deleteLater()
+
+        # Load the selected YAML file
+        self.load_yaml(file_path)
+    def save_as_new_profile(self):
+        new_profile_name = self.new_profile_name_edit.text().strip()
+        if not new_profile_name:
+            QMessageBox.warning(self, 'Warning', 'Please enter a profile name.')
+            return
+        file_path = os.path.join('config/user', new_profile_name + '.yaml')
+        self.save_yaml(file_path)
+        # with open(file_path, 'w') as file:
+        #     yaml.safe_dump(self.values, file)
+        QMessageBox.information(self, 'Success', f'Profile saved as {new_profile_name}.')
+        # Refresh the dropdown
+        self.user_profiles_dropdown.clear()
+        self.user_profiles_dropdown.addItems(get_yaml_files_in_user_dir())
     def set_dark_theme(self):
         style = """
         QWidget {
@@ -117,6 +179,7 @@ class YamlEditorWidget(QWidget):
 
                 line_edit = QLineEdit(str(value))
                 line_edit.setObjectName(key)
+
                 layout.addWidget(line_edit)
                 if key in folder_options:
                     browse_button = QPushButton('Browse...')
@@ -140,20 +203,12 @@ class YamlEditorWidget(QWidget):
 
             self.keybindings_layout.addLayout(layout)
 
-        # Add save and cancel buttons to the main layout (not inside tabs)
-        save_button = QPushButton('Save')
-        save_button.clicked.connect(self.save_yaml)
-        cancel_button = QPushButton('Cancel')
-        cancel_button.clicked.connect(self.cancel)
-
-        self.layout.addWidget(save_button)
-        self.layout.addWidget(cancel_button)
     def browse(self, line_edit):
         folder_path = QFileDialog.getExistingDirectory(self, 'Select a directory')
         if folder_path:
             line_edit.setText(folder_path)
 
-    def save_yaml(self):
+    def save_yaml(self, file_path=None):
         # Save values from settings layout
         self.save_widgets_from_layout(self.settings_layout)
 
@@ -175,15 +230,21 @@ class YamlEditorWidget(QWidget):
                         self.values["keybindings"][key]["name"] = DEFAULT_KEYBINDINGS[key]["name"]
 
         # The rest of the saving process remains the same
-        file_path = "config/settings.yaml"
+        if file_path == None:
+            file_path = "config/settings.yaml"
+        else:
+            profile_name = self.user_profiles_dropdown.currentText()
+            file_path = os.path.join('config/user', profile_name + '.yaml')
+
+
         with open(file_path, 'w') as file:
             yaml.safe_dump(self.values, file)
 
         QMessageBox.information(self, 'Success', 'YAML file saved successfully.')
 
         from ainodes_frontend.base.settings import load_settings
-        load_settings()
-        self.close()
+        load_settings(file_path)
+        #self.close()
 
     def save_widgets_from_layout(self, layout):
         for i in range(layout.count()):
@@ -205,6 +266,8 @@ class YamlEditorWidget(QWidget):
                     key = widget.objectName()
                     value = widget.currentText()
                     self.values[key] = value
+            else:
+                self.save_widgets_from_layout(item)
 
             # elif isinstance(item, QLayout):
             #     self.save_widgets_from_layout(item.layout())

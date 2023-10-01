@@ -14,7 +14,6 @@ from qtpy.QtGui import QDragEnterEvent, QDropEvent, QMouseEvent, QKeyEvent, QWhe
 from qtpy.QtWidgets import QGraphicsView, QApplication
 
 from ainodes_frontend import singleton as gs
-from ainodes_frontend.base.help import get_help
 from ainodes_frontend.node_engine.node_edge_dragging import EdgeDragging
 from ainodes_frontend.node_engine.node_edge_rerouting import EdgeRerouting
 # from ainodes_frontend.node_engine.node_edge_intersect import EdgeIntersect
@@ -126,6 +125,8 @@ class InfoBox(QtWidgets.QWidget):
 
         # Style the labels and add them to the layout
         info_style = "QLabel { color: white; background-color: rgba(0, 0, 0, 127); border-radius: 15px; padding: 10px;}"
+        from ainodes_frontend.base.help import get_help
+
         keys = get_help()
         for key in keys:
             label = QtWidgets.QLabel(key)
