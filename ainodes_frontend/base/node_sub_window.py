@@ -100,6 +100,12 @@ class CalculatorSubWindow(NodeEditorWidget):
         elif pressed_sequence == QKeySequence(gs.prefs.keybindings['run']['shortcut']):
             print("Running Nodes")
             self.scene.noderunner.start()
+        elif pressed_sequence == QKeySequence(gs.prefs.keybindings['run_loop']['shortcut']):
+            print("Running Nodes in Loop")
+            self.scene.noderunner.start(loop=True)
+        elif pressed_sequence == QKeySequence(gs.prefs.keybindings['stop_loop']['shortcut']):
+            print("Stopping Nodes")
+            self.scene.noderunner.stop()
         # if event.key() == Qt.Key_Home:
         #
         #

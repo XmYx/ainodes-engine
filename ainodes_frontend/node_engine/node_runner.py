@@ -27,6 +27,8 @@ class NodeRunner:
         self.processed_nodes = []  # New list to keep track of processed nodes
         self.process = True
         self.parent = parent
+        self.running = False  # Add a flag to track if the runner is currently running
+
 
     def reorder_nodes(self):
         """Reorder starting_nodes to prioritize nodes that can run."""
@@ -74,22 +76,30 @@ class NodeRunner:
         self.starting_nodes.sort(key=sorting_key)
 
     def run_next(self):
+
+        if not self.exec:  # Check if execution should stop
+            return
+
         if not self.starting_nodes:
             self.starting_nodes = [node for node in self.skipped_nodes if node.can_run() and node.isDirty() and node not in self.processed_nodes]
             self.skipped_nodes = [node for node in self.skipped_nodes if not (node.can_run() and node.isDirty()) and node not in self.processed_nodes]
 
             # If still no nodes can be processed, return
             if not self.starting_nodes:
-                gs.prefs.autorun = False
+                if self.loop:  # If loop is enabled, restart the processing
+                    self.running = False
+                    self.start(loop=True)
+                else:
+                    gs.prefs.autorun = False
+                    self.running = False
                 return
-
         # Reorder nodes to prioritize nodes that can run
         self.reorder_nodes()
 
         node_to_run = self.starting_nodes.pop(0)  # Since we've reordered, the first node can run
         self.processed_nodes.append(node_to_run)  # Mark the node as processed
 
-        #print(f"Processing Node: {node_to_run}")
+        print(f"Processing Node: {node_to_run}")
         worker = NodeWorker(node_to_run)
 
         def on_node_finished():
@@ -113,7 +123,12 @@ class NodeRunner:
         node_to_run.content.finished.connect(on_node_finished)
         self.pool.start(worker)
 
-    def start(self):
+    def start(self, loop=False):
+        if self.running:  # If already running, simply return
+            return
+        self.exec = True
+        self.loop = loop
+        self.running = True
         gs.prefs.autorun = True
         # Clear the processed nodes
         self.processed_nodes.clear()
@@ -140,3 +155,7 @@ class NodeRunner:
 
         # Start processing
         self.run_next()
+
+    def stop(self):
+        self.running = False
+        self.exec = False

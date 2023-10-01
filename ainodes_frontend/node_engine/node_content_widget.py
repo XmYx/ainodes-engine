@@ -647,6 +647,29 @@ class QDMNodeContentWidget(QWidget, Serializable):
             setattr(self, spawn, button_layout)
         else:
             return button_layout
+    def create_horizontal_layout(self, buttons, spawn=None) -> QtWidgets.QHBoxLayout:
+        """Create a horizontal button layout containing the given buttons.
+
+        Args:
+            buttons (list): List of buttons to be added to the layout.
+
+        Returns:
+            QtWidgets.QHBoxLayout: A horizontal button layout.
+        """
+        horizontal_layout = QtWidgets.QHBoxLayout()
+        for widget in buttons:
+
+            if isinstance(widget, QtWidgets.QCheckBox):
+                palette = QtGui.QPalette()
+                palette.setColor(QtGui.QPalette.WindowText, QtGui.QColor("white"))
+                palette.setColor(QtGui.QPalette.Disabled, QtGui.QPalette.WindowText, QtGui.QColor("black"))
+                widget.setPalette(palette)
+            horizontal_layout.addWidget(widget)
+        self.widget_list.append(horizontal_layout)
+        if spawn:
+            setattr(self, spawn, horizontal_layout)
+        else:
+            return horizontal_layout
 
     def create_progress_bar(self, label_text, min_val, max_val, default_val, spawn=None) -> QtWidgets.QProgressBar:
         """Create a progress bar widget with the given label text, minimum value, maximum value, and default value.

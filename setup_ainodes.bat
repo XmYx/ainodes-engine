@@ -104,6 +104,17 @@ for /f "tokens=*" %%A in (%src_file%) do (
   cd "%~dp0"
 )
 
+
+REM After cloning all src repositories, navigate to src/ComfyUI
+cd "%SRC_DIR%\ComfyUI"
+
+REM Navigate to custom_nodes and clone the ComfyUI-Manager repository
+cd custom_nodes
+git clone https://github.com/ltdrdata/ComfyUI-Manager.git
+
+REM Traverse back to the root directory
+cd "%~dp0"
+
 cd %SCRIPT_DIR%
 
 
