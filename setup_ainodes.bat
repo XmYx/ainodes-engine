@@ -1,6 +1,8 @@
 @echo off
 
 cd /D "%~dp0"
+set "SRC_DIR=%~dp0src"
+if not exist "%SRC_DIR%" mkdir "%SRC_DIR%"
 
 set PATH=%PATH%;%SystemRoot%\system32
 
@@ -70,11 +72,11 @@ for /f "tokens=1,2" %%A in (%repositories_file%) do (
   echo Cloning repository: !repository! Branch: !branch!
 
   rem Go to ai_nodes folder and clone the repository
-  cd %custom_nodes_folder%
+  cd "%custom_nodes_folder%"
   git clone -b !branch! https://www.github.com/!repository!
 
   rem Return to the original directory
-  cd ..
+  cd "%~dp0"
 )
 
 rem Go into each top subdirectory of ai_nodes and run pip install
@@ -89,19 +91,18 @@ for /d %%B in (%custom_nodes_folder%\*) do (
 
 set "src_file=src.txt"
 
-rem Read repositories from repositories.txt
+rem Read repositories from src.txt
 for /f "tokens=*" %%A in (%src_file%) do (
   set "repository=%%A"
   echo Cloning repository: !repository!
 
-  rem Go to ai_nodes folder and clone the repository
-  cd %SRC_DIR%
+  rem Go to src folder and clone the repository
+  cd "%SRC_DIR%"
   git clone https://www.github.com/!repository!
 
   rem Return to the original directory
-  cd ..
+  cd "%~dp0"
 )
-
 
 cd %SCRIPT_DIR%
 
