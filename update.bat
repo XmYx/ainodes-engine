@@ -7,8 +7,8 @@ set "SRC_DIR=%~dp0src"
 set "INSTALL_ENV_DIR=%cd%\nodes_env"
 set "CONDA_ROOT_PREFIX=%cd%\installer_files\conda"
 set "custom_nodes_folder=ai_nodes"
-set "repositories_file=repositories.txt"
-set "src_file=src.txt"
+set "repositories_file=config/repositories.txt"
+set "src_file=config/src.txt"
 
 REM Check if nodes_env folder exists
 if not exist "%INSTALL_ENV_DIR%" (

@@ -1,6 +1,6 @@
 opengl: false
-theme: dark
 use_exec: false
+theme: dark
 checkpoints: models/checkpoints
 controlnet: models/controlnet
 embeddings: models/embeddings
@@ -10,3 +10,38 @@ output: output
 t2i_adapter: models/t2i_adapter
 upscalers: models/upscalers
 vae: models/vae
+
+keybindings:
+    console:
+        name: Console
+        shortcut: '`'
+    fullscreen:
+        name: Fullscreen
+        shortcut: F11
+    help:
+        name: Help
+        shortcut: F1
+    minimap:
+        name: Minimap
+        shortcut: F2
+    node_list:
+        name: Node List
+        shortcut: Esc
+    open:
+        name: Open
+        shortcut: Ctrl+O
+    run:
+        name: Run Graph
+        shortcut: End
+    run_loop:
+        name: Run Loop
+        shortcut: Ctrl+R
+    save:
+        name: Save
+        shortcut: Ctrl+S
+    search:
+        name: Search Nodes
+        shortcut: Home
+    stop_loop:
+        name: Stop Graph
+        shortcut: Ctrl+T

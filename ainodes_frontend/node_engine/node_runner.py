@@ -1,4 +1,7 @@
-from PyQt6.QtCore import QThreadPool, QRunnable
+import msgpack
+from PyQt6.QtCore import QThreadPool, QRunnable, QUrl
+from PyQt6.QtWebSockets import QWebSocket
+from qtpy import QtCore
 
 from ainodes_frontend.base import AiNode
 from ainodes_frontend import singleton as gs
@@ -20,6 +23,9 @@ class NodeWorker(QRunnable):
 
 class NodeRunner:
 
+    #nodeResultReceived = QtCore.Signal(dict)
+
+
     def __init__(self, nodes, parent=None):
         self.nodes = nodes
         self.pool = QThreadPool()
@@ -28,8 +34,51 @@ class NodeRunner:
         self.process = True
         self.parent = parent
         self.running = False  # Add a flag to track if the runner is currently running
+        self.setup_api_connection()
+        #self.nodeResultReceived.connect(self.process_node_message)
+
+    def process_node_message(self, msg):
+        print("API MESSAGE", msg)
 
 
+    def setup_api_connection(self):
+        self.websocket = QWebSocket()
+
+        self.websocket.connected.connect(self.on_connected)
+        self.websocket.disconnected.connect(self.on_disconnected)
+        self.websocket.textMessageReceived.connect(self.on_text_message_received)
+        self.websocket.binaryMessageReceived.connect(self.on_binary_message_received)
+
+        self.websocket.open(QUrl('ws://localhost:8000/ws/process_nodes'))
+
+    def on_connected(self):
+        print("WebSocket connected!")
+
+    def on_disconnected(self):
+        print("WebSocket disconnected!")
+
+    def on_text_message_received(self, message):
+        # Handle text messages if needed
+        pass
+
+    def on_binary_message_received(self, message):
+        data = msgpack.unpackb(message, raw=False)
+        self.process_node_message(data)
+
+    def collect_nodes_to_json(self):
+        # This is a stub. You'll need to implement how you collect the node params.
+        data = {}
+
+        self.get_starting_nodes()
+
+        for node in self.starting_nodes:
+            print(node.serialize())
+            data[node.id] = {}
+            data[node.id]["params"] = node.content.serialize()
+            data[node.id]["input_nodes"] = [node.id for node in node.inputs]
+        # for node in self.nodes:
+        #     data[node.name] = node.params  # Example, adjust accordingly
+        return data
     def reorder_nodes(self):
         """Reorder starting_nodes to prioritize nodes that can run."""
 
@@ -61,12 +110,14 @@ class NodeRunner:
 
             # Prioritize by:
             # 1. Nodes that are part of a SubgraphNode's nodes list
-            # 2. Image preview nodes that can run and all their input nodes are not dirty
-            # 3. Nodes that can run
-            # 4. Image preview nodes
-            # 5. Subgraph nodes
+            # 2. Nodes that can run and are not ImagePreviewNode types
+            # 3. Image preview nodes that can run and all their input nodes are not dirty
+            # 4. Nodes that can run
+            # 5. Image preview nodes
+            # 6. Subgraph nodes
             return (
                 not part_of_subgraph,
+                is_image_preview and not can_run,
                 not (is_image_preview and can_run and all_inputs_not_dirty),
                 not can_run,
                 not is_image_preview,
@@ -76,34 +127,28 @@ class NodeRunner:
         self.starting_nodes.sort(key=sorting_key)
 
     def run_next(self):
-
+        print("Actually Processing")
         if not self.exec:  # Check if execution should stop
+            self.running = False
             return
 
         if not self.starting_nodes:
-            self.starting_nodes = [node for node in self.skipped_nodes if node.can_run() and node.isDirty() and node not in self.processed_nodes]
-            self.skipped_nodes = [node for node in self.skipped_nodes if not (node.can_run() and node.isDirty()) and node not in self.processed_nodes]
-
-            # If still no nodes can be processed, return
-            if not self.starting_nodes:
-                if self.loop:  # If loop is enabled, restart the processing
-                    self.running = False
-                    self.start(loop=True)
-                else:
-                    gs.prefs.autorun = False
-                    self.running = False
-                return
-        # Reorder nodes to prioritize nodes that can run
+            # If there are no more nodes to process, check if we should loop or finish
+            # Handle looping or finishing here...
+            if self.loop:
+                self.running = False
+                self.start(loop=self.loop)
+            return
         self.reorder_nodes()
 
-        node_to_run = self.starting_nodes.pop(0)  # Since we've reordered, the first node can run
+        node_to_run = self.starting_nodes.pop(0)  # Process the first node in the list
         self.processed_nodes.append(node_to_run)  # Mark the node as processed
 
         print(f"Processing Node: {node_to_run}")
         worker = NodeWorker(node_to_run)
 
         def on_node_finished():
-            # print(f"Finished processing node: {node_to_run}")
+            node_to_run.markInvalid(False)
             node_to_run.markDirty(False)
             node_to_run.content.finished.disconnect(on_node_finished)
 
@@ -112,26 +157,20 @@ class NodeRunner:
                     downstream_node = edge.end_socket.node
                     if downstream_node not in self.starting_nodes and downstream_node not in self.skipped_nodes and downstream_node not in self.processed_nodes:
                         if downstream_node.can_run():
-                            # print(f"Downstream node {downstream_node} can run. Adding to starting nodes.")
                             self.starting_nodes.append(downstream_node)
                         else:
-                            # print(f"Downstream node {downstream_node} cannot run yet. Skipping for now.")
                             self.skipped_nodes.append(downstream_node)
+
             self.parent.getView().update()
             self.run_next()  # Recursive call
 
         node_to_run.content.finished.connect(on_node_finished)
-        self.pool.start(worker)
 
-    def start(self, loop=False):
-        if self.running:  # If already running, simply return
-            return
-        self.exec = True
-        self.loop = loop
-        self.running = True
-        gs.prefs.autorun = True
-        # Clear the processed nodes
-        self.processed_nodes.clear()
+        node_to_run.markInvalid(True)
+        node_to_run.content.update()
+
+        self.pool.start(worker)
+    def get_starting_nodes(self):
 
         # Mark nodes with 'seed' as dirty
         for node in self.parent.nodes:
@@ -145,16 +184,44 @@ class NodeRunner:
         self.starting_nodes = [node for node in self.parent.nodes if
                                isinstance(node, AiNode) and node.isDirty() and node not in self.processed_nodes]
 
-        # Check for SubgraphNode instances and add their nodes to starting_nodes
-        for node in self.parent.nodes:
-            from ai_nodes.ainodes_engine_base_nodes.subgraph_nodes.subgraph_node import SubgraphNode
-            if isinstance(node, SubgraphNode):  # Assuming 'nodes' is the attribute that holds the list of nodes for a SubgraphNode
-                nodes_to_check = node.get_nodes()
-                for node in nodes_to_check:
-                    self.starting_nodes.append(node)
+    def start(self, loop=False):
+        use_api = False
+        if use_api:
+            node_data = self.collect_nodes_to_json()
 
-        # Start processing
-        self.run_next()
+            packed_data = msgpack.packb(dict(node_data))
+
+            self.websocket.sendBinaryMessage(packed_data)
+
+
+            # packed_data = msgpack.packb(node_data, use_bin_type=False)
+            # self.websocket.sendBinaryMessage(packed_data)
+        else:
+
+            self.stop()
+            if self.running:  # If already running, simply return
+                return
+            self.exec = True
+            self.loop = loop
+            self.running = True
+            gs.prefs.autorun = True
+            # Clear the processed nodes
+            self.processed_nodes.clear()
+
+            self.get_starting_nodes()
+
+            # Check for SubgraphNode instances and add their nodes to starting_nodes
+            for node in self.parent.nodes:
+                from ai_nodes.ainodes_engine_base_nodes.subgraph_nodes.subgraph_node import SubgraphNode
+                if isinstance(node, SubgraphNode):  # Assuming 'nodes' is the attribute that holds the list of nodes for a SubgraphNode
+                    nodes_to_check = node.get_nodes()
+                    for node in nodes_to_check:
+                        self.starting_nodes.append(node)
+            # Reorder nodes to prioritize nodes that can run
+            self.reorder_nodes()
+
+            # Start processing
+            self.run_next()
 
     def stop(self):
         self.running = False

@@ -4,7 +4,7 @@ an overridden Text Widget, which can pass a notification to it's parent about be
 import re
 from typing import List
 
-from PyQt6.QtWidgets import QSpinBox, QDoubleSpinBox, QLineEdit, QComboBox
+from PyQt6.QtWidgets import QSpinBox, QDoubleSpinBox, QLineEdit, QComboBox, QMenu
 from qtpy.QtCore import Qt
 from qtpy.QtGui import QKeyEvent, QTextCursor
 from qtpy import QtCore, QtWidgets
@@ -17,7 +17,38 @@ class CustomSpinBox(QtWidgets.QSpinBox):
     set_signal = QtCore.Signal(int)
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-
+    def contextMenuEvent(self, event):
+        self.parent().contextMenuEvent(event, self)
+        # propagate to parent
+        #self.parent().contextMenuEvent(event)
+class CustomComboBox(QtWidgets.QComboBox):
+    set_signal = QtCore.Signal(int)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+    def contextMenuEvent(self, event):
+        # propagate to parent
+        self.parent().contextMenuEvent(event, self)
+class CustomCheckBox(QtWidgets.QCheckBox):
+    set_signal = QtCore.Signal(int)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+    def contextMenuEvent(self, event):
+        # propagate to parent
+        self.parent().contextMenuEvent(event, self)
+class CustomLineEdit(QtWidgets.QLineEdit):
+    set_signal = QtCore.Signal(int)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+    def contextMenuEvent(self, event):
+        # propagate to parent
+        self.parent().contextMenuEvent(event, self)
+class CustomDoubleSpinBox(QtWidgets.QDoubleSpinBox):
+    set_signal = QtCore.Signal(int)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+    def contextMenuEvent(self, event):
+        # propagate to parent
+        self.parent().contextMenuEvent(event, self)
 
 
 class CustomTextEdit(QtWidgets.QTextEdit):
@@ -85,7 +116,9 @@ class CustomTextEdit(QtWidgets.QTextEdit):
             cursor.setPosition(start, QTextCursor.MoveMode.MoveAnchor)
             cursor.setPosition(start + len(new_text), QTextCursor.MoveMode.KeepAnchor)
             self.setTextCursor(cursor)
-
+    def contextMenuEvent(self, event):
+        # propagate to parent
+        self.parent().contextMenuEvent(event, self)
 
 class QDMNodeContentWidget(QWidget, Serializable):
     eval_signal = QtCore.Signal()
@@ -135,7 +168,33 @@ class QDMNodeContentWidget(QWidget, Serializable):
         self.wdg_label = QLabel("Some Title")
         self.layout.addWidget(self.wdg_label)
         self.layout.addWidget(QDMTextEdit("foo"))
+    def convertWidgetToNodeInput(self, widget):
+        """Converts a given widget to a node input."""
+        # Step 1: Hide the widget
+        widget.hide()
 
+        # Step 2: Add a new input socket to the node
+        # We will use a generic socket type for this example, you should define it appropriately.
+        GENERIC_SOCKET_TYPE = 0
+        self.node.initSockets(inputs=[GENERIC_SOCKET_TYPE], outputs=[], reset=False)
+
+        # Step 3: Connect the node input to the widget's value (this is a simplistic representation and might need adjustments)
+        #socket = self.node.inputs[-1]  # Get the last added input socket
+        #socket.valueChanged.connect(widget.setValue)
+
+        # Step 4: Update the node's preview
+        self.node.updateConnectedEdges()
+    def contextMenuEvent(self, event, widget=None):
+        """Override the context menu to provide an option to convert the widget to a node input."""
+        menu = QMenu(self)
+        convert_action = menu.addAction("Convert to Node Input")
+        action = menu.exec(self.mapToGlobal(event.pos()))
+
+        if action == convert_action:
+            #clicked_widget = self.childAt(event.pos())
+            print(widget)
+            if widget:  # Make sure we have a widget at the clicked position
+                self.convertWidgetToNodeInput(widget)
     def setEditingFlag(self, value:bool):
         """
         .. note::
@@ -212,201 +271,6 @@ class QDMNodeContentWidget(QWidget, Serializable):
 
         return True
 
-
-
-    """def serialize(self) -> OrderedDict:
-        return OrderedDict([
-        ])"""
-
-
-    # def serialize(self) -> dict:
-    #     res = {}
-    #     for item in self.widget_list:
-    #         if isinstance(item, QtWidgets.QLayout):
-    #             for i in range(item.layout().count()):
-    #                 widget = item.layout().itemAt(i)
-    #                 if isinstance(widget, QtWidgets.QWidgetItem):
-    #                     widget = widget.widget()
-    #                     if isinstance(widget, QtWidgets.QComboBox):
-    #                         res[f"{widget.objectName()}"] = widget.currentText()
-    #                     elif isinstance(widget, QtWidgets.QLineEdit):
-    #                         res[f"{widget.objectName()}"] = widget.text()
-    #                     elif isinstance(widget, QtWidgets.QTextEdit):
-    #                         res[f"{widget.objectName()}"] = widget.toPlainText()
-    #                     elif isinstance(widget, CustomTextEdit):
-    #                         res[f"{widget.objectName()}"] = widget.toPlainText()
-    #                     elif isinstance(widget, QtWidgets.QSpinBox) or isinstance(widget, QtWidgets.QDoubleSpinBox):
-    #                         res[f"{widget.objectName()}"] = str(widget.value())
-    #                     elif isinstance(widget, QtWidgets.QSlider):
-    #                         res[f"{widget.objectName()}"] = str(widget.value())
-    #                     elif isinstance(widget, QtWidgets.QCheckBox):
-    #                         res[f"{widget.objectName()}"] = str(widget.isChecked())
-    #         elif isinstance(item, QtWidgets.QWidget):
-    #             widget = item
-    #             if isinstance(widget, QtWidgets.QComboBox):
-    #                 res[f"{widget.objectName()}"] = widget.currentText()
-    #             elif isinstance(widget, QtWidgets.QLineEdit):
-    #                 res[f"{widget.objectName()}"] = widget.text()
-    #             elif isinstance(widget, QtWidgets.QTextEdit):
-    #                 res[f"{widget.objectName()}"] = widget.toPlainText()
-    #             elif isinstance(widget, CustomTextEdit):
-    #                 res[f"{widget.objectName()}"] = widget.toPlainText()
-    #             elif isinstance(widget, QtWidgets.QSpinBox) or isinstance(widget, QtWidgets.QDoubleSpinBox):
-    #                 res[f"{widget.objectName()}"] = str(widget.value())
-    #             elif isinstance(widget, QtWidgets.QSlider):
-    #                 res[f"{widget.objectName()}"] = str(widget.value())
-    #             elif isinstance(widget, QtWidgets.QCheckBox):
-    #                 res[f"{widget.objectName()}"] = str(widget.isChecked())
-    #
-    #     return res
-    #
-    #
-    #
-    # def deserialize(self, data, hashmap={}, restore_id:bool=True) -> bool:
-    #     for item in self.widget_list:
-    #         if isinstance(item, QtWidgets.QLayout):
-    #             for i in range(item.layout().count()):
-    #                 widget = item.layout().itemAt(i)
-    #                 if isinstance(widget, QtWidgets.QWidgetItem):
-    #                     widget = widget.widget()
-    #                     try:
-    #                         value = data[f"{widget.objectName()}"]
-    #                     except:
-    #                         value = None
-    #                     if value is not None:
-    #                         if isinstance(widget, QtWidgets.QComboBox):
-    #                             widget.setCurrentText(str(data[f"{widget.objectName()}"]))
-    #                         elif isinstance(widget, QtWidgets.QLineEdit):
-    #                             widget.setText(str(data[f"{widget.objectName()}"]))
-    #                         elif isinstance(widget, QTextEdit):
-    #                             widget.setPlainText(str(data[f"{widget.objectName()}"]))
-    #                         elif isinstance(widget, CustomTextEdit):
-    #                             widget.setPlainText(str(data[f"{widget.objectName()}"]))
-    #                         elif isinstance(widget, QtWidgets.QSpinBox):
-    #                             widget.setValue(int(data[f"{widget.objectName()}"]))
-    #                         elif isinstance(widget, QtWidgets.QDoubleSpinBox):
-    #                             widget.setValue(float(data[f"{widget.objectName()}"]))
-    #                         elif isinstance(widget, QtWidgets.QSlider):
-    #                             widget.setValue(data[f"{widget.objectName()}"])
-    #                         elif isinstance(widget, QtWidgets.QCheckBox):
-    #                             value = data[f"{widget.objectName()}"]
-    #
-    #                             print("NODE_CONTENT_WIDGET: deserialize (QCheckBox)", value)
-    #
-    #                             widget.setChecked(True) if value == "True" else widget.setChecked(False)
-    #         elif isinstance(item, QtWidgets.QWidget):
-    #             widget = item
-    #             try:
-    #                 value = data[f"{widget.objectName()}"]
-    #             except:
-    #                 value = None
-    #
-    #             if value is not None:
-    #                 if isinstance(widget, QtWidgets.QComboBox):
-    #                     try:
-    #                         widget.setCurrentText(data[f"{widget.objectName()}"])
-    #                     except:
-    #                         pass
-    #                 elif isinstance(widget, QtWidgets.QLineEdit):
-    #                     widget.setText(str(data[f"{widget.objectName()}"]))
-    #                 elif isinstance(widget, QTextEdit):
-    #                     widget.setPlainText(str(data[f"{widget.objectName()}"]))
-    #                 elif isinstance(widget, CustomTextEdit):
-    #                     widget.setPlainText(str(data[f"{widget.objectName()}"]))
-    #                 elif isinstance(widget, QtWidgets.QSpinBox):
-    #                     widget.setValue(int(data[f"{widget.objectName()}"]))
-    #                 elif isinstance(widget, QtWidgets.QDoubleSpinBox):
-    #                     widget.setValue(float(data[f"{widget.objectName()}"]))
-    #                 elif isinstance(widget, QtWidgets.QSlider):
-    #                     widget.setValue(data[f"{widget.objectName()}"])
-    #                 elif isinstance(widget, QtWidgets.QCheckBox):
-    #                     print("NODE_CONTENT_WIDGET: deserialize (QCheckBox)", value)
-    #
-    #                     widget.setChecked(True) if value == "True" else widget.setChecked(False)
-    #     return True
-    #
-    #     """#try:
-    #     for i in range(self.layout().count()):
-    #         layout = self.layout().itemAt(i)
-    #         print(layout)
-    #         if isinstance(layout, QtWidgets.QHBoxLayout) or isinstance(layout, QtWidgets.QVBoxLayout):
-    #             for k in range(layout.count()):
-    #                 widget = layout.itemAt(k).widget()
-    #                 if isinstance(widget, QtWidgets.QComboBox):
-    #                     try:
-    #                         widget.setCurrentText(data[f"{widget.objectName()}"])
-    #                     except:
-    #                         pass
-    #                 elif isinstance(widget, QtWidgets.QLineEdit):
-    #                     widget.setText(str(data[f"{widget.objectName()}"]))
-    #                 elif isinstance(widget, QTextEdit):
-    #                     widget.setPlainText(str(data[f"{widget.objectName()}"]))
-    #                 elif isinstance(widget, QtWidgets.QSpinBox):
-    #                     widget.setValue(int(data[f"{widget.objectName()}"]))
-    #                 elif isinstance(widget, QtWidgets.QDoubleSpinBox):
-    #                     widget.setValue(float(data[f"{widget.objectName()}"]))
-    #                 elif isinstance(widget, QtWidgets.QCheckBox):
-    #                     widget.setChecked(bool(data[f"{widget.objectName()}"]))
-    #         elif isinstance(layout, QtWidgets.QWidgetItem):
-    #             widget = layout.widget()
-    #             print(widget)
-    #             if isinstance(widget, QtWidgets.QComboBox):
-    #                 index = widget.findText(str(data[f"{widget.objectName()}"]))
-    #                 try:
-    #                     widget.setCurrentText(data[f"{widget.objectName()}"])
-    #                 except Exception as e:
-    #                     print(e)
-    #                     continue
-    #
-    #                 #if index == -1:
-    #                 #    widget.setCurrentIndex(0)
-    #                 #else:
-    #                 #    widget.setCurrentIndex(index)
-    #             elif isinstance(widget, QtWidgets.QLineEdit):
-    #                 try:
-    #                     widget.setText(str(data[f"{widget.objectName()}"]))
-    #                 except Exception as e:
-    #                     print(e)
-    #                     pass
-    #             elif isinstance(widget, QTextEdit):
-    #                 try:
-    #                     widget.setPlainText(str(data[f"{widget.objectName()}"]))
-    #                 except Exception as e:
-    #                     print(e)
-    #                     pass
-    #             elif isinstance(widget, QtWidgets.QSpinBox):
-    #                 try:
-    #                     widget.setValue(int(data[f"{widget.objectName()}"]))
-    #                 except Exception as e:
-    #                     print(e)
-    #                     pass
-    #
-    #             elif isinstance(widget, QtWidgets.QDoubleSpinBox):
-    #                 try:
-    #                     widget.setValue(float(data[f"{widget.objectName()}"]))
-    #                 except Exception as e:
-    #                     print(e)
-    #                     pass
-    #
-    #             elif isinstance(widget, QtWidgets.QCheckBox):
-    #                 try:
-    #                     #print(data[f"{widget.objectName()}"])
-    #                     widget.setChecked(bool(data[f"{widget.objectName()}"]))
-    #                 except Exception as e:
-    #                     print(e)
-    #                     pass
-    #
-    #             return True
-    #     #except Exception as e:
-    #     #    dumpException(e)
-    #     #    return False"""
-    # """def keyPressEvent(self, event):
-    #     super().keyPressEvent(event)
-    #     if event.key() == Qt.Key_E:
-    #         print("TRIGGER")
-    #         self.node.markDirty(True)
-    #         self.node.eval()"""
-
     def create_combo_box(self, items, label_text, accessible_name=None, spawn=None) -> QtWidgets.QComboBox:
         """Create a combo box widget with the given items and label text.
 
@@ -417,7 +281,7 @@ class QDMNodeContentWidget(QWidget, Serializable):
         Returns:
             QtWidgets.QComboBox: A combo box widget.
         """
-        combo_box = QtWidgets.QComboBox()
+        combo_box = CustomComboBox()
         combo_box.addItems(items)
         combo_box.setObjectName(label_text)
         if accessible_name is not None:
@@ -443,7 +307,7 @@ class QDMNodeContentWidget(QWidget, Serializable):
         Returns:
             QtWidgets.QLineEdit: A line edit widget.
         """
-        line_edit = QtWidgets.QLineEdit()
+        line_edit = CustomLineEdit()
         line_edit.setObjectName(label_text)
         if default is not None:
             line_edit.setText(default)
@@ -545,7 +409,7 @@ class QDMNodeContentWidget(QWidget, Serializable):
         Returns:
             QtWidgets.QSpinBox: A spin box widget.
         """
-        spin_box = QtWidgets.QSpinBox()
+        spin_box = CustomSpinBox()
         spin_box.setMinimum(min_val)
         spin_box.setMaximum(max_val)
         spin_box.setValue(default_val)
@@ -576,7 +440,7 @@ class QDMNodeContentWidget(QWidget, Serializable):
          Returns:
              QtWidgets.QDoubleSpinBox: A double spin box widget.
          """
-        double_spin_box = QtWidgets.QDoubleSpinBox()
+        double_spin_box = CustomDoubleSpinBox()
         double_spin_box.setMinimum(min_val)
         double_spin_box.setMaximum(max_val)
         double_spin_box.setSingleStep(step)
@@ -609,7 +473,7 @@ class QDMNodeContentWidget(QWidget, Serializable):
              QtWidgets.QDoubleSpinBox: A double spin box widget.
          """
 
-        check_box = QtWidgets.QCheckBox(label_text)
+        check_box = CustomCheckBox(label_text)
         check_box.setChecked(checked)
         check_box.setObjectName(label_text)
         if accessible_name is not None:

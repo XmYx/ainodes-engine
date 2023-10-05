@@ -174,7 +174,7 @@ class Node(Serializable):
             pass
 
         # create new sockets
-        counter = 0
+        counter = 0 if reset else len(self.inputs)
 
         for item in inputs:
             try:
@@ -189,7 +189,7 @@ class Node(Serializable):
             counter += 1
             self.inputs.append(socket)
 
-        counter = 0
+        counter = 0 if reset else len(self.outputs)
         for item in outputs:
             try:
                 socket_name = temp_outputs[counter]

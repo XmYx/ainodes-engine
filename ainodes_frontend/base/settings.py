@@ -120,19 +120,24 @@ class Settings:
 
         return settings_dict
     #return settings
-
+def get_last_config():
+    last_config_path = os.path.join('config', 'last_config.yaml')
+    if os.path.exists(last_config_path):
+        with open(last_config_path, 'r') as file:
+            data = yaml.safe_load(file)
+            return data.get('last_config')
+    return "config/default_settings.yaml"
 def load_settings(file_path=None):
     settings = Settings()
-    if file_path == None:
-        if os.path.exists('config/settings.yaml'):
-            file_path = 'config/settings.yaml'
-        else:
-            file_path = 'config/default_settings.yaml'
-
+    # if file_path == None:
+    #     file_path = 'config/default_settings.yaml'
+    if file_path is None:
+        # Try to get the last used config
+        file_path = get_last_config()
     with open(file_path, 'r') as file:
         settings_dict = yaml.safe_load(file)
         settings.load_from_dict(settings_dict)
-        save_settings(settings)
+        #save_settings(settings)
     gs.prefs = settings
 
 

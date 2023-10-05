@@ -12,7 +12,7 @@ from qtpy import QtWidgets, QtCore, QtGui
 from qtpy.QtCore import Qt, QSignalMapper
 from qtpy.QtGui import QIcon, QKeySequence
 from qtpy.QtWidgets import QGraphicsView
-from qtpy.QtWidgets import QMdiArea, QDockWidget, QAction, QMessageBox, QFileDialog
+from qtpy.QtWidgets import QMdiArea, QDockWidget, QAction, QMessageBox, QFileDialog, QToolBar
 
 from ainodes_frontend.base import CalcGraphicsNode
 from ainodes_frontend.base.ai_nodes_listbox import QDMDragListbox
@@ -30,6 +30,7 @@ from ainodes_frontend.node_engine.node_edge_validators import (
     edge_cannot_connect_input_and_output_of_different_type
 )
 from ainodes_frontend.node_engine.node_editor_window import NodeEditorWindow
+from ainodes_frontend.node_engine.timeline_dockwidget import Timeline
 from ainodes_frontend.node_engine.utils_no_qt import dumpException, pp
 
 #Edge.registerEdgeValidator(edge_validator_debug)
@@ -663,6 +664,9 @@ class CalculatorWindow(NodeEditorWindow):
 
         #self.parameter_dock = ParameterDock()
         #self.addDockWidget(Qt.LeftDockWidgetArea, self.parameter_dock)
+        self.timeline = Timeline()
+        self.addDockWidget(Qt.BottomDockWidgetArea, self.timeline)
+
 
         self.file_open_signal.connect(self.fileOpen)
         self.file_new_signal.connect(self.onFileNew_subgraph)
@@ -692,6 +696,45 @@ class CalculatorWindow(NodeEditorWindow):
         self.fade_animation = QPropertyAnimation(self, b"windowOpacity")
 
         self.setWindowOpacity(0.0)  # Start with transparent window
+        self.createVerticalToolBar()
+
+    def createVerticalToolBar(self):
+        # Create a new vertical toolbar
+        self.verticalToolBar = QToolBar("Tools", self)
+        self.verticalToolBar.setOrientation(Qt.Vertical)
+
+        # Create actions for the toolbar buttons
+        play_action = QAction(QIcon("ainodes_frontend/icons/play.png"), "Play", self)
+        play_action.triggered.connect(self.onPlayClicked)
+
+        stop_action = QAction(QIcon("ainodes_frontend/icons/stop.png"), "Stop", self)
+        stop_action.triggered.connect(self.onStopClicked)
+
+        undo_action = QAction(QIcon("ainodes_frontend/icons/undo.png"), "Undo", self)
+        undo_action.triggered.connect(self.onEditUndo)  # Assuming 'undo' is a method in your class or PyQt's undo method
+
+        redo_action = QAction(QIcon("ainodes_frontend/icons/redo.png"), "Redo", self)
+        redo_action.triggered.connect(self.onEditRedo)  # Assuming 'redo' is a method in your class or PyQt's redo method
+
+        # Add the actions to the toolbar
+        self.verticalToolBar.addAction(play_action)
+        self.verticalToolBar.addAction(stop_action)
+        self.verticalToolBar.addAction(undo_action)
+        self.verticalToolBar.addAction(redo_action)
+
+        # Add the toolbar to the main window
+        self.addToolBar(Qt.LeftToolBarArea, self.verticalToolBar)
+
+    # Placeholder functions for play and stop buttons
+    def onPlayClicked(self):
+        editor = self.getCurrentNodeEditorWidget()
+        if editor:
+            editor.scene.noderunner.start()
+
+    def onStopClicked(self):
+        editor = self.getCurrentNodeEditorWidget()
+        if editor:
+            editor.scene.noderunner.stop()
 
 
 

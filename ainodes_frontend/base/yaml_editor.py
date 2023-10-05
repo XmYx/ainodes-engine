@@ -101,21 +101,27 @@ class YamlEditorWidget(QWidget):
         # Get the selected profile's file name
         selected_profile_name = self.user_profiles_dropdown.currentText()
         file_path = os.path.join('config/user', selected_profile_name)
+        self.clear()
 
+        # Load the selected YAML file
+        self.load_yaml(file_path)
+
+    def clear(self):
         # Clear current widgets from settings_layout
+
         while self.settings_layout.count():
             child = self.settings_layout.takeAt(0)
+            print(child)
             if child.widget():
                 child.widget().deleteLater()
 
         # Clear current widgets from keybindings_layout
         while self.keybindings_layout.count():
+            print(child)
             child = self.keybindings_layout.takeAt(0)
             if child.widget():
                 child.widget().deleteLater()
 
-        # Load the selected YAML file
-        self.load_yaml(file_path)
     def save_as_new_profile(self):
         new_profile_name = self.new_profile_name_edit.text().strip()
         if not new_profile_name:
@@ -142,6 +148,11 @@ class YamlEditorWidget(QWidget):
         """
         self.setStyleSheet(style)
     def load_default_options(self, file_path):
+
+        if file_path is None:
+            # Try to get the last used config
+            file_path = self.get_last_config()
+
         with open(file_path, 'r') as file:
             return yaml.safe_load(file)
 
@@ -210,41 +221,53 @@ class YamlEditorWidget(QWidget):
 
     def save_yaml(self, file_path=None):
         # Save values from settings layout
+        self.values["keybindings"] = {}
+
         self.save_widgets_from_layout(self.settings_layout)
+        self.save_widgets_from_layout(self.keybindings_layout)
 
         # Save values from keybindings layout
-        for i in range(self.keybindings_layout.count()):
-            item = self.keybindings_layout.itemAt(i)
-            layout = item.layout()
-            if layout:
-                for j in range(layout.count()):
-                    widget = layout.itemAt(j).widget()
-                    if isinstance(widget, QKeySequenceEdit):
-                        key = widget.objectName().replace("keybinding_", "")
-                        new_shortcut = widget.keySequence().toString()
-                        if "keybindings" not in self.values:
-                            self.values["keybindings"] = {}
-                        if key not in self.values["keybindings"]:
-                            self.values["keybindings"][key] = {}
-                        self.values["keybindings"][key]["shortcut"] = new_shortcut
-                        self.values["keybindings"][key]["name"] = DEFAULT_KEYBINDINGS[key]["name"]
+        # for i in range(self.keybindings_layout.count()):
+        #     item = self.keybindings_layout.itemAt(i)
+        #     layout = item.layout()
+        #     if layout:
+        #         for j in range(layout.count()):
+        #             widget = layout.itemAt(j).widget()
+        #             if isinstance(widget, QKeySequenceEdit):
+        #                 key = widget.objectName().replace("keybinding_", "")
+        #                 new_shortcut = widget.keySequence().toString()
+        #                 self.values["keybindings"] = {}
+        #                 self.values["keybindings"][key] = {}
+        #                 self.values["keybindings"][key]["shortcut"] = new_shortcut
+        #                 self.values["keybindings"][key]["name"] = DEFAULT_KEYBINDINGS[key]["name"]
 
         # The rest of the saving process remains the same
+        # Decide which path to save to
+        profile_name = self.user_profiles_dropdown.currentText()
         if file_path == None:
-            file_path = "config/settings.yaml"
+            if profile_name:
+                file_path = os.path.join('config/user', profile_name + '.yaml')
+            else:
+                file_path = "config/settings.yaml"
         else:
-            profile_name = self.user_profiles_dropdown.currentText()
-            file_path = os.path.join('config/user', profile_name + '.yaml')
-
+            file_path = os.path.join('config/user', profile_name)
+        print("saving to ", file_path)
 
         with open(file_path, 'w') as file:
             yaml.safe_dump(self.values, file)
 
+        # with open(file_path, 'w') as file:
+        #     yaml.safe_dump(self.values, file)
+
         QMessageBox.information(self, 'Success', 'YAML file saved successfully.')
 
         from ainodes_frontend.base.settings import load_settings
+
+        print("Loading settings from", file_path)
+        self.set_last_config(file_path)
+
         load_settings(file_path)
-        #self.close()
+        self.close()
 
     def save_widgets_from_layout(self, layout):
         for i in range(layout.count()):
@@ -266,10 +289,36 @@ class YamlEditorWidget(QWidget):
                     key = widget.objectName()
                     value = widget.currentText()
                     self.values[key] = value
+                elif isinstance(widget, QKeySequenceEdit):
+                    print("found keysequence to save", widget.keySequence().toString())
+                    key = widget.objectName().replace("keybinding_", "")
+                    new_shortcut = widget.keySequence().toString()
+                    self.values["keybindings"][key] = {}
+                    self.values["keybindings"][key]["shortcut"] = new_shortcut
+                    self.values["keybindings"][key]["name"] = DEFAULT_KEYBINDINGS[key]["name"]
+
             else:
                 self.save_widgets_from_layout(item)
 
             # elif isinstance(item, QLayout):
             #     self.save_widgets_from_layout(item.layout())
+    def set_last_config(self, file_path):
+        """
+        Store the given file path in last_config.yaml.
+        """
+        last_config_path = os.path.join('config', 'last_config.yaml')
+        with open(last_config_path, 'w') as file:
+            yaml.safe_dump({"last_config": file_path}, file)
+
+    def get_last_config(self):
+        """
+        Retrieve the file path from last_config.yaml.
+        """
+        last_config_path = os.path.join('config', 'last_config.yaml')
+        if os.path.exists(last_config_path):
+            with open(last_config_path, 'r') as file:
+                data = yaml.safe_load(file)
+                return data.get('last_config')
+        return "config/default_settings.yaml"
     def cancel(self):
         self.close()

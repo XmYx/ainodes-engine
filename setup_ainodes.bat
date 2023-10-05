@@ -62,7 +62,7 @@ pip install -r requirements.txt
 
 setlocal enabledelayedexpansion
 
-set "repositories_file=repositories.txt"
+set "repositories_file=config/repositories.txt"
 set "custom_nodes_folder=ai_nodes"
 
 rem Read repositories and branch names from repositories.txt
@@ -89,7 +89,7 @@ for /d %%B in (%custom_nodes_folder%\*) do (
   )
 )
 
-set "src_file=src.txt"
+set "src_file=config/src.txt"
 
 rem Read repositories from src.txt
 for /f "tokens=*" %%A in (%src_file%) do (
