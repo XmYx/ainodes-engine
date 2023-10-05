@@ -358,8 +358,9 @@ class Node(Serializable):
         :param new_value: ``True`` if this `Node` should be `Dirty`. ``False`` if you want to un-dirty this `Node`
         :type new_value: ``bool``
         """
-        self._is_dirty = new_value
-        if self._is_dirty: self.onMarkedDirty()
+        if self.content.isVisible():
+            self._is_dirty = new_value
+            if self._is_dirty: self.onMarkedDirty()
     def onMarkedDirty(self):
         """Called when this `Node` has been marked as `Dirty`. This method is supposed to be overridden"""
         self.markDescendantsDirty(True)

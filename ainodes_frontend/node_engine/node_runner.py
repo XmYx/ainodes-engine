@@ -34,7 +34,7 @@ class NodeRunner:
         self.process = True
         self.parent = parent
         self.running = False  # Add a flag to track if the runner is currently running
-        self.setup_api_connection()
+        #self.setup_api_connection()
         #self.nodeResultReceived.connect(self.process_node_message)
 
     def process_node_message(self, msg):
@@ -72,7 +72,6 @@ class NodeRunner:
         self.get_starting_nodes()
 
         for node in self.starting_nodes:
-            print(node.serialize())
             data[node.id] = {}
             data[node.id]["params"] = node.content.serialize()
             data[node.id]["input_nodes"] = [node.id for node in node.inputs]
@@ -127,7 +126,6 @@ class NodeRunner:
         self.starting_nodes.sort(key=sorting_key)
 
     def run_next(self):
-        print("Actually Processing")
         if not self.exec:  # Check if execution should stop
             self.running = False
             return
@@ -152,14 +150,14 @@ class NodeRunner:
             node_to_run.markDirty(False)
             node_to_run.content.finished.disconnect(on_node_finished)
 
-            for output_socket in node_to_run.outputs:
-                for edge in output_socket.edges:
-                    downstream_node = edge.end_socket.node
-                    if downstream_node not in self.starting_nodes and downstream_node not in self.skipped_nodes and downstream_node not in self.processed_nodes:
-                        if downstream_node.can_run():
-                            self.starting_nodes.append(downstream_node)
-                        else:
-                            self.skipped_nodes.append(downstream_node)
+            # for output_socket in node_to_run.outputs:
+            #     for edge in output_socket.edges:
+            #         downstream_node = edge.end_socket.node
+            #         if downstream_node not in self.starting_nodes and downstream_node not in self.skipped_nodes and downstream_node not in self.processed_nodes:
+            #             if downstream_node.can_run():
+            #                 self.starting_nodes.append(downstream_node)
+            #             else:
+            #                 self.skipped_nodes.append(downstream_node)
 
             self.parent.getView().update()
             self.run_next()  # Recursive call
@@ -174,15 +172,17 @@ class NodeRunner:
 
         # Mark nodes with 'seed' as dirty
         for node in self.parent.nodes:
-            if hasattr(node.content, 'seed'):
+            if hasattr(node.content, 'seed') and node.content.isVisible() == True:
                 node.markDirty()
             if hasattr(node, 'make_dirty'):
-                if node.make_dirty:
-                    node.markDirty()
 
+                if node.make_dirty and node.content.isVisible() == True:
+                    node.markDirty()
         # Prepare the initial list of starting nodes
         self.starting_nodes = [node for node in self.parent.nodes if
-                               isinstance(node, AiNode) and node.isDirty() and node not in self.processed_nodes]
+                               isinstance(node, AiNode) and node.isDirty() and node not in self.processed_nodes
+                               and node.content.isVisible() == True]
+        #print("starting nodes",self.starting_nodes)
 
     def start(self, loop=False):
         use_api = False
