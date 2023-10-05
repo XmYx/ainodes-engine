@@ -174,7 +174,7 @@ class Node(Serializable):
             pass
 
         # create new sockets
-        counter = 0
+        counter = 0 if reset else len(self.inputs)
 
         for item in inputs:
             try:
@@ -189,7 +189,7 @@ class Node(Serializable):
             counter += 1
             self.inputs.append(socket)
 
-        counter = 0
+        counter = 0 if reset else len(self.outputs)
         for item in outputs:
             try:
                 socket_name = temp_outputs[counter]
@@ -358,14 +358,18 @@ class Node(Serializable):
         :param new_value: ``True`` if this `Node` should be `Dirty`. ``False`` if you want to un-dirty this `Node`
         :type new_value: ``bool``
         """
-        self._is_dirty = new_value
-        if self._is_dirty: self.onMarkedDirty()
+        if self.content.isVisible():
+            self._is_dirty = new_value
+            if self._is_dirty: self.onMarkedDirty()
     def onMarkedDirty(self):
         """Called when this `Node` has been marked as `Dirty`. This method is supposed to be overridden"""
+        self.markDescendantsDirty(True)
+
+        self.scene.getView().update()
         pass
 
     def markChildrenDirty(self, new_value: bool=True):
-        return
+        #return
         """Mark all first level children of this `Node` to be `Dirty`. Not this `Node` it self. Not other descendants
 
         :param new_value: ``True`` if children should be `Dirty`. ``False`` if you want to un-dirty children
@@ -373,9 +377,12 @@ class Node(Serializable):
         """
         for other_node in self.getChildrenNodes():
             other_node.markDirty(new_value)
+            if other_node == self:
+                break
+
 
     def markDescendantsDirty(self, new_value: bool=True):
-        return
+        #return
         """Mark all children and descendants of this `Node` to be `Dirty`. Not this `Node` it self
 
         :param new_value: ``True`` if children and descendants should be `Dirty`. ``False`` if you want to un-dirty children and descendants
@@ -384,6 +391,8 @@ class Node(Serializable):
         for other_node in self.getChildrenNodes():
             other_node.markDirty(new_value)
             other_node.markDescendantsDirty(new_value)
+            if other_node == self:
+                break
 
     def isInvalid(self) -> bool:
         """Is this node marked as `Invalid`?

@@ -11,6 +11,7 @@ from qtpy.QtGui import QColor
 
 from ainodes_frontend import singleton as gs
 from ainodes_frontend.base.help import get_help
+from ainodes_frontend.base.yaml_editor import DEFAULT_KEYBINDINGS
 
 
 def handle_ainodes_exception():
@@ -66,99 +67,78 @@ def get_machine_info():
     return info
 
 def color_to_hex(color):
-    return color.name()
+    return color.name(QColor.NameFormat.HexRgb)
 
 def hex_to_color(hex_string):
     return QColor(hex_string)
 
-def save_settings():
-    return
-    settings = {
-        'socket_names': socket_names,
-        'COLORS': [color_to_hex(color) for color in SOCKET_COLORS],
-        'checkpoints': gs.checkpoints,
-        'hypernetworks': gs.hypernetworks,
-        'vae': gs.vae,
-        'controlnet': gs.controlnet,
-        'embeddings': gs.embeddings,
-        'upscalers': gs.upscalers,
-        'loras': gs.loras,
-        't2i_adapter': gs.t2i_adapter,
-        'output': gs.output,
+def save_settings(settings):
+    settings_dict = settings.to_dict()
+    with open('config/settings.yaml', 'w') as file:
+        print(f"Saving settings to YAML: {settings_dict}")  # Debug line
+        yaml.dump(settings_dict, file, indent=4)
+class Settings:
+    def __init__(self):
+        self.checkpoints = "models/checkpoints"
+        self.checkpoints_xl = "models/checkpoints_xl"
+        self.hypernetworks = "models/hypernetworks"
+        self.vae = "models/vae"
+        self.controlnet = "models/controlnet"
+        self.embeddings = "models/embeddings"
+        self.upscalers = "models/other"
+        self.loras = "models/loras"
+        self.t2i_adapter = "models/t2i"
+        self.output = "output"
+        self.opengl = ""
+        self.keybindings = DEFAULT_KEYBINDINGS
+        self.use_exec = False
+        self.opengl = False
 
-    }
-    with open('config/default_settings.yaml', 'w') as file:
-        yaml.dump(settings, file, indent=4)
+    def load_from_dict(self, settings_dict):
+        for key, value in settings_dict.items():
+            setattr(self, key, value)
 
+    def to_dict(self):
+        if hasattr(gs, "prefs"):
+            if hasattr(gs.prefs, "keybindings"):
+                self.keybindings = gs.prefs.keybindings
 
+        settings_dict = {
+            'checkpoints': self.checkpoints,
+            'hypernetworks': self.hypernetworks,
+            'vae': self.vae,
+            'controlnet': self.controlnet,
+            'embeddings': self.embeddings,
+            'upscalers': self.upscalers,
+            'loras': self.loras,
+            't2i_adapter': self.t2i_adapter,
+            'output': self.output,
+            'keybindings': self.keybindings if hasattr(self, 'keybindings') else {},
+            'use_exec':self.use_exec,
+            'opengl':self.opengl
+        }
 
-
-
-def load_settings():
-    global SOCKET_COLORS
-    global socket_names
-    if os.path.exists('config/settings.yaml'):
-        path = 'config/settings.yaml'
-    else:
-        path = 'config/default_settings.yaml'
-
-    with open(path, 'r') as file:
-        settings = yaml.safe_load(file)
-        try:
-            socket_names = settings['socket_names']
-            SOCKET_COLORS = [hex_to_color(hex_string) for hex_string in settings['COLORS']]
-            gs.checkpoints = settings['checkpoints']
-            gs.checkpoints_xl = settings.get("checkpoints_xl", "models/checkpoints_xl")
-            gs.hypernetworks = settings['hypernetworks']
-            gs.vae = settings['vae']
-            gs.controlnet = settings['controlnet']
-            gs.embeddings = settings['embeddings']
-            gs.upscalers = settings['upscalers']
-            gs.loras = settings['loras']
-            gs.t2i_adapter = settings['t2i_adapter']
-            gs.output = settings['output']
-            gs.opengl = settings['opengl']
-            save_settings()
-        except:
-            setup_defaults()
-            save_settings()
-
-        
-def setup_defaults():
-    global SOCKET_COLORS
-    global socket_names
-    SOCKET_COLORS = [
-        QColor("#FFFF7700"),
-        QColor("#FF52e220"),
-        QColor("#FF0056a6"),
-        QColor("#FFa86db1"),
-        QColor("#FFb54747"),
-        QColor("#FFdbe220"),
-        QColor("#FF888888"),
-        QColor("#FFFF7700"),
-        QColor("#FF52e220"),
-        QColor("#FF0056a6"),
-        QColor("#FFa86db1"),
-        QColor("#FFb54747"),
-        QColor("#FFdbe220"),
-        QColor("#FF888888"),
-    ]
-
-    socket_names = {0: "UNUSED",
-                      1: "EXEC",
-                      2: "LATENT",
-                      3: "COND",
-                      4: "PIPE/COND",
-                      5: "IMAGE",
-                      6: "DATA"}
-    gs.checkpoints = "models/checkpoints"
-    gs.controlnet = "models/controlnet"
-    gs.embeddings = "models/embeddings"
-    gs.upscalers = 'models/upscalers'
-    gs.vae = 'models/vae'
-    gs.loras = "models/loras"
-    gs.t2i_adapter = "models/t2i_adapter"
-    gs.output = "output"
+        return settings_dict
+    #return settings
+def get_last_config():
+    last_config_path = os.path.join('config', 'last_config.yaml')
+    if os.path.exists(last_config_path):
+        with open(last_config_path, 'r') as file:
+            data = yaml.safe_load(file)
+            return data.get('last_config')
+    return "config/default_settings.yaml"
+def load_settings(file_path=None):
+    settings = Settings()
+    # if file_path == None:
+    #     file_path = 'config/default_settings.yaml'
+    if file_path is None:
+        # Try to get the last used config
+        file_path = get_last_config()
+    with open(file_path, 'r') as file:
+        settings_dict = yaml.safe_load(file)
+        settings.load_from_dict(settings_dict)
+        #save_settings(settings)
+    gs.prefs = settings
 
 
 def init_globals():
@@ -187,7 +167,6 @@ def init_globals():
     gs.loaded_kandinsky = ""
     gs.loaded_hypernetworks = []
     gs.threads = {}
-    gs.help_items = get_help()
     try:
         import xformers
         gs.system.xformer = True

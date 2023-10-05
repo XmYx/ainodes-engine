@@ -1,6 +1,6 @@
-from PyQt6.QtWidgets import QLabel, QDialog, QVBoxLayout, QApplication, QGraphicsOpacityEffect
-from PyQt6.QtGui import QPixmap, QFont
-from PyQt6.QtCore import Qt, QTimer, QPropertyAnimation
+from qtpy.QtWidgets import QLabel, QDialog, QVBoxLayout, QApplication, QGraphicsOpacityEffect
+from qtpy.QtGui import QPixmap, QFont
+from qtpy.QtCore import Qt, QTimer, QPropertyAnimation
 from qtpy import QtWidgets
 
 

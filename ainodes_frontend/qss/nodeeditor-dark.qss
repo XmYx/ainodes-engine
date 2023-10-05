@@ -70,3 +70,74 @@ QTreeWidget::item {
     font-weight: bold;
     color: #ffffff;
 }
+
+QTabWidget::pane {
+    border: 1px solid #3a3a3a;
+    background: #474747;
+}
+
+QTabWidget::tab-bar {
+    left: 5px; /* move to the right by 5px */
+}
+
+QTabBar::tab {
+    background: #6d6d6d;
+    border: 1px solid #3a3a3a;
+    border-bottom-color: #474747; /* same as the pane color */
+    padding: 5px;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    min-width: 8ex;
+    margin-right: -1px; /* make the selected tab overlap the next one */
+}
+
+QTabBar::tab:selected, QTabBar::tab:hover {
+    background: #878787;
+}
+
+QTabBar::tab:selected {
+    border-color: #3a3a3a;
+    border-bottom-color: #474747; /* same as pane color */
+}
+
+QToolBar {
+    background-color: #474747;  /* Similar background as other widgets */
+    border: 1px solid #3a3a3a;  /* Border to match the overall theme */
+    spacing: 4px;               /* Spacing between toolbar items */
+}
+
+QToolBar::handle {  /* Styling the handle used to move/dock the toolbar */
+    image: none;     /* Remove the default handle image */
+    background-color: #6d6d6d;
+    width: 8px;
+}
+
+QToolBar QPushButton, QToolBar QToolButton {  /* Both QPushButton and QToolButton can exist on a toolbar */
+    background-color: #555;  /* Button background */
+    border: 1px solid #3a3a3a;
+    border-radius: 4px;      /* Rounded corners */
+    padding: 5px 10px;       /* Padding around the text/icon */
+    color: #e6e6e6;          /* Text/icon color */
+    margin: 2px;             /* Margin around each button for spacing */
+}
+
+QToolBar QPushButton:hover, QToolBar QToolButton:hover {  /* Hover effect */
+    background-color: #6d6d6d;
+}
+
+QToolBar QPushButton:pressed, QToolBar QToolButton:pressed, QToolBar QPushButton:checked, QToolBar QToolButton:checked {  /* Pressed and checked (for toggle buttons) effect */
+    background-color: #878787;
+}
+
+QProgressBar {
+    background-color: #3a3a3a;  /* Dark background harmonizing with the app */
+    border: 1px solid #2e2e2e;  /* Slight border for definition */
+    border-radius: 4px;         /* Rounded edges */
+    text-align: center;         /* Align text in the center */
+    color: white;               /* White text color */
+}
+
+QProgressBar::chunk {
+    background-color: #FF8C00;  /* Dark orange color for the progress chunk */
+    border-radius: 2px;         /* Slightly rounded edges for the chunk */
+}

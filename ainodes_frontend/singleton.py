@@ -8,10 +8,12 @@
                 if not cls.__instance:
                     cls.__instance = super().__new__(cls)
         return cls.__instance"""
-
-import torch
-
+try:
+    import torch
+    torch_available = True
+except:
+    torch_available = False
 def get_available_gpus():
     return [str(i) for i in range(torch.cuda.device_count())]
-
-available_gpus = get_available_gpus()
+if torch_available:
+    available_gpus = get_available_gpus()

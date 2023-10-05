@@ -1,34 +1,47 @@
-COLORS:
-- '#ff7700'
-- '#52e220'
-- '#0056a6'
-- '#a86db1'
-- '#b54747'
-- '#dbe220'
-- '#888888'
-- '#ff7700'
-- '#52e220'
-- '#0056a6'
-- '#a86db1'
-- '#b54747'
-- '#dbe220'
-- '#888888'
+opengl: false
+use_exec: false
+theme: dark
 checkpoints: models/checkpoints
 controlnet: models/controlnet
 embeddings: models/embeddings
 hypernetworks: models/hypernetworks
 loras: models/loras
 output: output
-socket_names:
-    0: UNUSED
-    1: EXEC
-    2: LATENT
-    3: COND
-    4: EMPTY
-    5: IMAGE
-    6: DATA
 t2i_adapter: models/t2i_adapter
 upscalers: models/upscalers
 vae: models/vae
-opengl: false
-theme: dark
+
+keybindings:
+    console:
+        name: Console
+        shortcut: '`'
+    fullscreen:
+        name: Fullscreen
+        shortcut: F11
+    help:
+        name: Help
+        shortcut: F1
+    minimap:
+        name: Minimap
+        shortcut: F2
+    node_list:
+        name: Node List
+        shortcut: Esc
+    open:
+        name: Open
+        shortcut: Ctrl+O
+    run:
+        name: Run Graph
+        shortcut: End
+    run_loop:
+        name: Run Loop
+        shortcut: Ctrl+R
+    save:
+        name: Save
+        shortcut: Ctrl+S
+    search:
+        name: Search Nodes
+        shortcut: Home
+    stop_loop:
+        name: Stop Graph
+        shortcut: Ctrl+T

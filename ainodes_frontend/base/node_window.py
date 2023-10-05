@@ -6,20 +6,20 @@ import threading
 from subprocess import run
 
 import requests
-from PyQt6.QtCore import QPropertyAnimation, QEasingCurve
-from PyQt6.QtWidgets import QSplitter
+from qtpy.QtCore import QPropertyAnimation, QEasingCurve
+from qtpy.QtWidgets import QSplitter
 from qtpy import QtWidgets, QtCore, QtGui
 from qtpy.QtCore import Qt, QSignalMapper
 from qtpy.QtGui import QIcon, QKeySequence
 from qtpy.QtWidgets import QGraphicsView
-from qtpy.QtWidgets import QMdiArea, QDockWidget, QAction, QMessageBox, QFileDialog
+from qtpy.QtWidgets import QMdiArea, QDockWidget, QAction, QMessageBox, QFileDialog, QToolBar
 
 from ainodes_frontend.base import CalcGraphicsNode
 from ainodes_frontend.base.ai_nodes_listbox import QDMDragListbox
 from ainodes_frontend.base.node_config import CALC_NODES, import_nodes_from_file, import_nodes_from_subdirectories, \
     get_class_from_content_label_objname
 from ainodes_frontend.base.node_sub_window import CalculatorSubWindow
-from ainodes_frontend.base.settings import load_settings, save_settings, save_error_log
+from ainodes_frontend.base.settings import save_settings, save_error_log
 from ainodes_frontend.base.webview_widget import BrowserWidget
 from ainodes_frontend.base.worker import Worker
 from ainodes_frontend.base.yaml_editor import YamlEditorWidget
@@ -30,6 +30,7 @@ from ainodes_frontend.node_engine.node_edge_validators import (
     edge_cannot_connect_input_and_output_of_different_type
 )
 from ainodes_frontend.node_engine.node_editor_window import NodeEditorWindow
+from ainodes_frontend.node_engine.timeline_dockwidget import Timeline
 from ainodes_frontend.node_engine.utils_no_qt import dumpException, pp
 
 #Edge.registerEdgeValidator(edge_validator_debug)
@@ -42,7 +43,7 @@ Edge.registerEdgeValidator(edge_cannot_connect_input_and_output_of_different_typ
 DEBUG = False
 from ainodes_frontend import singleton as gs
 
-load_settings()
+#load_settings()
 
 gs.loaded_models = {}
 gs.models = {}
@@ -618,12 +619,6 @@ class CalculatorWindow(NodeEditorWindow):
         self.name_company = 'aiNodes'
         self.name_product = 'AI Node Editor'
 
-        #self.stylesheet_filename = os.path.join(os.path.dirname(__file__), gs.qss)
-        #loadStylesheets(
-        #    os.path.join(os.path.dirname(__file__), gs.qss),
-        #    self.stylesheet_filename
-        #)
-
         self.empty_icon = QIcon("")
 
         if DEBUG:
@@ -639,7 +634,9 @@ class CalculatorWindow(NodeEditorWindow):
         self.mdiArea.setDocumentMode(True)
         self.mdiArea.setTabsClosable(True)
         self.mdiArea.setTabsMovable(True)
+
         self.createNodesDock()
+
         self.splitter = QSplitter(Qt.Orientation.Horizontal, self)
         self.splitter.addWidget(self.nodesDock)
         self.splitter.addWidget(self.mdiArea)
@@ -667,6 +664,9 @@ class CalculatorWindow(NodeEditorWindow):
 
         #self.parameter_dock = ParameterDock()
         #self.addDockWidget(Qt.LeftDockWidgetArea, self.parameter_dock)
+        self.timeline = Timeline()
+        self.addDockWidget(Qt.BottomDockWidgetArea, self.timeline)
+
 
         self.file_open_signal.connect(self.fileOpen)
         self.file_new_signal.connect(self.onFileNew_subgraph)
@@ -696,11 +696,50 @@ class CalculatorWindow(NodeEditorWindow):
         self.fade_animation = QPropertyAnimation(self, b"windowOpacity")
 
         self.setWindowOpacity(0.0)  # Start with transparent window
+        self.createVerticalToolBar()
+
+    def createVerticalToolBar(self):
+        # Create a new vertical toolbar
+        self.verticalToolBar = QToolBar("Tools", self)
+        self.verticalToolBar.setOrientation(Qt.Vertical)
+
+        # Create actions for the toolbar buttons
+        play_action = QAction(QIcon("ainodes_frontend/icons/play.png"), "Play", self)
+        play_action.triggered.connect(self.onPlayClicked)
+
+        stop_action = QAction(QIcon("ainodes_frontend/icons/stop.png"), "Stop", self)
+        stop_action.triggered.connect(self.onStopClicked)
+
+        undo_action = QAction(QIcon("ainodes_frontend/icons/undo.png"), "Undo", self)
+        undo_action.triggered.connect(self.onEditUndo)  # Assuming 'undo' is a method in your class or PyQt's undo method
+
+        redo_action = QAction(QIcon("ainodes_frontend/icons/redo.png"), "Redo", self)
+        redo_action.triggered.connect(self.onEditRedo)  # Assuming 'redo' is a method in your class or PyQt's redo method
+
+        # Add the actions to the toolbar
+        self.verticalToolBar.addAction(play_action)
+        self.verticalToolBar.addAction(stop_action)
+        self.verticalToolBar.addAction(undo_action)
+        self.verticalToolBar.addAction(redo_action)
+
+        # Add the toolbar to the main window
+        self.addToolBar(Qt.LeftToolBarArea, self.verticalToolBar)
+
+    # Placeholder functions for play and stop buttons
+    def onPlayClicked(self):
+        editor = self.getCurrentNodeEditorWidget()
+        if editor:
+            editor.scene.noderunner.start()
+
+    def onStopClicked(self):
+        editor = self.getCurrentNodeEditorWidget()
+        if editor:
+            editor.scene.noderunner.stop()
 
 
 
     def fade_in_animation(self):
-        self.fade_animation.setDuration(1500)  # Set the duration of the animation in milliseconds
+        self.fade_animation.setDuration(500)  # Set the duration of the animation in milliseconds
         self.fade_animation.setStartValue(0.0)  # Start with opacity 0.0 (transparent)
         self.fade_animation.setEndValue(1.0)  # End with opacity 1.0 (fully visible)
         self.fade_animation.setEasingCurve(QEasingCurve.Type.InOutQuad)  # Apply easing curve to the animation
@@ -733,15 +772,14 @@ class CalculatorWindow(NodeEditorWindow):
 
 
     def edit_colors(self):
-        editor = ColorEditor(gs.SOCKET_COLORS, gs.socket_names)
+        editor = ColorEditor(gs.prefs.SOCKET_COLORS, gs.prefs.socket_names)
         result = editor.exec_()
         if result == QtWidgets.QDialog.Accepted:
             gs.SOCKET_COLORS = editor.get_updated_colors()
     def toggleDockWidgets(self):
         # Get the current visibility state of the dock widgets
         if not gs.args.no_console:
-            consoleVisible = self.console.isVisible()
-            self.console.setVisible(not consoleVisible)
+            self.console.setVisible(not self.console.isVisible())
 
         #packagesVisible = self.node_packages.isVisible()
 
@@ -774,12 +812,22 @@ class CalculatorWindow(NodeEditorWindow):
             self.showFullScreen()
     def keyPressEvent(self, event: QtGui.QKeyEvent) -> None:
 
-        if event.key() == 96:
+        pressed_sequence = QKeySequence(int(event.modifiers().value) | int(event.key()))
+
+        if pressed_sequence == QKeySequence(gs.prefs.keybindings['console']['shortcut']):
             self.toggleDockWidgets()
-        elif event.key() == Qt.Key_F11:
+        elif pressed_sequence == QKeySequence(gs.prefs.keybindings['fullscreen']['shortcut']):
             self.toggleFullscreen()
-        elif event.key() == Qt.Key_Escape:
+        elif pressed_sequence == QKeySequence(gs.prefs.keybindings['node_list']['shortcut']):
             self.toggleNodesDock()
+
+        # if event.key() == 96:
+        #     self.toggleDockWidgets()
+        #
+        # elif event.key() == Qt.Key_F11:
+        #     self.toggleFullscreen()
+        # elif event.key() == Qt.Key_Escape:
+        #     self.toggleNodesDock()
         super().keyPressEvent(event)
 
     def create_console_widget(self):
@@ -842,6 +890,10 @@ class CalculatorWindow(NodeEditorWindow):
         self.actSeparator.setSeparator(True)
 
         self.actAbout = QAction("&About", self, statusTip="Show the application's About box", triggered=self.about)
+
+
+
+        #self.actAbout = QAction("&About", self, statusTip="Show the application's About box", triggered=self.about)
         self.actBrowser = QAction("&Browser", self, statusTip="Show the application's Browser", triggered=self.browser)
         self.actTraining = QAction("&Training", self, statusTip="Start Kohya", triggered=self.training_gui)
         self.actColors = QAction("&Change Colors", self, statusTip="Change socket / route color palette", triggered=self.edit_colors)
@@ -849,7 +901,7 @@ class CalculatorWindow(NodeEditorWindow):
         # Create a checkable QAction
         self.actRClickMenu.setCheckable(True)
     def showSettingsEditor(self):
-
+        #if not hasattr(self, 'yaml_editor'):
         self.yaml_editor = YamlEditorWidget()
 
         settings_path = "config/settings.yaml"

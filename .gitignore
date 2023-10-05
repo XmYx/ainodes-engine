@@ -150,25 +150,14 @@ cython_debug/
 #  and can be added to the global gitignore or merged into this file.  For a more nuclear
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 .idea/
-.idea/vcs.xml
-.idea/modules.xml
-.idea/misc.xml
-.idea/inspectionProfiles/profiles_settings.xml
-.idea/ainodes-engine.iml
-*.ckpt
-*.pth
 
 comfy/
 comfy_defaults/
 hf_cache/
 nodes_env/
 controlnet
-test.html
-test.json
 torch
-torch.json
-torch2.json
-torch3.json
+
 semseg/
 *.pt
 *.mp4
@@ -181,21 +170,28 @@ output/stills
 output/gifs
 graphs/
 models/other
-ai_nodes/
 
 # vscode
 .vscode
-models/checkpoints/22h02.safetensors
+
+
+
+.ignore/
+.tests/
+src/python/
+src/
+logs/
+installer_files/
+models/
+ai_nodes/
+temp/
+
 *.safetensors
+*.jpg
+*.bin
+*.pkl
+*._pth
 
 config/settings.yaml
 config/cache.json
 
-src/python/
-src/
-logs/
-*.png
-*.txt
-*.jpg
-*.bin
-*.pkl

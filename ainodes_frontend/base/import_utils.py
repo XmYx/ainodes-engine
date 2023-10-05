@@ -3,7 +3,7 @@ import importlib
 import os
 import subprocess
 
-from PyQt6.QtCore import Qt
+from qtpy.QtCore import Qt
 from tqdm import tqdm
 
 

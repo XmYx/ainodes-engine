@@ -58,7 +58,7 @@ def get_class_from_opcode(op_code):
     if op_code not in CALC_NODES: raise OpCodeNotRegistered("OpCode '%d' is not registered" % op_code)
     return CALC_NODES[op_code]
 def get_class_from_content_label_objname(content_label_objname):
-    return gs.nodes[content_label_objname]['class']
+    return gs.nodes.get(content_label_objname, {}).get('class', None)
 def import_nodes_from_directory(directory):
     if "ainodes_backend" not in directory and "backend" not in directory:
         node_files = glob.glob(os.path.join(directory, "*.py"))

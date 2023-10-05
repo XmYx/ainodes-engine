@@ -1,23 +1,28 @@
-
-
-
+from ainodes_frontend import singleton as gs
 def get_help():
-    return ["aiNodes - Help",
-            "Home - Show Search"
-            "F1 - Hide / Show Help",
-            "F2 - Hide / Show MiniMap",
-            "F11 - FullScreen",
-            "Esc - Hide / Show Nodes",
-            "` - Hide / Show Console",
-            "Make sure to connect execution\n"
-            "lines, and if using subgraphs\n"
-            "to include, and connect a \n"
-            "subgraph input node and a \n"
-            "subgraph output node within your\n"
-            "subgraph. These provide the entry\n"
-            "and exit points from subgraphs,\n"
-            "and allow you to have complicated\n"
-            "pipelines hidden in a single node."]
+    # Start with the static header
+    help_text = ["aiNodes - Help"]
+
+    # Dynamically add keybindings from gs.prefs.keybindings
+    for binding in gs.prefs.keybindings.values():
+        help_text.append(f"{binding['shortcut']} - {binding['name']}")
+
+    # Add the static footer
+    help_text.extend([
+        "Make sure to connect execution\n"
+        "lines, and if using subgraphs\n"
+        "to include, and connect a \n"
+        "subgraph input node and a \n"
+        "subgraph output node within your\n"
+        "subgraph. These provide the entry\n"
+        "and exit points from subgraphs,\n"
+        "and allow you to have complicated\n"
+        "pipelines hidden in a single node."
+
+    ])
+
+
+    return help_text
 
 
 

@@ -3,6 +3,7 @@ import os
 import sys
 import time
 
+from PyQt6.QtGui import QKeySequence
 from qtpy.QtCore import QByteArray
 from qtpy import QtCore
 from qtpy import QtWidgets
@@ -92,14 +93,26 @@ class CalculatorSubWindow(NodeEditorWidget):
             super().closeEvent(event)
 
     def keyPressEvent(self, event):
+        pressed_sequence = QKeySequence(int(event.modifiers().value) | int(event.key()))
 
-        print(event.key())
-
-        if event.key() == Qt.Key_Home:
-
-            print("tab")
-
+        if pressed_sequence == QKeySequence(gs.prefs.keybindings['search']['shortcut']):
             self.show_search_dialog()
+        elif pressed_sequence == QKeySequence(gs.prefs.keybindings['run']['shortcut']):
+            print("Running Nodes")
+            self.scene.noderunner.start()
+        elif pressed_sequence == QKeySequence(gs.prefs.keybindings['run_loop']['shortcut']):
+            print("Running Nodes in Loop")
+            self.scene.noderunner.start(loop=True)
+        elif pressed_sequence == QKeySequence(gs.prefs.keybindings['stop_loop']['shortcut']):
+            print("Stopping Nodes")
+            self.scene.noderunner.stop()
+        # if event.key() == Qt.Key_Home:
+        #
+        #
+        #     self.show_search_dialog()
+        # elif event.key() == Qt.Key_End:
+        #     print("END")
+        #     self.scene.noderunner.start()
         super().keyPressEvent(event)
 
     def show_search_dialog(self):
@@ -553,7 +566,7 @@ class CalculatorSubWindow(NodeEditorWidget):
                     self.scene.history.storeHistory("Created %s" % new_calc_node.__class__.__name__)
     def mouseMoveEvent(self, event):
         super(CalculatorSubWindow, self).mouseMoveEvent(event)
-        self.pos = QtCore.QPointF(event.screenPos())
+        self.pos = QtCore.QPointF(event.scenePosition())
         self.scenePos = event.scenePosition()
 
 class NodeListDialog(QtWidgets.QDialog):

@@ -1,5 +1,7 @@
+import gc
 import threading
 
+import torch
 from qtpy import QtWidgets, QtCore, QtGui
 from qtpy.QtCore import QRectF
 from qtpy.QtGui import QImage
@@ -87,6 +89,7 @@ class WorkerThread(threading.Thread):
 
 class AiNode(Node):
     icon = ""
+    _output_values = {}  # A dictionary to store references to output values
     thumbnail = None
     op_code = 0
     op_title = "Undefined"
@@ -138,6 +141,7 @@ class AiNode(Node):
         self.init_done = None
         self.exec_port = len(self.outputs) - 1
     def initInnerClasses(self):
+        self._output_values = {}
         node_content_class = self.getNodeContentClass()
         graphics_node_class = self.getGraphicsNodeClass()
         if node_content_class is not None: self.content = node_content_class(self)
@@ -204,6 +208,7 @@ class AiNode(Node):
             str: The unique ID for the output socket.
         """
         return f"{id(self)}_output_{index}"
+
     def setOutput(self, index, value):
         """
         Set the value of the output socket with the given index.
@@ -213,8 +218,8 @@ class AiNode(Node):
             value: The value to be set for the output socket.
         """
         object_name = self.getID(index)
+        self._output_values[object_name] = value  # Store the reference in the dictionary
 
-        self.values[object_name] = value
     def getOutput(self, index):
         """
          Get the value of the output socket with the given index.
@@ -226,13 +231,7 @@ class AiNode(Node):
              The value of the output socket, or None if it does not exist.
          """
         object_name = self.getID(index)
-        try:
-            return self.values[object_name]
-        except:
-            done = handle_ainodes_exception()
-
-            print(f"Value doesnt exist yet, make sure to validate the node: {self.op_title}")
-            return None
+        return self._output_values.get(object_name, None)  # Get the value using the dictionary
 
     def getInputData(self, index=0):
         """
@@ -325,24 +324,35 @@ class AiNode(Node):
             handle_ainodes_exception()
             return None
 
-    #@QtCore.Slot()
     def evalImplementation_thread(self):
         return None
-    #@QtCore.Slot(object)
-    def onWorkerFinished(self, result):
+    def onWorkerFinished(self, result, exec=True):
 
         self.busy = False
         self.markDirty(False)
-        if result:
-            if hasattr(self, "output_data_ports"):
-                x = 0
-                for port in self.output_data_ports:
-                    self.setOutput(port, result[x])
-                    x += 1
+        if result is not None:
 
-        if hasattr(self, "exec_port"):
-            if len(self.getOutputs(self.exec_port)) > 0:
-                self.executeChild(output_index=self.exec_port)
+            if hasattr(self, "output_data_ports"):
+                ports = self.output_data_ports
+
+            else:
+                ports = list(range(len(self.outputs) - 1))
+
+            x = 0
+            for port in ports:
+                self.setOutput(port, result[x])
+                x += 1
+
+        # self.content.update()
+        # self.content.finished.emit()
+        if exec:
+            if hasattr(self, "exec_port"):
+                port = self.exec_port
+            else:
+                port = len(self.outputs) - 1
+            if len(self.getOutputs(port)) > 0:
+                self.executeChild(output_index=port)
+
     def eval(self, index=0):
         try:
             self.content.eval_signal.emit()
@@ -471,6 +481,42 @@ class AiNode(Node):
         dialog.setLayout(layout)
         dialog.show()
         return dialog
+    def can_run(self):
+
+
+        # if len(self.inputs) == 0:
+        #     return True
+
+        for socket in self.inputs:
+            if socket.is_input and socket.hasAnyEdge():
+                for edge in socket.edges:
+                    # if edge.end_socket.node.isDirty():
+                    #     return False
+                    print(self, edge.start_socket.node, edge.end_socket.node)
+                    if edge.start_socket.node is not self:
+                        if edge.start_socket.node.isDirty():
+                            return False
+                    if edge.end_socket.node is not self:
+                        if edge.end_socket.node.isDirty():
+                            return False
+        return True
+
+        # for socket in self.inputs:
+        #     for edge in socket.edges:
+        #         if hasattr(edge, 'start_socket'):
+        #             if hasattr(edge.start_socket, 'node'):
+        #                 if edge.start_socket.node != self:
+        #                     if edge.start_socket.node.isDirty():
+        #                         #print(f"Node {self} cannot run because connected node {edge.start_socket.node} is dirty.")
+        #                         return False
+        #         elif hasattr(edge, 'end_socket'):
+        #             if hasattr(edge.end_socket, 'node'):
+        #                 if edge.end_socket.node != self:
+        #                     if edge.end_socket.node.isDirty():
+        #                         #print(f"Node {self} cannot run because connected node {edge.end_socket.node} is dirty.")
+        #
+        #                         return False
+        # return True
 
 class AiApiNode(AiNode):
     icon = ""
@@ -688,7 +734,7 @@ class AiDummyNode(Node):
         return None
 
     #@QtCore.Slot(object)
-    def onWorkerFinished(self, result):
+    def onWorkerFinished(self, result, exec=True):
         return
 
     def eval(self, index=0):
