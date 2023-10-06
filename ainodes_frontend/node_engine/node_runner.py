@@ -224,11 +224,12 @@ class NodeRunner:
                     nodes_to_check = node.get_nodes()
                     for node in nodes_to_check:
                         self.starting_nodes.append(node)
+
             # Reorder nodes to prioritize nodes that can run
             self.reorder_nodes()
-
-            # Start processing
-            self.run_next()
+            if self.starting_nodes:
+                # Start processing
+                self.run_next()
 
     def stop(self):
         self.running = False

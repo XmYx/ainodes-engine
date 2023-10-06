@@ -640,6 +640,11 @@ class CustomToolBar(QToolBar):
         play_action.triggered.connect(self.parent().onPlayClicked)
         self.addAction(play_action)
 
+        # Create Play action
+        play_action = QAction(QIcon("ainodes_frontend/icons/loop.png"), "Loop", self)
+        play_action.triggered.connect(lambda: self.parent().onPlayClicked(loop=True))
+        self.addAction(play_action)
+
         # Create Stop action
         stop_action = QAction(QIcon("ainodes_frontend/icons/stop.png"), "Stop", self)
         stop_action.triggered.connect(self.parent().onStopClicked)
@@ -884,10 +889,10 @@ class CalculatorWindow(NodeEditorWindow):
         except FileNotFoundError:
             # Handle the case where the config file doesn't exist yet.
             pass
-    def onPlayClicked(self):
+    def onPlayClicked(self, loop=False):
         editor = self.getCurrentNodeEditorWidget()
         if editor:
-            editor.scene.noderunner.start()
+            editor.scene.noderunner.start(loop=loop)
 
     def onStopClicked(self):
         editor = self.getCurrentNodeEditorWidget()
