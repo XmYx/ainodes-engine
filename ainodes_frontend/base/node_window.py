@@ -950,7 +950,7 @@ class CalculatorWindow(NodeEditorWindow):
 
         #self.actAbout = QAction("&About", self, statusTip="Show the application's About box", triggered=self.about)
         self.actBrowser = QAction("&Browser", self, statusTip="Show the application's Browser", triggered=self.browser)
-        self.actTraining = QAction("&Training", self, statusTip="Start Kohya", triggered=self.training_gui)
+        # self.actTraining = QAction("&Training", self, statusTip="Start Kohya", triggered=self.training_gui)
         self.actColors = QAction("&Change Colors", self, statusTip="Change socket / route color palette", triggered=self.edit_colors)
         self.actRClickMenu = QAction("&Alternate context menu", self, statusTip="Change context menu type", triggered=self.toggle_menu)
         # Create a checkable QAction
@@ -974,12 +974,12 @@ class CalculatorWindow(NodeEditorWindow):
                 data = yaml.safe_load(file)
                 return data.get('last_config')
         return "config/default_settings.yaml"
-    def training_gui(self):
-        if hasattr(self, "training_thread"):
-            self.cleanup()
-        from ai_nodes.ainodes_engine_base_nodes.ainodes_backend.training_thread import TrainingThread
-        gs.threads['lora'] = TrainingThread(self.stdout_redirect)
-        gs.threads['lora'].start()
+    # def training_gui(self):
+    #     if hasattr(self, "training_thread"):
+    #         self.cleanup()
+    #     from ai_nodes.ainodes_engine_base_nodes.ainodes_backend.training_thread import TrainingThread
+    #     gs.threads['lora'] = TrainingThread(self.stdout_redirect)
+    #     gs.threads['lora'].start()
     def browser(self):
         self.bdock_widget.setVisible(not self.bdock_widget.isVisible())
     def toggle_menu(self):
@@ -1102,24 +1102,24 @@ class CalculatorWindow(NodeEditorWindow):
                         else:
                             nodeeditor.close()
         except Exception as e: dumpException(e)
-    def onFileOpen_subgraph(self, graph):
-        try:
-            existing = self.findMdiChild(fname)
-            if existing:
-                self.mdiArea.setActiveSubWindow(existing)
-            else:
-                # we need to create new subWindow and open the file
-                nodeeditor = CalculatorSubWindow()
-                if nodeeditor.fileLoad(fname):
-                    self.statusBar().showMessage("File %s loaded" % fname, 5000)
-                    nodeeditor.setTitle()
-                    subwnd = self.createMdiChild(nodeeditor)
-                    icon = QtGui.QIcon("ainodes_frontend/qss/icon.png")
-                    subwnd.setWindowIcon(icon)
-                    subwnd.show()
-                else:
-                    nodeeditor.close()
-        except Exception as e: dumpException(e)
+    # def onFileOpen_subgraph(self, graph):
+    #     try:
+    #         existing = self.findMdiChild(fname)
+    #         if existing:
+    #             self.mdiArea.setActiveSubWindow(existing)
+    #         else:
+    #             # we need to create new subWindow and open the file
+    #             nodeeditor = CalculatorSubWindow()
+    #             if nodeeditor.fileLoad(fname):
+    #                 self.statusBar().showMessage("File %s loaded" % fname, 5000)
+    #                 nodeeditor.setTitle()
+    #                 subwnd = self.createMdiChild(nodeeditor)
+    #                 icon = QtGui.QIcon("ainodes_frontend/qss/icon.png")
+    #                 subwnd.setWindowIcon(icon)
+    #                 subwnd.show()
+    #             else:
+    #                 nodeeditor.close()
+    #     except Exception as e: dumpException(e)
     #@QtCore.Slot(object)
     def fileOpen(self, file):
 
@@ -1165,7 +1165,7 @@ class CalculatorWindow(NodeEditorWindow):
 
         self.helpMenu = self.menuBar().addMenu("&Help")
         self.helpMenu.addAction(self.actAbout)
-        self.helpMenu.addAction(self.actTraining)
+        # self.helpMenu.addAction(self.actTraining)
         self.helpMenu.addAction(self.actBrowser)
 
 
@@ -1381,24 +1381,24 @@ class CalculatorWindow(NodeEditorWindow):
             self.mdiArea.setActiveSubWindow(window)
             #window.widget().setAttribute(Qt.WA_PaintOnScreen, True)
 
-    def resumePaintEvents(self):
-        # Resume paint events for all windows
-        for window in self.mdiArea.subWindowList():
-            window.widget().setAttribute(Qt.WA_PaintOnScreen, True)
-            self.resumeSceneUpdates(window.scene)
-
-    def pauseSceneUpdates(self, scene):
-
-        print("Pausing rendering", scene)
-        view = scene.grScene.scene.getView()  # Assuming there is only one view associated with the scene
-        view.setViewportUpdateMode(QGraphicsView.NoViewportUpdate)
-
-    def resumeSceneUpdates(self, scene):
-        print("Resuming rendering", scene)
-
-        view = scene.grScene.scene.getView()  # Assuming there is only one view associated with the scene
-        view.setViewportUpdateMode(QGraphicsView.FullViewportUpdate)
-        view.update()
+    # def resumePaintEvents(self):
+    #     # Resume paint events for all windows
+    #     for window in self.mdiArea.subWindowList():
+    #         window.widget().setAttribute(Qt.WA_PaintOnScreen, True)
+    #         self.resumeSceneUpdates(window.scene)
+    #
+    # def pauseSceneUpdates(self, scene):
+    #
+    #     print("Pausing rendering", scene)
+    #     view = scene.grScene.scene.getView()  # Assuming there is only one view associated with the scene
+    #     view.setViewportUpdateMode(QGraphicsView.NoViewportUpdate)
+    #
+    # def resumeSceneUpdates(self, scene):
+    #     print("Resuming rendering", scene)
+    #
+    #     view = scene.grScene.scene.getView()  # Assuming there is only one view associated with the scene
+    #     view.setViewportUpdateMode(QGraphicsView.FullViewportUpdate)
+    #     view.update()
 
     def wheelEvent(self, event):
         #print("IGNORE IN MAIN WINDOW")
