@@ -243,15 +243,27 @@ class YamlEditorWidget(QWidget):
 
         # The rest of the saving process remains the same
         # Decide which path to save to
+
+
         profile_name = self.user_profiles_dropdown.currentText()
-        if file_path == None:
-            if profile_name:
-                file_path = os.path.join('config/user', profile_name + '.yaml')
-            else:
-                file_path = "config/settings.yaml"
-        else:
+
+        if profile_name == "":
+            #print("Empty Profile name, setting to: settings.yaml")
+            profile_name = "settings.yaml"
+
+        #print("INITIAL PRINT", file_path, profile_name)
+        if not file_path:
+            profile_name = f'{profile_name}.yaml' if not profile_name.endswith(".yaml") else profile_name
             file_path = os.path.join('config/user', profile_name)
-        print("saving to ", file_path)
+        # if file_path == None:
+        #     if profile_name != "":
+        #         file_path = os.path.join('config/user', profile_name + '.yaml')
+        #     else:
+        #         file_path = "config/user/settings.yaml"
+        # else:
+        #     profile_name = f'{profile_name}.yaml' if not profile_name.endswith(".yaml") else profile_name
+        #     file_path = os.path.join('config/user', profile_name)
+        #print("saving to ", file_path)
 
         with open(file_path, 'w') as file:
             yaml.safe_dump(self.values, file)
@@ -263,7 +275,7 @@ class YamlEditorWidget(QWidget):
 
         from ainodes_frontend.base.settings import load_settings
 
-        print("Loading settings from", file_path)
+        #print("Loading settings from", file_path)
         self.set_last_config(file_path)
 
         load_settings(file_path)
@@ -290,7 +302,7 @@ class YamlEditorWidget(QWidget):
                     value = widget.currentText()
                     self.values[key] = value
                 elif isinstance(widget, QKeySequenceEdit):
-                    print("found keysequence to save", widget.keySequence().toString())
+                    #print("found keysequence to save", widget.keySequence().toString())
                     key = widget.objectName().replace("keybinding_", "")
                     new_shortcut = widget.keySequence().toString()
                     self.values["keybindings"][key] = {}

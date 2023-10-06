@@ -959,12 +959,21 @@ class CalculatorWindow(NodeEditorWindow):
         #if not hasattr(self, 'yaml_editor'):
         self.yaml_editor = YamlEditorWidget()
 
-        settings_path = "config/settings.yaml"
+        settings_path = self.get_last_config()
         settings_path = settings_path if os.path.isfile(settings_path) else "config/default_settings.yaml"
 
         self.yaml_editor.load_yaml(settings_path)
         self.yaml_editor.show()
-
+    def get_last_config(self):
+        """
+        Retrieve the file path from last_config.yaml.
+        """
+        last_config_path = os.path.join('config', 'last_config.yaml')
+        if os.path.exists(last_config_path):
+            with open(last_config_path, 'r') as file:
+                data = yaml.safe_load(file)
+                return data.get('last_config')
+        return "config/default_settings.yaml"
     def training_gui(self):
         if hasattr(self, "training_thread"):
             self.cleanup()
