@@ -6,7 +6,8 @@ import yaml
 from qtpy.QtWidgets import QProgressBar
 
 from qtpy.QtCore import QPropertyAnimation, QEasingCurve
-
+import os, sys
+sys.path.append(os.getcwd())
 from ainodes_frontend.base.settings import Settings, save_settings, load_settings
 
 start_time = datetime.datetime.now()
