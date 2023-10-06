@@ -6,6 +6,9 @@ import threading
 from subprocess import run
 
 import requests
+import yaml
+from PyQt6.QtCore import QDataStream, QIODevice
+from PyQt6.QtGui import QPixmap
 from qtpy.QtCore import QPropertyAnimation, QEasingCurve
 from qtpy.QtWidgets import QSplitter
 from qtpy import QtWidgets, QtCore, QtGui
@@ -17,7 +20,7 @@ from qtpy.QtWidgets import QMdiArea, QDockWidget, QAction, QMessageBox, QFileDia
 from ainodes_frontend.base import CalcGraphicsNode
 from ainodes_frontend.base.ai_nodes_listbox import QDMDragListbox
 from ainodes_frontend.base.node_config import CALC_NODES, import_nodes_from_file, import_nodes_from_subdirectories, \
-    get_class_from_content_label_objname
+    get_class_from_content_label_objname, LISTBOX_MIMETYPE
 from ainodes_frontend.base.node_sub_window import CalculatorSubWindow
 from ainodes_frontend.base.settings import save_settings, save_error_log
 from ainodes_frontend.base.webview_widget import BrowserWidget
@@ -696,11 +699,35 @@ class CalculatorWindow(NodeEditorWindow):
         self.fade_animation = QPropertyAnimation(self, b"windowOpacity")
 
         self.setWindowOpacity(0.0)  # Start with transparent window
+
+
+
         self.createVerticalToolBar()
 
     def createVerticalToolBar(self):
+
+        class CustomToolBar(QToolBar):
+
+            def __init__(self, title, parent=None):
+                super(CustomToolBar, self).__init__(title, parent)
+                self.setAcceptDrops(True)
+
+            def dragEnterEvent(self, event):
+                if event.mimeData().hasFormat(LISTBOX_MIMETYPE):
+                    event.acceptProposedAction()
+            def dropEvent(self, event):
+                if event.type() == QtCore.QEvent.Drop:
+                    if event.mimeData().hasFormat(LISTBOX_MIMETYPE):
+                        eventData = event.mimeData().data(LISTBOX_MIMETYPE)
+                        dataStream = QDataStream(eventData, QIODevice.ReadOnly)
+                        pixmap = QPixmap()
+                        dataStream >> pixmap
+                        op_code = dataStream.readInt()
+                        text = dataStream.readQString()
+                        self.addAction(QAction(QIcon(pixmap), text, self))
+
         # Create a new vertical toolbar
-        self.verticalToolBar = QToolBar("Tools", self)
+        self.verticalToolBar = CustomToolBar("Tools", self)
         self.verticalToolBar.setOrientation(Qt.Vertical)
 
         # Create actions for the toolbar buttons
@@ -722,9 +749,37 @@ class CalculatorWindow(NodeEditorWindow):
         self.verticalToolBar.addAction(undo_action)
         self.verticalToolBar.addAction(redo_action)
 
+        self.verticalToolBar.setAcceptDrops(True)
+
         # Add the toolbar to the main window
         self.addToolBar(Qt.LeftToolBarArea, self.verticalToolBar)
 
+
+    def saveToolBarConfig(self):
+        toolbar_items = []
+        for action in self.verticalToolBar.actions():
+            toolbar_items.append({
+                'icon': action.icon().name(),
+                'name': action.text(),
+                'op_code': action.data()
+            })
+        with open('config/toolbar.yaml', 'w') as file:
+            yaml.dump(toolbar_items, file)
+
+    def loadToolBarConfig(self):
+        try:
+            with open('config/toolbar.yaml', 'r') as file:
+                toolbar_items = yaml.load(file, Loader=yaml.FullLoader)
+                for item in toolbar_items:
+                    action = QAction(QIcon(item['icon']), item['name'], self)
+                    action.setData(item['op_code'])
+                    action.triggered.connect(lambda: self.addNode(self, action.data()))
+                    self.verticalToolBar.addAction(action)
+        except FileNotFoundError:
+            # Handle the case where the config file doesn't exist yet.
+            pass
+    def addNode(self, node):
+        pass
     # Placeholder functions for play and stop buttons
     def onPlayClicked(self):
         editor = self.getCurrentNodeEditorWidget()
@@ -869,8 +924,8 @@ class CalculatorWindow(NodeEditorWindow):
             self.writeSettings()
             event.accept()
             # hacky fix for PyQt 5.14.x
-            import sys
-            sys.exit(0)
+            # import sys
+            # sys.exit(0)
 
 
     def createActions(self):

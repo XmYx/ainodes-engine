@@ -492,7 +492,7 @@ class AiNode(Node):
                 for edge in socket.edges:
                     # if edge.end_socket.node.isDirty():
                     #     return False
-                    print(self, edge.start_socket.node, edge.end_socket.node)
+                    #print(self, edge.start_socket.node, edge.end_socket.node)
                     if edge.start_socket.node is not self:
                         if edge.start_socket.node.isDirty():
                             return False

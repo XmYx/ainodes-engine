@@ -123,8 +123,20 @@ if __name__ == "__main__":
 
     set_application_attributes(QApplication, gs.args)
 
+
+    # The main application
+    class Application(QApplication):
+
+        def __init__(self, args):
+            QApplication.__init__(self, args)
+
+        def cleanUp(self):
+            # THIS ACTUALLY WORKS
+            print('closing')
     # make app
-    ainodes_qapp = QApplication(sys.argv)
+    ainodes_qapp = Application(sys.argv)
+    ainodes_qapp.aboutToQuit.connect(ainodes_qapp.cleanUp)
+
     from ainodes_frontend.icon import icon
 
     pixmap = QtGui.QPixmap()
@@ -139,7 +151,6 @@ if __name__ == "__main__":
 
 
     class CustomSplashScreen(QSplashScreen):
-
         def __init__(self, pixmap):
             super(CustomSplashScreen, self).__init__(pixmap)
             self.progressBar = QProgressBar(self)
@@ -267,5 +278,7 @@ if __name__ == "__main__":
 
     end_time = datetime.datetime.now()
     print(f"Initialization took: {end_time - start_time}")
+    sys.exit(ainodes_qapp.exec())
 
-    ainodes_qapp.exec()
+
+

@@ -142,7 +142,7 @@ class NodeRunner:
         node_to_run = self.starting_nodes.pop(0)  # Process the first node in the list
         self.processed_nodes.append(node_to_run)  # Mark the node as processed
 
-        print(f"Processing Node: {node_to_run}")
+        #print(f"Processing Node: {node_to_run}")
         worker = NodeWorker(node_to_run)
 
         def on_node_finished():

@@ -587,18 +587,18 @@ class QDMGraphicsView(QGraphicsView):
         """
 
         if not self.editingFlag:
-            if event.key() == Qt.Key_Delete:
-                nodes = self.grScene.scene.nodes
-                for node in nodes:
-                    if node.isSelected() == True:
-                        if hasattr(node, "graph_window"):
-                            try:
-                                node.graph_window.subgraph = None
-                                node.graph_window.close()
-                            except:
-                                pass
+            # if event.key() == Qt.Key_Delete:
+            #     nodes = self.grScene.scene.nodes
+            #     for node in nodes:
+            #         if node.isSelected() == True:
+            #             if hasattr(node, "graph_window"):
+            #                 try:
+            #                     node.graph_window.subgraph = None
+            #                     node.graph_window.close()
+            #                 except:
+            #                     pass
 
-            elif event.key() == Qt.Key_Space:
+            if event.key() == Qt.Key_Space:
                 self.setDragMode(QGraphicsView.ScrollHandDrag)
             pressed_sequence = QKeySequence(int(event.modifiers().value) | int(event.key()))
             if pressed_sequence == QKeySequence(gs.prefs.keybindings['help']['shortcut']):

@@ -324,7 +324,10 @@ class Node(Serializable):
             if self.graph_window:
                 self.graph_window.node = None
                 self.graph_window.subgraph = None
-                self.graph_window.close()
+                try:
+                    self.graph_window.close()
+                except:
+                    pass
                 #self.graph_window.destroy()
 
         if DEBUG: print("> Removing Node", self)
