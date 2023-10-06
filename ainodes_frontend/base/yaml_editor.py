@@ -52,7 +52,7 @@ class YamlEditorWidget(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.values = {}
-        self.default_options = self.load_default_options('config/default_options.yaml')
+        #self.default_options = self.load_default_options()
 
         self.layout = QVBoxLayout(self)
         self.setLayout(self.layout)
@@ -147,7 +147,7 @@ class YamlEditorWidget(QWidget):
         }
         """
         self.setStyleSheet(style)
-    def load_default_options(self, file_path):
+    def load_default_options(self, file_path=None):
 
         if file_path is None:
             # Try to get the last used config
@@ -172,14 +172,14 @@ class YamlEditorWidget(QWidget):
             label = QLabel(key)
             self.settings_layout.addWidget(label)
 
-            if key in self.default_options:  # Add QComboBox for keys found in default_options
-                combo_box = QComboBox()
-                combo_box.setObjectName(key)
-                combo_box.addItems(self.default_options[key])
-                combo_box.setCurrentText(str(value))
-                self.settings_layout.addWidget(combo_box)
+            # if key in self.default_options:  # Add QComboBox for keys found in default_options
+            #     combo_box = QComboBox()
+            #     combo_box.setObjectName(key)
+            #     combo_box.addItems(self.default_options[key])
+            #     combo_box.setCurrentText(str(value))
+            #     self.settings_layout.addWidget(combo_box)
 
-            elif isinstance(value, bool):  # Add QCheckBox for boolean values
+            if isinstance(value, bool):  # Add QCheckBox for boolean values
                 checkbox = QCheckBox()
                 checkbox.setObjectName(key)
                 checkbox.setChecked(value)
