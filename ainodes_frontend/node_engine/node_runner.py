@@ -1,4 +1,7 @@
+import time
+
 import msgpack
+import torch.cuda
 from PyQt6.QtCore import QThreadPool, QRunnable, QUrl
 from PyQt6.QtWebSockets import QWebSocket
 from qtpy import QtCore
@@ -126,6 +129,8 @@ class NodeRunner:
         self.starting_nodes.sort(key=sorting_key)
 
     def run_next(self):
+        from ai_nodes.ainodes_engine_base_nodes.ainodes_backend import torch_gc
+
         if not self.exec:  # Check if execution should stop
             self.running = False
             return
@@ -134,6 +139,8 @@ class NodeRunner:
             # If there are no more nodes to process, check if we should loop or finish
             # Handle looping or finishing here...
             if self.loop:
+                time.sleep(0.2)
+                torch_gc()
                 self.running = False
                 self.start(loop=self.loop)
             return

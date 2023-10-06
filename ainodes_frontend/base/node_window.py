@@ -8,7 +8,8 @@ from subprocess import run
 import requests
 import yaml
 from PyQt6.QtCore import QDataStream, QIODevice
-from PyQt6.QtGui import QPixmap
+from PyQt6.QtGui import QPixmap, QContextMenuEvent
+from PyQt6.QtWidgets import QMenu
 from qtpy.QtCore import QPropertyAnimation, QEasingCurve
 from qtpy.QtWidgets import QSplitter
 from qtpy import QtWidgets, QtCore, QtGui
@@ -20,7 +21,7 @@ from qtpy.QtWidgets import QMdiArea, QDockWidget, QAction, QMessageBox, QFileDia
 from ainodes_frontend.base import CalcGraphicsNode
 from ainodes_frontend.base.ai_nodes_listbox import QDMDragListbox
 from ainodes_frontend.base.node_config import CALC_NODES, import_nodes_from_file, import_nodes_from_subdirectories, \
-    get_class_from_content_label_objname, LISTBOX_MIMETYPE
+    get_class_from_content_label_objname, LISTBOX_MIMETYPE, get_class_from_opcode
 from ainodes_frontend.base.node_sub_window import CalculatorSubWindow
 from ainodes_frontend.base.settings import save_settings, save_error_log
 from ainodes_frontend.base.webview_widget import BrowserWidget
@@ -602,6 +603,123 @@ class ColorEditor(QtWidgets.QDialog):
             item = self.list_widget.item(i)
             updated_colors.append(item.background().color())
         return updated_colors
+
+class CustomToolBar(QToolBar):
+    DEFAULT_ACTIONS = ["Play", "Stop", "Undo", "Redo"]
+
+    def __init__(self, title, parent=None):
+        super(CustomToolBar, self).__init__(title, parent)
+        self.setAcceptDrops(True)
+        self.setMovable(True)  # Allow rearranging
+        self._ensure_directory_structure()
+        self._load_toolbar_items()
+
+    def dragEnterEvent(self, event):
+        if event.mimeData().hasFormat(LISTBOX_MIMETYPE):
+            event.acceptProposedAction()
+    def dropEvent(self, event):
+        if event.type() == QtCore.QEvent.Drop:
+            if event.mimeData().hasFormat(LISTBOX_MIMETYPE):
+                eventData = event.mimeData().data(LISTBOX_MIMETYPE)
+                dataStream = QDataStream(eventData, QIODevice.ReadOnly)
+                pixmap = QPixmap()
+                dataStream >> pixmap
+                op_code = dataStream.readInt()
+                text = dataStream.readQString()
+
+                node = get_class_from_opcode(op_code)
+                content_label_objname = node.content_label_objname
+                action = QAction(QIcon(pixmap), text, self)
+                action.setData(content_label_objname)  # Store content_label_objname in QAction
+                action.triggered.connect(lambda: self.parent().addNode(content_label_objname))
+                self.addAction(action)
+                self._save_toolbar_items()
+    def _add_default_actions(self):
+        # Create Play action
+        play_action = QAction(QIcon("ainodes_frontend/icons/play.png"), "Play", self)
+        play_action.triggered.connect(self.parent().onPlayClicked)
+        self.addAction(play_action)
+
+        # Create Stop action
+        stop_action = QAction(QIcon("ainodes_frontend/icons/stop.png"), "Stop", self)
+        stop_action.triggered.connect(self.parent().onStopClicked)
+        self.addAction(stop_action)
+
+        # Create Undo action
+        undo_action = QAction(QIcon("ainodes_frontend/icons/undo.png"), "Undo", self)
+        undo_action.triggered.connect(self.parent().onEditUndo)
+        self.addAction(undo_action)
+
+        # Create Redo action
+        redo_action = QAction(QIcon("ainodes_frontend/icons/redo.png"), "Redo", self)
+        redo_action.triggered.connect(self.parent().onEditRedo)
+        self.addAction(redo_action)
+    def _ensure_directory_structure(self):
+        os.makedirs('config/toolbar', exist_ok=True)
+
+    def _save_toolbar_items(self):
+        actions_data = []
+        for action in self.actions():
+            if action.text() not in CustomToolBar.DEFAULT_ACTIONS:
+                pixmap = action.icon().pixmap(32, 32)
+                pixmap_file = f"config/toolbar/{action.text()}.png"
+                pixmap.save(pixmap_file)
+                actions_data.append({
+                    "text": action.text(),
+                    "pixmap_file": pixmap_file,
+                    "content_label_objname": action.data()
+                })
+        with open('config/toolbar/toolbar.yaml', 'w') as file:
+            yaml.dump(actions_data, file)
+
+    def _load_toolbar_items(self):
+
+        for action in self.actions():
+            self.removeAction(action)
+
+        self._add_default_actions()
+
+        if os.path.exists('config/toolbar/toolbar.yaml'):
+            # Store default actions temporarily
+            default_actions = [action for action in self.actions() if action.text() in CustomToolBar.DEFAULT_ACTIONS]
+
+            # Remove default actions from the toolbar
+
+
+            with open('config/toolbar/toolbar.yaml', 'r') as file:
+                actions_data = yaml.load(file, Loader=yaml.FullLoader)
+                for action_data in actions_data:
+                    pixmap = QPixmap(action_data["pixmap_file"])
+                    action = QAction(QIcon(pixmap), action_data["text"], self)
+                    action.setData(action_data["content_label_objname"])
+                    action.triggered.connect(lambda: self.parent().addNode(action.data()))
+                    self.addAction(action)
+
+            # Add the default actions back to the toolbar
+
+    def contextMenuEvent(self, event: QContextMenuEvent):
+        action_at_point = self.actionAt(event.pos())
+        if action_at_point and action_at_point.text() not in CustomToolBar.DEFAULT_ACTIONS:
+            context_menu = QMenu(self)
+
+            # Create the delete action and add it to the context menu
+            delete_action = QAction("Delete", self)
+            delete_action.triggered.connect(lambda: self._delete_custom_action(action_at_point))
+            context_menu.addAction(delete_action)
+
+            context_menu.exec(event.globalPos())
+
+    def _delete_custom_action(self, action):
+        # Remove the action from the toolbar
+        self.removeAction(action)
+
+        # Delete the corresponding PNG file
+        pixmap_file = f"config/toolbar/{action.text()}.png"
+        if os.path.exists(pixmap_file):
+            os.remove(pixmap_file)
+
+        # Save the updated toolbar configuration
+        self._save_toolbar_items()
 class CalculatorWindow(NodeEditorWindow):
     file_open_signal = QtCore.Signal(object)
     base_repo_signal = QtCore.Signal()
@@ -706,54 +824,42 @@ class CalculatorWindow(NodeEditorWindow):
 
     def createVerticalToolBar(self):
 
-        class CustomToolBar(QToolBar):
 
-            def __init__(self, title, parent=None):
-                super(CustomToolBar, self).__init__(title, parent)
-                self.setAcceptDrops(True)
-
-            def dragEnterEvent(self, event):
-                if event.mimeData().hasFormat(LISTBOX_MIMETYPE):
-                    event.acceptProposedAction()
-            def dropEvent(self, event):
-                if event.type() == QtCore.QEvent.Drop:
-                    if event.mimeData().hasFormat(LISTBOX_MIMETYPE):
-                        eventData = event.mimeData().data(LISTBOX_MIMETYPE)
-                        dataStream = QDataStream(eventData, QIODevice.ReadOnly)
-                        pixmap = QPixmap()
-                        dataStream >> pixmap
-                        op_code = dataStream.readInt()
-                        text = dataStream.readQString()
-                        self.addAction(QAction(QIcon(pixmap), text, self))
 
         # Create a new vertical toolbar
         self.verticalToolBar = CustomToolBar("Tools", self)
         self.verticalToolBar.setOrientation(Qt.Vertical)
 
-        # Create actions for the toolbar buttons
-        play_action = QAction(QIcon("ainodes_frontend/icons/play.png"), "Play", self)
-        play_action.triggered.connect(self.onPlayClicked)
-
-        stop_action = QAction(QIcon("ainodes_frontend/icons/stop.png"), "Stop", self)
-        stop_action.triggered.connect(self.onStopClicked)
-
-        undo_action = QAction(QIcon("ainodes_frontend/icons/undo.png"), "Undo", self)
-        undo_action.triggered.connect(self.onEditUndo)  # Assuming 'undo' is a method in your class or PyQt's undo method
-
-        redo_action = QAction(QIcon("ainodes_frontend/icons/redo.png"), "Redo", self)
-        redo_action.triggered.connect(self.onEditRedo)  # Assuming 'redo' is a method in your class or PyQt's redo method
-
-        # Add the actions to the toolbar
-        self.verticalToolBar.addAction(play_action)
-        self.verticalToolBar.addAction(stop_action)
-        self.verticalToolBar.addAction(undo_action)
-        self.verticalToolBar.addAction(redo_action)
+        # # Create actions for the toolbar buttons
+        # play_action = QAction(QIcon("ainodes_frontend/icons/play.png"), "Play", self)
+        # play_action.triggered.connect(self.onPlayClicked)
+        #
+        # stop_action = QAction(QIcon("ainodes_frontend/icons/stop.png"), "Stop", self)
+        # stop_action.triggered.connect(self.onStopClicked)
+        #
+        # undo_action = QAction(QIcon("ainodes_frontend/icons/undo.png"), "Undo", self)
+        # undo_action.triggered.connect(self.onEditUndo)  # Assuming 'undo' is a method in your class or PyQt's undo method
+        #
+        # redo_action = QAction(QIcon("ainodes_frontend/icons/redo.png"), "Redo", self)
+        # redo_action.triggered.connect(self.onEditRedo)  # Assuming 'redo' is a method in your class or PyQt's redo method
+        #
+        # # Add the actions to the toolbar
+        # self.verticalToolBar.addAction(play_action)
+        # self.verticalToolBar.addAction(stop_action)
+        # self.verticalToolBar.addAction(undo_action)
+        # self.verticalToolBar.addAction(redo_action)
 
         self.verticalToolBar.setAcceptDrops(True)
 
         # Add the toolbar to the main window
         self.addToolBar(Qt.LeftToolBarArea, self.verticalToolBar)
-
+    def addNode(self, content_label_objname):
+        #print(content_label_objname)
+        editor = self.getCurrentNodeEditorWidget()
+        node = get_class_from_content_label_objname(content_label_objname)(editor.scene)
+        #scene_position = editor.scene.grScene.views()[0].mapToScene()
+        #node.setPos(scene_position.x(), scene_position.y())
+        editor.scene.history.storeHistory("Created node %s" % node.__class__.__name__)
 
     def saveToolBarConfig(self):
         toolbar_items = []
@@ -778,9 +884,6 @@ class CalculatorWindow(NodeEditorWindow):
         except FileNotFoundError:
             # Handle the case where the config file doesn't exist yet.
             pass
-    def addNode(self, node):
-        pass
-    # Placeholder functions for play and stop buttons
     def onPlayClicked(self):
         editor = self.getCurrentNodeEditorWidget()
         if editor:
