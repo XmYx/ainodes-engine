@@ -105,7 +105,7 @@ if __name__ == "__main__":
     gs.args = get_args()
 
     # Set environment variables for Hugging Face cache if not using local cache
-    if not gs.args.local_hf:
+    if gs.args.local_hf:
         print("Using HF Cache in app dir")
         os.makedirs("hf_cache", exist_ok=True)
         os.environ["HF_HOME"] = "hf_cache"

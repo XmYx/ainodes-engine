@@ -154,7 +154,7 @@ class CalculatorSubWindow(NodeEditorWidget):
     def handle_task_finished(self):
         self.scene.queue.start_next_task()
     def getNodeClassFromData(self, data):
-        if 'op_code' not in data: return Node
+        #if 'op_code' not in data: return Node
 
         #print("data", data['content_label_objname'])
         #print("op_code", get_class_from_opcode(data['op_code']))

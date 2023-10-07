@@ -98,7 +98,10 @@ class QDMGraphicsEdge(QGraphicsPathItem):
 
     def setColorFromSockets(self) -> bool:
         """Change color according to connected sockets. Returns ``True`` if color can be determined"""
-        socket_type_start = self.edge.start_socket.socket_type
+        if self.edge.start_socket is not None:
+            socket_type_start = self.edge.start_socket.socket_type
+        else:
+            socket_type_start = 7
         #socket_type_end = self.edge.end_socket.socket_type
         #if socket_type_start != socket_type_end: return False
         self.changeColor(self.edge.start_socket.grSocket.getSocketColor(socket_type_start))

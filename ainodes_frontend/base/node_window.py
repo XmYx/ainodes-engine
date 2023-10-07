@@ -1,3 +1,4 @@
+import copy
 import os
 import re
 import subprocess
@@ -605,12 +606,16 @@ class ColorEditor(QtWidgets.QDialog):
         return updated_colors
 
 class CustomToolBar(QToolBar):
-    DEFAULT_ACTIONS = ["Play", "Stop", "Undo", "Redo"]
+    DEFAULT_ACTIONS = ["Play", "Loop", "Stop", "Undo", "Redo"]
+    nodeActionTriggered = QtCore.Signal(str)  # Custom signal emitting a string.
+
 
     def __init__(self, title, parent=None):
         super(CustomToolBar, self).__init__(title, parent)
         self.setAcceptDrops(True)
         self.setMovable(True)  # Allow rearranging
+        self.nodeActionTriggered.connect(self.parent().addNode)
+
         self._ensure_directory_structure()
         self._load_toolbar_items()
 
@@ -683,21 +688,20 @@ class CustomToolBar(QToolBar):
             self.removeAction(action)
 
         self._add_default_actions()
-
+        self.node_dict = {}
         if os.path.exists('config/toolbar/toolbar.yaml'):
-            # Store default actions temporarily
-            default_actions = [action for action in self.actions() if action.text() in CustomToolBar.DEFAULT_ACTIONS]
-
-            # Remove default actions from the toolbar
-
-
             with open('config/toolbar/toolbar.yaml', 'r') as file:
                 actions_data = yaml.load(file, Loader=yaml.FullLoader)
                 for action_data in actions_data:
+
                     pixmap = QPixmap(action_data["pixmap_file"])
                     action = QAction(QIcon(pixmap), action_data["text"], self)
-                    action.setData(action_data["content_label_objname"])
-                    action.triggered.connect(lambda: self.parent().addNode(action.data()))
+
+                    self.node_dict[action_data["text"]] = action_data["content_label_objname"]
+
+                    content_label_objname = copy.deepcopy(action_data["content_label_objname"])
+                    action.setData(content_label_objname)
+                    action.triggered.connect(self.onActionTriggered)
                     self.addAction(action)
 
             # Add the default actions back to the toolbar
@@ -725,6 +729,11 @@ class CustomToolBar(QToolBar):
 
         # Save the updated toolbar configuration
         self._save_toolbar_items()
+
+    def onActionTriggered(self):
+        sender_action = self.sender()  # Get the action that emitted the signal
+        content_label_objname = self.node_dict[sender_action.text()]
+        self.nodeActionTriggered.emit(content_label_objname)
 class CalculatorWindow(NodeEditorWindow):
     file_open_signal = QtCore.Signal(object)
     base_repo_signal = QtCore.Signal()
@@ -823,72 +832,42 @@ class CalculatorWindow(NodeEditorWindow):
 
         self.setWindowOpacity(0.0)  # Start with transparent window
 
-
-
+        # Create and setup the toolbar
         self.createVerticalToolBar()
 
+        # Connect the signal to the slot
+        self.verticalToolBar.allowedAreasChanged.connect(self.handleToolBarAreaChanged)
+
     def createVerticalToolBar(self):
-
-
-
         # Create a new vertical toolbar
         self.verticalToolBar = CustomToolBar("Tools", self)
-        self.verticalToolBar.setOrientation(Qt.Vertical)
-
-        # # Create actions for the toolbar buttons
-        # play_action = QAction(QIcon("ainodes_frontend/icons/play.png"), "Play", self)
-        # play_action.triggered.connect(self.onPlayClicked)
-        #
-        # stop_action = QAction(QIcon("ainodes_frontend/icons/stop.png"), "Stop", self)
-        # stop_action.triggered.connect(self.onStopClicked)
-        #
-        # undo_action = QAction(QIcon("ainodes_frontend/icons/undo.png"), "Undo", self)
-        # undo_action.triggered.connect(self.onEditUndo)  # Assuming 'undo' is a method in your class or PyQt's undo method
-        #
-        # redo_action = QAction(QIcon("ainodes_frontend/icons/redo.png"), "Redo", self)
-        # redo_action.triggered.connect(self.onEditRedo)  # Assuming 'redo' is a method in your class or PyQt's redo method
-        #
-        # # Add the actions to the toolbar
-        # self.verticalToolBar.addAction(play_action)
-        # self.verticalToolBar.addAction(stop_action)
-        # self.verticalToolBar.addAction(undo_action)
-        # self.verticalToolBar.addAction(redo_action)
+        self.verticalToolBar.setOrientation(Qt.Orientation.Vertical)
 
         self.verticalToolBar.setAcceptDrops(True)
 
+        # Allow the toolbar to be docked in any area
+        self.verticalToolBar.setAllowedAreas(Qt.ToolBarArea.AllToolBarAreas)
+
         # Add the toolbar to the main window
-        self.addToolBar(Qt.LeftToolBarArea, self.verticalToolBar)
+        self.addToolBar(Qt.ToolBarArea.RightToolBarArea, self.verticalToolBar)
+
+        # Allow toolbars to be movable in the QMainWindow
+        self.verticalToolBar.setMovable(True)
+
+    def handleToolBarAreaChanged(self, area):
+        # Check the new area and set the orientation of the toolbar accordingly
+        if area in [Qt.ToolBarArea.TopToolBarArea, Qt.ToolBarArea.BottomToolBarArea]:
+            self.verticalToolBar.setOrientation(Qt.Orientation.Horizontal)
+        elif area in [Qt.ToolBarArea.LeftToolBarArea, Qt.ToolBarArea.RightToolBarArea]:
+            self.verticalToolBar.setOrientation(Qt.Orientation.Vertical)
     def addNode(self, content_label_objname):
-        #print(content_label_objname)
+        print(content_label_objname)
         editor = self.getCurrentNodeEditorWidget()
         node = get_class_from_content_label_objname(content_label_objname)(editor.scene)
         #scene_position = editor.scene.grScene.views()[0].mapToScene()
         #node.setPos(scene_position.x(), scene_position.y())
         editor.scene.history.storeHistory("Created node %s" % node.__class__.__name__)
 
-    def saveToolBarConfig(self):
-        toolbar_items = []
-        for action in self.verticalToolBar.actions():
-            toolbar_items.append({
-                'icon': action.icon().name(),
-                'name': action.text(),
-                'op_code': action.data()
-            })
-        with open('config/toolbar.yaml', 'w') as file:
-            yaml.dump(toolbar_items, file)
-
-    def loadToolBarConfig(self):
-        try:
-            with open('config/toolbar.yaml', 'r') as file:
-                toolbar_items = yaml.load(file, Loader=yaml.FullLoader)
-                for item in toolbar_items:
-                    action = QAction(QIcon(item['icon']), item['name'], self)
-                    action.setData(item['op_code'])
-                    action.triggered.connect(lambda: self.addNode(self, action.data()))
-                    self.verticalToolBar.addAction(action)
-        except FileNotFoundError:
-            # Handle the case where the config file doesn't exist yet.
-            pass
     def onPlayClicked(self, loop=False):
         editor = self.getCurrentNodeEditorWidget()
         if editor:

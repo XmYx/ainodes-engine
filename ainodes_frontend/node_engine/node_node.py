@@ -132,7 +132,7 @@ class Node(Serializable):
 
         self.input_socket_position = LEFT_BOTTOM
         self.output_socket_position = RIGHT_TOP
-        self.input_multi_edged = False
+        self.input_multi_edged = True
         self.output_multi_edged = True
         self.socket_offsets = {
             LEFT_BOTTOM: -1,

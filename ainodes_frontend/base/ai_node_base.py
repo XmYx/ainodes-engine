@@ -220,7 +220,7 @@ class AiNode(Node):
         object_name = self.getID(index)
         self._output_values[object_name] = value  # Store the reference in the dictionary
 
-    def getOutput(self, index):
+    def getOutput(self, index=0, origin_index=0):
         """
          Get the value of the output socket with the given index.
 
@@ -233,7 +233,7 @@ class AiNode(Node):
         object_name = self.getID(index)
         return self._output_values.get(object_name, None)  # Get the value using the dictionary
 
-    def getInputData(self, index=0):
+    def getInputData(self, index=0, origin_index=0):
         """
         Get the data from the connected input socket specified by 'index'.
 
@@ -242,16 +242,16 @@ class AiNode(Node):
         :return: The data from the connected input socket, or None if the socket is not connected.
         :rtype: Any or None
         """
+
+
         try:
             if len(self.getInputs(index)) > 0:
-                node, index = self.getInput(index)
-                return node.getOutput(index)
-                return data
+                node, new_index = self.getInput(index)
+                return node.getOutput(new_index, index)
             else:
                 return None
         except Exception as e:
             done = handle_ainodes_exception()
-
             print(f"Error in getInputData: {e}")
             return None
 

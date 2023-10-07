@@ -425,7 +425,7 @@ class Scene(Serializable):
 
     def deserialize(self, data: dict, hashmap: dict={}, restore_id: bool=True, *args, **kwargs) -> bool:
         hashmap = {}
-
+        print("Attempting to load", data)
         if restore_id: self.id = data['id']
 
         # -- deserialize NODES
@@ -450,14 +450,15 @@ class Scene(Serializable):
                     new_node.onDeserialized(node_data)
                     # print("New node for", node_data['title'])
                 except:
-                    dumpException()
+                    # dumpException()
+                    pass
             else:
                 try:
                     found.deserialize(node_data, hashmap, restore_id, *args, **kwargs)
                     found.onDeserialized(node_data)
                     all_nodes.remove(found)
                     # print("Reused", node_data['title'])
-                except: dumpException()
+                except: pass#dumpException()
 
         # remove nodes which are left in the scene and were NOT in the serialized data!
         # that means they were not in the graph before...
