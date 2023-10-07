@@ -35,6 +35,8 @@ for /f "tokens=1,2" %%A in (%repositories_file%) do (
     )
 )
 
+call git pull
+
 REM Update all repositories in src
 for /f "tokens=*" %%A in (%src_file%) do (
     set "repository_name=%%~nxA"
@@ -64,7 +66,7 @@ if exist "%SRC_DIR%\ComfyUI\custom_nodes\ComfyUI-Manager" (
 
 REM Run root folder's main.py
 echo Running main.py...
-python main.py
+python ainodes_frontend/main.py
 
 :end
 endlocal
