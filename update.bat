@@ -17,6 +17,13 @@ if not exist "%INSTALL_ENV_DIR%" (
     exit /b
 )
 
+REM Delete ai_nodes/ainodes_engine_faceswapper_nodes folder if it exists
+if exist "ai_nodes\ainodes_engine_faceswapper_nodes" (
+    echo Deleting ai_nodes\ainodes_engine_faceswapper_nodes...
+    rmdir /S /Q "ai_nodes\ainodes_engine_faceswapper_nodes"
+)
+
+
 REM Activate the conda venv
 call "%CONDA_ROOT_PREFIX%\condabin\conda.bat" activate "%INSTALL_ENV_DIR%" || ( echo. && echo Miniconda hook not found. && goto end )
 
