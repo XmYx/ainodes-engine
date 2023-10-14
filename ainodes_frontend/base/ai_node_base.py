@@ -247,7 +247,7 @@ class AiNode(Node):
         try:
             if len(self.getInputs(index)) > 0:
                 node, new_index = self.getInput(index)
-                print("node", node)
+                #print("node", node)
                 return node.getOutput(new_index, index)
             else:
                 return None

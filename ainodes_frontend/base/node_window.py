@@ -493,7 +493,6 @@ class NodesConsole(ConsoleWidget):
         sb.setValue(sb.maximum())
 
     def write(self, strn, style='output', scrollToBottom='auto'):
-
         isGuiThread = QtCore.QThread.currentThread() == QtCore.QCoreApplication.instance().thread()
         if not isGuiThread:
             sys.__stdout__.write(strn)
@@ -509,22 +508,17 @@ class NodesConsole(ConsoleWidget):
             atBottom = scroll == sb.maximum()
             scrollToBottom = atBottom
 
-        row = cursor.blockNumber()
-        #if style == 'command':
-        #    self._lastCommandRow = row
+        # Check if the string contains the carriage return character, which is used by tqdm to refresh the progress bar
+        if '\r' in strn:
+            cursor.movePosition(QtGui.QTextCursor.MoveOperation.StartOfBlock,
+                                QtGui.QTextCursor.MoveMode.KeepAnchor)
 
-        if style == 'output':
-            # adjust style for first line of output
-            firstLine, endl, strn = strn.partition('\n')
-            #self._setTextStyle('output_first_line')
-            self.output.insertPlainText(firstLine + endl)
-
-        if len(strn) > 0:
-            #self._setTextStyle(style)
-            self.output.insertPlainText(strn)
-            # return to output style immediately to avoid seeing an extra line of command style
-            #if style != 'output':
-            #    self._setTextStyle('output')
+            cursor.removeSelectedText()  # Remove the last line
+            strn = strn.replace('\r', '')  # Remove carriage return
+            if strn.startswith('\n'):  # If there's a newline at the start after removing \r, remove it
+                strn = strn[1:]
+        # Insert the new text
+        self.output.insertPlainText(strn)
 
         if scrollToBottom:
             sb.setValue(sb.maximum())
