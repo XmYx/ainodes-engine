@@ -364,11 +364,12 @@ class Node(Serializable):
         if self.content.isVisible():
             self._is_dirty = new_value
             if self._is_dirty: self.onMarkedDirty()
+            #self.markDescendantsDirty()
     def onMarkedDirty(self):
         """Called when this `Node` has been marked as `Dirty`. This method is supposed to be overridden"""
-        self.markDescendantsDirty(True)
+        #self.markDescendantsDirty(True)
 
-        self.scene.getView().update()
+        #self.scene.getView().update()
         pass
 
     def markChildrenDirty(self, new_value: bool=True):
@@ -379,9 +380,10 @@ class Node(Serializable):
         :type new_value: ``bool``
         """
         for other_node in self.getChildrenNodes():
-            other_node.markDirty(new_value)
             if other_node == self:
                 break
+
+            other_node.markDirty(new_value)
 
 
     def markDescendantsDirty(self, new_value: bool=True):
@@ -393,7 +395,7 @@ class Node(Serializable):
         """
         for other_node in self.getChildrenNodes():
             other_node.markDirty(new_value)
-            other_node.markDescendantsDirty(new_value)
+            #other_node.markDescendantsDirty(new_value)
             if other_node == self:
                 break
 

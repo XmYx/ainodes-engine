@@ -1,7 +1,4 @@
-import time
-
 import msgpack
-import torch.cuda
 from PyQt6.QtCore import QThreadPool, QRunnable, QUrl
 from PyQt6.QtWebSockets import QWebSocket
 from qtpy import QtCore
@@ -106,7 +103,11 @@ class NodeRunner:
             if is_image_preview:
                 for input_socket in node.inputs:
                     for edge in input_socket.edges:
-                        if edge.start_socket.node.isDirty():
+                        if edge.start_socket.node != node and edge.start_socket.node.isDirty():
+                            all_inputs_not_dirty = False
+                            break
+                    for edge in input_socket.edges:
+                        if edge.end_socket.node != node and edge.end_socket.node.isDirty():
                             all_inputs_not_dirty = False
                             break
 
@@ -129,8 +130,6 @@ class NodeRunner:
         self.starting_nodes.sort(key=sorting_key)
 
     def run_next(self):
-        from ai_nodes.ainodes_engine_base_nodes.ainodes_backend import torch_gc
-
         if not self.exec:  # Check if execution should stop
             self.running = False
             return
@@ -139,8 +138,6 @@ class NodeRunner:
             # If there are no more nodes to process, check if we should loop or finish
             # Handle looping or finishing here...
             if self.loop:
-                time.sleep(0.2)
-                torch_gc()
                 self.running = False
                 self.start(loop=self.loop)
             return
@@ -149,7 +146,7 @@ class NodeRunner:
         node_to_run = self.starting_nodes.pop(0)  # Process the first node in the list
         self.processed_nodes.append(node_to_run)  # Mark the node as processed
 
-        #print(f"Processing Node: {node_to_run}")
+        print(f"Processing Node: {node_to_run}")
         worker = NodeWorker(node_to_run)
 
         def on_node_finished():
@@ -224,12 +221,11 @@ class NodeRunner:
                     nodes_to_check = node.get_nodes()
                     for node in nodes_to_check:
                         self.starting_nodes.append(node)
-
             # Reorder nodes to prioritize nodes that can run
             self.reorder_nodes()
-            if self.starting_nodes:
-                # Start processing
-                self.run_next()
+
+            # Start processing
+            self.run_next()
 
     def stop(self):
         self.running = False

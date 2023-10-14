@@ -247,6 +247,7 @@ class AiNode(Node):
         try:
             if len(self.getInputs(index)) > 0:
                 node, new_index = self.getInput(index)
+                print("node", node)
                 return node.getOutput(new_index, index)
             else:
                 return None
@@ -495,6 +496,7 @@ class AiNode(Node):
                     #print(self, edge.start_socket.node, edge.end_socket.node)
                     if edge.start_socket.node is not self:
                         if edge.start_socket.node.isDirty():
+
                             return False
                     if edge.end_socket.node is not self:
                         if edge.end_socket.node.isDirty():
@@ -692,7 +694,6 @@ class AiDummyNode(Node):
             return None
 
     def getInputData(self, index=0):
-        return
 
         """
         Get the data from the connected input socket specified by 'index'.
@@ -760,7 +761,7 @@ class AiDummyNode(Node):
             socket: The input socket that changed.
         """
         print("%s::__onInputChanged" % self.__class__.__name__)
-        # self.markDirty(True)
+        self.markDirty(True)
 
     def update_vars(self, data):
 
