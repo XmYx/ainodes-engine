@@ -190,6 +190,7 @@ class NodeRunner:
 
     def start(self, loop=False):
         use_api = False
+        gs.should_run = True
         if use_api:
             node_data = self.collect_nodes_to_json()
 

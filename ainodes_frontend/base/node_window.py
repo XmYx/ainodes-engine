@@ -877,6 +877,7 @@ class CalculatorWindow(NodeEditorWindow):
         editor = self.getCurrentNodeEditorWidget()
         if editor:
             editor.scene.noderunner.stop()
+        gs.should_run = False
 
 
 
