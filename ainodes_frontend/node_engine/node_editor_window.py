@@ -82,6 +82,18 @@ class NodeEditorWindow(QMainWindow):
         self.createGraphsMenu()
         self.createEditMenu()
 
+    def add_files_to_menu(self, dir_path, menu):
+        for item in os.listdir(dir_path):
+            item_path = os.path.join(dir_path, item)
+            if os.path.isdir(item_path):
+                # If it's a directory, create a submenu and recurse
+                sub_menu = menu.addMenu(item)
+                self.add_files_to_menu(item_path, sub_menu)
+            elif item.endswith('.json'):
+                # If it's a JSON file, create an action and add to the current menu
+                file_action = QAction(item, self)
+                file_action.triggered.connect(partial(self.onFileOpenAction, item_path))
+                menu.addAction(file_action)
 
     def createGraphsMenu(self):
         menubar = self.menuBar()
@@ -90,15 +102,18 @@ class NodeEditorWindow(QMainWindow):
 
 
         if os.path.isdir('graphs'):
-            # List all JSON files in the graphs and example_graphs folders
-            graphs_files = [f for f in os.listdir('graphs') if f.endswith('.json')]
-            #example_graphs_files = [f for f in os.listdir('example_graphs') if f.endswith('.json')]
 
-            # Add JSON files to the submenus and connect actions
-            for file in graphs_files:
-                file_action = QAction(file, self)
-                file_action.triggered.connect(partial(self.onFileOpenAction, os.path.join('graphs', file)))
-                self.graphsSubMenu.addAction(file_action)
+            self.add_files_to_menu('graphs', self.graphsSubMenu)
+
+            # # List all JSON files in the graphs and example_graphs folders
+            # graphs_files = [f for f in os.listdir('graphs') if f.endswith('.json')]
+            # #example_graphs_files = [f for f in os.listdir('example_graphs') if f.endswith('.json')]
+            #
+            # # Add JSON files to the submenus and connect actions
+            # for file in graphs_files:
+            #     file_action = QAction(file, self)
+            #     file_action.triggered.connect(partial(self.onFileOpenAction, os.path.join('graphs', file)))
+            #     self.graphsSubMenu.addAction(file_action)
 
         directory_path = 'ai_nodes'
         if os.path.isdir(directory_path):

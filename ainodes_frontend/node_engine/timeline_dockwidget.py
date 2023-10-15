@@ -137,8 +137,10 @@ class OurTimeline(QWidget):
                     if self.oldY is not None:
                         qp.setPen(QPen(Qt.darkMagenta, 2, Qt.SolidLine))
                         qp.drawLine(self.oldX, self.oldY, kfStartPoint, kfYPos)
-
-                    kfbrush = QBrush(Qt.darkRed)
+                    if self.selectedKey == i.uid:
+                        kfbrush = QBrush(Qt.blue)  # Color for selected keyframe
+                    else:
+                        kfbrush = QBrush(Qt.darkRed)
                     scaleMod = 5
                     kfPoly = QPolygon([
                         QPoint(kfStartPoint - scaleMod, kfYPos),
@@ -266,8 +268,11 @@ class OurTimeline(QWidget):
         self.update()
 
     def mousePressEvent(self, e):
+        self.selectedKey = None
+        self.update()
         self.scale = self.getScale()
         if e.button() == Qt.LeftButton:
+
             x = e.pos().x()
             self.checkKeyClicked()
 
@@ -366,10 +371,9 @@ class OurTimeline(QWidget):
         self.scale = self.getScale()
         if e.button() == Qt.LeftButton:
             self.clicking = False  # Set clicking check to false
-            self.selectedKey = None
+            #self.selectedKey = None
             self.keyHover = False
             self.hoverKey = None
-
         self.update()
         self.keyframeValuesChanged.emit(self.emit_current_values())
 
@@ -451,6 +455,7 @@ class OurTimeline(QWidget):
     def clearKeyframes(self):
         self.keyFrameList.clear()
         self.update()
+
 
 
 class Timeline(QDockWidget):
@@ -576,10 +581,15 @@ class Timeline(QDockWidget):
             self.timeline.update()
             return is_math
 
+
 def is_equation(s):
     # A very basic check for now.
-    # You might want to expand this depending on your requirements.
+    # A string that starts with '-' and contains no other operators is not an equation
+    if s.startswith('-') and not any(op in s[1:] for op in ['+', '-', '*', '/', 'sin', 'cos', 'tan']):
+        return False
+
     return '+' in s or '-' in s or '*' in s or '/' in s or 'sin' in s or 'cos' in s or 'tan' in s
+
 
 def eval_equation(eq, t):
     # Safely evaluate the equation
