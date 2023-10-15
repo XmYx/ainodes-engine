@@ -29,21 +29,28 @@ class CustomComboBox(QtWidgets.QComboBox):
         # propagate to parent
         self.parent().contextMenuEvent(event, self)
 class CustomCheckBox(QtWidgets.QCheckBox):
-    set_signal = QtCore.Signal(int)
+    set_signal = QtCore.Signal(bool)
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
     def contextMenuEvent(self, event):
         # propagate to parent
         self.parent().contextMenuEvent(event, self)
 class CustomLineEdit(QtWidgets.QLineEdit):
-    set_signal = QtCore.Signal(int)
-    def __init__(self, *args, **kwargs):
+    set_signal = QtCore.Signal(str)
+    def __init__(self, schedule=None, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.schedule = schedule
+    def mousePressEvent(self, event):
+        if self.schedule:
+            #print(self.parent().node.scene.getView().parent().window().timeline)
+            self.parent().node.scene.getView().parent().window().timeline.handle_connection(self)
+            #self.parent().connectWidgetToTimeline()
+        super().mousePressEvent(event)
     def contextMenuEvent(self, event):
         # propagate to parent
         self.parent().contextMenuEvent(event, self)
 class CustomDoubleSpinBox(QtWidgets.QDoubleSpinBox):
-    set_signal = QtCore.Signal(int)
+    set_signal = QtCore.Signal(float)
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
     def contextMenuEvent(self, event):
@@ -298,7 +305,7 @@ class QDMNodeContentWidget(QWidget, Serializable):
         else:
             return combo_box
 
-    def create_line_edit(self, label_text, accessible_name=None, default=None, placeholder=None, spawn=None) -> QtWidgets.QLineEdit:
+    def create_line_edit(self, label_text, accessible_name=None, default=None, placeholder=None, spawn=None, schedule=None) -> QtWidgets.QLineEdit:
         """Create a line edit widget with the given label text.
 
         Args:
@@ -307,7 +314,7 @@ class QDMNodeContentWidget(QWidget, Serializable):
         Returns:
             QtWidgets.QLineEdit: A line edit widget.
         """
-        line_edit = CustomLineEdit()
+        line_edit = CustomLineEdit(schedule=schedule)
         line_edit.setObjectName(label_text)
         if default is not None:
             line_edit.setText(default)

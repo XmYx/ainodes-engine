@@ -1,6 +1,8 @@
+import math
 from datetime import datetime
 from uuid import uuid4
 
+from PyQt6.QtWidgets import QHBoxLayout
 from qtpy.QtCore import Qt, QPropertyAnimation, QEasingCurve
 from qtpy.QtGui import QPainter, QColor, QFont, QPen, QPolygon, QBrush
 from qtpy.QtWidgets import QWidget, QVBoxLayout, QSlider, QDockWidget
@@ -18,15 +20,16 @@ class KeyFrame:
         self.color = color
 
 
-__textColor__ = QColor(187, 187, 187)
-__backgroudColor__ = QColor(0, 0, 0)
+__textColor__ = QColor(255, 255, 255)  # White
+__backgroudColor__ = QColor(40, 40, 40)  # Dark Grey
 __font__ = QFont('Decorative', 10)
-
+__gridColor__ = QColor(211, 211, 211)  # Light Grey
 
 
 class OurTimeline(QWidget):
     keyFramesUpdated = Signal()
     selectionChanged = Signal(object)
+    keyframeValuesChanged = Signal(str)
 
     def __init__(self, duration, length):
         super().__init__()
@@ -81,17 +84,30 @@ class OurTimeline(QWidget):
         self.yMiddlePoint = self.height() / 2
 
         qp = QPainter()
-        # qp.device()
         qp.begin(self)
+        qp.setRenderHint(QPainter.Antialiasing)
+
+        # Fill the entire background first
+        qp.fillRect(self.rect(), __backgroudColor__)
+
+
+
+        # Draw time
         qp.setPen(self.textColor)
         qp.setFont(self.font)
-        qp.setRenderHint(QPainter.Antialiasing)
-        w = 0
-        # Draw time
         scale = self.getScale()
+        w = 0
         while w <= self.width():
             qp.drawText(w - 50, 0, 100, 100, Qt.AlignHCenter, self.get_time_string(w * scale))
             w += 100
+        # Draw numeric values on the vertical edge
+        qp.setPen(self.textColor)
+        max_value = int(self.height() / 2 / self.verticalScale)
+        for val in range(-max_value, max_value + 1, 5):  # Adjust the range and step for desired density
+            y_pos = int(self.yMiddlePoint - val * self.verticalScale)
+            qp.drawText(0, y_pos, 40, 20, Qt.AlignRight, str(val))
+
+
         # Draw down line
         qp.setPen(QPen(Qt.darkCyan, 5, Qt.SolidLine))
         qp.drawLine(0, 40, self.width(), 40)
@@ -99,10 +115,10 @@ class OurTimeline(QWidget):
         # Draw Middle Line for 0 Value of Keyframes
         qp.setPen(QPen(Qt.darkGreen, 2, Qt.SolidLine))
         qp.drawLine(0, int(self.yMiddlePoint), int(self.width()), int(self.yMiddlePoint))
+
         # Draw dash lines
-        point = 0
         qp.setPen(QPen(self.textColor))
-        qp.drawLine(0, 40, self.width(), 40)
+        point = 0
         while point <= self.width():
             if point % 30 != 0:
                 qp.drawLine(3 * point, 40, 3 * point, 30)
@@ -110,9 +126,67 @@ class OurTimeline(QWidget):
                 qp.drawLine(3 * point, 40, 3 * point, 20)
             point += 10
 
-        if self.pos is not None and self.is_in:
-            qp.drawLine(int(self.pos), 0, int(self.pos), 40)
+        # Draw keyframes
+        self.oldY = None
+        self.oldX = None
+        if self.selectedValueType is not None:
+            for i in self.keyFrameList:
+                if i and i.valueType == self.selectedValueType:
+                    kfStartPoint = int(i.position / self.getScale())
+                    kfYPos = int(self.yMiddlePoint - i.value * self.verticalScale)
+                    if self.oldY is not None:
+                        qp.setPen(QPen(Qt.darkMagenta, 2, Qt.SolidLine))
+                        qp.drawLine(self.oldX, self.oldY, kfStartPoint, kfYPos)
 
+                    kfbrush = QBrush(Qt.darkRed)
+                    scaleMod = 5
+                    kfPoly = QPolygon([
+                        QPoint(kfStartPoint - scaleMod, kfYPos),
+                        QPoint(kfStartPoint, kfYPos - scaleMod),
+                        QPoint(kfStartPoint + scaleMod, kfYPos),
+                        QPoint(kfStartPoint, kfYPos + scaleMod)
+                    ])
+                    qp.setPen(Qt.darkRed)
+                    qp.setBrush(kfbrush)
+                    qp.drawPolygon(kfPoly)
+
+                    self.oldY = kfYPos
+                    self.oldX = kfStartPoint
+
+        # Draw samples
+        for sample in self.videoSamples:
+            path = QPainterPath()
+            path.addRoundedRect(QRectF(sample.startPos / scale, 50, sample.duration / scale, 200), 10, 10)
+            qp.setClipPath(path)
+
+            # Draw sample
+            path = QPainterPath()
+            qp.setPen(sample.color)
+            qp.setBrush(sample.color)
+            path.addRect(sample.startPos / scale, 50, sample.duration / scale, 50)
+            qp.fillPath(path, sample.color)
+            qp.drawPath(path)
+
+            # Draw preview pictures
+            if sample.picture:
+                if sample.picture.size().width() < sample.duration / scale:
+                    path = QPainterPath()
+                    path.addRoundedRect(QRectF(sample.startPos / scale, 52.5, sample.picture.size().width(), 45), 10,
+                                        10)
+                    qp.setClipPath(path)
+                    qp.drawPixmap(QRect(int(sample.startPos / scale), 52.5, sample.picture.size().width(), 45),
+                                  sample.picture)
+                else:
+                    path = QPainterPath()
+                    path.addRoundedRect(QRectF(sample.startPos / scale, 52.5, sample.duration / scale, 45), 10, 10)
+                    qp.setClipPath(path)
+                    pic = sample.picture.copy(0, 0, sample.duration / scale, 45)
+                    qp.drawPixmap(QRect(int(sample.startPos / scale), 52.5, sample.duration / scale, 45), pic)
+
+            # Clear clip path after each sample
+            qp.setClipPath(QPainterPath())
+
+        # Draw pointer
         if self.pointerPos is not None:
             self.pointerTimePos = int(self.pointerTimePos)
             line = QLine(QPoint(int(self.pointerTimePos / self.getScale()), 40),
@@ -120,85 +194,12 @@ class OurTimeline(QWidget):
             poly = QPolygon([QPoint(int(self.pointerTimePos / self.getScale() - 10), 20),
                              QPoint(int(self.pointerTimePos / self.getScale() + 10), 20),
                              QPoint(int(self.pointerTimePos / self.getScale()), 40)])
-        else:
-            line = QLine(QPoint(0, 0), QPoint(0, self.height()))
-            poly = QPolygon([QPoint(-10, 20), QPoint(10, 20), QPoint(0, 40)])
-        self.oldY = None
-        self.oldX = None
-        if self.selectedValueType is not None:
-            for i in self.keyFrameList:
-                if i is not None:
+            # Draw pointer
+            qp.setPen(Qt.darkCyan)
+            qp.setBrush(QBrush(Qt.darkCyan))
 
-                    if i.valueType == self.selectedValueType:
-                        kfStartPoint = int(int(i.position) / self.getScale())
-                        kfYPos = int(self.yMiddlePoint - i.value * self.verticalScale)
-                        if self.oldY is not None:
-                            qp.setPen(QPen(Qt.darkMagenta, 2, Qt.SolidLine))
-                            # line = QLine(self.oldX, self.oldY, kfStartPoint, kfYPos)
-                            ##print(self.oldX, self.oldY, kfStartPoint, kfYPos)
-                            qp.drawLine(self.oldX, self.oldY, kfStartPoint, kfYPos)
-                        kfbrush = QBrush(Qt.darkRed)
-
-                        ##print(kfYPos)
-                        scaleMod = 5
-                        kfPoly = QPolygon(
-                            [QPoint(int(kfStartPoint - scaleMod), kfYPos), QPoint(kfStartPoint, kfYPos - scaleMod),
-                             QPoint(kfStartPoint + scaleMod, kfYPos), QPoint(kfStartPoint, kfYPos + scaleMod)])
-                        qp.setPen(Qt.darkRed)
-                        qp.setBrush(kfbrush)
-                        qp.drawPolygon(kfPoly)
-
-                        self.oldY = kfYPos
-                        self.oldX = kfStartPoint
-
-        # Draw samples
-        t = 0
-        for sample in self.videoSamples:
-            # Clear clip path
-            path = QPainterPath()
-
-            path.addRoundedRect(QRectF((t + sample.startPos) / scale, 50, sample.duration / scale, 200), 10, 10)
-
-            qp.setClipPath(path)
-
-            # Draw sample
-            path = QPainterPath()
-            qp.setPen(sample.color)
-            qp.setBrush(sample.color)
-
-            # path.addRoundedRect(QRectF(((t + sample.startPos)/scale), 50, (sample.duration / scale), 50), 10, 10)
-            path.addRect((t + sample.startPos) / scale, 50, (sample.duration / scale), 50)
-            # sample.startPos = (t + sample.startPos)*scale
-            sample.endPos = (t + sample.startPos) / scale + sample.duration / scale
-            qp.fillPath(path, sample.color)
-            qp.drawPath(path)
-
-            # Draw preview pictures
-            if sample.picture is not None:
-                if sample.picture.size().width() < sample.duration / scale:
-                    path = QPainterPath()
-                    path.addRoundedRect(QRectF(t / scale, 52.5, sample.picture.size().width(), 45), 10, 10)
-                    qp.setClipPath(path)
-                    qp.drawPixmap(QRect(int(t / scale), 52.5, sample.picture.size().width(), 45), sample.picture)
-                else:
-                    path = QPainterPath()
-                    path.addRoundedRect(QRectF(t / scale, 52.5, sample.duration / scale, 45), 10, 10)
-                    qp.setClipPath(path)
-                    pic = sample.picture.copy(0, 0, sample.duration / scale, 45)
-                    qp.drawPixmap(QRect(int(t / scale), 52.5, sample.duration / scale, 45), pic)
-            t += sample.duration
-
-        # Clear clip path
-        path = QPainterPath()
-        path.addRect(self.rect().x(), self.rect().y(), self.rect().width(), self.rect().height())
-        qp.setClipPath(path)
-
-        # Draw pointer
-        qp.setPen(Qt.darkCyan)
-        qp.setBrush(QBrush(Qt.darkCyan))
-
-        qp.drawPolygon(poly)
-        qp.drawLine(line)
+            qp.drawPolygon(poly)
+            qp.drawLine(line)
         qp.end()
 
     # Mouse movement
@@ -314,7 +315,14 @@ class OurTimeline(QWidget):
         self.popMenu.delete_action = QAction('delete keyframe', self)
         self.popMenu.addAction(self.popMenu.delete_action)
         self.popMenu.addAction(self.popMenu.add_action)
-
+    def emit_current_values(self):
+        tempString = ""
+        for item in self.keyFrameList:
+            if tempString == "":
+                tempString = f'{item.position}:({item.value})'
+            else:
+                tempString = f'{tempString}, {item.position}:({item.value})'
+        return tempString
     # Mouse release
     def add_action(self):
         ##print(self.keyClicked)
@@ -337,6 +345,8 @@ class OurTimeline(QWidget):
         if matchFound == False:
             self.keyFrameList.append(keyframe[position])
         self.update()
+        self.keyframeValuesChanged.emit(self.emit_current_values())
+
         # print(self.keyFrameList)
         # self.updateAnimKeys()
 
@@ -347,6 +357,8 @@ class OurTimeline(QWidget):
             if self.hoverKey is item.uid:
                 self.keyFrameList.pop(idx)
         self.update()
+        self.keyframeValuesChanged.emit(self.emit_current_values())
+
         # item.remove()
         # return
 
@@ -359,6 +371,8 @@ class OurTimeline(QWidget):
             self.hoverKey = None
 
         self.update()
+        self.keyframeValuesChanged.emit(self.emit_current_values())
+
 
     # Enter
     def enterEvent(self, e):
@@ -434,7 +448,9 @@ class OurTimeline(QWidget):
     # Set Font
     def setTextFont(self, font):
         self.font = font
-
+    def clearKeyframes(self):
+        self.keyFrameList.clear()
+        self.update()
 
 
 class Timeline(QDockWidget):
@@ -442,20 +458,41 @@ class Timeline(QDockWidget):
         super(Timeline, self).__init__(parent)
 
         self.timeline = OurTimeline(1000, 1000)
-        self.zoomSlider = QSlider(Qt.Horizontal)
 
-        self.zoomSlider.valueChanged.connect(self.onZoomChanged)
+        self.horizontalZoomSlider = QSlider(Qt.Horizontal)
+        self.verticalZoomSlider = QSlider(Qt.Vertical)
+        # Initialize the sliders' range and default value
+        self.horizontalZoomSlider.setRange(5, 5000)  # example range
+        self.horizontalZoomSlider.setValue(1000)  # default value
 
+        self.verticalZoomSlider.setRange(1, 50)  # example range
+        self.verticalZoomSlider.setValue(10)  # default value
+
+        # Connect sliders to zoom functions
+        self.horizontalZoomSlider.valueChanged.connect(self.onHorizontalZoomChanged)
+        self.verticalZoomSlider.valueChanged.connect(self.onVerticalZoomChanged)
+
+        h_layout = QHBoxLayout()
         layout = QVBoxLayout()
         layout.addWidget(self.timeline)
-        layout.addWidget(self.zoomSlider)
+        layout.addWidget(self.horizontalZoomSlider)
+        h_layout.addLayout(layout)
+        h_layout.addWidget(self.verticalZoomSlider)
 
         container = QWidget()
-        container.setLayout(layout)
+        container.setLayout(h_layout)
         self.setWidget(container)
 
         #self.initAnimations()
+    def onHorizontalZoomChanged(self, value):
+        # Adjust the duration of the timeline based on the slider value
+        self.timeline.duration = value
+        self.timeline.update()
 
+    def onVerticalZoomChanged(self, value):
+        # Adjust the vertical scale of the keyframes based on the slider value
+        self.timeline.verticalScale = value
+        self.timeline.update()
     def onZoomChanged(self, value):
         # Handle zoom logic
         pass
@@ -478,3 +515,72 @@ class Timeline(QDockWidget):
 
     def hideWithAnimation(self):
         self.hideAnimation.start()
+
+    def handle_connection(self, widget):
+
+        #Add logic to disconnect any previous QLineEdit widget,
+        #and connect the one passed to this function, any added/deleted/moved
+        #keyframe should result in changing the LineEdit to the string made by
+        #emit_current_values
+
+        # Disconnect previous connections
+        try:
+            self.timeline.keyframeValuesChanged.disconnect()
+        except TypeError:
+            # No previous connections, so ignore
+            pass
+        # Clear the existing keyframes
+        self.timeline.clearKeyframes()
+
+        # Update the timeline's keyframes based on the text from the new widget
+        is_math = self.updateKeyframesFromText(widget.text())
+        if not is_math:
+            # Connect the signal to a new slot method
+            self.timeline.keyframeValuesChanged.connect(widget.setText)
+
+
+    def updateKeyframesFromText(self, text):
+        segments = text.split(", ")
+        is_math = True
+        try:
+            for segment in segments:
+                # Extract position (time)
+                position_str, value_segment = segment.split(":")
+                position = int(position_str.strip())
+
+                # Extract raw value by removing the first and the last characters
+                value_segment = value_segment.strip(" ")
+
+                raw_value_str = value_segment[1:-1]
+
+                if is_equation(raw_value_str):
+                    # If it's an equation, generate values over the timeline's duration
+                    for t in range(0, self.timeline.getDuration() + 1):
+                        value = eval_equation(raw_value_str, t)
+                        uid = datetime.now().strftime('%Y%m-%d%H-%M%S-') + str(uuid4())
+                        valueType = self.timeline.selectedValueType
+                        keyframe = KeyFrame(uid, valueType, t, value)
+                        self.timeline.keyFrameList.append(keyframe)
+                    is_math = True
+                else:
+                    # Otherwise, it's a simple value
+                    value = float(raw_value_str)
+                    uid = datetime.now().strftime('%Y%m-%d%H-%M%S-') + str(uuid4())
+                    valueType = self.timeline.selectedValueType
+                    keyframe = KeyFrame(uid, valueType, position, value)
+                    self.timeline.keyFrameList.append(keyframe)
+                    is_math = False
+        except:
+            pass
+        finally:
+            self.timeline.update()
+            return is_math
+
+def is_equation(s):
+    # A very basic check for now.
+    # You might want to expand this depending on your requirements.
+    return '+' in s or '-' in s or '*' in s or '/' in s or 'sin' in s or 'cos' in s or 'tan' in s
+
+def eval_equation(eq, t):
+    # Safely evaluate the equation
+    return eval(eq, {"__builtins__": None, 'sin': math.sin, 'cos': math.cos, 'tan': math.tan, 't': t})
