@@ -137,7 +137,7 @@ class NodeRunner:
         if not self.starting_nodes:
             # If there are no more nodes to process, check if we should loop or finish
             # Handle looping or finishing here...
-            if self.loop:
+            if self.loop and gs.should_run:
                 self.running = False
                 self.start(loop=self.loop)
             return
@@ -145,13 +145,14 @@ class NodeRunner:
 
         node_to_run = self.starting_nodes.pop(0)  # Process the first node in the list
         self.processed_nodes.append(node_to_run)  # Mark the node as processed
-
-        print(f"Processing Node: {node_to_run}")
+        if gs.debug:
+            print(f"            [ Running {node_to_run} ] ")
+        #print(f"Processing Node: {node_to_run}")
         worker = NodeWorker(node_to_run)
 
         def on_node_finished():
             node_to_run.markInvalid(False)
-            node_to_run.markDirty(False)
+            #node_to_run.markDirty(False)
             node_to_run.content.finished.disconnect(on_node_finished)
 
             # for output_socket in node_to_run.outputs:

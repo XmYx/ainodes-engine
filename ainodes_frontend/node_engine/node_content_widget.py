@@ -191,17 +191,17 @@ class QDMNodeContentWidget(QWidget, Serializable):
 
         # Step 4: Update the node's preview
         self.node.updateConnectedEdges()
-    def contextMenuEvent(self, event, widget=None):
-        """Override the context menu to provide an option to convert the widget to a node input."""
-        menu = QMenu(self)
-        convert_action = menu.addAction("Convert to Node Input")
-        action = menu.exec(self.mapToGlobal(event.pos()))
-
-        if action == convert_action:
-            #clicked_widget = self.childAt(event.pos())
-            print(widget)
-            if widget:  # Make sure we have a widget at the clicked position
-                self.convertWidgetToNodeInput(widget)
+    # def contextMenuEvent(self, event, widget=None):
+    #     """Override the context menu to provide an option to convert the widget to a node input."""
+    #     menu = QMenu(self)
+    #     convert_action = menu.addAction("Convert to Node Input")
+    #     action = menu.exec(self.mapToGlobal(event.pos()))
+    #
+    #     if action == convert_action:
+    #         #clicked_widget = self.childAt(event.pos())
+    #         print(widget)
+    #         if widget:  # Make sure we have a widget at the clicked position
+    #             self.convertWidgetToNodeInput(widget)
     def setEditingFlag(self, value:bool):
         """
         .. note::

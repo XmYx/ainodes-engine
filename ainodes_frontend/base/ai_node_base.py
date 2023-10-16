@@ -327,6 +327,12 @@ class AiNode(Node):
 
     def evalImplementation_thread(self):
         return None
+
+    def clearOutputs(self):
+        ports = list(range(len(self.outputs) - 1))
+        for port in ports:
+            self.setOutput(port, None)
+
     def onWorkerFinished(self, result, exec=True):
 
         self.busy = False
@@ -487,7 +493,9 @@ class AiNode(Node):
 
         # if len(self.inputs) == 0:
         #     return True
-
+        if hasattr(self, "force_run"):
+            if self.force_run:
+                return True
         for socket in self.inputs:
             if socket.is_input and socket.hasAnyEdge():
                 for edge in socket.edges:

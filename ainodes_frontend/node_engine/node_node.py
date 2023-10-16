@@ -361,9 +361,11 @@ class Node(Serializable):
         :param new_value: ``True`` if this `Node` should be `Dirty`. ``False`` if you want to un-dirty this `Node`
         :type new_value: ``bool``
         """
-        if self.content.isVisible():
-            self._is_dirty = new_value
-            if self._is_dirty: self.onMarkedDirty()
+        if hasattr(self, "content"):
+            if self.content is not None:
+                if self.content.isVisible():
+                    self._is_dirty = new_value
+                    if self._is_dirty: self.onMarkedDirty()
             #self.markDescendantsDirty()
     def onMarkedDirty(self):
         """Called when this `Node` has been marked as `Dirty`. This method is supposed to be overridden"""

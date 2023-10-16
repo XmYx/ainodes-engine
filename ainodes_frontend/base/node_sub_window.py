@@ -339,6 +339,7 @@ class CalculatorSubWindow(NodeEditorWidget):
 
 
         context_menu = QMenu(self)
+        clearOutputsAct = context_menu.addAction("Clear Outputs")
         markDirtyAct = context_menu.addAction("Mark Dirty")
         markDirtyDescendantsAct = context_menu.addAction("Mark Descendant Dirty")
         markInvalidAct = context_menu.addAction("Mark Invalid")
@@ -361,6 +362,7 @@ class CalculatorSubWindow(NodeEditorWidget):
             selected = item.socket.node
 
         if DEBUG_CONTEXT: print("got item:", selected)
+        if selected and action == clearOutputsAct: selected.clearOutputs()
         if selected and action == markDirtyAct: selected.markDirty()
         if selected and action == markDirtyDescendantsAct: selected.markDescendantsDirty()
         if selected and action == markInvalidAct: selected.markInvalid()
