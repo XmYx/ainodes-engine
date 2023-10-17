@@ -12,10 +12,6 @@ class NodeWorker(QRunnable):
         self.node = node
 
     def run(self):
-
-        # print(self.node)
-        # self.node.markDirty(False)
-
         self.node.onWorkerFinished(result=self.node.evalImplementation_thread(), exec=False)
         self.node.content.update()
         self.node.content.finished.emit()
@@ -145,8 +141,7 @@ class NodeRunner:
 
         node_to_run = self.starting_nodes.pop(0)  # Process the first node in the list
         self.processed_nodes.append(node_to_run)  # Mark the node as processed
-        if gs.debug:
-            print(f"            [ Running {node_to_run} ] ")
+        #print(f"            [ Running {node_to_run} ] ")
         #print(f"Processing Node: {node_to_run}")
         worker = NodeWorker(node_to_run)
 
@@ -177,6 +172,7 @@ class NodeRunner:
 
         # Mark nodes with 'seed' as dirty
         for node in self.parent.nodes:
+            #node.busy = False
             if hasattr(node.content, 'seed') and node.content.isVisible() == True:
                 node.markDirty()
             if hasattr(node, 'make_dirty'):
@@ -203,7 +199,6 @@ class NodeRunner:
             # packed_data = msgpack.packb(node_data, use_bin_type=False)
             # self.websocket.sendBinaryMessage(packed_data)
         else:
-
             self.stop()
             if self.running:  # If already running, simply return
                 return

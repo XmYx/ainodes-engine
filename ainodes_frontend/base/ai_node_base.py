@@ -336,7 +336,6 @@ class AiNode(Node):
     def onWorkerFinished(self, result, exec=True):
 
         self.busy = False
-        self.markDirty(False)
         if result is not None:
 
             if hasattr(self, "output_data_ports"):
@@ -347,6 +346,9 @@ class AiNode(Node):
 
             x = 0
             for port in ports:
+                if result[x] is not None:
+                    self.markDirty(False)
+
                 self.setOutput(port, result[x])
                 x += 1
 

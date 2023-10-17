@@ -425,7 +425,7 @@ class Scene(Serializable):
 
     def deserialize(self, data: dict, hashmap: dict={}, restore_id: bool=True, *args, **kwargs) -> bool:
         hashmap = {}
-        print("Attempting to load", data)
+        # print("Attempting to load", data)
         if restore_id: self.id = data['id']
 
         # -- deserialize NODES
