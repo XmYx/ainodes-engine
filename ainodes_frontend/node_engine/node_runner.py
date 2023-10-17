@@ -137,8 +137,9 @@ class NodeRunner:
                 self.running = False
                 self.start(loop=self.loop)
             return
-        self.reorder_nodes()
 
+
+        self.reorder_nodes()
         node_to_run = self.starting_nodes.pop(0)  # Process the first node in the list
         self.processed_nodes.append(node_to_run)  # Mark the node as processed
         #print(f"            [ Running {node_to_run} ] ")
@@ -166,8 +167,8 @@ class NodeRunner:
 
         node_to_run.markInvalid(True)
         node_to_run.content.update()
-
-        self.pool.start(worker)
+        if gs.should_run:
+            self.pool.start(worker)
     def get_starting_nodes(self):
 
         # Mark nodes with 'seed' as dirty

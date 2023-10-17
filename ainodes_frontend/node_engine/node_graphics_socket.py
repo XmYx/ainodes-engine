@@ -9,22 +9,26 @@ from qtpy.QtWidgets import QGraphicsItem
 
 from ainodes_frontend import singleton as gs
 
-SOCKET_COLORS = [
-    QColor("#FFFF7700"),
-    QColor("#FF52e220"),
-    QColor("#FF0056a6"),
-    QColor("#FFa86db1"),
-    QColor("#FFb54747"),
-    QColor("#FFdbe220"),
-    QColor("#FF888888"),
-    QColor("#FFFF7700"),
-    QColor("#FF52e220"),
-    QColor("#66FF99"),
-    QColor("#0099CC"), #VAE
-    QColor("#333300"),
-    QColor("#993366"),
-    QColor("#FF888888"),
+colors  = [
+    "#1E88E5",  # Base Blue
+    "#FFA726",  # Complementary to Base Blue
+    "#42A5F5",  # Lighter Blue
+    "#1565C0",  # Darker Blue
+    "#66BB6A",  # Contrasting Green
+    "#EC407A",  # Complementary to Green
+    "#81C784",  # Lighter Green
+    "#43A047",  # Darker Green
+    "#AB47BC",  # Vibrant Purple
+    "#FFEE58",  # Complementary to Purple
+    "#BA68C8",  # Lighter Purple
+    "#7E57C2",   # Darker Purple
+    "#00ACC1",
+    "#E53935"
+
 ]
+
+
+SOCKET_COLORS = [QColor(color) for color in colors]
 
 
 model_colors = {0:SOCKET_COLORS[9],
