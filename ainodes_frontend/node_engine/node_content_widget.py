@@ -13,6 +13,63 @@ from qtpy.QtWidgets import QWidget, QLabel, QVBoxLayout, QTextEdit
 
 from ainodes_frontend.node_engine.node_serializable import Serializable
 
+
+class CustomSlider(QtWidgets.QSlider):
+
+    def __init__(self, *args, **kwargs):
+        super(CustomSlider, self).__init__(*args, **kwargs)
+        self.setOrientation(QtCore.Qt.Horizontal)
+
+        # Variables to store the min and max labels
+        self.min_label = QtWidgets.QLabel(str(self.minimum()))
+        self.max_label = QtWidgets.QLabel(str(self.maximum()))
+
+        # Slider layout
+        self.layout = QtWidgets.QVBoxLayout(self)
+
+        label_layout = QtWidgets.QHBoxLayout()
+        # label_layout.addWidget(self.min_label)
+        # label_layout.addStretch(5)
+        # label_layout.addWidget(self.max_label)
+
+        self.layout.addLayout(label_layout)
+        self.layout.addWidget(self, alignment=QtCore.Qt.AlignCenter)  # Center the slider in the layout
+
+        # Update the handle label on value change
+        self.valueChanged.connect(self.update_handle_label)
+
+    def setMinimum(self, value):
+        super(CustomSlider, self).setMinimum(value)
+        self.min_label.setText(str(value))
+
+    def setMaximum(self, value):
+        super(CustomSlider, self).setMaximum(value)
+        self.max_label.setText(str(value))
+
+    def update_handle_label(self, value):
+        # Adjust the position of the handle label based on the current value
+        handle_width = 30  # Adjust as needed
+        handle_x = int(self.width() * (value - self.minimum()) / (self.maximum() - self.minimum()) - handle_width / 2)
+        # Adjust the Y coordinate to position the text in the middle of the slider
+        text_height = self.fontMetrics().height()
+        text_width = self.fontMetrics().averageCharWidth()
+        #print(len(str(value)))
+
+        handle_label_pos = QtCore.QPoint(handle_x + text_width, int((self.height() + text_height) / 2) - 3)
+
+        # Create a painter to draw the label on the slider
+        painter = QtGui.QPainter(self)
+        painter.setBrush(QtGui.QColor(70, 70, 70))  # Dark grey background
+        painter.drawRect(handle_x, 0, handle_width, self.height())
+        painter.setPen(QtGui.QColor(255, 255, 255))  # White text
+        painter.drawText(handle_label_pos, str(value))
+        painter.end()
+
+    def paintEvent(self, event):
+        # Paint the default slider
+        super(CustomSlider, self).paintEvent(event)
+        # Then paint the handle label
+        self.update_handle_label(self.value())
 class CustomSpinBox(QtWidgets.QSpinBox):
     set_signal = QtCore.Signal(int)
     def __init__(self, *args, **kwargs):
@@ -434,6 +491,38 @@ class QDMNodeContentWidget(QWidget, Serializable):
             setattr(self, spawn, spin_box)
         else:
             return spin_box
+    def create_slider(self, label_text, min_val, max_val, default_val, step=1, accessible_name=None, spawn=None) -> QtWidgets.QSlider:
+        """Create a spin box widget with the given label text, minimum value, maximum value, default value, and step value.
+
+        Args:
+            label_text (str): Text for the label of the spin box.
+            min_val (int): Minimum value of the spin box.
+            max_val (int): Maximum value of the spin box.
+            default_val (int): Default value of the spin box.
+            step (int, optional): Step value of the spin box. Defaults to 1.
+
+        Returns:
+            QtWidgets.QSpinBox: A spin box widget.
+        """
+        slider = CustomSlider()
+        slider.setOrientation(QtCore.Qt.Horizontal)
+        slider.setMinimum(min_val)
+        slider.setMaximum(max_val)
+        slider.setValue(default_val)
+        slider.setSingleStep(step)
+        slider.setObjectName(label_text)
+        if accessible_name is not None:
+            slider.setAccessibleName(accessible_name)
+        label = QtWidgets.QLabel(label_text)
+        layout = QtWidgets.QHBoxLayout()
+        layout.addWidget(label)
+        layout.addWidget(slider)
+        slider.layout = layout
+        self.widget_list.append(slider)
+        if spawn:
+            setattr(self, spawn, slider)
+        else:
+            return slider
     def create_double_spin_box(self, label_text:str, min_val:float =0.0, max_val:float=10.0, step:float=0.01, default_val:float=1.0, accessible_name=None, spawn=None) -> QtWidgets.QDoubleSpinBox:
         """Create a double spin box widget with the given label text, minimum value, maximum value, step, and default value.
 
@@ -594,7 +683,7 @@ class QDMNodeContentWidget(QWidget, Serializable):
                 row = i // grid
                 column = i % grid
                 if isinstance(item, QtWidgets.QWidget):
-                    if isinstance(item, QtWidgets.QComboBox) or isinstance(item, QtWidgets.QLineEdit) or isinstance(item, QtWidgets.QSpinBox) or isinstance(item, QtWidgets.QDoubleSpinBox):
+                    if isinstance(item, QtWidgets.QComboBox) or isinstance(item, QtWidgets.QLineEdit) or isinstance(item, QtWidgets.QSpinBox) or isinstance(item, QtWidgets.QDoubleSpinBox) or isinstance(item, QtWidgets.QSlider):
                         self.grid_layout.addLayout(item.layout, row, column)
                     else:
                         self.grid_layout.addWidget(item, row, column)
