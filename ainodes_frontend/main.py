@@ -49,23 +49,23 @@ if "Linux" in platform.platform():
     subprocess.check_call(["pip", "install", "triton==2.0.0"])
 if "Linux" in platform.platform():
 
-    try:
-        try:
-            from gi.repository import Gtk
-        except:
-            subprocess.check_call(["pip", "install", "pygobject"])
-            from gi.repository import Gtk
-
-        # Get the current GTK settings
-        settings = Gtk.Settings.get_default()
-        gtk_theme = settings.get_property("gtk-theme-name")
-        # Check the GTK theme
-        if gtk_theme.endswith("dark"):
-            qss_file = "ainodes_frontend/qss/nodeeditor-dark-linux.qss"
-        else:
-            qss_file = "ainodes_frontend/qss/nodeeditor.qss"
-    except:
-        gs.qss = "ainodes_frontend/qss/nodeeditor-dark-linux.qss"
+    # try:
+    #     try:
+    #         from gi.repository import Gtk
+    #     except:
+    #         subprocess.check_call(["pip", "install", "pygobject"])
+    #         from gi.repository import Gtk
+    #
+    #     # Get the current GTK settings
+    #     settings = Gtk.Settings.get_default()
+    #     gtk_theme = settings.get_property("gtk-theme-name")
+    #     # Check the GTK theme
+    #     if gtk_theme.endswith("dark"):
+    #         qss_file = "ainodes_frontend/qss/nodeeditor-dark-linux.qss"
+    #     else:
+    #         qss_file = "ainodes_frontend/qss/nodeeditor.qss"
+    # except:
+    gs.qss = "ainodes_frontend/qss/nodeeditor-dark-linux.qss"
 elif "Windows" in platform.platform():
 
     settings = QtCore.QSettings('HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize',

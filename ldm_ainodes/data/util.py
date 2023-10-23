@@ -1,6 +1,6 @@
 import torch
 
-from ldm.modules.midas.api import load_midas_transform
+from ldm_ainodes.modules.midas.api import load_midas_transform
 
 
 class AddMiDaS(object):

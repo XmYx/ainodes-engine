@@ -353,8 +353,8 @@ class QDMNodeContentWidget(QWidget, Serializable):
         label = QtWidgets.QLabel(label_text)
         layout = QtWidgets.QHBoxLayout()
 
-        layout.addWidget(label)
-        layout.addWidget(combo_box)
+        layout.addWidget(label, 1)
+        layout.addWidget(combo_box, 2)
         combo_box.layout = layout
         self.widget_list.append(combo_box)
         if spawn:
@@ -483,8 +483,8 @@ class QDMNodeContentWidget(QWidget, Serializable):
             spin_box.setAccessibleName(accessible_name)
         label = QtWidgets.QLabel(label_text)
         layout = QtWidgets.QHBoxLayout()
-        layout.addWidget(label)
-        layout.addWidget(spin_box)
+        layout.addWidget(label,1)
+        layout.addWidget(spin_box,1)
         spin_box.layout = layout
         self.widget_list.append(spin_box)
         if spawn:
@@ -515,8 +515,8 @@ class QDMNodeContentWidget(QWidget, Serializable):
             slider.setAccessibleName(accessible_name)
         label = QtWidgets.QLabel(label_text)
         layout = QtWidgets.QHBoxLayout()
-        layout.addWidget(label)
-        layout.addWidget(slider)
+        layout.addWidget(label,1)
+        layout.addWidget(slider,2)
         slider.layout = layout
         self.widget_list.append(slider)
         if spawn:
@@ -546,8 +546,8 @@ class QDMNodeContentWidget(QWidget, Serializable):
             double_spin_box.setAccessibleName(accessible_name)
         label = QtWidgets.QLabel(label_text)
         layout = QtWidgets.QHBoxLayout()
-        layout.addWidget(label)
-        layout.addWidget(double_spin_box)
+        layout.addWidget(label,1)
+        layout.addWidget(double_spin_box,1)
         double_spin_box.layout = layout
         self.widget_list.append(double_spin_box)
         if spawn:
@@ -671,7 +671,7 @@ class QDMNodeContentWidget(QWidget, Serializable):
             self.create_combo_box(gs.available_gpus, "Select GPU", spawn="gpu_id")
 
         self.main_layout = QtWidgets.QVBoxLayout(self)
-        self.main_layout.setContentsMargins(15, 15, 15, 25)
+        self.main_layout.setContentsMargins(5, 5, 5, 5)
 
         if grid:
             # Create a QGridLayout with the specified number of columns
@@ -683,6 +683,8 @@ class QDMNodeContentWidget(QWidget, Serializable):
                 row = i // grid
                 column = i % grid
                 if isinstance(item, QtWidgets.QWidget):
+                    item.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
+
                     if isinstance(item, QtWidgets.QComboBox) or isinstance(item, QtWidgets.QLineEdit) or isinstance(item, QtWidgets.QSpinBox) or isinstance(item, QtWidgets.QDoubleSpinBox) or isinstance(item, QtWidgets.QSlider):
                         self.grid_layout.addLayout(item.layout, row, column)
                     else:
@@ -698,9 +700,7 @@ class QDMNodeContentWidget(QWidget, Serializable):
                     self.main_layout.addLayout(item)
                 elif isinstance(item, QtWidgets.QWidget):
                     self.main_layout.addWidget(item)
-        #self.deafult_run_button = QtWidgets.QPushButton("Evaluate Node")
-        #self.main_layout.addWidget(self.deafult_run_button)
-        #self.deafult_run_button.clicked.connect(self.node.evalImplementation)
+
         self.setLayout(self.main_layout)
 
     def wheelEvent(self, event: QtGui.QWheelEvent):

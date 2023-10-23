@@ -16,7 +16,7 @@ from .util import (
     timestep_embedding,
 )
 from ..attention import SpatialTransformer
-from ldm.util import exists
+from ldm_ainodes.util import exists
 
 
 # dummy replace

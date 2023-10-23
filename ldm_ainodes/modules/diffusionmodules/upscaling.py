@@ -4,7 +4,7 @@ import numpy as np
 from functools import partial
 
 from .util import extract_into_tensor, make_beta_schedule
-from ldm.util import default
+from ldm_ainodes.util import default
 
 
 class AbstractLowScaleModel(nn.Module):

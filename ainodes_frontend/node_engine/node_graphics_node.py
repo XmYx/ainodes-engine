@@ -319,20 +319,21 @@ class QDMGraphicsBGNode(QGraphicsItem):
         if event.button() == QtCore.Qt.LeftButton:
             pos = event.scenePos()
             rect = QtCore.QRectF(pos.x() - 5, pos.y() - 5, 10, 10)
-            item = self.scene().items(rect)[0]
+            if len(self.scene().items(rect)) > 0:
+                item = self.scene().items(rect)[0]
 
-            if isinstance(item, QDMGraphicsEdge):
-                self.setFlag(QtWidgets.QGraphicsItem.ItemIsMovable, False)
-                return
-            if self.isSelected():
-                return
+                if isinstance(item, QDMGraphicsEdge):
+                    self.setFlag(QtWidgets.QGraphicsItem.ItemIsMovable, False)
+                    return
+                if self.isSelected():
+                    return
 
-            viewer = self.node.scene
-            [n.doSelect(False) for n in viewer.getSelectedItems()]
+                viewer = self.node.scene
+                [n.doSelect(False) for n in viewer.getSelectedItems()]
 
-            self._nodes += self.get_nodes(False)
-            [n.doSelect(True) for n in self._nodes]
-            self.pressed = True
+                self._nodes += self.get_nodes(False)
+                [n.doSelect(True) for n in self._nodes]
+                self.pressed = True
 
         elif event.button() == QtCore.Qt.MiddleButton:
             super().mousePressEvent(event)
