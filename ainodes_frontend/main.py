@@ -44,9 +44,9 @@ from ainodes_frontend.base.import_utils import update_all_nodes_req, import_node
 
 # Set environment variable QT_API to use PySide6
 # Install Triton if running on Linux
-if "Linux" in platform.platform():
-    import subprocess
-    subprocess.check_call(["pip", "install", "triton==2.0.0"])
+# if "Linux" in platform.platform():
+#     import subprocess
+#     subprocess.check_call(["pip", "install", "triton==2.0.0"])
 if "Linux" in platform.platform():
 
     # try:
