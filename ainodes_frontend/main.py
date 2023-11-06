@@ -3,6 +3,7 @@
 import datetime
 
 import yaml
+from PyQt6.QtCore import QFile
 from qtpy.QtWidgets import QProgressBar
 
 from qtpy.QtCore import QPropertyAnimation, QEasingCurve
@@ -65,21 +66,21 @@ if "Linux" in platform.platform():
     #     else:
     #         qss_file = "ainodes_frontend/qss/nodeeditor.qss"
     # except:
-    gs.qss = "ainodes_frontend/qss/nodeeditor-dark-linux.qss"
+    gs.qss = "qss/nodeeditor-dark-linux.qss"
 elif "Windows" in platform.platform():
 
     settings = QtCore.QSettings('HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize',
                          QtCore.QSettings.Format.NativeFormat)
     theme = settings.value('AppsUseLightTheme')
     if theme == 0:
-        gs.qss = "ainodes_frontend/qss/nodeeditor-dark.qss"
+        gs.qss = "qss/nodeeditor-dark.qss"
     else:
-        gs.qss = "ainodes_frontend/qss/nodeeditor.qss"
+        gs.qss = "qss/nodeeditor.qss"
     import ctypes
     myappid = u'mycompany.myproduct.subproduct.version'  # arbitrary string
     ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
 else:
-    gs.qss = "ainodes_frontend/qss/nodeeditor-dark.qss"
+    gs.qss = "qss/nodeeditor-dark.qss"
 
 print("QSS SET", gs.qss)
 def append_subfolders_to_syspath(base_path):
@@ -251,15 +252,20 @@ if __name__ == "__main__":
         current_step += 1
 
     from ainodes_frontend.base import CalculatorWindow
-
+    res = ''
+    file = QFile(os.path.join(os.path.dirname(__file__), gs.qss))
+    file.open(QFile.ReadOnly | QFile.Text)
+    stylesheet = file.readAll()
+    res += "\n" + str(stylesheet, encoding='utf-8')
     ainodes_qapp.setApplicationName("aiNodes - Engine")
+    ainodes_qapp.setStyleSheet(res)
     wnd = CalculatorWindow(ainodes_qapp)
-    wnd.stylesheet_filename = os.path.join(os.path.dirname(__file__), gs.qss)
+    #wnd.stylesheet_filename = os.path.join(os.path.dirname(__file__), gs.qss)
 
-    loadStylesheets(
-        os.path.join(gs.qss),
-        wnd.stylesheet_filename
-    )
+    # loadStylesheets(
+    #     wnd.stylesheet_filename,
+    #     wnd.stylesheet_filename
+    # )
 
     wnd.show()
     wnd.fade_in_animation()

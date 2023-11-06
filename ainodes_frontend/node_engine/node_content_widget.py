@@ -351,8 +351,8 @@ class QDMNodeContentWidget(QWidget, Serializable):
         if accessible_name is not None:
             combo_box.setAccessibleName(accessible_name)
         label = QtWidgets.QLabel(label_text)
-        layout = QtWidgets.QHBoxLayout()
 
+        layout = QtWidgets.QHBoxLayout()
         layout.addWidget(label, 1)
         layout.addWidget(combo_box, 2)
         combo_box.layout = layout
@@ -607,6 +607,7 @@ class QDMNodeContentWidget(QWidget, Serializable):
             setattr(self, spawn, button_layout)
         else:
             return button_layout
+
     def create_horizontal_layout(self, buttons, spawn=None) -> QtWidgets.QHBoxLayout:
         """Create a horizontal button layout containing the given buttons.
 
@@ -618,13 +619,16 @@ class QDMNodeContentWidget(QWidget, Serializable):
         """
         horizontal_layout = QtWidgets.QHBoxLayout()
         for widget in buttons:
-
-            if isinstance(widget, QtWidgets.QCheckBox):
-                palette = QtGui.QPalette()
-                palette.setColor(QtGui.QPalette.WindowText, QtGui.QColor("white"))
-                palette.setColor(QtGui.QPalette.Disabled, QtGui.QPalette.WindowText, QtGui.QColor("black"))
-                widget.setPalette(palette)
-            horizontal_layout.addWidget(widget)
+            # Check if the widget is not None and has no parent
+            if widget is not None and widget.parentWidget() is None:
+                if isinstance(widget, QtWidgets.QCheckBox):
+                    palette = QtGui.QPalette()
+                    palette.setColor(QtGui.QPalette.WindowText, QtGui.QColor("white"))
+                    palette.setColor(QtGui.QPalette.Disabled, QtGui.QPalette.WindowText, QtGui.QColor("black"))
+                    widget.setPalette(palette)
+                horizontal_layout.addWidget(widget)
+            else:
+                print(f"Cannot add widget: {widget} to the layout. It's either 'None' or already has a parent.")
         self.widget_list.append(horizontal_layout)
         if spawn:
             setattr(self, spawn, horizontal_layout)
@@ -688,6 +692,7 @@ class QDMNodeContentWidget(QWidget, Serializable):
                     if isinstance(item, QtWidgets.QComboBox) or isinstance(item, QtWidgets.QLineEdit) or isinstance(item, QtWidgets.QSpinBox) or isinstance(item, QtWidgets.QDoubleSpinBox) or isinstance(item, QtWidgets.QSlider):
                         self.grid_layout.addLayout(item.layout, row, column)
                     else:
+                        item.layout = None
                         self.grid_layout.addWidget(item, row, column)
                 elif isinstance(item, QtWidgets.QLayout):
                     self.grid_layout.addLayout(item, row, column)

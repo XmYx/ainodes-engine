@@ -501,6 +501,7 @@ class QDMGraphicsBGNode(QGraphicsItem):
     def paint(self, painter, QStyleOptionGraphicsItem, widget=None):
         """Painting the rounded rectanglar `Node`"""
         # title
+        painter.beginNativePainting()
         path_title = QPainterPath()
         path_title.setFillRule(Qt.WindingFill)
         path_title.addRoundedRect(0, 0, self.width, self.title_height, self.edge_roundness, self.edge_roundness)
@@ -538,6 +539,7 @@ class QDMGraphicsBGNode(QGraphicsItem):
         else:"""
         painter.setPen(self._pen_default if not self.isSelected() else self._pen_selected)
         painter.drawPath(path_outline.simplified())
+        painter.endNativePainting()
     def on_sizer_pos_changed(self, pos):
         self._width = pos.x() + self._sizer.size
         self._height = pos.y() + self._sizer.size
