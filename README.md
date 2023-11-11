@@ -4,7 +4,7 @@
 
 <p>aiNodes is a simple and easy-to-use Python-based AI image / motion picture generator node engine.</p>
 
-<p>A desktop ai centered node engine with a live execution chain, python code editor node, and plug-in support, officially supported by Deforum.
+<p>A desktop-ai-centered node engine with a live execution chain, python code editor node, and plug-in support, officially supported by Deforum.
 We are thankful for many great functions adapted from ComfyUI, and various open-source projects, that make this framework possible to exist.
   
 ## 💖 Support the project
@@ -49,8 +49,8 @@ Requirements:
 
  Windows:
 <ol>
-  <li>Download the 1 Click Installer from the releases on the right menu and run it in a folder of your choice</li>
-  <li>It will create a virtual environment, and install all dependencies, to start next time, you can use the shortcut on your Desktop.</li>
+  <li>Download the one-click installer from the releases on the right menu and run it in a folder of your choice.</li>
+  <li>It will create a virtual environment and install all dependencies, to start next time, you can use the shortcut on your desktop.</li>
 </ol>
 
 Linux:
@@ -90,7 +90,7 @@ launch with:
 source nodes_env/bin/activate
 python main.py
 ```
-Once the app is up and running, you can start check the File - Example Graphs option to start creating, and you can also access your model folders from the File menu.
+Once the app is up and running, you can start checking the File - Example Graphs option to start creating, and you can also access your model folders from the File menu.
 
 <a name="-contributing"></a>
 <h2>🤝 Contributing</h2>
@@ -99,7 +99,7 @@ Once the app is up and running, you can start check the File - Example Graphs op
 
 <h2>🙌 Features</h2>
 <a name="-features"></a>
-<p>aiNodes is an open source desktop ai based image / motion generator, editor suite designed to be flexible, and with an Unreal-like execution chain. It natively supports:</p>
+<p>aiNodes is an open-source desktop ai-based image/motion generator, editor suite designed to be flexible, and with an Unreal-like execution chain. It natively supports:</p>
 
 <ol>
   <li>Deforum</li>
@@ -120,7 +120,7 @@ Once the app is up and running, you can start check the File - Example Graphs op
 </ol>
 
 This project came to life thanks to many great backend functions borrowed from ComfyUI, and adapted to work in this unique, 
-live, controllable manner with a strict user declared execution chain, leading to data values possible to be iterated at
+live, controllable manner with a strict user-declared execution chain, leading to data values possible to be iterated at
 different points in time in your pipeline.
 
 <a name="-license"></a>
