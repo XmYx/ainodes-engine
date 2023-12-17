@@ -11,9 +11,9 @@ QMdiArea QTabBar::tab:top:!selected:hover{background:qlineargradient(x1 : 0,y1 :
 QMdiArea QTabBar QToolButton{background:qlineargradient(x1 : 0,y1 : 0,x2 : 0,y2 : 1,stop : 0 #878787,stop : .1 #616161,stop : .89 #4f4f4f,stop : 1 #4f4f4f);border:1px solid #333;border-radius:0}
 QMdiArea QTabBar QToolButton::left-arrow{image:url(":icons/small_arrow_left-light.png")}
 QMdiArea QTabBar QToolButton::right-arrow{image:url(":icons/small_arrow_right-light.png")}
-QMdiArea QTabBar::close-button:selected{image:url(":icons/tab_close_btn.png");origin:border;subcontrol-origin:border;subcontrol-position:right bottom}
+QMdiArea QTabBar::close-button:selected{image:url(":icons/tab_close_btn.png");subcontrol-origin:border;subcontrol-position:right bottom}
 QMdiArea QTabBar::close-button:!selected{image:url(":icons/tab_close_nonselected_btn.png")}
-QMdiSubWindow{border-size:1px;border-style:solid;background:#616161}
+QMdiSubWindow{border-width:1px;border-style:solid;background:#616161}
 QTabBar::tab:selected,QTabBar::tab:hover{color:#eee}
 QDockWidget{color:#ddd;font-weight:bold;titlebar-close-icon:url(":icons/docktitle-close-btn-light.png");titlebar-normal-icon:url(":icons/docktitle-normal-btn-light.png")}
 QDockWidget{color:#ddd;font-weight:bold;titlebar-close-icon:url(":icons/docktitle-close-btn-light.png");titlebar-normal-icon:url(":icons/docktitle-normal-btn-light.png")}

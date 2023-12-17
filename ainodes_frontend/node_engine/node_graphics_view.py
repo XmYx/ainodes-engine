@@ -204,7 +204,7 @@ class QDMGraphicsView(QGraphicsView):
         self.mini_map = MiniMapView(self.grScene)
         self.mini_map.setParent(self)
         self.mini_map.setFixedSize(400, 300)  # Set the size as required
-
+        self.mini_map.setVisible(False)
         # Configure the mini-map
         self.mini_map.setRenderHint(QtGui.QPainter.Antialiasing)
         self.mini_map.setViewportUpdateMode(QGraphicsView.BoundingRectViewportUpdate)

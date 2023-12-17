@@ -161,25 +161,26 @@ class NodeEditorWindow(QMainWindow):
         # Add other actions to the File menu
         self.fileMenu.addAction(self.actNew)
         self.fileMenu.addSeparator()
+        if hasattr(gs, 'prefs'):
+            self.defaultDirsSubMenu = QtWidgets.QMenu('User Directories', self)
+            default_dirs = {"Stills":"output/stills",
+                            "MP4s":"output/mp4s",
+                            "SD Models":gs.prefs.checkpoints,
+                            "VAE":gs.prefs.vae,
+                            "ControlNet":gs.prefs.controlnet,
+                            "Embeddings":gs.prefs.embeddings,
+                            "Upscalers":gs.prefs.upscalers,
+                            "LORAs":gs.prefs.loras,
+                            "T2I Adapters":gs.prefs.t2i_adapter}
 
-        self.defaultDirsSubMenu = QtWidgets.QMenu('User Directories', self)
-        default_dirs = {"Stills":"output/stills",
-                        "MP4s":"output/mp4s",
-                        "SD Models":gs.prefs.checkpoints,
-                        "VAE":gs.prefs.vae,
-                        "ControlNet":gs.prefs.controlnet,
-                        "Embeddings":gs.prefs.embeddings,
-                        "Upscalers":gs.prefs.upscalers,
-                        "LORAs":gs.prefs.loras,
-                        "T2I Adapters":gs.prefs.t2i_adapter}
+            for dir_name, dir in default_dirs.items():
+                dir_action = QAction(dir_name, self)
+                dir_action.triggered.connect(partial(open_folder_in_file_browser, os.path.join(os.getcwd(), dir)))
+                self.defaultDirsSubMenu.addAction(dir_action)
 
-        for dir_name, dir in default_dirs.items():
-            dir_action = QAction(dir_name, self)
-            dir_action.triggered.connect(partial(open_folder_in_file_browser, os.path.join(os.getcwd(), dir)))
-            self.defaultDirsSubMenu.addAction(dir_action)
-
-        self.fileMenu.addMenu(self.defaultDirsSubMenu)
-
+            self.fileMenu.addMenu(self.defaultDirsSubMenu)
+        else:
+            print("Warning, PATHs were not set up")
         self.fileMenu.addSeparator()
         self.fileMenu.addAction(self.actOpen)
         self.fileMenu.addAction(self.actSave)

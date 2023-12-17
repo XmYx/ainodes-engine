@@ -1,3 +1,0 @@
-XmYx/ainodes_engine_base_nodes main
-XmYx/ainodes_engine_deforum_nodes main
-XmYx/ainodes_engine_comfy_nodes main

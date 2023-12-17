@@ -1,7 +1,7 @@
-import gc
+#import gc
 import threading
 
-import torch
+#import torch
 from qtpy import QtWidgets, QtCore, QtGui
 from qtpy.QtCore import QRectF
 from qtpy.QtGui import QImage
@@ -151,8 +151,8 @@ class AiNode(Node):
             height = self.dim[1]
             self.grNode.width = width
             self.grNode.height = height
-            self.content.setMinimumHeight(height - 100)
-            self.content.setMinimumWidth(width)
+            self.content.setMinimumHeight(height - 125)
+            self.content.setMinimumWidth(width - 10)
         self.grNode.icon = QtGui.QImage(self.icon)
         self.grNode.thumbnail = self.grNode.icon.scaled(64, 64, QtCore.Qt.KeepAspectRatio)
         self.content.eval_signal.connect(self.evalImplementation)
@@ -492,18 +492,12 @@ class AiNode(Node):
         return dialog
     def can_run(self):
 
-
-        # if len(self.inputs) == 0:
-        #     return True
         if hasattr(self, "force_run"):
             if self.force_run:
                 return True
         for socket in self.inputs:
             if socket.is_input and socket.hasAnyEdge():
                 for edge in socket.edges:
-                    # if edge.end_socket.node.isDirty():
-                    #     return False
-                    #print(self, edge.start_socket.node, edge.end_socket.node)
                     if edge.start_socket.node is not self:
                         if edge.start_socket.node.isDirty():
 

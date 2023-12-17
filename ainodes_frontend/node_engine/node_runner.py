@@ -1,6 +1,6 @@
-import msgpack
+#import msgpack
 from PyQt6.QtCore import QThreadPool, QRunnable, QUrl
-from PyQt6.QtWebSockets import QWebSocket
+#from PyQt6.QtWebSockets import QWebSocket
 from qtpy import QtCore
 
 from ainodes_frontend.base import AiNode
@@ -12,7 +12,8 @@ class NodeWorker(QRunnable):
         self.node = node
 
     def run(self):
-        self.node.onWorkerFinished(result=self.node.evalImplementation_thread(), exec=False)
+        data = self.node.evalImplementation_thread()
+        self.node.onWorkerFinished(result=data, exec=False)
         self.node.content.update()
         self.node.content.finished.emit()
 
@@ -37,15 +38,15 @@ class NodeRunner:
         print("API MESSAGE", msg)
 
 
-    def setup_api_connection(self):
-        self.websocket = QWebSocket()
-
-        self.websocket.connected.connect(self.on_connected)
-        self.websocket.disconnected.connect(self.on_disconnected)
-        self.websocket.textMessageReceived.connect(self.on_text_message_received)
-        self.websocket.binaryMessageReceived.connect(self.on_binary_message_received)
-
-        self.websocket.open(QUrl('ws://localhost:8000/ws/process_nodes'))
+    # def setup_api_connection(self):
+    #     self.websocket = QWebSocket()
+    #
+    #     self.websocket.connected.connect(self.on_connected)
+    #     self.websocket.disconnected.connect(self.on_disconnected)
+    #     self.websocket.textMessageReceived.connect(self.on_text_message_received)
+    #     self.websocket.binaryMessageReceived.connect(self.on_binary_message_received)
+    #
+    #     self.websocket.open(QUrl('ws://localhost:8000/ws/process_nodes'))
 
     def on_connected(self):
         print("WebSocket connected!")
@@ -58,7 +59,7 @@ class NodeRunner:
         pass
 
     def on_binary_message_received(self, message):
-        data = msgpack.unpackb(message, raw=False)
+        #data = msgpack.unpackb(message, raw=False)
         self.process_node_message(data)
 
     def collect_nodes_to_json(self):
@@ -75,10 +76,13 @@ class NodeRunner:
         #     data[node.name] = node.params  # Example, adjust accordingly
         return data
     def reorder_nodes(self):
+
+
+
         """Reorder starting_nodes to prioritize nodes that can run."""
 
         # Check if the node is part of any SubgraphNode's nodes list
-        from ai_nodes.ainodes_engine_base_nodes.subgraph_nodes.subgraph_node import SubgraphNode
+        from ainodes_frontend.nodes.subgraph_nodes.subgraph_node import SubgraphNode
         def is_part_of_subgraph(node):
             for n in self.parent.nodes:
 
@@ -87,7 +91,7 @@ class NodeRunner:
             return False
 
         def sorting_key(node):
-            from ai_nodes.ainodes_engine_base_nodes.image_nodes.image_preview_node import ImagePreviewNode
+            from ainodes_frontend.nodes.image_nodes.image_preview_node import ImagePreviewNode
 
             is_image_preview = isinstance(node, ImagePreviewNode)
             is_subgraph = isinstance(node, SubgraphNode)
@@ -140,6 +144,7 @@ class NodeRunner:
 
 
         self.reorder_nodes()
+
         node_to_run = self.starting_nodes.pop(0)  # Process the first node in the list
         self.processed_nodes.append(node_to_run)  # Mark the node as processed
         #print(f"            [ Running {node_to_run} ] ")
@@ -154,11 +159,11 @@ class NodeRunner:
             # for output_socket in node_to_run.outputs:
             #     for edge in output_socket.edges:
             #         downstream_node = edge.end_socket.node
-            #         if downstream_node not in self.starting_nodes and downstream_node not in self.skipped_nodes and downstream_node not in self.processed_nodes:
-            #             if downstream_node.can_run():
-            #                 self.starting_nodes.append(downstream_node)
-            #             else:
-            #                 self.skipped_nodes.append(downstream_node)
+            #         if downstream_node not in self.starting_nodes and downstream_node not in self.processed_nodes:
+            #             #if downstream_node.can_run():
+            #             self.starting_nodes.append(downstream_node)
+                        #else:
+                        #    self.skipped_nodes.append(downstream_node)
 
             self.parent.getView().update()
             self.run_next()  # Recursive call
@@ -214,7 +219,7 @@ class NodeRunner:
 
             # Check for SubgraphNode instances and add their nodes to starting_nodes
             for node in self.parent.nodes:
-                from ai_nodes.ainodes_engine_base_nodes.subgraph_nodes.subgraph_node import SubgraphNode
+                from ainodes_frontend.nodes.subgraph_nodes.subgraph_node import SubgraphNode
                 if isinstance(node, SubgraphNode):  # Assuming 'nodes' is the attribute that holds the list of nodes for a SubgraphNode
                     nodes_to_check = node.get_nodes()
                     for node in nodes_to_check:

@@ -351,10 +351,10 @@ class QDMNodeContentWidget(QWidget, Serializable):
         if accessible_name is not None:
             combo_box.setAccessibleName(accessible_name)
         label = QtWidgets.QLabel(label_text)
-        layout = QtWidgets.QHBoxLayout()
 
-        layout.addWidget(label)
-        layout.addWidget(combo_box)
+        layout = QtWidgets.QHBoxLayout()
+        layout.addWidget(label, 1)
+        layout.addWidget(combo_box, 2)
         combo_box.layout = layout
         self.widget_list.append(combo_box)
         if spawn:
@@ -483,8 +483,8 @@ class QDMNodeContentWidget(QWidget, Serializable):
             spin_box.setAccessibleName(accessible_name)
         label = QtWidgets.QLabel(label_text)
         layout = QtWidgets.QHBoxLayout()
-        layout.addWidget(label)
-        layout.addWidget(spin_box)
+        layout.addWidget(label,1)
+        layout.addWidget(spin_box,1)
         spin_box.layout = layout
         self.widget_list.append(spin_box)
         if spawn:
@@ -515,8 +515,8 @@ class QDMNodeContentWidget(QWidget, Serializable):
             slider.setAccessibleName(accessible_name)
         label = QtWidgets.QLabel(label_text)
         layout = QtWidgets.QHBoxLayout()
-        layout.addWidget(label)
-        layout.addWidget(slider)
+        layout.addWidget(label,1)
+        layout.addWidget(slider,2)
         slider.layout = layout
         self.widget_list.append(slider)
         if spawn:
@@ -546,8 +546,8 @@ class QDMNodeContentWidget(QWidget, Serializable):
             double_spin_box.setAccessibleName(accessible_name)
         label = QtWidgets.QLabel(label_text)
         layout = QtWidgets.QHBoxLayout()
-        layout.addWidget(label)
-        layout.addWidget(double_spin_box)
+        layout.addWidget(label,1)
+        layout.addWidget(double_spin_box,1)
         double_spin_box.layout = layout
         self.widget_list.append(double_spin_box)
         if spawn:
@@ -578,8 +578,9 @@ class QDMNodeContentWidget(QWidget, Serializable):
         palette.setColor(QtGui.QPalette.WindowText, QtGui.QColor("white"))
         palette.setColor(QtGui.QPalette.Disabled, QtGui.QPalette.WindowText, QtGui.QColor("black"))
         check_box.setPalette(palette)
-        self.widget_list.append(check_box)
+
         if spawn:
+            self.widget_list.append(check_box)
             setattr(self, spawn, check_box)
         else:
             return check_box
@@ -607,6 +608,7 @@ class QDMNodeContentWidget(QWidget, Serializable):
             setattr(self, spawn, button_layout)
         else:
             return button_layout
+
     def create_horizontal_layout(self, buttons, spawn=None) -> QtWidgets.QHBoxLayout:
         """Create a horizontal button layout containing the given buttons.
 
@@ -618,13 +620,16 @@ class QDMNodeContentWidget(QWidget, Serializable):
         """
         horizontal_layout = QtWidgets.QHBoxLayout()
         for widget in buttons:
-
-            if isinstance(widget, QtWidgets.QCheckBox):
-                palette = QtGui.QPalette()
-                palette.setColor(QtGui.QPalette.WindowText, QtGui.QColor("white"))
-                palette.setColor(QtGui.QPalette.Disabled, QtGui.QPalette.WindowText, QtGui.QColor("black"))
-                widget.setPalette(palette)
-            horizontal_layout.addWidget(widget)
+            # Check if the widget is not None and has no parent
+            if widget is not None and widget.parentWidget() is None:
+                if isinstance(widget, QtWidgets.QCheckBox):
+                    palette = QtGui.QPalette()
+                    palette.setColor(QtGui.QPalette.WindowText, QtGui.QColor("white"))
+                    palette.setColor(QtGui.QPalette.Disabled, QtGui.QPalette.WindowText, QtGui.QColor("black"))
+                    widget.setPalette(palette)
+                horizontal_layout.addWidget(widget)
+            else:
+                print(f"Cannot add widget: {widget} to the layout. It's either 'None' or already has a parent.")
         self.widget_list.append(horizontal_layout)
         if spawn:
             setattr(self, spawn, horizontal_layout)
@@ -648,7 +653,7 @@ class QDMNodeContentWidget(QWidget, Serializable):
         progress_bar.setMaximum(max_val)
         progress_bar.setValue(default_val)
         progress_bar.setObjectName(label_text)
-        label = QtWidgets.QLabel(label_text)
+        label = QtWidgets.QLabel()
         layout = QtWidgets.QHBoxLayout()
         layout.addWidget(label)
         layout.addWidget(progress_bar)
@@ -671,7 +676,7 @@ class QDMNodeContentWidget(QWidget, Serializable):
             self.create_combo_box(gs.available_gpus, "Select GPU", spawn="gpu_id")
 
         self.main_layout = QtWidgets.QVBoxLayout(self)
-        self.main_layout.setContentsMargins(15, 15, 15, 25)
+        self.main_layout.setContentsMargins(5, 5, 5, 5)
 
         if grid:
             # Create a QGridLayout with the specified number of columns
@@ -683,9 +688,12 @@ class QDMNodeContentWidget(QWidget, Serializable):
                 row = i // grid
                 column = i % grid
                 if isinstance(item, QtWidgets.QWidget):
+                    item.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
+
                     if isinstance(item, QtWidgets.QComboBox) or isinstance(item, QtWidgets.QLineEdit) or isinstance(item, QtWidgets.QSpinBox) or isinstance(item, QtWidgets.QDoubleSpinBox) or isinstance(item, QtWidgets.QSlider):
                         self.grid_layout.addLayout(item.layout, row, column)
                     else:
+                        item.layout = None
                         self.grid_layout.addWidget(item, row, column)
                 elif isinstance(item, QtWidgets.QLayout):
                     self.grid_layout.addLayout(item, row, column)
@@ -698,9 +706,7 @@ class QDMNodeContentWidget(QWidget, Serializable):
                     self.main_layout.addLayout(item)
                 elif isinstance(item, QtWidgets.QWidget):
                     self.main_layout.addWidget(item)
-        #self.deafult_run_button = QtWidgets.QPushButton("Evaluate Node")
-        #self.main_layout.addWidget(self.deafult_run_button)
-        #self.deafult_run_button.clicked.connect(self.node.evalImplementation)
+
         self.setLayout(self.main_layout)
 
     def wheelEvent(self, event: QtGui.QWheelEvent):

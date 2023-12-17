@@ -319,20 +319,21 @@ class QDMGraphicsBGNode(QGraphicsItem):
         if event.button() == QtCore.Qt.LeftButton:
             pos = event.scenePos()
             rect = QtCore.QRectF(pos.x() - 5, pos.y() - 5, 10, 10)
-            item = self.scene().items(rect)[0]
+            if len(self.scene().items(rect)) > 0:
+                item = self.scene().items(rect)[0]
 
-            if isinstance(item, QDMGraphicsEdge):
-                self.setFlag(QtWidgets.QGraphicsItem.ItemIsMovable, False)
-                return
-            if self.isSelected():
-                return
+                if isinstance(item, QDMGraphicsEdge):
+                    self.setFlag(QtWidgets.QGraphicsItem.ItemIsMovable, False)
+                    return
+                if self.isSelected():
+                    return
 
-            viewer = self.node.scene
-            [n.doSelect(False) for n in viewer.getSelectedItems()]
+                viewer = self.node.scene
+                [n.doSelect(False) for n in viewer.getSelectedItems()]
 
-            self._nodes += self.get_nodes(False)
-            [n.doSelect(True) for n in self._nodes]
-            self.pressed = True
+                self._nodes += self.get_nodes(False)
+                [n.doSelect(True) for n in self._nodes]
+                self.pressed = True
 
         elif event.button() == QtCore.Qt.MiddleButton:
             super().mousePressEvent(event)
@@ -500,6 +501,7 @@ class QDMGraphicsBGNode(QGraphicsItem):
     def paint(self, painter, QStyleOptionGraphicsItem, widget=None):
         """Painting the rounded rectanglar `Node`"""
         # title
+        painter.beginNativePainting()
         path_title = QPainterPath()
         path_title.setFillRule(Qt.WindingFill)
         path_title.addRoundedRect(0, 0, self.width, self.title_height, self.edge_roundness, self.edge_roundness)
@@ -537,6 +539,7 @@ class QDMGraphicsBGNode(QGraphicsItem):
         else:"""
         painter.setPen(self._pen_default if not self.isSelected() else self._pen_selected)
         painter.drawPath(path_outline.simplified())
+        painter.endNativePainting()
     def on_sizer_pos_changed(self, pos):
         self._width = pos.x() + self._sizer.size
         self._height = pos.y() + self._sizer.size

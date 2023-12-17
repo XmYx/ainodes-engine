@@ -45,7 +45,7 @@ def import_nodes_from_directory(directory):
 
 
 def import_nodes_from_subdirectories(directory):
-
+    import_nodes_from_directory(directory)
     if "ainodes_backend" not in directory and "backend" not in directory and directory.endswith("_nodes"):
         print("Importing from", directory)
         for subdir in os.listdir(directory):

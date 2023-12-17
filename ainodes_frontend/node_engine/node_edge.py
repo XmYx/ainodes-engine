@@ -154,6 +154,10 @@ class Edge(Serializable):
         :return: ``True`` if the Edge is valid or ``False`` if not
         :rtype: ``bool``
         """
+
+        if start_socket.socket_type == 7 or end_socket.socket_type == 7:
+            return True
+        # We Handled the UniNode 's connection here
         for validator in cls.getEdgeValidators():
             if not validator(start_socket, end_socket):
                 return False
