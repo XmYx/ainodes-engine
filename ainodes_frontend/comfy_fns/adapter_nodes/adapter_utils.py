@@ -50,7 +50,51 @@ def pil2tensor(image):
     return torch.from_numpy(np.array(image).astype(np.float32) / 255.0).unsqueeze(0)
 
 
+import inspect
 
+import inspect
+import re
+
+def extract_init_params(cls):
+    if not inspect.isclass(cls):
+        raise TypeError("Provided object is not a class")
+
+    init_method = cls.__init__
+    if not init_method:
+        return []
+
+    # Get the source code of the __init__ method
+    source = inspect.getsource(init_method)
+
+    # Regular expression to find attribute assignments
+    attr_pattern = re.compile(r"self\.(__(\w+))\s*=\s*(.*)")
+
+    # Find all matches in the source code
+    matches = attr_pattern.findall(source)
+
+    # Extract attribute names and values
+    attrs = {match[0]: match[2] for match in matches}
+
+    return attrs
+
+def set_attribute(instance, original_class_name, attr_name, attr_value):
+    # Check if the attribute name starts with an underscore (private attribute)
+    if attr_name.startswith('_'):
+        # Manually mangle the name to match Python's private variable naming scheme
+        mangled_name = f'_{original_class_name}{attr_name}'
+        setattr(instance, mangled_name, attr_value)
+    else:
+        # Set the attribute directly
+        setattr(instance, attr_name, attr_value)
+
+def instantiate_and_extract_attrs(class_to_instantiate):
+    # Create an instance of the class
+    instance = class_to_instantiate()
+
+    # Extract all attributes from the instance
+    attributes = instance.__dict__
+
+    return attributes
 
 def create_node(node_class, node_name, ui_inputs, inputs, input_names, outputs, output_names, category_input, fn=None):
 
@@ -176,6 +220,28 @@ def create_node(node_class, node_name, ui_inputs, inputs, input_names, outputs, 
         def __init__(self, scene):
             super().__init__(scene, inputs=inputs, outputs=outputs)
             self.fn = fn if fn else getattr(node_class, node_class.FUNCTION, None)
+            import inspect
+            # Dynamically extract and set parameters from the __init__ method
+            # init_signature = inspect.signature(node_class.__init__)
+            # init_params = init_signature.parameters
+            # print(init_signature)
+            dumb_params = extract_init_params(node_class)
+            init_params = instantiate_and_extract_attrs(node_class)
+            print(init_params)
+
+            for param_name, param_value in dumb_params.items():
+                set_attribute(self, node_class.__name__, param_name, param_value)
+            for param_name, param_info in init_params.items():
+                # Skip 'self' parameter
+                #if param_name == 'self':
+                #    continue
+
+                # Get default value of the parameter
+                #default_value = param_info.default if param_info.default is not inspect.Parameter.empty else None
+                #print(param_name)
+                # Set the parameter in the Node instance
+                #set_attribute(self, node_class.__name__, param_name, param_info)
+                setattr(self, param_name, param_info)
 
             self.output_names = output_names
             self.output_types = outputs
@@ -198,6 +264,7 @@ def create_node(node_class, node_name, ui_inputs, inputs, input_names, outputs, 
             self.cache = {}
 
             self.device = gs.device
+            self.loaded_lora = None
 
         @torch.inference_mode()
         def evalImplementation_thread(self):

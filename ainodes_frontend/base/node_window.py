@@ -515,8 +515,7 @@ class NodesConsole(ConsoleWidget):
             self.output.insertPlainText(tqdm_content)
         else:
             # Insert non-tqdm text normally
-            self.output.insertPlainText(strn)
-
+            self.output.insertPlainText(strn + '\n')
         # Handle scroll logic
         sb = self.output.verticalScrollBar()
         if scrollToBottom == 'auto' or scrollToBottom:
