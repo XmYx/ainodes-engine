@@ -8,7 +8,7 @@ qtpy==2.4.1
 requests==2.31.0
 pyqtgraph==0.13.3
 pyyaml==6.0.1
-https://github.com/chengzeyi/stable-fast/releases/download/v0.0.14/stable_fast-0.0.14+torch211cu121-cp310-cp310-win_amd64.whl
+https://github.com/chengzeyi/stable-fast/releases/download/v0.0.15/stable_fast-0.0.15+torch210cu121-cp310-cp310-manylinux2014_x86_64.whl
 diffusers==0.24.0
 transformers==4.36.0
 xformers==0.0.23
@@ -23,4 +23,4 @@ rich
 psutil
 PyQt6-QScintilla
 pyflakes
-#git+https://github.com/deforum-studio/deforum.git
+git+https://github.com/deforum-studio/deforum.git

@@ -62,32 +62,32 @@ pip install -r requirements.txt
 
 setlocal enabledelayedexpansion
 
-set "repositories_file=config/repositories.txt"
-set "custom_nodes_folder=ai_nodes"
+@REM set "repositories_file=config/repositories.txt"
+@REM set "custom_nodes_folder=ai_nodes"
+@REM
+@REM rem Read repositories and branch names from repositories.txt
+@REM for /f "tokens=1,2" %%A in (%repositories_file%) do (
+@REM   set "repository=%%A"
+@REM   set "branch=%%B"
+@REM   echo Cloning repository: !repository! Branch: !branch!
+@REM
+@REM   rem Go to ai_nodes folder and clone the repository
+@REM   cd "%custom_nodes_folder%"
+@REM   git clone -b !branch! https://www.github.com/!repository!
+@REM
+@REM   rem Return to the original directory
+@REM   cd "%~dp0"
+@REM )
 
-rem Read repositories and branch names from repositories.txt
-for /f "tokens=1,2" %%A in (%repositories_file%) do (
-  set "repository=%%A"
-  set "branch=%%B"
-  echo Cloning repository: !repository! Branch: !branch!
-
-  rem Go to ai_nodes folder and clone the repository
-  cd "%custom_nodes_folder%"
-  git clone -b !branch! https://www.github.com/!repository!
-
-  rem Return to the original directory
-  cd "%~dp0"
-)
-
-rem Go into each top subdirectory of ai_nodes and run pip install
-for /d %%B in (%custom_nodes_folder%\*) do (
-  echo Installing requirements in directory: %%B
-  if exist "%%B\requirements.txt" (
-    pushd "%%B"
-    pip install -r requirements.txt
-    popd
-  )
-)
+@REM rem Go into each top subdirectory of ai_nodes and run pip install
+@REM for /d %%B in (%custom_nodes_folder%\*) do (
+@REM   echo Installing requirements in directory: %%B
+@REM   if exist "%%B\requirements.txt" (
+@REM     pushd "%%B"
+@REM     pip install -r requirements.txt
+@REM     popd
+@REM   )
+@REM )
 
 set "src_file=config/src.txt"
 

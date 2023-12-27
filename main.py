@@ -84,6 +84,47 @@ else:
     gs.qss = "qss/nodeeditor-dark.qss"
 
 print("QSS SET", gs.qss)
+
+
+import subprocess
+import os
+
+def clone_and_install(repo_url, install_directory='src'):
+    # Save the current working directory
+    original_dir = os.getcwd()
+
+    try:
+        # Clone the repository
+        if not os.path.exists(install_directory):
+            os.makedirs(install_directory)
+
+        repo_name = repo_url.split('/')[-1]
+        clone_path = os.path.join(install_directory, repo_name)
+
+        if not os.path.exists(clone_path):
+            print(f"Cloning {repo_url} into {clone_path}...")
+            subprocess.run(["git", "clone", repo_url, clone_path], check=True)
+        else:
+            print(f"Repository already cloned at {clone_path}")
+
+        # Change directory to the cloned repository
+        os.chdir(clone_path)
+
+        # Install using pip
+        print("Installing the package...")
+        subprocess.run(["pip", "install", "-e", "."], check=True)
+
+        print("Installation completed.")
+    finally:
+        # Change back to the original directory
+        os.chdir(original_dir)
+        print("Returned to the original directory.")
+
+# URL of the repository
+repo_url = "https://github.com/deforum-studio/deforum"
+clone_and_install(repo_url)
+
+
 def append_subfolders_to_syspath(base_path):
     """
     Append all first-level subfolders of the given base_path to sys.path.
@@ -113,7 +154,46 @@ def get_torch_device():
         else:
             return torch.device("cpu")
 
+def hijack_comfy_paths():
 
+    import folder_paths
+
+    supported_pt_extensions = set(['.ckpt', '.pt', '.bin', '.pth', '.safetensors'])
+
+    #folder_names_and_paths = {}
+
+    base_path = os.path.dirname(os.path.realpath(__file__))
+    models_dir = os.path.join(base_path, "models")
+    folder_paths.folder_names_and_paths["checkpoints"] = ([os.path.join(models_dir, "checkpoints")], supported_pt_extensions)
+    folder_paths.folder_names_and_paths["configs"] = ([os.path.join(models_dir, "configs")], [".yaml"])
+
+    folder_paths.folder_names_and_paths["loras"] = ([os.path.join(models_dir, "loras")], supported_pt_extensions)
+    folder_paths.folder_names_and_paths["vae"] = ([os.path.join(models_dir, "vae")], supported_pt_extensions)
+    folder_paths.folder_names_and_paths["clip"] = ([os.path.join(models_dir, "clip")], supported_pt_extensions)
+    folder_paths.folder_names_and_paths["unet"] = ([os.path.join(models_dir, "unet")], supported_pt_extensions)
+    folder_paths.folder_names_and_paths["clip_vision"] = ([os.path.join(models_dir, "clip_vision")], supported_pt_extensions)
+    folder_paths.folder_names_and_paths["style_models"] = ([os.path.join(models_dir, "style_models")], supported_pt_extensions)
+    folder_paths.folder_names_and_paths["embeddings"] = ([os.path.join(models_dir, "embeddings")], supported_pt_extensions)
+    folder_paths.folder_names_and_paths["diffusers"] = ([os.path.join(models_dir, "diffusers")], ["folder"])
+    folder_paths.folder_names_and_paths["vae_approx"] = ([os.path.join(models_dir, "vae_approx")], supported_pt_extensions)
+
+    folder_paths.folder_names_and_paths["controlnet"] = (
+    [os.path.join(models_dir, "controlnet"), os.path.join(models_dir, "t2i_adapter")], supported_pt_extensions)
+    folder_paths.folder_names_and_paths["gligen"] = ([os.path.join(models_dir, "gligen")], supported_pt_extensions)
+
+    folder_paths.folder_names_and_paths["upscale_models"] = ([os.path.join(models_dir, "upscale_models")], supported_pt_extensions)
+
+    folder_paths.folder_names_and_paths["custom_nodes"] = ([os.path.join(base_path, "custom_nodes")], [])
+
+    folder_paths.folder_names_and_paths["hypernetworks"] = ([os.path.join(models_dir, "hypernetworks")], supported_pt_extensions)
+
+    folder_paths.folder_names_and_paths["classifiers"] = ([os.path.join(models_dir, "classifiers")], {""})
+
+    folder_paths.output_directory = os.path.join(os.path.dirname(os.path.realpath(__file__)), "output")
+    folder_paths.temp_directory = os.path.join(os.path.dirname(os.path.realpath(__file__)), "temp")
+    #folder_paths.input_directory = os.path.join(os.path.dirname(os.path.realpath(__file__)), "input")
+
+    folder_paths.filename_list_cache = {}
 
 if __name__ == "__main__":
     from ainodes_frontend.base import settings
@@ -122,6 +202,12 @@ if __name__ == "__main__":
 
     gs.args = get_args()
     gs.device = get_torch_device()
+
+    from deforum.generators.comfy_utils import ensure_comfy
+    ensure_comfy()
+    hijack_comfy_paths()
+    from ainodes_frontend.comfy.adapter_nodes import was_adapter_node
+
 
     # Set environment variables for Hugging Face cache if not using local cache
     if gs.args.local_hf:

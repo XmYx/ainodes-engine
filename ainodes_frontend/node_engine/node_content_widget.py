@@ -74,24 +74,24 @@ class CustomSpinBox(QtWidgets.QSpinBox):
     set_signal = QtCore.Signal(int)
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-    def contextMenuEvent(self, event):
-        self.parent().contextMenuEvent(event, self)
+    # def contextMenuEvent(self, event):
+    #     self.parent().contextMenuEvent(event, self)
         # propagate to parent
         #self.parent().contextMenuEvent(event)
 class CustomComboBox(QtWidgets.QComboBox):
     set_signal = QtCore.Signal(int)
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-    def contextMenuEvent(self, event):
-        # propagate to parent
-        self.parent().contextMenuEvent(event, self)
+    # def contextMenuEvent(self, event):
+    #     # propagate to parent
+    #     self.parent().contextMenuEvent(event, self)
 class CustomCheckBox(QtWidgets.QCheckBox):
     set_signal = QtCore.Signal(bool)
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-    def contextMenuEvent(self, event):
-        # propagate to parent
-        self.parent().contextMenuEvent(event, self)
+    # def contextMenuEvent(self, event):
+    #     # propagate to parent
+    #     self.parent().contextMenuEvent(event, self)
 class CustomLineEdit(QtWidgets.QLineEdit):
     set_signal = QtCore.Signal(str)
     def __init__(self, schedule=None, *args, **kwargs):
@@ -103,16 +103,16 @@ class CustomLineEdit(QtWidgets.QLineEdit):
             self.parent().node.scene.getView().parent().window().timeline.handle_connection(self)
             #self.parent().connectWidgetToTimeline()
         super().mousePressEvent(event)
-    def contextMenuEvent(self, event):
-        # propagate to parent
-        self.parent().contextMenuEvent(event, self)
+    # def contextMenuEvent(self, event):
+    #     # propagate to parent
+    #     self.parent().contextMenuEvent(event, self)
 class CustomDoubleSpinBox(QtWidgets.QDoubleSpinBox):
     set_signal = QtCore.Signal(float)
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-    def contextMenuEvent(self, event):
-        # propagate to parent
-        self.parent().contextMenuEvent(event, self)
+    # def contextMenuEvent(self, event):
+    #     # propagate to parent
+    #     self.parent().contextMenuEvent(event, self)
 
 
 class CustomTextEdit(QtWidgets.QTextEdit):
@@ -180,9 +180,9 @@ class CustomTextEdit(QtWidgets.QTextEdit):
             cursor.setPosition(start, QTextCursor.MoveMode.MoveAnchor)
             cursor.setPosition(start + len(new_text), QTextCursor.MoveMode.KeepAnchor)
             self.setTextCursor(cursor)
-    def contextMenuEvent(self, event):
-        # propagate to parent
-        self.parent().contextMenuEvent(event, self)
+    # def contextMenuEvent(self, event):
+    #     # propagate to parent
+    #     self.parent().contextMenuEvent(event, self)
 
 class QDMNodeContentWidget(QWidget, Serializable):
     eval_signal = QtCore.Signal()
@@ -284,9 +284,9 @@ class QDMNodeContentWidget(QWidget, Serializable):
             elif isinstance(widget, (QtWidgets.QLineEdit, QtWidgets.QTextEdit, CustomTextEdit)):
                 res[widget.objectName()] = widget.text()
             elif isinstance(widget, (QtWidgets.QSpinBox, QtWidgets.QDoubleSpinBox)):
-                res[widget.objectName()] = str(widget.value())
+                res[widget.objectName()] = widget.value()
             elif isinstance(widget, QtWidgets.QSlider):
-                res[widget.objectName()] = str(widget.value())
+                res[widget.objectName()] = widget.value()
             elif isinstance(widget, QtWidgets.QCheckBox):
                 res[widget.objectName()] = str(widget.isChecked())
 
@@ -380,6 +380,8 @@ class QDMNodeContentWidget(QWidget, Serializable):
         if placeholder is not None:
             line_edit.setPlaceholderText(placeholder)
         label = QtWidgets.QLabel(label_text)
+        line_edit.label = label
+
         layout = QtWidgets.QHBoxLayout()
         layout.addWidget(label)
         layout.addWidget(line_edit)
@@ -402,6 +404,8 @@ class QDMNodeContentWidget(QWidget, Serializable):
         line_edit.setText(default)
         line_edit.setPlaceholderText(placeholder)
         label = QtWidgets.QLabel(label_text)
+        line_edit.label = label
+
         line_edit.setObjectName(label_text)
         layout = QtWidgets.QHBoxLayout()
         layout.addWidget(label)
@@ -482,6 +486,8 @@ class QDMNodeContentWidget(QWidget, Serializable):
         if accessible_name is not None:
             spin_box.setAccessibleName(accessible_name)
         label = QtWidgets.QLabel(label_text)
+        spin_box.label = label
+
         layout = QtWidgets.QHBoxLayout()
         layout.addWidget(label,1)
         layout.addWidget(spin_box,1)
@@ -514,6 +520,8 @@ class QDMNodeContentWidget(QWidget, Serializable):
         if accessible_name is not None:
             slider.setAccessibleName(accessible_name)
         label = QtWidgets.QLabel(label_text)
+        slider.label = label
+
         layout = QtWidgets.QHBoxLayout()
         layout.addWidget(label,1)
         layout.addWidget(slider,2)
@@ -545,6 +553,7 @@ class QDMNodeContentWidget(QWidget, Serializable):
         if accessible_name is not None:
             double_spin_box.setAccessibleName(accessible_name)
         label = QtWidgets.QLabel(label_text)
+        double_spin_box.label = label
         layout = QtWidgets.QHBoxLayout()
         layout.addWidget(label,1)
         layout.addWidget(double_spin_box,1)

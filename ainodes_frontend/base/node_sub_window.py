@@ -4,6 +4,7 @@ import sys
 import time
 
 from PyQt6.QtGui import QKeySequence
+from PyQt6.QtWidgets import QWidget
 from qtpy.QtCore import QByteArray
 from qtpy import QtCore
 from qtpy import QtWidgets
@@ -316,12 +317,12 @@ class CalculatorSubWindow(NodeEditorWidget):
             return super().contextMenuEvent(event)
         except Exception as e: dumpException(e)
 
-    def handleNodeContextMenu(self, event):
+    def handleNodeContextMenu(self, event, widget=None):
         if DEBUG_CONTEXT: print("CONTEXT: NODE")
 
         item = self.scene.getItemAt(event.pos())
 
-        #print("ITEM:", item)
+        print("ITEM:", item)
         if isinstance(item, QDMGraphicsBGNode):
             context_menu = QMenu()
             set_color_action = context_menu.addAction("Set Color")
@@ -338,6 +339,14 @@ class CalculatorSubWindow(NodeEditorWidget):
                     return
 
 
+        selected = None
+        if type(item) == QGraphicsProxyWidget:
+            item = item.widget()
+        if hasattr(item, 'node'):
+            selected = item.node
+        if hasattr(item, 'socket'):
+            selected = item.socket.node
+
         context_menu = QMenu(self)
         clearOutputsAct = context_menu.addAction("Clear Outputs")
         markDirtyAct = context_menu.addAction("Mark Dirty")
@@ -347,19 +356,17 @@ class CalculatorSubWindow(NodeEditorWidget):
         evalAct = context_menu.addAction("Eval")
         helpAct = context_menu.addAction("Help")
 
+        widgetActs = {}
+
+        if hasattr(selected, 'content'):
+            for widget in selected.content.widget_list:
+                if isinstance(widget, QtWidgets.QLineEdit) or isinstance(widget, QtWidgets.QDoubleSpinBox) or isinstance(widget, QtWidgets.QSpinBox) or isinstance(widget, QtWidgets.QTextEdit):
+                    act = context_menu.addAction(f"Convert {widget.objectName()}")
+                    act.triggered.connect(lambda _, w=widget: selected.convert_widget(w))
+
+        action = context_menu.exec(self.mapToGlobal(event.pos()))
 
 
-        action = context_menu.exec_(self.mapToGlobal(event.pos()))
-
-        selected = None
-
-        if type(item) == QGraphicsProxyWidget:
-            item = item.widget()
-
-        if hasattr(item, 'node'):
-            selected = item.node
-        if hasattr(item, 'socket'):
-            selected = item.socket.node
 
         if DEBUG_CONTEXT: print("got item:", selected)
         if selected and action == clearOutputsAct: selected.clearOutputs()

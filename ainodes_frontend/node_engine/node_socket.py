@@ -62,6 +62,7 @@ class Socket(Serializable):
         self.socket_type = socket_type
         self.count_on_this_node_side = count_on_this_node_side
         self.is_multi_edges = multi_edges
+        self.is_converted = False
 
         if self.name == "EXEC":
             self.is_multi_edges = False
@@ -196,11 +197,15 @@ class Socket(Serializable):
             ('multi_edges', self.is_multi_edges),
             ('position', self.position),
             ('socket_type', self.socket_type),
+            ('name', self.name),
         ])
 
     def deserialize(self, data: dict, hashmap: dict={}, restore_id: bool=True) -> bool:
         if restore_id: self.id = data['id']
         self.is_multi_edges = self.determineMultiEdges(data)
+        self.name = data['name']
+        if self.is_input and self.name not in self.node.input_socket_name:
+            self.node.input_socket_name.append(self.name)
         self.changeSocketType(data['socket_type'])
         hashmap[data['id']] = self
         return True

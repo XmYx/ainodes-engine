@@ -52,6 +52,7 @@ class DiffSDPipelineNode(AiNode):
     def __init__(self, scene):
         super().__init__(scene, inputs=[4,1], outputs=[4,1])
         self.pipe = None
+        self.selected = ""
     def evalImplementation_thread(self, index=0):
 
 
@@ -67,72 +68,79 @@ class DiffSDPipelineNode(AiNode):
 
         pipe_select = self.content.pipe_select.currentText()
 
-        pipes = {"txt2img_xl":StableDiffusionXLPipeline,
-                 "img2img_xl":StableDiffusionXLImg2ImgPipeline,
-                 "txt2img_cnet":StableDiffusionControlNetPipeline,
-                 "img2img_cnet":StableDiffusionControlNetImg2ImgPipeline,
-                 "txt2img_xl_cnet":StableDiffusionXLControlNetPipeline,
-                 "img2img_xl_cnet":StableDiffusionControlNetImg2ImgPipeline}
+        requested = f'{pipe_select}_{model_name}'
+        if self.selected != requested:
+            self.selected = requested
+            if self.pipe:
+                self.pipe.to("cpu")
+                del self.pipe
+
+            pipes = {"txt2img_xl":StableDiffusionXLPipeline,
+                     "img2img_xl":StableDiffusionXLImg2ImgPipeline,
+                     "txt2img_cnet":StableDiffusionControlNetPipeline,
+                     "img2img_cnet":StableDiffusionControlNetImg2ImgPipeline,
+                     "txt2img_xl_cnet":StableDiffusionXLControlNetPipeline,
+                     "img2img_xl_cnet":StableDiffusionControlNetImg2ImgPipeline}
 
 
 
-        pipe_class = pipes.get(pipe_select, StableDiffusionXLPipeline)
+            pipe_class = pipes.get(pipe_select, StableDiffusionXLPipeline)
 
-        args = {"torch_dtype":torch.float16,
-                "use_auth_token":"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"}
+            args = {"torch_dtype":torch.float16,
+                    "use_auth_token":"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"}
 
-        if "cnet" in pipe_select:
-            args["controlnet"] = controlnet
+            if "cnet" in pipe_select:
+                args["controlnet"] = controlnet
 
-        if not self.content.use_local_models.isChecked():
-            args["pretrained_model_name_or_path"] = model_name
-            self.pipe = pipe_class.from_pretrained(**args)
-        else:
-            model_name = f"{gs.prefs.checkpoints}/{self.content.local_model.currentText()}"
+            if not self.content.use_local_models.isChecked():
+                args["pretrained_model_name_or_path"] = model_name
+                self.pipe = pipe_class.from_pretrained(**args)
+            else:
+                model_name = f"{gs.prefs.checkpoints}/{self.content.local_model.currentText()}"
 
-            args["pretrained_model_link_or_path"] = model_name
+                args["pretrained_model_link_or_path"] = model_name
 
-            self.pipe = pipe_class.from_single_file(**args)
+                self.pipe = pipe_class.from_single_file(**args)
 
-        if isinstance(self.pipe, StableDiffusionXLPipeline):
+            if isinstance(self.pipe, StableDiffusionXLPipeline):
 
-            print("Adding custom Generate call to Diffusers Stable Diffusion XL Pipeline")
+                print("Adding custom Generate call to Diffusers Stable Diffusion XL Pipeline")
 
-            from backend_helpers.diffusers_helpers.diffusers_xl_call import new_call
+                from backend_helpers.diffusers_helpers.diffusers_xl_call import new_call
 
-            def replace_call(pipe, new_call):
-                def call_with_self(*args, **kwargs):
-                    return new_call(pipe, *args, **kwargs)
+                def replace_call(pipe, new_call):
+                    def call_with_self(*args, **kwargs):
+                        return new_call(pipe, *args, **kwargs)
 
-                return call_with_self
+                    return call_with_self
 
-            self.pipe.generate = replace_call(self.pipe, new_call)
+                self.pipe.generate = replace_call(self.pipe, new_call)
 
-        tinyvae = self.content.tinyvae.isChecked()
+            tinyvae = self.content.tinyvae.isChecked()
 
 
-        from sfast.compilers.stable_diffusion_pipeline_compiler import (
-            compile, CompilationConfig)
+            from sfast.compilers.stable_diffusion_pipeline_compiler import (
+                compile, CompilationConfig)
 
-        config = CompilationConfig.Default()
-        # xformers and Triton are suggested for achieving best performance.
-        try:
-            import xformers
-            config.enable_xformers = True
-        except ImportError:
-            print('xformers not installed, skip')
-        try:
-            import triton
-            config.enable_triton = True
-        except ImportError:
-            print('Triton not installed, skip')
-        # CUDA Graph is suggested for small batch sizes and small resolutions to reduce CPU overhead.
-        config.enable_cuda_graph = True
-        self.pipe = compile(self.pipe, config)
-        if tinyvae:
-            tiny_model = "madebyollin/taesdxl"
-            from diffusers import AutoencoderTiny
-            self.pipe.vae = AutoencoderTiny.from_pretrained(tiny_model, torch_dtype=torch.float16)
+            config = CompilationConfig.Default()
+            # xformers and Triton are suggested for achieving best performance.
+            try:
+                import xformers
+                config.enable_xformers = True
+            except ImportError:
+                print('xformers not installed, skip')
+            try:
+                import triton
+                config.enable_triton = True
+            except ImportError:
+                print('Triton not installed, skip')
+            # CUDA Graph is suggested for small batch sizes and small resolutions to reduce CPU overhead.
+            config.enable_cuda_graph = True
+            self.pipe = compile(self.pipe, config)
+            if tinyvae:
+                tiny_model = "madebyollin/taesdxl"
+                from diffusers import AutoencoderTiny
+                self.pipe.vae = AutoencoderTiny.from_pretrained(tiny_model, torch_dtype=torch.float16)
 
         #self.pipe.unet = torch.compile(self.pipe.unet, fullgraph=True, mode="max-autotune")
 

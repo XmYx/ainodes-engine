@@ -46,6 +46,9 @@ DEFAULT_KEYBINDINGS = {
 }
 def get_yaml_files_in_user_dir():
     directory = 'config/user'
+
+    os.makedirs(directory, exist_ok=True)
+
     return [f for f in os.listdir(directory) if os.path.isfile(os.path.join(directory, f)) and f.endswith('.yaml')]
 
 class YamlEditorWidget(QWidget):

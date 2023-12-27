@@ -5,7 +5,10 @@ A module containing NodeEditor's class for representing `Node`.
 import copy
 from collections import OrderedDict
 
-from ainodes_frontend.node_engine.node_content_widget import QDMNodeContentWidget
+from PyQt6.QtWidgets import QLineEdit, QTextEdit, QDoubleSpinBox, QSpinBox, QWidget
+
+from ainodes_frontend.node_engine.node_content_widget import QDMNodeContentWidget, CustomSpinBox, CustomLineEdit, \
+    CustomTextEdit, CustomDoubleSpinBox
 from ainodes_frontend.node_engine.node_graphics_node import QDMGraphicsNode
 from ainodes_frontend.node_engine.node_serializable import Serializable
 from ainodes_frontend.node_engine.node_socket import Socket, LEFT_BOTTOM, LEFT_CENTER, LEFT_TOP, RIGHT_BOTTOM, \
@@ -60,7 +63,7 @@ class Node(Serializable):
 
         self.scene.addNode(self)
         self.scene.grScene.addItem(self.grNode)
-
+        self.converted_inputs = {}
 
         self._inputs = inputs
         self._outputs = outputs
@@ -569,6 +572,44 @@ class Node(Serializable):
         return outs
     # Output Setting function
 
+    def convert_widget(self, widget):
+        # print("Current input socket names", self.input_socket_name)
+        # print("was lambda'd here", widget)
+        # print("was lambda'd here", widget.objectName())
+
+        name = widget.objectName().lower().replace(" ", "_")
+
+        if isinstance(widget, QWidget):
+            widget.setVisible(not widget.isVisible())
+            if hasattr(widget, 'label'):
+                widget.label.setVisible(not widget.label.isVisible())
+        if not widget.isVisible():
+            socket_type = 7
+            if isinstance(widget, QLineEdit) or isinstance(widget, QTextEdit) or isinstance(widget, CustomLineEdit) or isinstance(widget, CustomTextEdit):
+                socket_type = 7
+            elif isinstance(widget, QSpinBox) or isinstance(widget, CustomSpinBox):
+                socket_type = 8
+            elif isinstance(widget, QDoubleSpinBox) or isinstance(widget, CustomDoubleSpinBox):
+                socket_type = 9
+            if name not in self.input_socket_name:
+                self.input_socket_name.append(name)
+                self.initSockets(inputs=[socket_type], outputs=[], reset=False)
+                self.grNode.height = self.grNode.height + 25
+                # self.grNode.update()
+                #self.content.height = self.content.height + 25
+                self.update_all_sockets()
+                #self.updateConnectedEdges()
+            self.converted_inputs[name] = self.inputs[len(self.inputs)-1]
+        else:
+            socket = self.converted_inputs[name]
+            self.input_socket_name.remove(name)
+            self.scene.grScene.removeItem(socket.grSocket)
+            self.inputs.remove(socket)
+            self.initSockets(inputs=[], outputs=[], reset=False)
+            self.grNode.height = self.grNode.height - 25
+            self.update_all_sockets()
+            self.converted_inputs.pop(name)
+        self.grNode.update()
     def serialize(self) -> OrderedDict:
         inputs, outputs = [], []
         for socket in self.inputs: inputs.append(socket.serialize())
@@ -580,6 +621,7 @@ class Node(Serializable):
             ('pos_x', self.grNode.scenePos().x()),
             ('pos_y', self.grNode.scenePos().y()),
             ('inputs', inputs),
+            #('input_names', self.input_socket_name),
             ('outputs', outputs),
             ('content', ser_content),
         ])

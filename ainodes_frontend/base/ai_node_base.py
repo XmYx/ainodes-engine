@@ -16,7 +16,7 @@ from .settings import handle_ainodes_exception
 from .worker import Worker
 
 from ainodes_frontend import singleton as gs
-
+from ..node_engine.node_serializable import Serializable
 
 
 class CalcGraphicsNode(QDMGraphicsNode):
@@ -169,7 +169,9 @@ class AiNode(Node):
                        4: "PIPE/MODEL",
                        5: "IMAGE",
                        6: "DATA",
-                       7: "STRING"}
+                       7: "STRING",
+                       8: "INT",
+                       9: "FLOAT",}
         else:
             sockets = self.sockets
 
@@ -255,7 +257,11 @@ class AiNode(Node):
             done = handle_ainodes_exception()
             print(f"Error in getInputData: {e}")
             return None
-
+    def getAllInputs(self):
+        ser_content = self.content.serialize() if isinstance(self.content, Serializable) else {}
+        for input in self.inputs:
+            ser_content[input.name.lower()] = self.getInputData(input.index)
+        return ser_content
     def initSettings(self):
         """
         Initialize settings for the node, such as input and output socket positions.
