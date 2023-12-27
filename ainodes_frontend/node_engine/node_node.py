@@ -580,36 +580,51 @@ class Node(Serializable):
         name = widget.objectName().lower().replace(" ", "_")
 
         if isinstance(widget, QWidget):
-            widget.setVisible(not widget.isVisible())
-            if hasattr(widget, 'label'):
-                widget.label.setVisible(not widget.label.isVisible())
-        if not widget.isVisible():
-            socket_type = 7
-            if isinstance(widget, QLineEdit) or isinstance(widget, QTextEdit) or isinstance(widget, CustomLineEdit) or isinstance(widget, CustomTextEdit):
+
+            if not hasattr(widget, 'converted'):
+                widget.converted = True
+            else:
+                widget.converted = not widget.converted
+
+            if widget.converted:
+
+
+                widget.setVisible(False)
+                if hasattr(widget, 'label'):
+                    widget.label.setVisible(False)
+            else:
+                widget.setVisible(True)
+                if hasattr(widget, 'label'):
+                    widget.label.setVisible(True)
+
+        if hasattr(widget, 'converted'):
+            if widget.converted:
                 socket_type = 7
-            elif isinstance(widget, QSpinBox) or isinstance(widget, CustomSpinBox):
-                socket_type = 8
-            elif isinstance(widget, QDoubleSpinBox) or isinstance(widget, CustomDoubleSpinBox):
-                socket_type = 9
-            if name not in self.input_socket_name:
-                self.input_socket_name.append(name)
-                self.initSockets(inputs=[socket_type], outputs=[], reset=False)
-                self.grNode.height = self.grNode.height + 25
-                # self.grNode.update()
-                #self.content.height = self.content.height + 25
+                if isinstance(widget, QLineEdit) or isinstance(widget, QTextEdit) or isinstance(widget, CustomLineEdit) or isinstance(widget, CustomTextEdit):
+                    socket_type = 7
+                elif isinstance(widget, QSpinBox) or isinstance(widget, CustomSpinBox):
+                    socket_type = 8
+                elif isinstance(widget, QDoubleSpinBox) or isinstance(widget, CustomDoubleSpinBox):
+                    socket_type = 9
+                if name not in self.input_socket_name:
+                    self.input_socket_name.append(name)
+                    self.initSockets(inputs=[socket_type], outputs=[], reset=False)
+                    self.grNode.height = self.grNode.height + 25
+                    # self.grNode.update()
+                    #self.content.height = self.content.height + 25
+                    self.update_all_sockets()
+                    #self.updateConnectedEdges()
+                self.converted_inputs[name] = self.inputs[len(self.inputs)-1]
+            else:
+                socket = self.converted_inputs[name]
+                self.input_socket_name.remove(name)
+                self.scene.grScene.removeItem(socket.grSocket)
+                self.inputs.remove(socket)
+                self.initSockets(inputs=[], outputs=[], reset=False)
+                self.grNode.height = self.grNode.height - 25
                 self.update_all_sockets()
-                #self.updateConnectedEdges()
-            self.converted_inputs[name] = self.inputs[len(self.inputs)-1]
-        else:
-            socket = self.converted_inputs[name]
-            self.input_socket_name.remove(name)
-            self.scene.grScene.removeItem(socket.grSocket)
-            self.inputs.remove(socket)
-            self.initSockets(inputs=[], outputs=[], reset=False)
-            self.grNode.height = self.grNode.height - 25
-            self.update_all_sockets()
-            self.converted_inputs.pop(name)
-        self.grNode.update()
+                self.converted_inputs.pop(name)
+            self.grNode.update()
     def serialize(self) -> OrderedDict:
         inputs, outputs = [], []
         for socket in self.inputs: inputs.append(socket.serialize())

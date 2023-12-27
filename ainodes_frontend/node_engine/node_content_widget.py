@@ -275,7 +275,7 @@ class QDMNodeContentWidget(QWidget, Serializable):
         """
         self.node.scene.getView().editingFlag = value
 
-    def serialize(self) -> dict:
+    def serialize(self, exec=False) -> dict:
         res = {}
 
         def serialize_widget(widget):
@@ -289,6 +289,10 @@ class QDMNodeContentWidget(QWidget, Serializable):
                 res[widget.objectName()] = widget.value()
             elif isinstance(widget, QtWidgets.QCheckBox):
                 res[widget.objectName()] = str(widget.isChecked())
+            if not exec:
+                res[f"{widget.objectName()}_visible"] = widget.isVisible()
+                if hasattr(widget, 'converted'):
+                    res[f"{widget.objectName()}_converted"] = widget.converted
 
         def recursive_serialize(item):
             if isinstance(item, QtWidgets.QLayout):
@@ -320,7 +324,11 @@ class QDMNodeContentWidget(QWidget, Serializable):
                     widget.setValue(int(value))
                 elif isinstance(widget, QtWidgets.QCheckBox):
                     widget.setChecked(value == "True")
-
+                widget.setVisible(data.get(f"{widget.objectName()}_visible", True))
+                widget.converted = data.get(f"{widget.objectName()}_converted", False)
+                if widget.converted:
+                    if hasattr(widget, 'label'):
+                        widget.label.setVisible(False)
         def recursive_deserialize(item):
             if isinstance(item, QtWidgets.QLayout):
                 for i in range(item.count()):

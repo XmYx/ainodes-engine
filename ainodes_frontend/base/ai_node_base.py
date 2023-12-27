@@ -258,7 +258,7 @@ class AiNode(Node):
             print(f"Error in getInputData: {e}")
             return None
     def getAllInputs(self):
-        ser_content = self.content.serialize() if isinstance(self.content, Serializable) else {}
+        ser_content = self.content.serialize(exec=True) if isinstance(self.content, Serializable) else {}
         for input in self.inputs:
             ser_content[input.name.lower()] = self.getInputData(input.index)
         return ser_content

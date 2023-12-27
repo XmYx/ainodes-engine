@@ -24,7 +24,7 @@
 #your base path should be either an existing comfy install or a central folder where you store all of your models, loras, etc.
 
 comfyui:
-     base_path: /home/mix/PycharmProjects/ainodes_2/ainodes-engine/
+     base_path: ./
      checkpoints: models/checkpoints/
      clip: models/clip/
      clip_vision: models/clip_vision/

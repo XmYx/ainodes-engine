@@ -121,7 +121,7 @@ def clone_and_install(repo_url, install_directory='src'):
         print("Returned to the original directory.")
 
 # URL of the repository
-repo_url = "https://github.com/deforum-studio/deforum"
+repo_url = "https://github.com/XmYx/deforum-studio"
 clone_and_install(repo_url)
 
 
@@ -235,10 +235,24 @@ if __name__ == "__main__":
 
         def __init__(self, args):
             QApplication.__init__(self, args)
+            self.comfy_ui_process = None
+            self.startComfyUI()
+
+        def startComfyUI(self):
+            # Start the ComfyUI subprocess
+            comfy_ui_path = os.path.join('src', 'deforum', 'src', 'ComfyUI', 'main.py')
+            if os.path.exists(comfy_ui_path):
+                self.comfy_ui_process = subprocess.Popen([sys.executable, comfy_ui_path, '--extra-model-paths-config', 'config/comfy_paths.yaml'])
+            else:
+                print(f"ComfyUI main.py not found at {comfy_ui_path}")
 
         def cleanUp(self):
-            # THIS ACTUALLY WORKS
-            print('closing')
+            # Terminate the ComfyUI subprocess
+            if self.comfy_ui_process:
+                self.comfy_ui_process.terminate()
+                self.comfy_ui_process.wait()  # Wait for the process to terminate
+            print('Application closing')
+
     # make app
     ainodes_qapp = Application(sys.argv)
     ainodes_qapp.aboutToQuit.connect(ainodes_qapp.cleanUp)
