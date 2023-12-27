@@ -99,7 +99,7 @@ def clone_and_install(repo_url, install_directory='src'):
             os.makedirs(install_directory)
 
         repo_name = repo_url.split('/')[-1]
-        clone_path = os.path.join(install_directory, repo_name)
+        clone_path = os.path.join(install_directory, "deforum")
 
         if not os.path.exists(clone_path):
             print(f"Cloning {repo_url} into {clone_path}...")
