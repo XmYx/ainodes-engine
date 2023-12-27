@@ -206,7 +206,7 @@ if __name__ == "__main__":
     from deforum.generators.comfy_utils import ensure_comfy
     ensure_comfy()
     hijack_comfy_paths()
-    from ainodes_frontend.comfy.adapter_nodes import was_adapter_node
+    from ainodes_frontend.comfy_fns.adapter_nodes import was_adapter_node
 
 
     # Set environment variables for Hugging Face cache if not using local cache
