@@ -225,10 +225,14 @@ def create_node(node_class, node_name, ui_inputs, inputs, input_names, outputs, 
             # init_signature = inspect.signature(node_class.__init__)
             # init_params = init_signature.parameters
             # print(init_signature)
-            dumb_params = extract_init_params(node_class)
-            init_params = instantiate_and_extract_attrs(node_class)
-            print(init_params)
-
+            try:
+                dumb_params = extract_init_params(node_class)
+            except:
+                dumb_params = {}
+            try:
+                init_params = instantiate_and_extract_attrs(node_class)
+            except:
+                init_params = {}
             for param_name, param_value in dumb_params.items():
                 set_attribute(self, node_class.__name__, param_name, param_value)
             for param_name, param_info in init_params.items():
