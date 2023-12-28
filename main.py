@@ -122,7 +122,7 @@ def clone_and_install(repo_url, install_directory='src'):
 
 # URL of the repository
 repo_url = "https://github.com/XmYx/deforum-studio"
-clone_and_install(repo_url)
+#clone_and_install(repo_url)
 
 
 def append_subfolders_to_syspath(base_path):
