@@ -10,7 +10,7 @@ from deforum.pipeline_utils import next_seed
 from deforum.pipelines.deforum_animation.animation_params import RootArgs, DeforumArgs, DeforumAnimArgs, \
     DeforumOutputArgs, ParseqArgs, LoopArgs
 from deforum.utils.string_utils import split_weighted_subprompts
-from src.deforum.src.deforum.pipelines.deforum_animation.animation_helpers import DeformAnimKeys
+from src.deforum.src.deforum.pipelines.deforum_animation.animation_helpers import DeforumAnimKeys
 #
 # DeformAnimKeys
 # RootArgs
@@ -273,7 +273,7 @@ def get_current_keys(anim_args, seed, root, parseq_args=None, video_args=None):
 
     use_parseq = False if parseq_args == None else True
     anim_args.max_frames += 2
-    keys = DeformAnimKeys(anim_args, seed) # if not use_parseq else ParseqAnimKeys(parseq_args, video_args)
+    keys = DeforumAnimKeys(anim_args, seed) # if not use_parseq else ParseqAnimKeys(parseq_args, video_args)
 
     # Always enable pseudo-3d with parseq. No need for an extra toggle:
     # Whether it's used or not in practice is defined by the schedules
