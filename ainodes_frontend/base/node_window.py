@@ -485,41 +485,66 @@ class NodesConsole(ConsoleWidget):
 
         # Apply the stylesheet to the application
         self.setStyleSheet(stylesheet)
-
     def write_(self, strn, html=False, scrollToBottom=True):
         sys.__stdout__.write(strn)
         sb = self.output.verticalScrollBar()
 
-        # Remove control characters used by tqdm
+        # Remove control characters (e.g., from tqdm)
         filtered_strn = re.sub(r'\x1b\[.*?[@-~]', '', strn)
-
         self.output.insertPlainText(filtered_strn)
-        sb.setValue(sb.maximum())
+        if scrollToBottom:
+            sb.setValue(sb.maximum())
 
     def write(self, strn, style='output', scrollToBottom='auto'):
-        # Filter out ANSI escape codes
-        strn = self.ansi_escape.sub('', strn)
+        strn = self.ansi_escape.sub('', strn)  # Filter out ANSI escape codes
 
-        # Handle tqdm updates
         if '\r' in strn:
-            # Get tqdm instance content (without the carriage return)
             tqdm_content = strn.replace('\r', '').strip()
-
-            # Move cursor to the beginning of the last line
             cursor = self.output.textCursor()
             cursor.movePosition(QtGui.QTextCursor.MoveOperation.End)
             cursor.movePosition(QtGui.QTextCursor.MoveOperation.StartOfBlock, QtGui.QTextCursor.MoveMode.KeepAnchor)
-            cursor.removeSelectedText()  # Remove the last line
-
-            # Insert the tqdm update at the current cursor position
+            cursor.removeSelectedText()
             self.output.insertPlainText(tqdm_content)
         else:
-            # Insert non-tqdm text normally
-            self.output.insertPlainText(strn + '\n')
-        # Handle scroll logic
+            self.output.insertPlainText(strn)
+
         sb = self.output.verticalScrollBar()
         if scrollToBottom == 'auto' or scrollToBottom:
             sb.setValue(sb.maximum())
+    # def write_(self, strn, html=False, scrollToBottom=True):
+    #     sys.__stdout__.write(strn)
+    #     sb = self.output.verticalScrollBar()
+    #
+    #     # Remove control characters used by tqdm
+    #     filtered_strn = re.sub(r'\x1b\[.*?[@-~]', '', strn)
+    #
+    #     self.output.insertPlainText(filtered_strn)
+    #     sb.setValue(sb.maximum())
+    #
+    # def write(self, strn, style='output', scrollToBottom='auto'):
+    #     # Filter out ANSI escape codes
+    #     strn = self.ansi_escape.sub('', strn)
+    #
+    #     # Handle tqdm updates
+    #     if '\r' in strn:
+    #         # Get tqdm instance content (without the carriage return)
+    #         tqdm_content = strn.replace('\r', '').strip()
+    #
+    #         # Move cursor to the beginning of the last line
+    #         cursor = self.output.textCursor()
+    #         cursor.movePosition(QtGui.QTextCursor.MoveOperation.End)
+    #         cursor.movePosition(QtGui.QTextCursor.MoveOperation.StartOfBlock, QtGui.QTextCursor.MoveMode.KeepAnchor)
+    #         cursor.removeSelectedText()  # Remove the last line
+    #
+    #         # Insert the tqdm update at the current cursor position
+    #         self.output.insertPlainText(tqdm_content)
+    #     else:
+    #         # Insert non-tqdm text normally
+    #         self.output.insertPlainText(strn + '\n')
+    #     # Handle scroll logic
+    #     sb = self.output.verticalScrollBar()
+    #     if scrollToBottom == 'auto' or scrollToBottom:
+    #         sb.setValue(sb.maximum())
 
     """def write(self, strn, html=False, scrollToBottom=True):
 
