@@ -24,3 +24,6 @@ psutil
 PyQt6-QScintilla
 pyflakes
 aiohttp
+torchsde
+einops
+openai

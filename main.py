@@ -236,7 +236,7 @@ if __name__ == "__main__":
         def __init__(self, args):
             QApplication.__init__(self, args)
             self.comfy_ui_process = None
-            self.startComfyUI()
+            #self.startComfyUI()
 
         def startComfyUI(self):
             # Start the ComfyUI subprocess
