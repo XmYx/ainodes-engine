@@ -3,7 +3,7 @@ setlocal
 
 set "SCRIPT_DIR=%~dp0"
 set "APP_DIR=%SCRIPT_DIR%"
-set "COMFYUI_DIR=%APP_DIR%src\ComfyUI"
+set "COMFYUI_DIR=%APP_DIR%src\deforum\src\ComfyUI"
 set "PYTHON_SCRIPT=%COMFYUI_DIR%\main.py"
 
 set "PYTHON_DIR=%SCRIPT_DIR%src\python"

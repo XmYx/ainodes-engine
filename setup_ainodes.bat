@@ -89,24 +89,30 @@ setlocal enabledelayedexpansion
 @REM   )
 @REM )
 
+@echo off
 set "src_file=config/src.txt"
 
-rem Read repositories from src.txt
-for /f "tokens=*" %%A in (%src_file%) do (
-  set "repository=%%A"
-  echo Cloning repository: !repository!
+rem Read repositories, branches, and directories from src.txt
+for /f "tokens=1,2,3,4" %%A in (%src_file%) do (
+    set "repository=%%A"
+    set "branch=%%B %%C"
+    set "directory=%%D"
+    echo Cloning repository: !repository! into !directory!
 
-  rem Go to src folder and clone the repository
-  cd "%SRC_DIR%"
-  git clone https://www.github.com/!repository!
+    rem Go to src folder, create and change to the target directory
+    if not exist "%SRC_DIR%\!directory!" mkdir "%SRC_DIR%\!directory!"
+    cd "%SRC_DIR%\!directory!"
 
-  rem Return to the original directory
-  cd "%~dp0"
+    rem Clone the repository
+    git clone https://www.github.com/!repository! . !branch!
+
+    rem Return to the original directory
+    cd "%~dp0"
 )
 
 
 REM After cloning all src repositories, navigate to src/ComfyUI
-cd "%SRC_DIR%\ComfyUI"
+cd "%SRC_DIR%\deforum\ComfyUI"
 
 REM Navigate to custom_nodes and clone the ComfyUI-Manager repository
 cd custom_nodes
