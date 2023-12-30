@@ -23,4 +23,4 @@ rich
 psutil
 PyQt6-QScintilla
 pyflakes
-aiothttp
+aiohttp
