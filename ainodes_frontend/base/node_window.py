@@ -1452,11 +1452,26 @@ class CalculatorWindow(NodeEditorWindow):
         # Logic to unload the model from gs.models
 
         for _, model in gs.models[name].items():
+
+            if hasattr(model, "to"):
+                model.to("cpu")
+            if hasattr(model, "model"):
+                model.model.to("cpu")
+
+            if hasattr(model, "inner_model"):
+                model.inner_model.to("cpu")
+
             try:
                 model.to('cpu')
-                del model
+
             except:
                 pass
+
+        from comfy import model_management
+
+        # for model in model_management.current_loaded_models:
+        #     del model
+
 
         del gs.models[name]
         torch_gc()

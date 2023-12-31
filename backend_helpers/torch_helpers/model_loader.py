@@ -106,8 +106,6 @@ class ModelLoader(torch.nn.Module):
         import comfy
         ckpt_path = os.path.join(ckpt_path)
         model, clip, vae, clipvision = comfy.sd.load_checkpoint_guess_config(ckpt_path, output_vae=True, output_clip=True, embedding_directory="models/embeddings")
-
-
         return model, clip, vae, clipvision
 
     def load_model(self, file=None, config_name=None, inpaint=False, verbose=False, style="sdp"):

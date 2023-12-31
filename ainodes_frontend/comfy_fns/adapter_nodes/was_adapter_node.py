@@ -63,9 +63,13 @@ import sys
 
 #comfy.sample.sample = ainodes_sample
 
-#from ainodes_frontend.base import modelmanagement_hijack
+# from ainodes_frontend.base import modelmanagement_hijack
+# import comfy.model_management
+#
+# comfy.model_management.unet_inital_load_device = modelmanagement_hijack.unet_inital_load_device
 
-#sys.modules['comfy.model_management'] = modelmanagement_hijack
+
+# sys.modules['comfy.model_management'] = modelmanagement_hijack
 
 def load_comfy_node(module_path):
     module_name = os.path.basename(module_path)

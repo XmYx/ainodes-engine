@@ -18,6 +18,85 @@ from backend_helpers.torch_helpers.torch_gc import torch_gc
 
 OP_NODE_TORCH_LOADER = get_next_opcode()
 
+
+def load_checkpoint_guess_config(ckpt_path, output_vae=True, output_clip=True, output_clipvision=False, embedding_directory=None, output_model=True):
+    import comfy
+    import torch
+    from comfy import model_management
+    from comfy import clip_vision
+    from comfy import model_detection
+    import comfy.taesd.taesd
+    from comfy.sd import load_model_weights, VAE, CLIP
+
+    sd = comfy.utils.load_torch_file(ckpt_path)
+    sd_keys = sd.keys()
+    clip = None
+    clipvision = None
+    vae = None
+    model = None
+    model_patcher = None
+    clip_target = None
+
+    parameters = comfy.utils.calculate_parameters(sd, "model.diffusion_model.")
+    unet_dtype = model_management.unet_dtype(model_params=parameters)
+    load_device = model_management.get_torch_device()
+    load_device = gs.device
+    manual_cast_dtype = model_management.unet_manual_cast(unet_dtype, load_device)
+
+    class WeightsLoader(torch.nn.Module):
+        pass
+
+    model_config = model_detection.model_config_from_unet(sd, "model.diffusion_model.", unet_dtype)
+    model_config.set_manual_cast(manual_cast_dtype)
+
+    if model_config is None:
+        raise RuntimeError("ERROR: Could not detect model type of: {}".format(ckpt_path))
+
+    if model_config.clip_vision_prefix is not None:
+        if output_clipvision:
+            clipvision = clip_vision.load_clipvision_from_sd(sd, model_config.clip_vision_prefix, True)
+
+    if output_model:
+        inital_load_device = load_device
+        offload_device = model_management.unet_offload_device()
+        model = model_config.get_model(sd, "model.diffusion_model.", device=inital_load_device)
+        model.load_model_weights(sd, "model.diffusion_model.")
+
+    if output_vae:
+        vae_sd = comfy.utils.state_dict_prefix_replace(sd, {"first_stage_model.": ""}, filter_keys=True)
+        vae_sd = model_config.process_vae_state_dict(vae_sd)
+        vae = VAE(sd=vae_sd)
+
+    if output_clip:
+        w = WeightsLoader()
+        clip_target = model_config.clip_target()
+        if clip_target is not None:
+            clip = CLIP(clip_target, embedding_directory=embedding_directory)
+            w.cond_stage_model = clip.cond_stage_model
+            sd = model_config.process_clip_state_dict(sd)
+            load_model_weights(w, sd)
+
+    left_over = sd.keys()
+    if len(left_over) > 0:
+        print("left over keys:", left_over)
+
+    # if output_model:
+    model_patcher = comfy.model_patcher.ModelPatcher(model, load_device=load_device, offload_device=torch.device("cpu"), current_device=load_device)
+        # if inital_load_device != torch.device("cpu"):
+        #     print("loaded straight to GPU")
+        #     model_management.load_model_gpu(model_patcher)
+    del sd
+    del vae_sd
+    del w
+    del model
+    torch_gc()
+
+    # model_patcher.model.to(gs.device)
+    # model_patcher.load_device = gs.device
+
+    return (model_patcher, clip, vae, clipvision)
+
+
 class TorchLoaderWidget(QDMNodeContentWidget):
     def initUI(self):
         self.create_widgets()
@@ -125,7 +204,40 @@ class TorchLoaderNode(AiNode):
 
         torch_gc()
 
+    def setOutput(self, index, value):
+        """
+        Set the value of the output socket with the given index.
 
+        Args:
+            index (int): The index of the output socket.
+            value: The value to be set for the output socket.
+        """
+        pass
+        # object_name = self.getID(index)
+        # self._output_values[object_name] = value  # Store the reference in the dictionary
+
+    def getOutput(self, index=0, origin_index=0):
+        """
+         Get the value of the output socket with the given index.
+
+         Args:
+             index (int): The index of the output socket.
+
+         Returns:
+             The value of the output socket, or None if it does not exist.
+         """
+
+        if self.loaded_sd in gs.models:
+            if index == 0:
+                return gs.models[self.loaded_sd]["vae"]
+            elif index == 1:
+                return gs.models[self.loaded_sd]["clip"]
+            elif index == 2:
+                return gs.models[self.loaded_sd]["model"]
+        else:
+            return None
+        # object_name = self.getID(index)
+        # return self._output_values.get(object_name, None)  # Get the value using the dictionary
     def evalImplementation_thread(self, index=0):
         self.busy = True
         model_name = self.content.dropdown.currentText()
@@ -135,9 +247,12 @@ class TorchLoaderNode(AiNode):
         if model_name not in gs.models:
 
             gs.models[model_name] = {}
-            gs.models[model_name]["model"], gs.models[model_name]["clip"], gs.models[model_name]["vae"], gs.models[model_name]["clipvision"] = self.loader.load_checkpoint_guess_config(os.path.join(gs.prefs.checkpoints, model_name), style="None")
+            gs.models[model_name]["model"], gs.models[model_name]["clip"], gs.models[model_name]["vae"], _ = load_checkpoint_guess_config(os.path.join(gs.prefs.checkpoints, model_name))
             self.loaded_sd = model_name
+
             self.scene.getView().parent().window().update_models_signal.emit()
+
+
         return [gs.models[model_name]["vae"], gs.models[model_name]["clip"], gs.models[model_name]["model"]]
 
         # if self.loaded_sd != model_name or self.content.force_reload.isChecked() == True:

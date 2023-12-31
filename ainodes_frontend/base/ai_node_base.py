@@ -354,12 +354,9 @@ class AiNode(Node):
             for port in ports:
                 if result[x] is not None:
                     self.markDirty(False)
-
                 self.setOutput(port, result[x])
                 x += 1
 
-        # self.content.update()
-        # self.content.finished.emit()
         if exec:
             if hasattr(self, "exec_port"):
                 port = self.exec_port
