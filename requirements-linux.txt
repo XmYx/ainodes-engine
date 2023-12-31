@@ -2,8 +2,11 @@
 torch==2.1.1+cu121
 pillow==10.0.1
 pyqt6==6.6.1
+pyqt6-sip==13.6.0
 pyqt6-webengine==6.6.0
+PyQt6-WebEngine-Qt6==6.6.1
 pyqt6-3d==6.6.0
+pyqt6-qt6==6.6.1
 qtpy==2.4.1
 requests==2.31.0
 pyqtgraph==0.13.3
@@ -21,9 +24,10 @@ basicsr
 matplotlib
 rich
 psutil
-PyQt6-QScintilla
+PyQt6-QScintilla==2.14.1
 pyflakes
 aiohttp
 torchsde
 einops
 openai
+pyqtgraph==0.13.3

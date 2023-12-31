@@ -17,4 +17,4 @@ set INSTALL_ENV_DIR=%cd%\nodes_env
 call "%CONDA_ROOT_PREFIX%\condabin\conda.bat" activate "%INSTALL_ENV_DIR%" || ( echo. && echo Miniconda hook not found. && goto end )
 
 @rem setup installer env
-call python ainodes_frontend/main.py %*
+call python main.py %*
