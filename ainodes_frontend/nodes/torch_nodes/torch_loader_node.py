@@ -34,7 +34,6 @@ class TorchLoaderWidget(QDMNodeContentWidget):
                 if f.endswith(('.ckpt', '.pt', '.bin', '.pth', '.safetensors')):
                     full_path = os.path.join(root, f)
                     checkpoint_files.append(full_path.replace(checkpoint_folder, ""))
-
         #checkpoint_files = [f for f in os.listdir(checkpoint_folder) if f.endswith(('.ckpt', '.pt', '.bin', '.pth', '.safetensors'))]
         self.dropdown = self.create_combo_box(checkpoint_files, "Model:")
         if checkpoint_files == []:
@@ -136,7 +135,7 @@ class TorchLoaderNode(AiNode):
         if model_name not in gs.models:
 
             gs.models[model_name] = {}
-            gs.models[model_name]["model"], gs.models[model_name]["clip"], gs.models[model_name]["vae"], gs.models[model_name]["clipvision"] = self.loader.load_checkpoint_guess_config(model_name, style="None")
+            gs.models[model_name]["model"], gs.models[model_name]["clip"], gs.models[model_name]["vae"], gs.models[model_name]["clipvision"] = self.loader.load_checkpoint_guess_config(os.path.join(gs.prefs.checkpoints, model_name), style="None")
             self.loaded_sd = model_name
             self.scene.getView().parent().window().update_models_signal.emit()
         return [gs.models[model_name]["vae"], gs.models[model_name]["clip"], gs.models[model_name]["model"]]
