@@ -192,6 +192,6 @@ temp/
 *.pkl
 *._pth
 
-config/settings.yaml
+config/user/*.yaml
 config/cache.json
 
