@@ -71,7 +71,7 @@ class DeforumConditioningNode(AiNode):
     op_code = OP_NODE_DEFORUM_SD_COND
     op_title = "Deforum SD Conditioning"
     content_label_objname = "deforum_sdcond_node"
-    category = "aiNodes Deforum/DeForum"
+    category = "Deforum"
     NodeContent_class = DeforumConditioningWidget
     dim = (240, 140)
 

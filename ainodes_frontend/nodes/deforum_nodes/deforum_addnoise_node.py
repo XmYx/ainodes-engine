@@ -30,7 +30,7 @@ class DeforumAddNoiseNode(AiNode):
     op_code = OP_NODE_DEFORUM_ADDNOISE
     op_title = "Deforum Add Noise"
     content_label_objname = "deforum_addnoise_node"
-    category = "aiNodes Deforum/DeForum"
+    category = "Deforum"
     NodeContent_class = DeforumAddNoiseWidget
     dim = (240, 140)
 

@@ -10,22 +10,22 @@ from ainodes_frontend.base import AiNode
 from ainodes_frontend.node_engine.node_content_widget import QDMNodeContentWidget
 # from ainodes_frontend import singleton as gs
 
-OP_NODE_DEFORUM_FRAMEWARP = get_next_opcode()
+OP_NODE_DEFORUM_HYBRID = get_next_opcode()
 
 
-class DeforumFramewarpWidget(QDMNodeContentWidget):
+class DeforumHybridWidget(QDMNodeContentWidget):
     def initUI(self):
         self.create_main_layout(grid=1)
 
-@register_node(OP_NODE_DEFORUM_FRAMEWARP)
-class DeforumFramewarpNode(AiNode):
+@register_node(OP_NODE_DEFORUM_HYBRID)
+class DeforumHybridNode(AiNode):
     icon = "ainodes_frontend/icons/base_nodes/v2/experimental.png"
-    help_text = "Deforum Frame Warp"
-    op_code = OP_NODE_DEFORUM_FRAMEWARP
-    op_title = "Deforum Frame Warp"
+    help_text = "Deforum Hybrid Node"
+    op_code = OP_NODE_DEFORUM_HYBRID
+    op_title = "Deforum Hybrid Node"
     content_label_objname = "deforum_framewarp_node"
-    category = "aiNodes Deforum/DeForum"
-    NodeContent_class = DeforumFramewarpWidget
+    category = "Deforum"
+    NodeContent_class = DeforumHybridWidget
     dim = (240, 120)
     # custom_output_socket_name = ["DATA", "IMAGE", "EXEC"]
 

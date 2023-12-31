@@ -29,7 +29,7 @@ class DeforumFramewarpNode(AiNode):
     op_code = OP_NODE_DEFORUM_FRAMEWARP
     op_title = "Deforum Frame Warp"
     content_label_objname = "deforum_framewarp_node"
-    category = "aiNodes Deforum/DeForum"
+    category = "Deforum"
     NodeContent_class = DeforumFramewarpWidget
     dim = (240, 120)
     custom_output_socket_name = ["DATA", "IMAGE", "MASK", "EXEC"]

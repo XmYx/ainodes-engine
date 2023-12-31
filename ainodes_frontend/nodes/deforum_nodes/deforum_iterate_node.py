@@ -60,12 +60,12 @@ class DeforumIterateNode(AiNode):
     content_label_objname = "deforum_iterate_node"
     category = "aiNodes Deforum/DeForum"
     NodeContent_class = DeforumIterateWidget
-    dim = (460, 160)
-
+    dim = (460, 240)
+    custom_input_socket_name = ["DATA", "LATENT", "INIT LATENT", "EXEC"]
     make_dirty = True
 
     def __init__(self, scene):
-        super().__init__(scene, inputs=[6,2,1], outputs=[6,2,1])
+        super().__init__(scene, inputs=[6,2,2,1], outputs=[6,2,1])
         self.frame_index = 0
         self.content.set_frame_signal.connect(self.content.set_frame_counter)
         self.content.reset_iteration.clicked.connect(self.reset_iteration)
@@ -242,7 +242,11 @@ class DeforumIterateNode(AiNode):
             if self.frame_index == 0:
                 self.rng = ImageRNGNoise((4, args.H // 8, args.W // 8), [self.seed], [self.seed - 1],
                                     0.6, 1024, 1024)
-                latent = {"samples":self.rng.first().half()}
+
+                latent = self.getInputData(2)
+                if latent == None:
+
+                    latent = self.rng.first().half()
             else:
 
                 latent = self.getInputData(1)

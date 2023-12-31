@@ -27,8 +27,15 @@ class TorchLoaderWidget(QDMNodeContentWidget):
         checkpoint_folder = gs.prefs.checkpoints
 
         os.makedirs(checkpoint_folder, exist_ok=True)
+        print(checkpoint_folder)
+        checkpoint_files = []
+        for root, dirs, files in os.walk(checkpoint_folder):
+            for f in files:
+                if f.endswith(('.ckpt', '.pt', '.bin', '.pth', '.safetensors')):
+                    full_path = os.path.join(root, f)
+                    checkpoint_files.append(full_path.replace(checkpoint_folder, ""))
 
-        checkpoint_files = [f for f in os.listdir(checkpoint_folder) if f.endswith(('.ckpt', '.pt', '.bin', '.pth', '.safetensors'))]
+        #checkpoint_files = [f for f in os.listdir(checkpoint_folder) if f.endswith(('.ckpt', '.pt', '.bin', '.pth', '.safetensors'))]
         self.dropdown = self.create_combo_box(checkpoint_files, "Model:")
         if checkpoint_files == []:
             self.dropdown.addItem("Please place a model in models/checkpoints")
@@ -125,21 +132,30 @@ class TorchLoaderNode(AiNode):
         model_name = self.content.dropdown.currentText()
         inpaint = True if "inpaint" in model_name else False
         m = "sd_model" if not inpaint else "inpaint"
-        if self.loaded_sd != model_name or self.content.force_reload.isChecked() == True:
-            self.clean_sd()
-            self.model, self.clip, self.vae, self.clipvision = self.loader.load_checkpoint_guess_config(model_name, style="None")
+
+        if model_name not in gs.models:
+
+            gs.models[model_name] = {}
+            gs.models[model_name]["model"], gs.models[model_name]["clip"], gs.models[model_name]["vae"], gs.models[model_name]["clipvision"] = self.loader.load_checkpoint_guess_config(model_name, style="None")
             self.loaded_sd = model_name
-        if self.content.vae_dropdown.currentText() != 'default':
-            model = self.content.vae_dropdown.currentText()
-            self.vae = self.loader.load_vae(model)
-            self.loaded_vae = model
-        else:
-            self.loaded_vae = 'default'
-        if self.loaded_vae != self.content.vae_dropdown.currentText():
-            model = self.content.vae_dropdown.currentText()
-            self.vae = self.loader.load_vae(model)
-            self.loaded_vae = model
-        return [self.vae, self.clip, self.model]
+            self.scene.getView().parent().window().update_models_signal.emit()
+        return [gs.models[model_name]["vae"], gs.models[model_name]["clip"], gs.models[model_name]["model"]]
+
+        # if self.loaded_sd != model_name or self.content.force_reload.isChecked() == True:
+        #     self.clean_sd()
+        #     self.model, self.clip, self.vae, self.clipvision = self.loader.load_checkpoint_guess_config(model_name, style="None")
+        #     self.loaded_sd = model_name
+        # if self.content.vae_dropdown.currentText() != 'default':
+        #     model = self.content.vae_dropdown.currentText()
+        #     self.vae = self.loader.load_vae(model)
+        #     self.loaded_vae = model
+        # else:
+        #     self.loaded_vae = 'default'
+        # if self.loaded_vae != self.content.vae_dropdown.currentText():
+        #     model = self.content.vae_dropdown.currentText()
+        #     self.vae = self.loader.load_vae(model)
+        #     self.loaded_vae = model
+        # return [self.vae, self.clip, self.model]
 
 
 

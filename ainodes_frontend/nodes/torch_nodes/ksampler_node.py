@@ -167,6 +167,11 @@ class KSamplerNode(AiNode):
         unet = self.getInputData(2)
         data = self.getInputData(3)
         latent = self.getInputData(4)
+
+        if not isinstance(latent, dict):
+             latent = {"samples":latent}
+
+
         n_cond = self.getInputData(5)
         cond = self.getInputData(6)
 

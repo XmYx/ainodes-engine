@@ -10,7 +10,7 @@ import requests
 import yaml
 from PyQt6.QtCore import QDataStream, QIODevice
 from PyQt6.QtGui import QPixmap, QContextMenuEvent
-from PyQt6.QtWidgets import QMenu
+from PyQt6.QtWidgets import QMenu, QVBoxLayout, QWidget, QLabel, QPushButton, QListWidget, QListWidgetItem, QHBoxLayout
 from qtpy.QtCore import QPropertyAnimation, QEasingCurve
 from qtpy.QtWidgets import QSplitter
 from qtpy import QtWidgets, QtCore, QtGui
@@ -37,6 +37,7 @@ from ainodes_frontend.node_engine.node_edge_validators import (
 from ainodes_frontend.node_engine.node_editor_window import NodeEditorWindow
 from ainodes_frontend.node_engine.timeline_dockwidget import Timeline
 from ainodes_frontend.node_engine.utils_no_qt import dumpException, pp
+from backend_helpers.torch_helpers.torch_gc import torch_gc
 
 #Edge.registerEdgeValidator(edge_validator_debug)
 Edge.registerEdgeValidator(edge_cannot_connect_two_outputs_or_two_inputs)
@@ -753,9 +754,10 @@ class CalculatorWindow(NodeEditorWindow):
     base_repo_signal = QtCore.Signal()
     file_new_signal = QtCore.Signal(object)
     json_open_signal = QtCore.Signal(object)
+    update_models_signal = QtCore.Signal()
     def __init__(self, parent=None):
         super(CalculatorWindow, self).__init__()
-
+        self.update_models_signal.connect(self.updateDockContents)
 
     def eventListener(self, *args, **kwargs):
         self.cleanup()
@@ -785,6 +787,7 @@ class CalculatorWindow(NodeEditorWindow):
         self.mdiArea.setTabsMovable(True)
 
         self.createNodesDock()
+        self.createModelDock()
 
         self.splitter = QSplitter(Qt.Orientation.Horizontal, self)
         self.splitter.addWidget(self.nodesDock)
@@ -1377,6 +1380,87 @@ class CalculatorWindow(NodeEditorWindow):
         self.nodesDock.setFloating(False)
 
         #self.addDockWidget(Qt.LeftDockWidgetArea, self.nodesDock)
+    # def createModelDock(self):
+    #     self.dock = QDockWidget("Models", self)
+    #     self.addDockWidget(Qt.DockWidgetArea.LeftDockWidgetArea, self.dock)
+    #     self.dockWidgetContents = QWidget()
+    #     self.dock.setWidget(self.dockWidgetContents)
+    #     self.updateDockContents()
+    #
+    # def updateDockContents(self):
+    #
+    #     current_layout = self.dockWidgetContents.layout()
+    #     if current_layout is not None:
+    #         while current_layout.count():
+    #             child = current_layout.takeAt(0)
+    #             if child.widget():
+    #                 child.widget().deleteLater()
+    #
+    #     self.dockWidgetContents.setLayout(QVBoxLayout())  # Set the layout for the dock widget contents
+    #
+    #     for model_name, _ in gs.models.items():
+    #         model_widget = QWidget()
+    #         model_layout = QVBoxLayout()
+    #
+    #         label = QLabel(model_name)
+    #         unload_button = QPushButton("Unload")
+    #         unload_button.clicked.connect(lambda checked, name=model_name: self.unloadModel(name))
+    #
+    #         model_layout.addWidget(label)
+    #         model_layout.addWidget(unload_button)
+    #         model_widget.setLayout(model_layout)
+    #
+    #         self.dockWidgetContents.layout().addWidget(model_widget)  # Add the model widget to the dock widget contents
+    def createModelDock(self):
+        self.dock = QDockWidget("Models", self)
+        self.addDockWidget(Qt.DockWidgetArea.LeftDockWidgetArea, self.dock)
+        self.dockWidgetContents = QWidget()
+        self.dock.setWidget(self.dockWidgetContents)
+        self.updateDockContents()
+
+    def updateDockContents(self):
+        current_layout = self.dockWidgetContents.layout()
+        if current_layout is not None:
+            while current_layout.count():
+                child = current_layout.takeAt(0)
+                if child.widget():
+                    child.widget().deleteLater()
+
+        self.listWidget = QListWidget()  # Use QListWidget
+        self.dockWidgetContents.setLayout(QVBoxLayout())
+        self.dockWidgetContents.layout().addWidget(self.listWidget)
+
+        for model_name, _ in gs.models.items():
+            item = QListWidgetItem(self.listWidget)
+            model_widget = QWidget()
+            model_layout = QHBoxLayout()  # Use QHBoxLayout for horizontal layout
+
+            label = QLabel(model_name)
+            unload_button = QPushButton("Unload")
+            unload_button.clicked.connect(lambda checked, name=model_name: self.unloadModel(name))
+
+            model_layout.addWidget(label)
+            model_layout.addWidget(unload_button)
+            model_widget.setLayout(model_layout)
+
+            item.setSizeHint(model_widget.sizeHint())
+            self.listWidget.addItem(item)
+            self.listWidget.setItemWidget(item, model_widget)  # Set custom widget for the list item
+
+
+    def unloadModel(self, name):
+        # Logic to unload the model from gs.models
+
+        for _, model in gs.models[name].items():
+            try:
+                model.to('cpu')
+                del model
+            except:
+                pass
+
+        del gs.models[name]
+        torch_gc()
+        self.updateDockContents()  # Update the contents after unloading
 
     def createStatusBar(self):
         self.statusBar().showMessage("Ready")
