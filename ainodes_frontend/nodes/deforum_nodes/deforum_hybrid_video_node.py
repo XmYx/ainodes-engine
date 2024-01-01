@@ -24,7 +24,7 @@ class DeforumHybridNode(AiNode):
     op_code = OP_NODE_DEFORUM_HYBRID
     op_title = "Deforum Hybrid Node"
     content_label_objname = "deforum_framewarp_node"
-    category = "Deforum"
+    category = "base/deforum"
     NodeContent_class = DeforumHybridWidget
     dim = (240, 120)
     # custom_output_socket_name = ["DATA", "IMAGE", "EXEC"]

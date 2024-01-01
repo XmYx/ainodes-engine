@@ -154,7 +154,7 @@ class DeforumPromptNode(AiNode):
     op_code = OP_NODE_DEFORUM_PROMPT
     op_title = "Deforum Prompt Node"
     content_label_objname = "deforum_prompt_node"
-    category = "Deforum"
+    category = "base/deforum"
 
     dim = (600,800)
 

@@ -73,7 +73,7 @@ class KSamplerNode(AiNode):
     op_code = OP_NODE_K_SAMPLER
     op_title = "K Sampler"
     content_label_objname = "K_sampling_node"
-    category = "aiNodes Base/Sampling"
+    category = "base/sampling"
 
     NodeContent_class = KSamplerWidget
     #dim = (256, 800)

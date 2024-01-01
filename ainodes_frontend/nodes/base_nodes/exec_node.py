@@ -22,7 +22,7 @@ class ExecNode(AiNode):
     op_code = OP_NODE_EXEC
     op_title = "Execute"
     content_label_objname = "exec_node"
-    category = "aiNodes Base/Functional"
+    category = "base/exec"
     help_text = "Execution Node\n\n" \
                 "Execution chain is essential\n" \
                 "in aiNodes. You control the flow\n" \

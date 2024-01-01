@@ -184,7 +184,7 @@ class VimNode(AiNode):
     op_code = OP_NODE_VIM
     op_title = "CodeEditor Node"
     content_label_objname = "code_editor_node"
-    category = "aiNodes Base/Functional"
+    category = "base/code"
     help_text = "Code Editor Node\n\n" \
 
     def __init__(self, scene):

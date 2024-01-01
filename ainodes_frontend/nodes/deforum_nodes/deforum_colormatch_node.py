@@ -21,7 +21,7 @@ class DeforumColorMatchNode(AiNode):
     op_code = OP_NODE_DEFORUM_COLORMATCH
     op_title = "Deforum ColorMatch Node"
     content_label_objname = "deforum_colormatch_node"
-    category = "Deforum"
+    category = "base/deforum"
     NodeContent_class = DeforumColorMatchWidget
     dim = (240, 140)
 

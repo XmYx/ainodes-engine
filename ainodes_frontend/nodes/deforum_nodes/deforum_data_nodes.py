@@ -142,7 +142,7 @@ class DeforumParamBaseNode(AiNode):
     op_code = None
     op_title = "Deforum Args Node"
     content_label_objname = "deforum_args_node"
-    category = "Deforum"
+    category = "base/deforum"
 
     w_value = 340
     h_value = 600

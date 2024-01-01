@@ -17,7 +17,7 @@ class BGNode(AiDummyNode):
     help_text = "Simple cosmetic background object\n" \
                 "that drags the nodes placed on it."
     content_label_objname = "bg_node"
-    category = "aiNodes Base/Background"
+    category = "base/bg"
 
     def __init__(self, scene):
         super().__init__(scene, inputs=[], outputs=[])
@@ -74,7 +74,7 @@ class BGINFONode(AiNode):
     op_code = OP_NODE_BG_INFO
     op_title = "Bg Node Info"
     content_label_objname = "bg_node_info"
-    category = "aiNodes Base/Background"
+    category = "base/bg"
 
     def __init__(self, scene):
         super().__init__(scene, inputs=[], outputs=[])

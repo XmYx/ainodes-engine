@@ -67,7 +67,7 @@ class ImageInputNode(AiNode):
     op_code = OP_NODE_IMG_INPUT
     op_title = "Input Image / Video"
     content_label_objname = "image_input_node"
-    category = "aiNodes Base/Image"
+    category = "base/image"
     input_socket_name = ["EXEC"]
     output_socket_name = ["EXEC", "IMAGE"]
     dim = (340, 280)

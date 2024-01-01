@@ -58,7 +58,7 @@ class DeforumIterateNode(AiNode):
     op_code = OP_NODE_DEFORUM_ITERATE
     op_title = "Deforum Iterator"
     content_label_objname = "deforum_iterate_node"
-    category = "aiNodes Deforum/DeForum"
+    category = "base/deforum"
     NodeContent_class = DeforumIterateWidget
     dim = (460, 240)
     custom_input_socket_name = ["DATA", "LATENT", "INIT LATENT", "EXEC"]
