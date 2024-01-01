@@ -27,8 +27,8 @@ def load_checkpoint_guess_config(ckpt_path, output_vae=True, output_clip=True, o
     from comfy import model_detection
     import comfy.taesd.taesd
     from comfy.sd import load_model_weights, VAE, CLIP
-
-    sd = comfy.utils.load_torch_file(ckpt_path)
+    load_path = os.path.join(gs.prefs.checkpoints, ckpt_path)
+    sd = comfy.utils.load_torch_file(load_path)
     sd_keys = sd.keys()
     clip = None
     clipvision = None
@@ -50,7 +50,7 @@ def load_checkpoint_guess_config(ckpt_path, output_vae=True, output_clip=True, o
     model_config.set_manual_cast(manual_cast_dtype)
 
     if model_config is None:
-        raise RuntimeError("ERROR: Could not detect model type of: {}".format(ckpt_path))
+        raise RuntimeError("ERROR: Could not detect model type of: {}".format(load_path))
 
     if model_config.clip_vision_prefix is not None:
         if output_clipvision:
@@ -59,20 +59,20 @@ def load_checkpoint_guess_config(ckpt_path, output_vae=True, output_clip=True, o
     if output_model:
         inital_load_device = load_device
         offload_device = model_management.unet_offload_device()
-        model = model_config.get_model(sd, "model.diffusion_model.", device=inital_load_device)
+        model = model_config.get_model(sd, "model.diffusion_model.", device=torch.device("cpu"))
         model.load_model_weights(sd, "model.diffusion_model.")
 
     if output_vae:
         vae_sd = comfy.utils.state_dict_prefix_replace(sd, {"first_stage_model.": ""}, filter_keys=True)
         vae_sd = model_config.process_vae_state_dict(vae_sd)
-        vae = VAE(sd=vae_sd)
+        gs.models[ckpt_path]["vae"] = VAE(sd=vae_sd)
 
     if output_clip:
         w = WeightsLoader()
         clip_target = model_config.clip_target()
         if clip_target is not None:
-            clip = CLIP(clip_target, embedding_directory=embedding_directory)
-            w.cond_stage_model = clip.cond_stage_model
+            gs.models[ckpt_path]["clip"] = CLIP(clip_target, embedding_directory=embedding_directory)
+            w.cond_stage_model = gs.models[ckpt_path]["clip"].cond_stage_model
             sd = model_config.process_clip_state_dict(sd)
             load_model_weights(w, sd)
 
@@ -81,7 +81,7 @@ def load_checkpoint_guess_config(ckpt_path, output_vae=True, output_clip=True, o
         print("left over keys:", left_over)
 
     # if output_model:
-    model_patcher = comfy.model_patcher.ModelPatcher(model, load_device=load_device, offload_device=torch.device("cpu"), current_device=load_device)
+    gs.models[ckpt_path]["model"] = comfy.model_patcher.ModelPatcher(model, load_device=load_device, offload_device=load_device, current_device=load_device)
         # if inital_load_device != torch.device("cpu"):
         #     print("loaded straight to GPU")
         #     model_management.load_model_gpu(model_patcher)
@@ -93,8 +93,14 @@ def load_checkpoint_guess_config(ckpt_path, output_vae=True, output_clip=True, o
 
     # model_patcher.model.to(gs.device)
     # model_patcher.load_device = gs.device
+    def load_model():
+        print("Load HiJacked")
+        pass
 
-    return (model_patcher, clip, vae, clipvision)
+    gs.models[ckpt_path]["clip"].load_model = load_model
+    gs.models[ckpt_path]["vae"].load_model = load_model
+
+    return
 
 
 class TorchLoaderWidget(QDMNodeContentWidget):
@@ -247,13 +253,17 @@ class TorchLoaderNode(AiNode):
         if model_name not in gs.models:
 
             gs.models[model_name] = {}
-            gs.models[model_name]["model"], gs.models[model_name]["clip"], gs.models[model_name]["vae"], _ = load_checkpoint_guess_config(os.path.join(gs.prefs.checkpoints, model_name))
+            # gs.models[model_name]["model"], gs.models[model_name]["clip"], gs.models[model_name]["vae"], _ = load_checkpoint_guess_config(os.path.join(gs.prefs.checkpoints, model_name))
+            load_checkpoint_guess_config(model_name)
             self.loaded_sd = model_name
 
             self.scene.getView().parent().window().update_models_signal.emit()
 
+        else:
+            self.loaded_sd = model_name
 
-        return [gs.models[model_name]["vae"], gs.models[model_name]["clip"], gs.models[model_name]["model"]]
+            torch_gc()
+        return [None, None, None, None]
 
         # if self.loaded_sd != model_name or self.content.force_reload.isChecked() == True:
         #     self.clean_sd()

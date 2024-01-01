@@ -23,6 +23,7 @@ from ainodes_frontend.node_engine.node_content_widget import QDMNodeContentWidge
 
 from queue import Queue
 
+from backend_helpers.torch_helpers.torch_gc import torch_gc
 from main import get_torch_device
 from ..image_nodes.image_preview_node import ImagePreviewNode
 from ...base.qimage_ops import tensor_image_to_pixmap
@@ -248,8 +249,11 @@ class KSamplerNode(AiNode):
                     self.preview_mode = "quick-rgb"
 
             print(f"[ SEED: {seed} LAST STEP:{last_step} DENOISE:{denoise}]")
-            from nodes import common_ksampler as ksampler
-            sample = ksampler(model=unet,
+            #from nodes import common_ksampler as ksampler
+
+
+
+            sample = common_ksampler(model=unet,
                                      seed=seed,
                                      steps=steps,
                                      cfg=cfg,
@@ -418,3 +422,172 @@ def enable_misc_optimizations():
         print("CUDA Matmul fp16/bf16 Reduced Precision Reduction Disabled")
     else:
         print("CUDA Matmul fp16/bf16 Reduced Precision Reduction Expected Value Mismatch")
+
+
+def prepare_sampling(model, noise_shape, positive, negative, noise_mask):
+    from comfy.sample import convert_cond, prepare_mask, get_additional_models
+    import comfy
+    device = model.load_device
+    positive = convert_cond(positive)
+    negative = convert_cond(negative)
+
+    if noise_mask is not None:
+        noise_mask = prepare_mask(noise_mask, noise_shape, device)
+
+    real_model = None
+    models, inference_memory = get_additional_models(positive, negative, model.model_dtype())
+    comfy.model_management.load_models_gpu([model] + models, model.memory_required([noise_shape[0] * 2] + list(noise_shape[1:])) + inference_memory)
+    #real_model = model.model
+
+    return positive, negative, noise_mask, models
+
+
+def sample_k(model, noise, positive, negative, cfg, device, sampler, sigmas, model_options={}, latent_image=None, denoise_mask=None, callback=None, disable_pbar=False, seed=None):
+
+    from comfy.samplers import resolve_areas_and_cond_masks, wrap_model, calculate_start_end_timesteps, encode_model_conds, create_cond_with_same_area_if_none, pre_run_control, apply_empty_x_to_equal_area
+    positive = positive[:]
+    negative = negative[:]
+
+    resolve_areas_and_cond_masks(positive, noise.shape[2], noise.shape[3], device)
+    resolve_areas_and_cond_masks(negative, noise.shape[2], noise.shape[3], device)
+
+    model_wrap = wrap_model(model)
+
+    calculate_start_end_timesteps(model, negative)
+    calculate_start_end_timesteps(model, positive)
+
+    if latent_image is not None:
+        latent_image = model.process_latent_in(latent_image)
+
+    if hasattr(model, 'extra_conds'):
+        positive = encode_model_conds(model.extra_conds, positive, noise, device, "positive", latent_image=latent_image, denoise_mask=denoise_mask)
+        negative = encode_model_conds(model.extra_conds, negative, noise, device, "negative", latent_image=latent_image, denoise_mask=denoise_mask)
+
+    #make sure each cond area has an opposite one with the same area
+    for c in positive:
+        create_cond_with_same_area_if_none(negative, c)
+    for c in negative:
+        create_cond_with_same_area_if_none(positive, c)
+
+    pre_run_control(model, negative + positive)
+
+    apply_empty_x_to_equal_area(list(filter(lambda c: c.get('control_apply_to_uncond', False) == True, positive)), negative, 'control', lambda cond_cnets, x: cond_cnets[x])
+    apply_empty_x_to_equal_area(positive, negative, 'gligen', lambda cond_cnets, x: cond_cnets[x])
+
+    extra_args = {"cond":positive, "uncond":negative, "cond_scale": cfg, "model_options": model_options, "seed":seed}
+
+    samples = sampler.sample(model_wrap, sigmas, extra_args, callback, noise, latent_image, denoise_mask, disable_pbar)
+    return model.process_latent_out(samples.to(torch.float32))
+
+
+class KSampler:
+
+    from comfy.samplers import SCHEDULER_NAMES, SAMPLER_NAMES
+
+    SCHEDULERS = SCHEDULER_NAMES
+    SAMPLERS = SAMPLER_NAMES
+
+    def __init__(self, model, steps, device, sampler=None, scheduler=None, denoise=None, model_options={}):
+        #self.model = model
+        self.device = device
+        if scheduler not in self.SCHEDULERS:
+            scheduler = self.SCHEDULERS[0]
+        if sampler not in self.SAMPLERS:
+            sampler = self.SAMPLERS[0]
+        self.scheduler = scheduler
+        self.sampler = sampler
+        self.set_steps(steps, model, denoise)
+        self.denoise = denoise
+        self.model_options = model_options
+
+    def calculate_sigmas(self, steps, model):
+        sigmas = None
+        from comfy.samplers import calculate_sigmas_scheduler
+        discard_penultimate_sigma = False
+        if self.sampler in ['dpm_2', 'dpm_2_ancestral', 'uni_pc', 'uni_pc_bh2']:
+            steps += 1
+            discard_penultimate_sigma = True
+
+        sigmas = calculate_sigmas_scheduler(model, self.scheduler, steps)
+
+        if discard_penultimate_sigma:
+            sigmas = torch.cat([sigmas[:-2], sigmas[-1:]])
+        return sigmas
+
+    def set_steps(self, steps, model, denoise=None):
+        self.steps = steps
+        if denoise is None or denoise > 0.9999:
+            self.sigmas = self.calculate_sigmas(steps, model).to(self.device)
+        else:
+            new_steps = int(steps/denoise)
+            sigmas = self.calculate_sigmas(new_steps, model).to(self.device)
+            self.sigmas = sigmas[-(steps + 1):]
+
+    def sample(self, model, noise, positive, negative, cfg, latent_image=None, start_step=None, last_step=None, force_full_denoise=False, denoise_mask=None, sigmas=None, callback=None, disable_pbar=False, seed=None):
+        if sigmas is None:
+            sigmas = self.sigmas
+
+        if last_step is not None and last_step < (len(sigmas) - 1):
+            sigmas = sigmas[:last_step + 1]
+            if force_full_denoise:
+                sigmas[-1] = 0
+
+        if start_step is not None:
+            if start_step < (len(sigmas) - 1):
+                sigmas = sigmas[start_step:]
+            else:
+                if latent_image is not None:
+                    return latent_image
+                else:
+                    return torch.zeros_like(noise)
+        from comfy.samplers import sampler_object
+        sampler = sampler_object(self.sampler)
+
+        return sample_k(model.model, noise, positive, negative, cfg, self.device, sampler, sigmas, self.model_options, latent_image=latent_image, denoise_mask=denoise_mask, callback=callback, disable_pbar=disable_pbar, seed=seed)
+
+
+def sample(model, noise, steps, cfg, sampler_name, scheduler, positive, negative, latent_image, denoise=1.0, disable_noise=False, start_step=None, last_step=None, force_full_denoise=False, noise_mask=None, sigmas=None, callback=None, disable_pbar=False, seed=None):
+    import comfy
+    from comfy.sample import cleanup_additional_models, get_models_from_cond
+    positive_copy, negative_copy, noise_mask, models = prepare_sampling(model, noise.shape, positive, negative, noise_mask)
+
+    noise = noise.to(gs.device)
+    latent_image = latent_image.to(gs.device)
+
+
+
+
+    sampler = KSampler(model.model, steps=steps, device=model.load_device, sampler=sampler_name, scheduler=scheduler, denoise=denoise, model_options=model.model_options)
+
+    samples = sampler.sample(model, noise, positive_copy, negative_copy, cfg=cfg, latent_image=latent_image, start_step=start_step, last_step=last_step, force_full_denoise=force_full_denoise, denoise_mask=noise_mask, sigmas=sigmas, callback=callback, disable_pbar=disable_pbar, seed=seed)
+    samples = samples.to(comfy.model_management.intermediate_device())
+
+    cleanup_additional_models(models)
+    cleanup_additional_models(set(get_models_from_cond(positive_copy, "control") + get_models_from_cond(negative_copy, "control")))
+
+    del sampler
+    torch_gc()
+
+    return samples
+
+def common_ksampler(model, seed, steps, cfg, sampler_name, scheduler, positive, negative, latent, denoise=1.0, disable_noise=False, start_step=None, last_step=None, force_full_denoise=False):
+    import comfy
+    latent_image = latent["samples"]
+    if disable_noise:
+        noise = torch.zeros(latent_image.size(), dtype=latent_image.dtype, layout=latent_image.layout, device="cpu")
+    else:
+        batch_inds = latent["batch_index"] if "batch_index" in latent else None
+        noise = comfy.sample.prepare_noise(latent_image, seed, batch_inds)
+
+    noise_mask = None
+    if "noise_mask" in latent:
+        noise_mask = latent["noise_mask"]
+
+    callback = latent_preview.prepare_callback(model, steps)
+    disable_pbar = not comfy.utils.PROGRESS_BAR_ENABLED
+    samples = sample(model, noise, steps, cfg, sampler_name, scheduler, positive, negative, latent_image,
+                                  denoise=denoise, disable_noise=disable_noise, start_step=start_step, last_step=last_step,
+                                  force_full_denoise=force_full_denoise, noise_mask=noise_mask, callback=callback, disable_pbar=disable_pbar, seed=seed)
+    out = {}#latent.copy()
+    out["samples"] = samples
+    return (out, )

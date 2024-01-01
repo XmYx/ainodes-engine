@@ -1457,22 +1457,27 @@ class CalculatorWindow(NodeEditorWindow):
                 model.to("cpu")
             if hasattr(model, "model"):
                 model.model.to("cpu")
-
+                del model.model
             if hasattr(model, "inner_model"):
                 model.inner_model.to("cpu")
-
+                del model.inner_model
+            if hasattr(model, "cond_stage_model"):
+                model.cond_stage_model.to("cpu")
+                del model.cond_stage_model
             try:
                 model.to('cpu')
 
             except:
                 pass
+            del model
 
-        from comfy import model_management
+        #from comfy import model_management
 
-        # for model in model_management.current_loaded_models:
-        #     del model
+        #for model in model_management.current_loaded_models:
+        #    del model
 
-
+        #del model_management.LoadedModel
+        #model_management.LoadedModel = None
         del gs.models[name]
         torch_gc()
         self.updateDockContents()  # Update the contents after unloading

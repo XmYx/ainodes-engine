@@ -8,6 +8,17 @@ try:
         This function collects Python garbage and clears the PyTorch CUDA cache
         and IPC (Inter-Process Communication) resources.
         """
+
+        from comfy import model_management as mg
+
+        for model in mg.current_loaded_models:
+            if hasattr(model, "model"):
+                if hasattr(model.model, "to"):
+                    model.model.to("cpu")
+                if hasattr(model.model, "model"):
+                    model.model.model.to("cpu")
+        mg.current_loaded_models.clear()
+
         gc.collect()  # Collect Python garbage
         torch.cuda.empty_cache()  # Clear PyTorch CUDA cache
         torch.cuda.ipc_collect()  # Clear PyTorch CUDA IPC resources

@@ -195,6 +195,11 @@ def hijack_comfy_paths():
 
     folder_paths.filename_list_cache = {}
 
+    from ainodes_frontend.base import modelmanagement_hijack
+    import comfy.model_management
+    comfy.model_management.unet_inital_load_device = modelmanagement_hijack.unet_inital_load_device
+
+
 if __name__ == "__main__":
     from ainodes_frontend.base import settings
 
