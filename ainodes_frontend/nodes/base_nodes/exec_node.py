@@ -35,7 +35,7 @@ class ExecNode(AiNode):
                 "want, or have to get a new value."
 
     def __init__(self, scene):
-        super().__init__(scene, inputs=[1], outputs=[1])
+        super().__init__(scene, inputs=[1,1], outputs=[1])
         self.interrupt = False
 
     def initInnerClasses(self):

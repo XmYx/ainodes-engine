@@ -239,6 +239,8 @@ class DeforumIterateNode(AiNode):
             self.root = root
             gen_args["next_prompt"] = next_prompt
             gen_args["prompt_blend"] = blend_value
+            gen_args["frame_index"] = self.frame_index
+            gen_args["max_frames"] = anim_args.max_frames
             if self.frame_index == 0:
                 self.rng = ImageRNGNoise((4, args.H // 8, args.W // 8), [self.seed], [self.seed - 1],
                                     0.6, 1024, 1024)
