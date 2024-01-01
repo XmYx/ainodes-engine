@@ -27,7 +27,7 @@ def load_checkpoint_guess_config(ckpt_path, output_vae=True, output_clip=True, o
     from comfy import model_detection
     import comfy.taesd.taesd
     from comfy.sd import load_model_weights, VAE, CLIP
-    load_path = os.path.join(gs.prefs.checkpoints, ckpt_path)
+    load_path = gs.prefs.checkpoints + ckpt_path
     sd = comfy.utils.load_torch_file(load_path)
     sd_keys = sd.keys()
     clip = None
