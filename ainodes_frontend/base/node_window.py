@@ -411,10 +411,6 @@ from pyqtgraph.console import ConsoleWidget
 class NodesConsole(ConsoleWidget):
     def __init__(self):
         super().__init__()
-
-        self.tqdm_positions = {}  # Store positions of tqdm instances
-        self.ansi_escape = re.compile(r'\x1b(\[[0-9;]*[A-Za-z])')  # regex to filter out ANSI escape codes
-
         stylesheet = '''
         QWidget#Form {
             background-color: black;
@@ -486,73 +482,26 @@ class NodesConsole(ConsoleWidget):
 
         # Apply the stylesheet to the application
         self.setStyleSheet(stylesheet)
+
     def write_(self, strn, html=False, scrollToBottom=True):
         sys.__stdout__.write(strn)
         sb = self.output.verticalScrollBar()
 
-        # Remove control characters (e.g., from tqdm)
+        # Remove control characters used by tqdm
         filtered_strn = re.sub(r'\x1b\[.*?[@-~]', '', strn)
+
         self.output.insertPlainText(filtered_strn)
-        if scrollToBottom:
-            sb.setValue(sb.maximum())
+        sb.setValue(sb.maximum())
 
     def write(self, strn, style='output', scrollToBottom='auto'):
-        strn = self.ansi_escape.sub('', strn)  # Filter out ANSI escape codes
-
-        if '\r' in strn:
-            tqdm_content = strn.replace('\r', '').strip()
-            cursor = self.output.textCursor()
-            cursor.movePosition(QtGui.QTextCursor.MoveOperation.End)
-            cursor.movePosition(QtGui.QTextCursor.MoveOperation.StartOfBlock, QtGui.QTextCursor.MoveMode.KeepAnchor)
-            cursor.removeSelectedText()
-            self.output.insertPlainText(tqdm_content)
-        else:
-            self.output.insertPlainText(strn)
-
-        sb = self.output.verticalScrollBar()
-        if scrollToBottom == 'auto' or scrollToBottom:
-            sb.setValue(sb.maximum())
-    # def write_(self, strn, html=False, scrollToBottom=True):
-    #     sys.__stdout__.write(strn)
-    #     sb = self.output.verticalScrollBar()
-    #
-    #     # Remove control characters used by tqdm
-    #     filtered_strn = re.sub(r'\x1b\[.*?[@-~]', '', strn)
-    #
-    #     self.output.insertPlainText(filtered_strn)
-    #     sb.setValue(sb.maximum())
-    #
-    # def write(self, strn, style='output', scrollToBottom='auto'):
-    #     # Filter out ANSI escape codes
-    #     strn = self.ansi_escape.sub('', strn)
-    #
-    #     # Handle tqdm updates
-    #     if '\r' in strn:
-    #         # Get tqdm instance content (without the carriage return)
-    #         tqdm_content = strn.replace('\r', '').strip()
-    #
-    #         # Move cursor to the beginning of the last line
-    #         cursor = self.output.textCursor()
-    #         cursor.movePosition(QtGui.QTextCursor.MoveOperation.End)
-    #         cursor.movePosition(QtGui.QTextCursor.MoveOperation.StartOfBlock, QtGui.QTextCursor.MoveMode.KeepAnchor)
-    #         cursor.removeSelectedText()  # Remove the last line
-    #
-    #         # Insert the tqdm update at the current cursor position
-    #         self.output.insertPlainText(tqdm_content)
-    #     else:
-    #         # Insert non-tqdm text normally
-    #         self.output.insertPlainText(strn + '\n')
-    #     # Handle scroll logic
-    #     sb = self.output.verticalScrollBar()
-    #     if scrollToBottom == 'auto' or scrollToBottom:
-    #         sb.setValue(sb.maximum())
-
-    """def write(self, strn, html=False, scrollToBottom=True):
-
         isGuiThread = QtCore.QThread.currentThread() == QtCore.QCoreApplication.instance().thread()
         if not isGuiThread:
             sys.__stdout__.write(strn)
             return
+
+        cursor = self.output.textCursor()
+        cursor.movePosition(QtGui.QTextCursor.MoveOperation.End)
+        self.output.setTextCursor(cursor)
 
         sb = self.output.verticalScrollBar()
         scroll = sb.value()
@@ -560,20 +509,22 @@ class NodesConsole(ConsoleWidget):
             atBottom = scroll == sb.maximum()
             scrollToBottom = atBottom
 
-        self.output.moveCursor(QtGui.QTextCursor.MoveOperation.End)
-        if html:
-            self.output.textCursor().insertHtml(strn)
-        else:
-            if self.inCmd:
-                self.inCmd = False
-                self.output.textCursor().insertHtml("</div><br><div style='font-weight: normal; background-color: #FFF; color: black'>")
-            self.output.insertPlainText(strn)
+        # Check if the string contains the carriage return character, which is used by tqdm to refresh the progress bar
+        if '\r' in strn:
+            cursor.movePosition(QtGui.QTextCursor.MoveOperation.StartOfBlock,
+                                QtGui.QTextCursor.MoveMode.KeepAnchor)
+
+            cursor.removeSelectedText()  # Remove the last line
+            strn = strn.replace('\r', '')  # Remove carriage return
+            if strn.startswith('\n'):  # If there's a newline at the start after removing \r, remove it
+                strn = strn[1:]
+        # Insert the new text
+        self.output.insertPlainText(strn)
 
         if scrollToBottom:
             sb.setValue(sb.maximum())
         else:
-            sb.setValue(scroll)"""
-
+            sb.setValue(scroll)
 class ColorEditor(QtWidgets.QDialog):
     def __init__(self, colors, names, parent=None):
         super().__init__(parent)

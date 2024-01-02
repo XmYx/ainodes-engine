@@ -41,6 +41,7 @@ class DeforumFramewarpNode(AiNode):
     def __init__(self, scene):
         super().__init__(scene, inputs=[6,5,1], outputs=[6,5,5,1])
         self.depth_model = None
+        self.depth = None
         self.algo = ""
     def evalImplementation_thread(self, index=0):
         np_image = None
@@ -90,7 +91,7 @@ class DeforumFramewarpNode(AiNode):
 
 
 
-            warped_np_img, depth, mask = anim_frame_warp(np_image, args, anim_args, keys, frame_idx, depth_model=self.depth_model, depth=None, device='cuda',
+            warped_np_img, self.depth, mask = anim_frame_warp(np_image, args, anim_args, keys, frame_idx, depth_model=self.depth_model, depth=self.depth, device='cuda',
                             half_precision=True)
 
             image = Image.fromarray(cv2.cvtColor(warped_np_img, cv2.COLOR_BGR2RGB))
