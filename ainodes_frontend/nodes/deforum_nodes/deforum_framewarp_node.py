@@ -5,9 +5,11 @@ import numpy as np
 from deforum.models import DepthModel
 from deforum.utils.deforum_framewarp_utils import anim_frame_warp
 
+# from deforum.models import DepthModel
+# from deforum.utils.deforum_framewarp_utils import anim_frame_warp
+
 # from deforum.animation.animation import anim_frame_warp
 # from deforum.exttools.depth import DepthModel
-
 from PIL import Image
 from ainodes_frontend.base.qimage_ops import pil2tensor, tensor2pil
 from ainodes_frontend.base import register_node, get_next_opcode
@@ -72,8 +74,8 @@ class DeforumFramewarpNode(AiNode):
                     device = gs.device.type
                     self.depth_model = DepthModel("models/other", device, True,
                                              keep_in_vram=keep_in_vram,
-                                             depth_algorithm=anim_args.depth_algorithm, Width=args.W,
-                                             Height=args.H,
+                                             depth_algorithm=anim_args.depth_algorithm, Width=args.width,
+                                             Height=args.height,
                                              midas_weight=anim_args.midas_weight)
 
                     # depth-based hybrid composite mask requires saved depth maps

@@ -1,14 +1,14 @@
 
 deforum_base_params = {
 
-    "W": {
+    "width": {
         "type": "spinbox",
         "default": 512,
         "min": 64,
         "max": 4096,
         "step": 64
     },
-    "H": {
+    "height": {
         "type": "spinbox",
         "default": 512,
         "min": 64,

@@ -68,8 +68,8 @@ class DeforumAddNoiseNode(AiNode):
             mask_vals = {}
             noise_mask_vals = {}
 
-            mask_vals['everywhere'] = Image.new('1', (args.W, args.H), 1)
-            noise_mask_vals['everywhere'] = Image.new('1', (args.W, args.H), 1)
+            mask_vals['everywhere'] = Image.new('1', (args.width, args.height), 1)
+            noise_mask_vals['everywhere'] = Image.new('1', (args.width, args.height), 1)
 
             from ainodes_frontend.nodes.deforum_nodes.deforum_framewarp_node import tensor2np
             prev_img = tensor2np(image)
