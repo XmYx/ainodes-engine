@@ -586,7 +586,7 @@ class QDMNodeContentWidget(QWidget, Serializable):
              QtWidgets.QDoubleSpinBox: A double spin box widget.
          """
 
-        check_box = CustomCheckBox(label_text)
+        check_box = QtWidgets.QCheckBox(label_text)
         check_box.setChecked(checked)
         check_box.setObjectName(label_text)
         if accessible_name is not None:
@@ -595,9 +595,9 @@ class QDMNodeContentWidget(QWidget, Serializable):
         palette.setColor(QtGui.QPalette.WindowText, QtGui.QColor("white"))
         palette.setColor(QtGui.QPalette.Disabled, QtGui.QPalette.WindowText, QtGui.QColor("black"))
         check_box.setPalette(palette)
-
+        self.widget_list.append(check_box)
         if spawn:
-            self.widget_list.append(check_box)
+
             setattr(self, spawn, check_box)
         else:
             return check_box
