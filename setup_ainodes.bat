@@ -92,16 +92,39 @@ setlocal enabledelayedexpansion
 @echo off
 set "src_file=config/src.txt"
 
-rem Read repositories, branches, and directories from src.txt
+@REM rem Read repositories, branches, and directories from src.txt
+@REM for /f "tokens=1,2,3,4" %%A in (%src_file%) do (
+@REM     set "repository=%%A"
+@REM     set "branch=%%B %%C"
+@REM     set "directory=%%D"
+@REM     echo Cloning repository: !repository! into !directory!
+@REM
+@REM     rem Go to src folder, create and change to the target directory
+@REM     if not exist "%SRC_DIR%\!directory!" mkdir "%SRC_DIR%\!directory!"
+@REM     cd "%SRC_DIR%\!directory!"
+@REM
+@REM     rem Clone the repository
+@REM     git clone https://www.github.com/!repository! . !branch!
+@REM
+@REM     rem Return to the original directory
+@REM     cd "%~dp0"
+@REM )
+
+
 for /f "tokens=1,2,3,4" %%A in (%src_file%) do (
     set "repository=%%A"
     set "branch=%%B %%C"
     set "directory=%%D"
     echo Cloning repository: !repository! into !directory!
 
-    rem Go to src folder, create and change to the target directory
-    if not exist "%SRC_DIR%\!directory!" mkdir "%SRC_DIR%\!directory!"
-    cd "%SRC_DIR%\!directory!"
+    rem Go to src folder
+    cd "%SRC_DIR%"
+
+    rem Create the target directory including any necessary parent directories
+    if not exist "!directory!" mkdir "!directory!"
+
+    rem Change to the target directory
+    cd "!directory!"
 
     rem Clone the repository
     git clone https://www.github.com/!repository! . !branch!
@@ -109,6 +132,7 @@ for /f "tokens=1,2,3,4" %%A in (%src_file%) do (
     rem Return to the original directory
     cd "%~dp0"
 )
+
 
 
 cd "%SRC_DIR%\deforum"

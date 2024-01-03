@@ -100,6 +100,8 @@ def load_checkpoint_guess_config(ckpt_path, output_vae=True, output_clip=True, o
     gs.models[ckpt_path]["clip"].load_model = load_model
     gs.models[ckpt_path]["vae"].load_model = load_model
 
+    gs.models[ckpt_path]["vae"].first_stage_model.cuda()
+
     return
 
 

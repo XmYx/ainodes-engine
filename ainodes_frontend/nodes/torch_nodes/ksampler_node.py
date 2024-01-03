@@ -303,11 +303,15 @@ class KSamplerNode(AiNode):
             latent_preview.set_callback(None)
 
             return [None, None]
-
+    def decode_tiled(self, vae, samples, tile_x=64, tile_y=64, overlap = 16):
+        #model_management.load_model_gpu(self.patcher)
+        output = vae.decode_tiled_(samples, tile_x, tile_y, overlap)
+        return output.movedim(1,-1)
     def decode_sample(self, sample, vae):
+
         vae.first_stage_model.cuda()
 
-        decoded = vae.decode_tiled(sample)
+        decoded = self.decode_tiled(vae, sample)
         return decoded
 
     #k_callback = lambda x: callback(x["i"], x["denoised"], x["x"], total_steps)
@@ -436,7 +440,7 @@ def prepare_sampling(model, noise_shape, positive, negative, noise_mask):
 
     real_model = None
     models, inference_memory = get_additional_models(positive, negative, model.model_dtype())
-    comfy.model_management.load_models_gpu([model] + models, model.memory_required([noise_shape[0] * 2] + list(noise_shape[1:])) + inference_memory)
+    # comfy.model_management.load_models_gpu([model] + models, model.memory_required([noise_shape[0] * 2] + list(noise_shape[1:])) + inference_memory)
     #real_model = model.model
 
     return positive, negative, noise_mask, models
