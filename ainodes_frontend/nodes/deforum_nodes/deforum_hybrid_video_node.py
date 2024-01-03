@@ -23,7 +23,7 @@ class DeforumHybridNode(AiNode):
     help_text = "Deforum Hybrid Node"
     op_code = OP_NODE_DEFORUM_HYBRID
     op_title = "Deforum Hybrid Node"
-    content_label_objname = "deforum_framewarp_node"
+    content_label_objname = "deforum_hybrid_node"
     category = "base/deforum"
     NodeContent_class = DeforumHybridWidget
     dim = (240, 120)
