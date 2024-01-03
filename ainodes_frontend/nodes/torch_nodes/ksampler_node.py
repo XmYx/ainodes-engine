@@ -308,10 +308,12 @@ class KSamplerNode(AiNode):
         output = vae.decode_tiled_(samples, tile_x, tile_y, overlap)
         return output.movedim(1,-1)
     def decode_sample(self, sample, vae):
-
+        tile_x = 64
+        tile_y = 64
+        overlap = 16
         vae.first_stage_model.cuda()
 
-        decoded = self.decode_tiled(vae, sample)
+        decoded = vae.decode_tiled_(sample, tile_x, tile_y, overlap).movedim(1,-1)
         return decoded
 
     #k_callback = lambda x: callback(x["i"], x["denoised"], x["x"], total_steps)
@@ -439,11 +441,11 @@ def prepare_sampling(model, noise_shape, positive, negative, noise_mask):
         noise_mask = prepare_mask(noise_mask, noise_shape, device)
 
     real_model = None
-    models, inference_memory = get_additional_models(positive, negative, model.model_dtype())
+    _, inference_memory = get_additional_models(positive, negative, model.model_dtype())
     # comfy.model_management.load_models_gpu([model] + models, model.memory_required([noise_shape[0] * 2] + list(noise_shape[1:])) + inference_memory)
     #real_model = model.model
 
-    return positive, negative, noise_mask, models
+    return positive, negative, noise_mask
 
 
 def sample_k(model, noise, positive, negative, cfg, device, sampler, sigmas, model_options={}, latent_image=None, denoise_mask=None, callback=None, disable_pbar=False, seed=None):
@@ -552,8 +554,8 @@ class KSampler:
 
 def sample(model, noise, steps, cfg, sampler_name, scheduler, positive, negative, latent_image, denoise=1.0, disable_noise=False, start_step=None, last_step=None, force_full_denoise=False, noise_mask=None, sigmas=None, callback=None, disable_pbar=False, seed=None):
     import comfy
-    from comfy.sample import cleanup_additional_models, get_models_from_cond
-    positive_copy, negative_copy, noise_mask, models = prepare_sampling(model, noise.shape, positive, negative, noise_mask)
+    #from comfy.sample import cleanup_additional_models, get_models_from_cond
+    positive_copy, negative_copy, noise_mask = prepare_sampling(model, noise.shape, positive, negative, noise_mask)
 
     noise = noise.to(gs.device)
     latent_image = latent_image.to(gs.device)
@@ -566,8 +568,8 @@ def sample(model, noise, steps, cfg, sampler_name, scheduler, positive, negative
     samples = sampler.sample(model, noise, positive_copy, negative_copy, cfg=cfg, latent_image=latent_image, start_step=start_step, last_step=last_step, force_full_denoise=force_full_denoise, denoise_mask=noise_mask, sigmas=sigmas, callback=callback, disable_pbar=disable_pbar, seed=seed)
     samples = samples.to(comfy.model_management.intermediate_device())
 
-    cleanup_additional_models(models)
-    cleanup_additional_models(set(get_models_from_cond(positive_copy, "control") + get_models_from_cond(negative_copy, "control")))
+    #cleanup_additional_models(models)
+    #cleanup_additional_models(set(get_models_from_cond(positive_copy, "control") + get_models_from_cond(negative_copy, "control")))
 
     del sampler
     torch_gc()
