@@ -115,15 +115,20 @@ class NodeEditorWindow(QMainWindow):
             #     file_action.triggered.connect(partial(self.onFileOpenAction, os.path.join('graphs', file)))
             #     self.graphsSubMenu.addAction(file_action)
 
-        directory_path = 'ai_nodes'
+        directory_path = 'example_graphs'
         if os.path.isdir(directory_path):
-            custom_nodes = get_dir_content(directory_path)
+            example_graph_dirs = get_dir_content(directory_path)
         else:
-            custom_nodes = None
+            example_graph_dirs = None
+
+
         self.exampleGraphsSubMenu = QtWidgets.QMenu('Example Graphs', self)
-        if custom_nodes is not None:
-            for folder in custom_nodes:
-                folder_path = os.path.join('ai_nodes', folder, 'resources', 'examples')
+
+
+
+        if example_graph_dirs is not None:
+            for folder in example_graph_dirs:
+                folder_path = os.path.join('example_graphs', folder)
 
                 if "__pycache__" not in folder_path:
                     if os.path.isdir(folder_path):

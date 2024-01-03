@@ -1,0 +1,560 @@
+{
+    "id": 139729466687392,
+    "scene_width": 64000,
+    "scene_height": 64000,
+    "nodes": [
+        {
+            "id": 139729489042240,
+            "title": "EmptyLatentImage",
+            "pos_x": -131.15795898437477,
+            "pos_y": -712.7426757812493,
+            "inputs": [
+                {
+                    "id": 139726906321952,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 1,
+                    "name": "EXEC"
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 139726906322336,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 2,
+                    "name": "LATENT"
+                },
+                {
+                    "id": 139726906326560,
+                    "index": 1,
+                    "multi_edges": false,
+                    "position": 6,
+                    "socket_type": 1,
+                    "name": "EXEC"
+                }
+            ],
+            "content": {
+                "width": 1024,
+                "width_visible": true,
+                "width_converted": false,
+                "height": 1024,
+                "height_visible": true,
+                "height_converted": false,
+                "batch_size": 1,
+                "batch_size_visible": true,
+                "batch_size_converted": false
+            },
+            "op_code": 8,
+            "content_label_objname": "emptylatentimage"
+        },
+        {
+            "id": 139731165077872,
+            "title": "CLIPTextEncode",
+            "pos_x": -588.782958984375,
+            "pos_y": -139.80517578124932,
+            "inputs": [
+                {
+                    "id": 139731165074224,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 3,
+                    "socket_type": 4,
+                    "name": "CLIP"
+                },
+                {
+                    "id": 139731165076432,
+                    "index": 1,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 1,
+                    "name": "EXEC"
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 139731165076768,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 3,
+                    "name": "CONDITIONING"
+                },
+                {
+                    "id": 139731165076336,
+                    "index": 1,
+                    "multi_edges": false,
+                    "position": 6,
+                    "socket_type": 1,
+                    "name": "EXEC"
+                }
+            ],
+            "content": {
+                "text": " ",
+                "text_visible": true,
+                "text_converted": false
+            },
+            "op_code": 2,
+            "content_label_objname": "cliptextencode"
+        },
+        {
+            "id": 139731165077296,
+            "title": "CLIPTextEncode",
+            "pos_x": -584.345458984375,
+            "pos_y": -466.0551757812494,
+            "inputs": [
+                {
+                    "id": 139731165080752,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 3,
+                    "socket_type": 4,
+                    "name": "CLIP"
+                },
+                {
+                    "id": 139731165081952,
+                    "index": 1,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 1,
+                    "name": "EXEC"
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 139731165081616,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 3,
+                    "name": "CONDITIONING"
+                },
+                {
+                    "id": 139731165081136,
+                    "index": 1,
+                    "multi_edges": false,
+                    "position": 6,
+                    "socket_type": 1,
+                    "name": "EXEC"
+                }
+            ],
+            "content": {
+                "text": "dart vader as mickey mouse",
+                "text_visible": true,
+                "text_converted": false
+            },
+            "op_code": 2,
+            "content_label_objname": "cliptextencode"
+        },
+        {
+            "id": 139731165071056,
+            "title": "K Sampler",
+            "pos_x": -111.7829589843747,
+            "pos_y": -495.68017578124983,
+            "inputs": [
+                {
+                    "id": 139726906416224,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 3,
+                    "socket_type": 4,
+                    "name": "CONTROLNET"
+                },
+                {
+                    "id": 139726906416608,
+                    "index": 1,
+                    "multi_edges": true,
+                    "position": 3,
+                    "socket_type": 4,
+                    "name": "VAE"
+                },
+                {
+                    "id": 139726906417952,
+                    "index": 2,
+                    "multi_edges": true,
+                    "position": 3,
+                    "socket_type": 4,
+                    "name": "MODEL"
+                },
+                {
+                    "id": 139726906418000,
+                    "index": 3,
+                    "multi_edges": true,
+                    "position": 3,
+                    "socket_type": 6,
+                    "name": "DATA"
+                },
+                {
+                    "id": 139726906418048,
+                    "index": 4,
+                    "multi_edges": true,
+                    "position": 3,
+                    "socket_type": 2,
+                    "name": "LATENT"
+                },
+                {
+                    "id": 139726906417040,
+                    "index": 5,
+                    "multi_edges": true,
+                    "position": 3,
+                    "socket_type": 3,
+                    "name": "NEG COND"
+                },
+                {
+                    "id": 139726906415792,
+                    "index": 6,
+                    "multi_edges": true,
+                    "position": 3,
+                    "socket_type": 3,
+                    "name": "POS COND"
+                },
+                {
+                    "id": 139726906418768,
+                    "index": 7,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 1,
+                    "name": "EXEC"
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 139726906416704,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 5,
+                    "name": "IMAGE"
+                },
+                {
+                    "id": 139726906416752,
+                    "index": 1,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 2,
+                    "name": "LATENT"
+                },
+                {
+                    "id": 139726906416800,
+                    "index": 2,
+                    "multi_edges": false,
+                    "position": 6,
+                    "socket_type": 1,
+                    "name": "EXEC"
+                }
+            ],
+            "content": {
+                "Scheduler:": "normal",
+                "Scheduler:_visible": true,
+                "Scheduler:_converted": false,
+                "Sampler:": "euler",
+                "Sampler:_visible": true,
+                "Sampler:_converted": false,
+                "Seed:": "",
+                "Seed:_visible": true,
+                "Seed:_converted": false,
+                "Steps:": 25,
+                "Steps:_visible": true,
+                "Steps:_converted": false,
+                "Start Step:": 0,
+                "Start Step:_visible": true,
+                "Start Step:_converted": false,
+                "Last Step:": 5,
+                "Last Step:_visible": true,
+                "Last Step:_converted": false,
+                "Stop Sampling Early": "False",
+                "Stop Sampling Early_visible": true,
+                "Force full denoise": "True",
+                "Force full denoise_visible": true,
+                "Preview Type": "quick-rgb",
+                "Preview Type_visible": true,
+                "Preview Type_converted": false,
+                "Show Tensor Preview": "True",
+                "Show Tensor Preview_visible": true,
+                "Disable noise generation": "False",
+                "Disable noise generation_visible": true,
+                "Iterate seed": "False",
+                "Iterate seed_visible": true,
+                "Use latent from loop": "False",
+                "Use latent from loop_visible": true,
+                "Denoise:": 1.0,
+                "Denoise:_visible": true,
+                "Denoise:_converted": false,
+                "Guidance Scale:": 4.0,
+                "Guidance Scale:_visible": true,
+                "Guidance Scale:_converted": false,
+                "_visible": true,
+                "progress_visible": true
+            },
+            "op_code": 208,
+            "content_label_objname": "K_sampling_node"
+        },
+        {
+            "id": 139726906419344,
+            "title": "Torch Loader",
+            "pos_x": -121.25854492187526,
+            "pos_y": 291.5971679687501,
+            "inputs": [
+                {
+                    "id": 139731165074464,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 1,
+                    "name": "EXEC"
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 139731165071776,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 4,
+                    "name": "VAE"
+                },
+                {
+                    "id": 139731165077056,
+                    "index": 1,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 4,
+                    "name": "CLIP"
+                },
+                {
+                    "id": 139731165080320,
+                    "index": 2,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 4,
+                    "name": "MODEL"
+                },
+                {
+                    "id": 139731165077248,
+                    "index": 3,
+                    "multi_edges": false,
+                    "position": 6,
+                    "socket_type": 1,
+                    "name": "EXEC"
+                }
+            ],
+            "content": {
+                "Model:": "protovisionXLHighFidelity3D_releaseV660Bakedvae.safetensors",
+                "Model:_visible": true,
+                "Model:_converted": false,
+                "Vae": "default",
+                "Vae_visible": true,
+                "Vae_converted": false,
+                "Force Reload": "False",
+                "Force Reload_visible": true
+            },
+            "op_code": 210,
+            "content_label_objname": "torch_loader_node"
+        },
+        {
+            "id": 139731165082240,
+            "title": "Image Preview",
+            "pos_x": 286.40454101562517,
+            "pos_y": -722.1801757812498,
+            "inputs": [
+                {
+                    "id": 139726906325408,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 3,
+                    "socket_type": 5,
+                    "name": "IMAGE"
+                },
+                {
+                    "id": 139726906325216,
+                    "index": 1,
+                    "multi_edges": true,
+                    "position": 3,
+                    "socket_type": 6,
+                    "name": "DATA"
+                },
+                {
+                    "id": 139726906324832,
+                    "index": 2,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 1,
+                    "name": "EXEC"
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 139726906324064,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 5,
+                    "name": "IMAGE"
+                },
+                {
+                    "id": 139726906323872,
+                    "index": 1,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 6,
+                    "name": "DATA"
+                },
+                {
+                    "id": 139726906323680,
+                    "index": 2,
+                    "multi_edges": false,
+                    "position": 6,
+                    "socket_type": 1,
+                    "name": "EXEC"
+                }
+            ],
+            "content": {
+                "_visible": true,
+                "FPS": 24,
+                "FPS_visible": true,
+                "FPS_converted": false,
+                "Custom save directory": "",
+                "Custom save directory_visible": true,
+                "Custom save directory_converted": false,
+                "Autosave": "True",
+                "Autosave_visible": true,
+                "Autosave_converted": false,
+                "Embed Node graph in PNG": "False",
+                "Embed Node graph in PNG_visible": true,
+                "Embed Node graph in PNG_converted": false,
+                "Copy to Clipboard": "True",
+                "Copy to Clipboard_visible": true,
+                "Copy to Clipboard_converted": false
+            },
+            "op_code": 185,
+            "content_label_objname": "image_output_node"
+        },
+        {
+            "id": 140097821726976,
+            "title": "Execute",
+            "pos_x": -547.1315917968741,
+            "pos_y": -719.3061523437493,
+            "inputs": [
+                {
+                    "id": 140097821732880,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 1,
+                    "name": "EXEC"
+                },
+                {
+                    "id": 140203442520368,
+                    "index": 1,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 1,
+                    "name": "EXEC"
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 140097821721360,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 6,
+                    "socket_type": 1,
+                    "name": "EXEC"
+                }
+            ],
+            "content": {
+                "_visible": true
+            },
+            "op_code": 183,
+            "content_label_objname": "exec_node"
+        }
+    ],
+    "edges": [
+        {
+            "id": 139726906323104,
+            "edge_type": 2,
+            "start": 139731165076768,
+            "end": 139726906417040
+        },
+        {
+            "id": 139726906322720,
+            "edge_type": 2,
+            "start": 139731165077056,
+            "end": 139731165080752
+        },
+        {
+            "id": 139726906324448,
+            "edge_type": 2,
+            "start": 139726906322336,
+            "end": 139726906418048
+        },
+        {
+            "id": 139726906326752,
+            "edge_type": 2,
+            "start": 139726906416608,
+            "end": 139731165071776
+        },
+        {
+            "id": 139726906416848,
+            "edge_type": 2,
+            "start": 139731165081616,
+            "end": 139726906415792
+        },
+        {
+            "id": 139726906418336,
+            "edge_type": 2,
+            "start": 139726906325408,
+            "end": 139726906416704
+        },
+        {
+            "id": 139726906414784,
+            "edge_type": 2,
+            "start": 139731165080320,
+            "end": 139726906417952
+        },
+        {
+            "id": 139726906414928,
+            "edge_type": 2,
+            "start": 139731165077056,
+            "end": 139731165074224
+        },
+        {
+            "id": 140097822058448,
+            "edge_type": 2,
+            "start": 139731165077248,
+            "end": 139731165081952
+        },
+        {
+            "id": 140096426282384,
+            "edge_type": 2,
+            "start": 139731165081136,
+            "end": 139731165076432
+        },
+        {
+            "id": 140097822051968,
+            "edge_type": 2,
+            "start": 139731165076336,
+            "end": 139726906321952
+        },
+        {
+            "id": 140096443333120,
+            "edge_type": 2,
+            "start": 139726906326560,
+            "end": 139726906418768
+        },
+        {
+            "id": 140097822056720,
+            "edge_type": 2,
+            "start": 139726906324832,
+            "end": 139726906416800
+        },
+        {
+            "id": 140097822052112,
+            "edge_type": 2,
+            "start": 140097821721360,
+            "end": 139731165074464
+        }
+    ]
+}
