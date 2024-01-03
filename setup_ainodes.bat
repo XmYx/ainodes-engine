@@ -111,8 +111,12 @@ for /f "tokens=1,2,3,4" %%A in (%src_file%) do (
 )
 
 
+cd "%SRC_DIR%\deforum"
+
+call pip install -e .
+
 REM After cloning all src repositories, navigate to src/ComfyUI
-cd "%SRC_DIR%\deforum\src\ComfyUI"
+cd "src\ComfyUI"
 
 REM Navigate to custom_nodes and clone the ComfyUI-Manager repository
 cd custom_nodes

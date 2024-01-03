@@ -501,7 +501,7 @@ class QDMGraphicsBGNode(QGraphicsItem):
     def paint(self, painter, QStyleOptionGraphicsItem, widget=None):
         """Painting the rounded rectanglar `Node`"""
         # title
-        painter.beginNativePainting()
+        #painter.beginNativePainting()
         path_title = QPainterPath()
         path_title.setFillRule(Qt.WindingFill)
         path_title.addRoundedRect(0, 0, self.width, self.title_height, self.edge_roundness, self.edge_roundness)

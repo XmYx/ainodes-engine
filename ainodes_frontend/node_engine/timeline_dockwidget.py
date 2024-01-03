@@ -84,7 +84,7 @@ class OurTimeline(QWidget):
         self.yMiddlePoint = self.height() / 2
 
         qp = QPainter()
-        qp.begin(self)
+        #qp.begin(self)
         qp.setRenderHint(QPainter.Antialiasing)
 
         # Fill the entire background first
@@ -202,7 +202,7 @@ class OurTimeline(QWidget):
 
             qp.drawPolygon(poly)
             qp.drawLine(line)
-        qp.end()
+        #qp.end()
 
     # Mouse movement
     def mouseMoveEvent(self, e):

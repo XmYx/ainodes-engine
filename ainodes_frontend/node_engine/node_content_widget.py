@@ -58,12 +58,13 @@ class CustomSlider(QtWidgets.QSlider):
         handle_label_pos = QtCore.QPoint(handle_x + text_width, int((self.height() + text_height) / 2) - 3)
 
         # Create a painter to draw the label on the slider
-        painter = QtGui.QPainter(self)
-        painter.setBrush(QtGui.QColor(70, 70, 70))  # Dark grey background
-        painter.drawRect(handle_x, 0, handle_width, self.height())
-        painter.setPen(QtGui.QColor(255, 255, 255))  # White text
-        painter.drawText(handle_label_pos, str(value))
-        painter.end()
+        # painter = QtGui.QPainter()
+        # painter.begin(self)
+        # painter.setBrush(QtGui.QColor(70, 70, 70))  # Dark grey background
+        # painter.drawRect(handle_x, 0, handle_width, self.height())
+        # painter.setPen(QtGui.QColor(255, 255, 255))  # White text
+        # painter.drawText(handle_label_pos, str(value))
+        # painter.end()
 
     def paintEvent(self, event):
         # Paint the default slider
