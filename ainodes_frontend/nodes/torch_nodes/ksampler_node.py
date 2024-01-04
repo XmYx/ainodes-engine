@@ -162,6 +162,9 @@ class KSamplerNode(AiNode):
     #@QtCore.Slot()
     def evalImplementation_thread(self, cond_override = None, args = None, latent_override=None):
         #from ai_nodes.ainodes_engine_comfy_nodes.adapter_nodes.was_adapter_node import latent_preview
+
+        # torch.set_determ
+        torch.use_deterministic_algorithms(False)
         latent_preview.set_callback(self.callback)
         self.progress_value = 0
         vae = self.getInputData(1)

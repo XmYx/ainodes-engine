@@ -1,3 +1,5 @@
+import platform
+
 import torch
 from sfast.compilers.diffusion_pipeline_compiler import CompilationConfig
 
@@ -27,7 +29,27 @@ def is_cuda_malloc_async():
 
 
 def gen_stable_fast_config():
+
+    torch.set_grad_enabled(False)
+    torch.backends.cuda.matmul.allow_tf32 = True
+    torch.backends.cudnn.allow_tf32 = True
+    torch.backends.cudnn.benchmark = True
+    torch.backends.cudnn.benchmark_limit = 1
+    torch.jit.set_fusion_strategy([('STATIC', 0), ('DYNAMIC', 0)])
     config = CompilationConfig.Default()
+    if 'linux' in platform.platform().lower():
+        config.enable_jit = True
+        config.enable_jit_freeze = True
+        config.enable_cuda_graph = True
+        config.enable_triton = True
+        config.enable_cnn_optimization = True
+        config.preserve_parameters = True
+        config.prefer_lowp_gemm = True
+        config.enable_xformers = True
+        config.channels_last = 'channels_last'
+        config.enable_fused_linear_geglu = True
+    else:
+        config.enable_cuda_graph = False
     # xformers and triton are suggested for achieving best performance.
     # It might be slow for triton to generate, compile and fine-tune kernels.
     try:
@@ -50,7 +72,7 @@ def gen_stable_fast_config():
     # CUDA Graph is suggested for small batch sizes.
     # After capturing, the model only accepts one fixed image size.
     # If you want the model to be dynamic, don't enable it.
-    config.enable_cuda_graph = True
+
     # config.enable_jit_freeze = False
     return config
 
