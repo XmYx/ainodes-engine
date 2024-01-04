@@ -61,19 +61,19 @@ while IFS= read -r line || [[ -n "$line" ]]; do
     branch=$(echo $line | cut -d ' ' -f2-3)
     directory=$(echo $line | cut -d ' ' -f4)
     echo "Cloning repository: $repository into $directory"
-    mkdir -p "${SRC_DIR}/$directory"
-    cd "${SRC_DIR}/$directory"
-    git clone "https://www.github.com/$repository" . "$branch"
-    cd - > /dev/null
+    #mkdir -p "${SRC_DIR}/$directory"
+    cd "${SRC_DIR}"
+    git clone "https://www.github.com/$repository" "$directory"
+    cd - > SCRIPT_DIR
 done < "$src_file"
 
 
-cd src/deforum && pip install -e . && cd - > /dev/null
+#cd src/deforum
+pip install -e src/deforum
 
 # Main execution logic
 echo "Installation complete. Starting the application..."
 # Add the application's main execution commands here
-
 
 # Run the main script
 PYTHON_DIR="$SCRIPT_DIR/src/python"
