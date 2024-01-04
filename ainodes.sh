@@ -57,26 +57,18 @@ pip install -r "${REQUIREMENTS_FILE}"
 # Clone repositories as per 'src.txt'
 src_file="${SCRIPT_DIR}/config/src.txt"
 while IFS= read -r line || [[ -n "$line" ]]; do
-    # Split the line into its components
-    repository=$(echo $line | awk '{print $1}')
-    branch=$(echo $line | awk '{print $3}')
-    directory=$(echo $line | awk '{print $4}')
-
-    echo "Cloning repository: $repository (branch: $branch) into $directory"
-
-    # Create the target directory and change to it
+    repository=$(echo $line | cut -d ' ' -f1)
+    branch=$(echo $line | cut -d ' ' -f2-3)
+    directory=$(echo $line | cut -d ' ' -f4)
+    echo "Cloning repository: $repository into $directory"
     mkdir -p "${SRC_DIR}/$directory"
     cd "${SRC_DIR}/$directory"
-
-    # Clone the repository
-    git clone -b "$branch" "https://www.github.com/$repository" .
-
-    # Install the package in editable mode
-    pip install -e .
-
-    # Return to the original directory
+    git clone "https://www.github.com/$repository" . "$branch"
     cd - > /dev/null
 done < "$src_file"
+
+
+cd src/deforum && pip install -e . && cd - > /dev/null
 
 # Main execution logic
 echo "Installation complete. Starting the application..."

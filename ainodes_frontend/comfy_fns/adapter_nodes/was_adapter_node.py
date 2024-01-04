@@ -104,7 +104,7 @@ def load_comfy_node(module_path):
         return None
 
 def load_comfy_nodes():
-    node_paths = [os.path.join(os.getcwd(), "src/deforum/src/ComfyUI/custom_nodes"), os.path.join(os.getcwd(), "src/deforum/src/ComfyUI/comfy_extras")]
+    node_paths = [os.path.join(os.getcwd(), "src/ComfyUI/custom_nodes"), os.path.join(os.getcwd(), "src/ComfyUI/comfy_extras")]
 
     #print("COMFY NODE PATHS", node_paths)
     mappings = []
@@ -142,7 +142,7 @@ possible_ports = []
 possible_ui_elements = []
 possible_output_ports = []
 
-directory = "src/deforum/src/ComfyUI/custom_nodes"
+directory = "src/ComfyUI/custom_nodes"
 def get_node_parameters(node_class):
 
     global possible_ports

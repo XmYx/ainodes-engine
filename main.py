@@ -209,7 +209,7 @@ if __name__ == "__main__":
     gs.device = get_torch_device()
 
     from deforum.generators.comfy_utils import ensure_comfy
-    ensure_comfy()
+    ensure_comfy('src/ComfyUI')
     hijack_comfy_paths()
     from ainodes_frontend.comfy_fns.adapter_nodes import was_adapter_node
 

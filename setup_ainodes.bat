@@ -139,6 +139,7 @@ cd "%SRC_DIR%\deforum"
 
 call pip install -e .
 
+cd "%~dp0"
 REM After cloning all src repositories, navigate to src/ComfyUI
 cd "src\ComfyUI"
 
