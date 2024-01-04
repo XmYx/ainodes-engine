@@ -740,10 +740,10 @@ class CalculatorWindow(NodeEditorWindow):
         self.createNodesDock()
         self.createModelDock()
 
-        self.splitter = QSplitter(Qt.Orientation.Horizontal, self)
-        self.splitter.addWidget(self.nodesDock)
-        self.splitter.addWidget(self.mdiArea)
-        self.setCentralWidget(self.splitter)
+        #self.splitter = QSplitter(Qt.Orientation.Horizontal, self)
+        #self.splitter.addWidget(self.nodesDock)
+        #self.splitter.addWidget(self.mdiArea)
+        self.setCentralWidget(self.mdiArea)
 
         self.mdiArea.subWindowActivated.connect(self.updateMenus)
         self.windowMapper = QSignalMapper(self)
@@ -961,7 +961,7 @@ class CalculatorWindow(NodeEditorWindow):
         layout.addWidget(self.text_widget)
         self.console.setWidget(widget)
         #layout.addWidget(self.text_widget2)
-        self.addDockWidget(Qt.BottomDockWidgetArea, self.console)
+        self.addDockWidget(Qt.LeftDockWidgetArea, self.console)
 
     def show_memory_widget(self):
         self.mem_widget = MemoryWidget()
@@ -1329,7 +1329,7 @@ class CalculatorWindow(NodeEditorWindow):
         self.nodesDock = QDockWidget("Nodes")
         self.nodesDock.setWidget(self.nodesListWidget)
         self.nodesDock.setFloating(False)
-
+        self.addDockWidget(Qt.DockWidgetArea.LeftDockWidgetArea, self.nodesDock)
         #self.addDockWidget(Qt.LeftDockWidgetArea, self.nodesDock)
     # def createModelDock(self):
     #     self.dock = QDockWidget("Models", self)

@@ -94,11 +94,12 @@ def load_checkpoint_guess_config(ckpt_path, output_vae=True, output_clip=True, o
     # model_patcher.model.to(gs.device)
     # model_patcher.load_device = gs.device
     def load_model():
-        print("Load HiJacked")
+        #print("Load HiJacked")
         pass
 
     gs.models[ckpt_path]["clip"].load_model = load_model
     gs.models[ckpt_path]["vae"].load_model = load_model
+    gs.models[ckpt_path]["model"].load_model = load_model
 
     gs.models[ckpt_path]["vae"].first_stage_model.cuda()
     gs.models[ckpt_path]["clip"].cond_stage_model.cuda()

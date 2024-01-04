@@ -38,7 +38,7 @@ class MyTreeWidgetItem(QtWidgets.QTreeWidgetItem):
             self.tooltip.show(self.icon().pixmap(), self.text(), QApplication.instance().activeWindow().cursor().pos())
 
     def enterEvent(self, event):
-        print("SHOWING")
+        #print("SHOWING")
 
         self.timer.start(500) # wait 500 ms before showing the tooltip
 
