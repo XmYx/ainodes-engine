@@ -76,7 +76,7 @@ class DiffSamplerDataNode(AiNode):
     content_label_objname = "sd_diff_sampler_data_node"
     category = "base/diffusers"
     NodeContent_class = DiffUniSamplerDataWidget
-    dim = (500, 840)
+    dim = (500, 940)
     output_data_ports = [0]
     exec_port = 1
     def __init__(self, scene):
@@ -253,7 +253,7 @@ class DiffSamplerNode(AiNode):
         rng = ImageRNGNoise((4, data["height"] // 8, data["width"] // 8), [data["seed"]], [data["seed"] - 1], 0.6, 1024, 1024 )
         noise = rng.first().half()
         # noise = noise.unsqueeze(0)
-        print(noise.shape)
+        #print(noise.shape)
         args = {
             "prompt": data["prompt"],
             "negative_prompt": data["negative_prompt"],

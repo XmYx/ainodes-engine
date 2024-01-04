@@ -183,10 +183,10 @@ class TorchLoaderNode(AiNode):
         self.grNode.icon = self.icon
         self.grNode.thumbnail = QtGui.QImage(self.grNode.icon).scaled(64, 64, QtCore.Qt.KeepAspectRatio)
 
-        self.grNode.width = 340
-        self.grNode.height = 300
+        self.grNode.width = 800
+        self.grNode.height = 250
         self.content.setMinimumHeight(140)
-        self.content.setMinimumWidth(340)
+        self.content.setMinimumWidth(800)
         self.content.eval_signal.connect(self.evalImplementation)
 
         self.model = None

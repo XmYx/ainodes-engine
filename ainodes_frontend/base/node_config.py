@@ -71,7 +71,7 @@ def import_nodes_from_directory(directory):
                 exec(f"from {dir} import {module_name}")
 
 def import_nodes_from_subdirectories(directory):
-    print("_importing from", directory)
+    #print("_importing from", directory)
     if "ainodes_backend" not in directory and "backend" not in directory and "_nodes" in directory:
         for subdir in os.listdir(directory):
             subdir_path = os.path.join(directory, subdir)

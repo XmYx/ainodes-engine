@@ -205,7 +205,7 @@ class NodeEditorWidget(QWidget):
         self.scene.setNodeClassSelector(lambda data: NNode)
         node = NNode(self.scene, "A Custom Node 1", inputs=[0, 1, 2])
 
-        print("node content:", node.content)
+        #print("node content:", node.content)
 
     def addDebugContent(self):
         """Testing method to put random QGraphicsItems and elements into QGraphicsScene"""

@@ -56,7 +56,7 @@ class EdgeRerouting:
 
     def clearReroutingEdges(self):
         """Remove the helping dashed edges from the :class:`~node_engine.node_scene.Scene`"""
-        self.print("clean called")
+        #self.print("clean called")
         while self.rerouting_edges != []:
             edge = self.rerouting_edges.pop()
             self.print("\twant to clean:", edge)
@@ -84,11 +84,11 @@ class EdgeRerouting:
         :param socket: :class:`~node_engine.node_socket.Socket` where we started the re-routing
         :type socket: :class:`~nodeeditor.node_socket.Socket`
         """
-        self.print("startRerouting", socket)
+        #self.print("startRerouting", socket)
         self.is_rerouting = True
         self.start_socket = socket
 
-        self.print("numEdges:", len(self.getAffectedEdges()))
+        #self.print("numEdges:", len(self.getAffectedEdges()))
         self.setAffectedEdgesVisible(visibility=False)
 
         start_position = self.start_socket.node.getSocketScenePosition(self.start_socket)

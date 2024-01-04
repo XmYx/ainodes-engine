@@ -12,7 +12,7 @@ def common_ksampler_with_custom_noise(model, seed, steps, cfg, sampler_name, sch
                                       denoise=1.0, disable_noise=False, start_step=None, last_step=None,
                                       force_full_denoise=False, noise=None):
 
-    print("USING AINODES SAMPLER")
+    #print("USING AINODES SAMPLER")
 
     latent_image = latent["samples"]
     if noise is not None:

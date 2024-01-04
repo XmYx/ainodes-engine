@@ -138,7 +138,7 @@ class StableFastNode(AiNode):
     custom_output_socket_name = ["MODEL", "EXEC"]
 
     NodeContent_class = SFastWidget
-    dim = (340, 340)
+    dim = (340, 100)
     def __init__(self, scene):
         super().__init__(scene, inputs=[4,1], outputs=[4,1])
 

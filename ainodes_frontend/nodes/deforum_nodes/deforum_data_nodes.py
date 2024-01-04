@@ -295,7 +295,7 @@ class DeforumMaskingParamsNode(DeforumParamBaseNode):
     content_label_objname = "deforum_masking_params_node"
     op_code = OP_NODE_DEFORUM_MASKING_PARAMS
     content_class = DeforumMaskingParamsWidget
-    h_value = 420 + 100
+    h_value = 420 + 140
 
 
 @register_node(OP_NODE_DEFORUM_VIDEO_INIT_PARAMS)
@@ -304,7 +304,7 @@ class DeforumVideoInitParamsNode(DeforumParamBaseNode):
     content_label_objname = "deforum_video_init_params_node"
     op_code = OP_NODE_DEFORUM_VIDEO_INIT_PARAMS
     content_class = DeforumVideoInitParamsWidget
-    h_value = 420 - 100
+    h_value = 420
 
 
 

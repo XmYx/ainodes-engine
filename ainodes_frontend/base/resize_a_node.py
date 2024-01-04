@@ -71,8 +71,8 @@ class QDMGraphicsResizeNode(QGraphicsItem):
 
             self._nodes += self.get_nodes(False)
             [n.doSelect(True) for n in self._nodes]
-        elif event.button() == QtCore.Qt.MiddleButton:
-            print("NODE MMB")
+        # elif event.button() == QtCore.Qt.MiddleButton:
+        #     print("NODE MMB")
 
     def mouseReleaseEvent(self, event):
         super(QDMGraphicsResizeNode, self).mouseReleaseEvent(event)

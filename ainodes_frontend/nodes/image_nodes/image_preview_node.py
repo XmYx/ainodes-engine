@@ -71,7 +71,7 @@ class ImagePreviewNode(AiNode):
     category = "base/image"
     output_data_ports = [0]
     NodeContent_class = ImagePreviewWidget
-    dim = (450, 460)
+    dim = (600, 600)
 
     make_dirty = True
 
@@ -217,7 +217,7 @@ class ImagePreviewNode(AiNode):
 
     def resize(self, pixmap):
         self.grNode.setToolTip("")
-        dims = [pixmap.size().height() + 255, pixmap.size().width() + 30]
+        dims = [pixmap.size().height() + 320, pixmap.size().width() + 30]
         if self.dim != dims:
             self.dim = dims
             self.grNode.height = dims[0]

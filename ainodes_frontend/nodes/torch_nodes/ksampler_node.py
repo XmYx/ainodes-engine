@@ -91,7 +91,7 @@ class KSamplerNode(AiNode):
         self.content.progress_signal.connect(self.setProgress)
         self.content.preview_signal.connect(self.handle_preview)
         self.device = get_torch_device()
-        self.grNode.height = 750
+        self.grNode.height = 800
         self.grNode.width = 320
         self.content.setMinimumWidth(316)
         self.content.setMinimumHeight(500)

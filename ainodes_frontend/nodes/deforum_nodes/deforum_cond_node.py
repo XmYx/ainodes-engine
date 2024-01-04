@@ -73,7 +73,7 @@ class DeforumConditioningNode(AiNode):
     content_label_objname = "deforum_sdcond_node"
     category = "base/deforum"
     NodeContent_class = DeforumConditioningWidget
-    dim = (240, 140)
+    dim = (320, 200)
 
     make_dirty = True
     custom_input_socket_name = ["CLIP", "DATA", "IMAGE", "CONTROL_NET", "EXEC"]
