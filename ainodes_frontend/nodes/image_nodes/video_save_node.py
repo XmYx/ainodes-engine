@@ -83,7 +83,7 @@ class VideoOutputNode(AiNode):
     op_code = OP_NODE_VIDEO_SAVE
     op_title = "Video Save"
     content_label_objname = "video_output_node"
-    category = "aiNodes Base/Video"
+    category = "base/video"
     input_socket_name = ["EXEC", "IMAGE"]
     output_socket_name = ["EXEC", "IMAGE"]
 
