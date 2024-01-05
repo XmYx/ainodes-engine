@@ -146,8 +146,6 @@ class VimWidget(QDMNodeContentWidget):
 
         self.create_widgets()
         self.create_main_layout(grid=1)
-
-        #self.grid_layout.addWidget(self.editor)
         self.grid_layout.addWidget(self.dialog)
     def create_widgets(self):
 
@@ -206,7 +204,6 @@ class VimNode(AiNode):
         self.content.show_button.clicked.connect(self.content.dialog.show)
 
     def onDoubleClicked(self, event):
-        #print(self.content.isVisible())
 
         self.content.editor.setVisible(not self.content.editor.isVisible())
 
@@ -244,40 +241,13 @@ class VimNode(AiNode):
                 print(repr(e))
         else:
             print("Ran Python node, but it did not contain a customFunction")
-        #self.origFunction = self.customFunction  # new_function is assumed to be the name of your function
-
-        # Call the new function
-        #return self.origFunction(self, *args, **kwargs)
 
         return result
 
-        # function_string = dedent(self.content.editor.text())  # Get function string from the editor
-        #
-        # # Parse the function string into a Python function object
-        # function_definition = ast.parse(function_string, mode='exec')
-        # globals_ = {}
-        # exec(compile(function_definition, filename="<ast>", mode="exec"), globals_)
-        # self.origFunction = globals_['customFunction']  # new_function is assumed to be the name of your function
-        #
-        # # Call the new function
-        # return self.origFunction(self, *args, **kwargs)
 
     def origFunction(self):
         return True
 
-    # def onWorkerFinished(self, result, exec=True):
-    #     self.busy = False
-    #     assert isinstance(result, list), "Result is not a list"
-    #     assert len(result) == 9, "Please make sure to return a list of all 4 elements [data:dict, conditionings:List[Torch.tensor]], images:List[QPixmap], latents:List[Torch.tensor], even if they are None."
-    #
-    #     for i in result:
-    #
-    #         print()
-    #
-    #         self.setOutput(result.index(i), i)
-    #
-    #     #self.setOutput(0, result[0])
-    #     self.executeChild(4)
 
     def stop(self):
         print("Interrupting Execution of Graph")

@@ -101,7 +101,10 @@ class FILMNode(AiNode):
             np_image = np.array(image.convert("RGB"))
             self.FILM_temp.append(np_image)
             if len(self.FILM_temp) == 2:
-                frames = gs.models["FILM"].inference(self.FILM_temp[0], self.FILM_temp[1], inter_frames=self.content.film.value())
+
+                with torch.inference_mode():
+
+                    frames = gs.models["FILM"].inference(self.FILM_temp[0], self.FILM_temp[1], inter_frames=self.content.film.value())
                 skip_first, skip_last = True, False
                 if skip_first:
                     frames.pop(0)
@@ -109,10 +112,11 @@ class FILMNode(AiNode):
                     frames.pop(-1)
 
                 for frame in frames:
-                    image = Image.fromarray(copy.deepcopy(frame))
-                    pixmap = pil2tensor(image)
-                    return_frames.append(pixmap)
+                    #image = Image.fromarray(copy.deepcopy(frame))
+                    tensor = pil2tensor(frame)
+                    return_frames.append(tensor)
                 self.FILM_temp = [self.FILM_temp[1]]
+            torch.cuda.empty_cache()
             print(f"[ FILM NODE: Created {len(return_frames)} frames ]")
         if len(return_frames) > 0:
             return_frames = torch.stack(return_frames, dim=0)

@@ -56,7 +56,7 @@ class DeforumColorMatchNode(AiNode):
 
             #image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
-            image = pil2tensor(Image.fromarray(image))
+            image = pil2tensor(image)
             return [data, image]
         else:
             return [data, image]

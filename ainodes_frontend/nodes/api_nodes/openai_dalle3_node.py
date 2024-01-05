@@ -1,9 +1,5 @@
 import secrets
-import subprocess
-from typing import Literal
-
 import numpy as np
-import torch
 import base64
 import io
 from ainodes_frontend.base.qimage_ops import pil2tensor, tensor2pil
@@ -14,7 +10,6 @@ from ainodes_frontend.base import AiNode
 from ainodes_frontend.node_engine.node_content_widget import QDMNodeContentWidget
 
 OP_NODE_OPENAI_DALLE3 = get_next_opcode()
-
 
 class OpenAiDalle3Widget(QDMNodeContentWidget):
     def initUI(self):
@@ -46,11 +41,7 @@ class OpenAIDalle3Node(AiNode):
 
     def evalImplementation_thread(self, index=0):
         from PIL import Image
-        from torchvision.transforms import functional as TF
         data = self.getAllInputs()
-
-        #print(data)
-
         prompt = data.get("Prompt")
         seed = data.get("Seed")
         resolution = data.get("Resolution")
@@ -76,8 +67,6 @@ class OpenAIDalle3Node(AiNode):
 
             im1 = pil2tensor(im0.convert("RGBA"))
 
-            #im1 = TF.to_tensor(im0.convert("RGBA"))
-            #im1[:3, im1[3, :, :] == 0] = 0
             self.revised_prompt = r0.data[0].revised_prompt
 
             self.image = im1

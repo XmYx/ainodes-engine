@@ -78,15 +78,11 @@ class BGINFONode(AiNode):
 
     def __init__(self, scene):
         super().__init__(scene, inputs=[], outputs=[])
-        pass
-        # Create a worker object
+
     def initInnerClasses(self):
         self.content = InfoWidget(self)
         self.grNode = QDMGraphicsBGInfoNode(self)
         self.grNode.setZValue(-2)
-
-
-
 
     def evalImplementation(self, index=0):
         return None

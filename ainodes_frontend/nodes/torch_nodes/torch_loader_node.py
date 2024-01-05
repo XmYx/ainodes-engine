@@ -19,6 +19,42 @@ from backend_helpers.torch_helpers.torch_gc import torch_gc
 OP_NODE_TORCH_LOADER = get_next_opcode()
 
 
+def encode(cls, pixel_samples):
+    pixel_samples = pixel_samples.movedim(-1, 1)
+    # try:
+    #     memory_used = self.memory_used_encode(pixel_samples.shape, self.vae_dtype)
+    #     model_management.load_models_gpu([self.patcher], memory_required=memory_used)
+    #     free_memory = model_management.get_free_memory(self.device)
+    #     batch_number = int(free_memory / memory_used)
+    #     batch_number = max(1, batch_number)
+    #     samples = torch.empty((pixel_samples.shape[0], self.latent_channels,
+    #                            round(pixel_samples.shape[2] // self.downscale_ratio),
+    #                            round(pixel_samples.shape[3] // self.downscale_ratio)), device=self.output_device)
+    #     for x in range(0, pixel_samples.shape[0], batch_number):
+    #         pixels_in = (2. * pixel_samples[x:x + batch_number] - 1.).to(self.vae_dtype).to(self.device)
+    #         samples[x:x + batch_number] = self.first_stage_model.encode(pixels_in).to(self.output_device).float()
+    #
+    # except model_management.OOM_EXCEPTION as e:
+    #     print("Warning: Ran out of memory when regular VAE encoding, retrying with tiled VAE encoding.")
+    samples = cls.encode_tiled_(pixel_samples)
+
+    return samples
+
+
+def replace_fn(instance, new_function):
+    """
+    Replaces the 'encode' method of the instance with the new_function.
+
+    Parameters:
+    instance: The instance of the class whose 'encode' method is to be replaced.
+    new_function: The new function to replace the 'encode' method.
+    """
+    # Bind the new function to the instance
+    bound_function = new_function.__get__(instance, instance.__class__)
+
+    # Replace the 'encode' method
+    instance.encode = bound_function
+
 def load_checkpoint_guess_config(ckpt_path, output_vae=True, output_clip=True, output_clipvision=False, embedding_directory=None, output_model=True):
     import comfy
     import torch
@@ -99,6 +135,7 @@ def load_checkpoint_guess_config(ckpt_path, output_vae=True, output_clip=True, o
 
     gs.models[ckpt_path]["clip"].load_model = load_model
     gs.models[ckpt_path]["vae"].load_model = load_model
+    #gs.models[ckpt_path]["vae"].encode = replace_fn(gs.models[ckpt_path]["vae"], encode)
     gs.models[ckpt_path]["model"].load_model = load_model
 
     gs.models[ckpt_path]["vae"].first_stage_model.cuda()

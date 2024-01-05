@@ -59,7 +59,7 @@ call "%CONDA_ROOT_PREFIX%\condabin\conda.bat" activate "%INSTALL_ENV_DIR%" || ( 
 
 REM Install requirements
 pip install -r requirements.txt
-
+mkdir src
 setlocal enabledelayedexpansion
 
 @REM set "repositories_file=config/repositories.txt"
@@ -120,14 +120,14 @@ for /f "tokens=1,2,3,4" %%A in (%src_file%) do (
     rem Go to src folder
     cd "%SRC_DIR%"
 
-    rem Create the target directory including any necessary parent directories
-    if not exist "!directory!" mkdir "!directory!"
-
-    rem Change to the target directory
-    cd "!directory!"
+@REM     rem Create the target directory including any necessary parent directories
+@REM     if not exist "!directory!" mkdir "!directory!"
+@REM
+@REM     rem Change to the target directory
+@REM     cd "!directory!"
 
     rem Clone the repository
-    git clone https://www.github.com/!repository! . !branch!
+    git clone https://www.github.com/!repository! !branch! !directory!
 
     rem Return to the original directory
     cd "%~dp0"
@@ -141,8 +141,8 @@ call pip install -e .
 
 cd "%~dp0"
 REM After cloning all src repositories, navigate to src/ComfyUI
-cd "src\ComfyUI"
-
+cd src
+cd ComfyUI
 REM Navigate to custom_nodes and clone the ComfyUI-Manager repository
 cd custom_nodes
 git clone https://github.com/ltdrdata/ComfyUI-Manager.git
