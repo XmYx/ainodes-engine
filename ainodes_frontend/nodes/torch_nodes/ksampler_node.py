@@ -120,7 +120,7 @@ class KSamplerNode(AiNode):
                 [0.187, 0.286, 0.173],  # L2
                 [-0.158, 0.189, 0.264],  # L3
                 [-0.184, -0.271, -0.473],  # L4
-            ], dtype=torch.float, device="cpu")
+            ], dtype=torch.float16, device="cuda")
         else:
             self.latent_rgb_factors = torch.tensor([
                 #   R        G        B
@@ -128,7 +128,7 @@ class KSamplerNode(AiNode):
                 [-0.2634, -0.0196, 0.0653],
                 [0.0568, 0.1687, -0.0755],
                 [-0.3112, -0.2359, -0.2076]
-            ], dtype=torch.float, device="cpu")
+            ], dtype=torch.float16, device="cuda")
 
     def evalImplementation_thread_(self):
         from nodes import common_ksampler as ksampler
@@ -331,15 +331,15 @@ class KSamplerNode(AiNode):
 
 
         if self.preview_mode == "quick-rgb":
-
-            latent_image = tensors[0].permute(1, 2, 0).cpu() @ self.latent_rgb_factors
+            with torch.inference_mode():
+                latent_image = tensors[0].permute(1, 2, 0).half() @ self.latent_rgb_factors
 
             latents_ubyte = (((latent_image + 1) / 2)
                              .clamp(0, 1)  # change scale from -1..1 to 0..1
                              .mul(0xFF)  # to 0..255
                              .byte())
 
-            np_frame = latents_ubyte.numpy()
+            np_frame = latents_ubyte.cpu().numpy()
             # Convert numpy array to QImage
             h, w, c = np_frame.shape
             latent_image = QImage(np_frame.data, w, h, c * w, QImage.Format.Format_RGB888)

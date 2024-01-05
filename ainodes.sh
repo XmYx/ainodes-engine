@@ -53,7 +53,7 @@ create_and_activate_env
 
 # Install requirements
 pip install -r "${REQUIREMENTS_FILE}"
-
+mkdir src
 # Clone repositories as per 'src.txt'
 src_file="${SCRIPT_DIR}/config/src.txt"
 while IFS= read -r line || [[ -n "$line" ]]; do
