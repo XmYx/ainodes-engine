@@ -222,8 +222,6 @@ class SubGraphInputNode(AiNode):
         self.setOutput(2, self.images)
         self.setOutput(3, self.data)
 
-        print("INPUT NODE", self.images)
-
         return True
 
     #@QtCore.Slot(object)
