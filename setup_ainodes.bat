@@ -138,13 +138,11 @@ for /f "tokens=1,2,3,4" %%A in (%src_file%) do (
 cd "%SRC_DIR%\deforum"
 
 call pip install -e .
-
 cd "%~dp0"
+
+cd "%SRC_DIR%\ComfyUI\custom_nodes"
 REM After cloning all src repositories, navigate to src/ComfyUI
-cd src
-cd ComfyUI
-REM Navigate to custom_nodes and clone the ComfyUI-Manager repository
-cd custom_nodes
+
 git clone https://github.com/ltdrdata/ComfyUI-Manager.git
 
 REM Traverse back to the root directory

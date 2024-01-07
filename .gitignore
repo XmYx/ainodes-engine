@@ -195,3 +195,5 @@ temp/
 config/user/
 config/cache.json
 
+web/
+

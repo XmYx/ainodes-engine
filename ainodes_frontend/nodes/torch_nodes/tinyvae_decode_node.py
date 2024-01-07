@@ -49,7 +49,7 @@ class TinyVAEDecode(AiNode):
                 self.vae = vae
             if not self.vae_scale_factor:
                 self.vae_scale_factor = 2 ** (len(self.vae.config.block_out_channels) - 1)
-            latent = latent["samples"].to("cuda") / self.vae_scale_factor
+            latent = latent["samples"].to("cuda").half() / self.vae_scale_factor
             decoded = self.vae.decode(latent)
             return [self.vae, (decoded.sample.permute(0, 2, 3, 1) / 2 + 0.5).clamp(0, 1)]
     def remove(self):

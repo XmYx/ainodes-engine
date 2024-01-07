@@ -1,5 +1,6 @@
 import copy
 import os
+import platform
 import random
 import secrets
 import sys
@@ -315,9 +316,13 @@ class KSamplerNode(AiNode):
         tile_x = 64
         tile_y = 64
         overlap = 16
-        vae.first_stage_model.cuda()
-
-        decoded = vae.decode_tiled_(sample.half(), tile_x, tile_y, overlap).movedim(1,-1)
+        #vae.first_stage_model.cuda()
+        if "windows" not in platform.platform().lower():
+            sample = sample.half()
+        else:
+            print("SAMPLE IS FULL")
+            sample = sample.float()
+        decoded = vae.decode_tiled_(sample, tile_x, tile_y, overlap).movedim(1,-1)
         return decoded
 
     #k_callback = lambda x: callback(x["i"], x["denoised"], x["x"], total_steps)
@@ -488,7 +493,7 @@ def sample_k(model, noise, positive, negative, cfg, device, sampler, sigmas, mod
 
     samples = sampler.sample(model_wrap, sigmas, extra_args, callback, noise, latent_image, denoise_mask, disable_pbar)
     #return samples
-    return model.process_latent_out(samples.to(torch.float16))
+    return model.process_latent_out(samples.to(torch.float32))
 
 
 class KSampler:

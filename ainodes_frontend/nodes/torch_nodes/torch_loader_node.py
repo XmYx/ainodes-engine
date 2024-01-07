@@ -1,4 +1,6 @@
 import os
+import platform
+
 from qtpy import QtCore, QtGui
 from qtpy import QtWidgets
 
@@ -137,8 +139,10 @@ def load_checkpoint_guess_config(ckpt_path, output_vae=True, output_clip=True, o
     gs.models[ckpt_path]["vae"].load_model = load_model
     #gs.models[ckpt_path]["vae"].encode = replace_fn(gs.models[ckpt_path]["vae"], encode)
     gs.models[ckpt_path]["model"].load_model = load_model
-
-    gs.models[ckpt_path]["vae"].first_stage_model.half().cuda()
+    if "windows" not in platform.platform().lower():
+        gs.models[ckpt_path]["vae"].first_stage_model.half().cuda()
+    else:
+        gs.models[ckpt_path]["vae"].first_stage_model.cuda()
     gs.models[ckpt_path]["clip"].cond_stage_model.half().cuda()
     gs.models[ckpt_path]["model"].model.half().cuda()
 
