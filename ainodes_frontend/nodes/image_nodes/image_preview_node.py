@@ -217,12 +217,12 @@ class ImagePreviewNode(AiNode):
 
     def resize(self, pixmap):
         self.grNode.setToolTip("")
-        dims = [pixmap.size().height() + 320, pixmap.size().width() + 30]
+        dims = [pixmap.size().height() + 360, pixmap.size().width() + 30]
         if self.dim != dims:
             self.dim = dims
             self.grNode.height = dims[0]
             self.grNode.width = dims[1]
-            self.content.setGeometry(0, 25, pixmap.size().width() + 32, pixmap.size().height() + 200)
+            self.content.setGeometry(0, 25, pixmap.size().width() + 32, pixmap.size().height() + 250)
             self.update_all_sockets()
 
     def onInputChanged(self, socket=None):

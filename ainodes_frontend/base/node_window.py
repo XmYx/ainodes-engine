@@ -125,7 +125,7 @@ class MemoryWidget(QtWidgets.QDockWidget):
         self.setWidget(main_widget)
 
         self.treeWidget = QtWidgets.QTreeWidget()
-        self.setLayout(layout)
+        #self.setLayout(layout)
         layout.addWidget(self.treeWidget)
 
         self.populate_tree()
@@ -607,14 +607,14 @@ class CustomToolBar(QToolBar):
                 self._save_toolbar_items()
     def _add_default_actions(self):
         # Create Play action
-        play_action = QAction(QIcon("ainodes_frontend/icons/play.png"), "Play", self)
-        play_action.triggered.connect(self.parent().onPlayClicked)
-        self.addAction(play_action)
-
-        # Create Play action
-        play_action = QAction(QIcon("ainodes_frontend/icons/loop.png"), "Loop", self)
-        play_action.triggered.connect(lambda: self.parent().onPlayClicked(loop=True))
-        self.addAction(play_action)
+        # play_action = QAction(QIcon("ainodes_frontend/icons/play.png"), "Play", self)
+        # play_action.triggered.connect(self.parent().onPlayClicked)
+        # self.addAction(play_action)
+        #
+        # # Create Play action
+        # loop_action = QAction(QIcon("ainodes_frontend/icons/loop.png"), "Loop", self)
+        # loop_action.triggered.connect(lambda: self.parent().onPlayClicked(loop=True))
+        # self.addAction(loop_action)
 
         # Create Stop action
         stop_action = QAction(QIcon("ainodes_frontend/icons/stop.png"), "Stop", self)

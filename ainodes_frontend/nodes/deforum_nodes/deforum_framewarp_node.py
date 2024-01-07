@@ -34,12 +34,12 @@ class DeforumFramewarpNode(AiNode):
     category = "base/deforum"
     NodeContent_class = DeforumFramewarpWidget
     dim = (240, 120)
-    custom_output_socket_name = ["DATA", "IMAGE", "MASK", "EXEC"]
+    custom_output_socket_name = ["DATA", "IMAGE", "MASK", "DEPTH_MODEL", "EXEC"]
 
     make_dirty = True
 
     def __init__(self, scene):
-        super().__init__(scene, inputs=[6,5,1], outputs=[6,5,5,1])
+        super().__init__(scene, inputs=[6,5,1], outputs=[6,5,5,4,1])
         self.depth_model = None
         self.depth = None
         self.algo = ""
@@ -123,7 +123,7 @@ class DeforumFramewarpNode(AiNode):
             #                                     antialiasing=True, by_convs=True, scale_tolerance=None,
             #                                     max_numerator=10, pad_mode='reflect')
             # print(mask.shape)
-            return [data, tensor, mask[0].unsqueeze(0)]
+            return [data, tensor, mask[0].unsqueeze(0), self.depth_model]
         else:
             return [data, image, None]
 

@@ -51,7 +51,7 @@ class DeforumHybridNode(AiNode):
 
         data = self.getInputData(0)
         image = self.getInputData(1)
-        image_2 = self.getInputData(1)
+        image_2 = self.getInputData(2)
 
         flow_factor = data["keys"].hybrid_flow_factor_schedule_series[data["frame_index"]]
 
@@ -76,6 +76,7 @@ class DeforumHybridNode(AiNode):
         else:
             pil_image_ref = np.array(tensor2pil(image_2)).astype(np.uint8)
             bgr_image_ref = cv2.cvtColor(pil_image_ref, cv2.COLOR_RGB2BGR)
+            bgr_image_ref = cv2.resize(bgr_image_ref, (bgr_image.shape[1], bgr_image.shape[0]))
             if self.prev_image is None:
                 self.prev_image = bgr_image_ref
                 return [image]

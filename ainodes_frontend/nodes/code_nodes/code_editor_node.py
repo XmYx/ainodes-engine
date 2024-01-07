@@ -135,7 +135,7 @@ OP_NODE_VIM = get_next_opcode()
 class Dialog(QDialog):
     def __init__(self, child):
         super().__init__()
-        layout = QVBoxLayout(self)
+        layout = QVBoxLayout()
         layout.setContentsMargins(0, 0, 0, 0)
         self.setLayout(layout)
         self.child = child
@@ -241,7 +241,7 @@ class VimNode(AiNode):
                 print(repr(e))
         else:
             print("Ran Python node, but it did not contain a customFunction")
-
+        #print(result)
         return result
 
 

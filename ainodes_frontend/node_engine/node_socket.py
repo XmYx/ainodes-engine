@@ -69,7 +69,8 @@ class Socket(Serializable):
 
         self.is_input = is_input
         self.is_output = not self.is_input
-
+        if self.is_input:
+            self.is_multi_edges = False
 
         if DEBUG: print("Socket -- creating with", self.index, self.position, "for node_engine", self.node)
 

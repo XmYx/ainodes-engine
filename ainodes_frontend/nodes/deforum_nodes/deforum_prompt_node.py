@@ -24,7 +24,7 @@ class DeforumPromptWidget(QDMNodeContentWidget):
         self.data = {}
         self.row_widgets = []
 
-        self.layout = QtWidgets.QVBoxLayout(self)
+        self.layout = QtWidgets.QVBoxLayout()
         self.setLayout(self.layout)
 
         self.addButton = QtWidgets.QPushButton("Add Row")

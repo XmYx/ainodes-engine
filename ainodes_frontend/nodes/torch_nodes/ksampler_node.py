@@ -133,8 +133,6 @@ class KSamplerNode(AiNode):
     def evalImplementation_thread_(self):
         from nodes import common_ksampler as ksampler
 
-
-        print("running new")
         model = self.getInputData(2)
 
         seed = self.content.seed.text()
@@ -290,15 +288,18 @@ class KSamplerNode(AiNode):
             #
             # sample = ksampler(unet, seed, steps, cfg, sampler_name, scheduler, cond, n_cond, latent,
             #          denoise=denoise)
-            x_sample = self.decode_sample(sample[0]["samples"], vae).detach().cpu()
+            if vae:
+                x_sample = self.decode_sample(sample[0]["samples"], vae).detach().cpu()
+                return_latents = x_sample.detach().cpu()
+            else:
+                return_latents = None
             return_samples = sample[0]["samples"].detach().cpu()
-            return_latents = x_sample.detach().cpu()
-            if self.content.tensor_preview.isChecked():
-                if len(self.getOutputs(2)) > 0:
-                    nodes = self.getOutputs(0)
-                    for node in nodes:
-                        if isinstance(node, ImagePreviewNode):
-                            node.content.preview_signal.emit(tensor_image_to_pixmap(x_sample))
+            # if self.content.tensor_preview.isChecked():
+            #     if len(self.getOutputs(2)) > 0:
+            #         nodes = self.getOutputs(0)
+            #         for node in nodes:
+            #             if isinstance(node, ImagePreviewNode):
+            #                 node.content.preview_signal.emit(tensor_image_to_pixmap(x_sample))
             latent_preview.set_callback(None)
 
             return [return_latents, {"samples": return_samples}]
@@ -316,7 +317,7 @@ class KSamplerNode(AiNode):
         overlap = 16
         vae.first_stage_model.cuda()
 
-        decoded = vae.decode_tiled_(sample, tile_x, tile_y, overlap).movedim(1,-1)
+        decoded = vae.decode_tiled_(sample.half(), tile_x, tile_y, overlap).movedim(1,-1)
         return decoded
 
     #k_callback = lambda x: callback(x["i"], x["denoised"], x["x"], total_steps)
@@ -443,8 +444,8 @@ def prepare_sampling(model, noise_shape, positive, negative, noise_mask):
     if noise_mask is not None:
         noise_mask = prepare_mask(noise_mask, noise_shape, device)
 
-    real_model = None
-    _, inference_memory = get_additional_models(positive, negative, model.model_dtype())
+    #real_model = None
+    #_, inference_memory = get_additional_models(positive, negative, model.model_dtype())
     # comfy.model_management.load_models_gpu([model] + models, model.memory_required([noise_shape[0] * 2] + list(noise_shape[1:])) + inference_memory)
     #real_model = model.model
 
@@ -486,7 +487,8 @@ def sample_k(model, noise, positive, negative, cfg, device, sampler, sigmas, mod
     extra_args = {"cond":positive, "uncond":negative, "cond_scale": cfg, "model_options": model_options, "seed":seed}
 
     samples = sampler.sample(model_wrap, sigmas, extra_args, callback, noise, latent_image, denoise_mask, disable_pbar)
-    return model.process_latent_out(samples.to(torch.float32))
+    #return samples
+    return model.process_latent_out(samples.to(torch.float16))
 
 
 class KSampler:

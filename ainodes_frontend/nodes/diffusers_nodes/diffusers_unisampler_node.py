@@ -188,13 +188,14 @@ class DiffSamplerNode(AiNode):
     use_gpu = True
     make_dirty = True
     def __init__(self, scene):
-        super().__init__(scene, inputs=[4,6,1], outputs=[5,2,6,1])
+        super().__init__(scene, inputs=[4,6,6,1], outputs=[5,2,6,1])
 
 
     def evalImplementation_thread(self, index=0):
 
         pipe = self.getInputData(0)
         data = self.getInputData(1)
+        deforum_data = self.getInputData(1)
 
         gpu_id = self.content.gpu_id.currentText()
         from ainodes_frontend import singleton as gs
@@ -252,6 +253,7 @@ class DiffSamplerNode(AiNode):
         from backend_helpers.torch_helpers.rng_noise_generator import ImageRNGNoise
         rng = ImageRNGNoise((4, data["height"] // 8, data["width"] // 8), [data["seed"]], [data["seed"] - 1], 0.6, 1024, 1024 )
         noise = rng.first().half()
+
         # noise = noise.unsqueeze(0)
         #print(noise.shape)
         args = {
@@ -263,6 +265,16 @@ class DiffSamplerNode(AiNode):
             "generator":generator,
             "latents":noise
         }
+
+        if deforum_data:
+            data["strength"] = deforum_data.get("strength")
+            seed = deforum_data.get("seed")
+            deforum_args = deforum_data.get("args")
+            if args is not None:
+                torch.manual_seed(deforum_args.seed)
+                data["num_inference_steps"] = deforum_args.steps
+                data["guidance_scale"] = deforum_args.scale
+
 
         if isinstance(pipe, StableDiffusionImg2ImgPipeline) or isinstance(pipe, StableDiffusionXLImg2ImgPipeline):
             args["image"] = data["image"]

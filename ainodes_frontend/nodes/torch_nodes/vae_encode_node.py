@@ -46,10 +46,32 @@ class VAEEncodeNode(AiNode):
         tile_x = 512
         tile_y = 512
         overlap = 64
+
+        latent = remove_fourth_channel(latent)
+
         with torch.inference_mode():
-            t = vae.encode_tiled_(latent, tile_x=tile_x, tile_y=tile_y, overlap=overlap)
+            t = vae.encode_tiled_(latent.half(), tile_x=tile_x, tile_y=tile_y, overlap=overlap)
 
         #t = vae.encode(latent[:,:,:,:3])
 
 
         return [{"samples": t}]
+
+
+def remove_fourth_channel(tensor):
+    """
+    Removes the fourth channel from a tensor if it exists.
+
+    Args:
+    tensor (torch.Tensor): A tensor of shape [N, C, H, W] where C is the number of channels.
+
+    Returns:
+    torch.Tensor: A tensor with the fourth channel removed if it exists.
+    """
+    # Check if the tensor has at least 4 channels
+    if tensor.shape[1] >= 4:
+        # Keep all channels except the fourth
+        return tensor[:, :3, :, :]
+    else:
+        # Return the original tensor if it has less than 4 channels
+        return tensor
