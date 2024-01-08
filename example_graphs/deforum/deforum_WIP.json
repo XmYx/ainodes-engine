@@ -68,7 +68,7 @@
                 "Keep Buffer_converted": false,
                 "_visible": true
             },
-            "op_code": 186,
+            "op_code": 208,
             "content_label_objname": "video_output_node"
         },
         {
@@ -144,7 +144,7 @@
                 "rotation_3d_z_visible": true,
                 "rotation_3d_z_converted": false
             },
-            "op_code": 194,
+            "op_code": 191,
             "content_label_objname": "deforum_translation_node"
         },
         {
@@ -250,7 +250,7 @@
                 "seed_internal_visible": true,
                 "seed_internal_converted": false
             },
-            "op_code": 188,
+            "op_code": 185,
             "content_label_objname": "deforum_base_params_node"
         },
         {
@@ -311,7 +311,7 @@
                 }
             ],
             "content": {},
-            "op_code": 205,
+            "op_code": 183,
             "content_label_objname": "deforum_colormatch_node"
         },
         {
@@ -350,7 +350,7 @@
             "content": {
                 "_visible": true
             },
-            "op_code": 183,
+            "op_code": 179,
             "content_label_objname": "exec_node"
         },
         {
@@ -414,7 +414,7 @@
                 "use_looper_visible": true,
                 "use_looper_converted": false
             },
-            "op_code": 193,
+            "op_code": 190,
             "content_label_objname": "deforum_anim_params_node"
         },
         {
@@ -459,7 +459,7 @@
                 }
             ],
             "content": {},
-            "op_code": 209,
+            "op_code": 215,
             "content_label_objname": "sfast_node"
         },
         {
@@ -534,7 +534,7 @@
                 "Timeline_converted": false,
                 "_visible": true
             },
-            "op_code": 202,
+            "op_code": 200,
             "content_label_objname": "deforum_iterate_node"
         },
         {
@@ -644,67 +644,14 @@
                 }
             ],
             "content": {},
-            "op_code": 207,
+            "op_code": 181,
             "content_label_objname": "deforum_addnoise_node"
-        },
-        {
-            "id": 139699640142960,
-            "title": "VAEEncode",
-            "pos_x": 1475.5091094970676,
-            "pos_y": 1388.8079261779772,
-            "inputs": [
-                {
-                    "id": 139697659371408,
-                    "index": 0,
-                    "multi_edges": true,
-                    "position": 3,
-                    "socket_type": 5,
-                    "name": "PIXELS"
-                },
-                {
-                    "id": 139697659369680,
-                    "index": 1,
-                    "multi_edges": true,
-                    "position": 3,
-                    "socket_type": 4,
-                    "name": "VAE"
-                },
-                {
-                    "id": 139697659378128,
-                    "index": 2,
-                    "multi_edges": false,
-                    "position": 3,
-                    "socket_type": 1,
-                    "name": "EXEC"
-                }
-            ],
-            "outputs": [
-                {
-                    "id": 139697659374528,
-                    "index": 0,
-                    "multi_edges": true,
-                    "position": 6,
-                    "socket_type": 2,
-                    "name": "LATENT"
-                },
-                {
-                    "id": 139697659379616,
-                    "index": 1,
-                    "multi_edges": false,
-                    "position": 6,
-                    "socket_type": 1,
-                    "name": "EXEC"
-                }
-            ],
-            "content": {},
-            "op_code": 5,
-            "content_label_objname": "vaeencode"
         },
         {
             "id": 139697659370832,
             "title": "Torch Loader",
-            "pos_x": -1061.6638397216784,
-            "pos_y": -108.18938827514648,
+            "pos_x": -1391.2536834716782,
+            "pos_y": -123.44817733764646,
             "inputs": [
                 {
                     "id": 139699640143344,
@@ -750,7 +697,7 @@
                 }
             ],
             "content": {
-                "Model:": "protovisionXLHighFidelity3D_releaseV660Bakedvae.safetensors",
+                "Model:": "\\dreamshaperXL10_alpha2Xl10.safetensors",
                 "Model:_visible": true,
                 "Model:_converted": false,
                 "Vae": "default",
@@ -760,7 +707,7 @@
                 "Force Reload_visible": true,
                 "Force Reload_converted": false
             },
-            "op_code": 210,
+            "op_code": 217,
             "content_label_objname": "torch_loader_node"
         },
         {
@@ -849,7 +796,7 @@
                 "Blend Method_visible": true,
                 "Blend Method_converted": false
             },
-            "op_code": 204,
+            "op_code": 184,
             "content_label_objname": "deforum_sdcond_node"
         },
         {
@@ -998,7 +945,7 @@
                 "_visible": true,
                 "progress_visible": true
             },
-            "op_code": 208,
+            "op_code": 213,
             "content_label_objname": "K_sampling_node"
         },
         {
@@ -1074,7 +1021,7 @@
                 "ancestral_eta_schedule_visible": true,
                 "ancestral_eta_schedule_converted": false
             },
-            "op_code": 198,
+            "op_code": 195,
             "content_label_objname": "deforum_diffusion_params_node"
         },
         {
@@ -1140,10 +1087,18 @@
                     "position": 6,
                     "socket_type": 1,
                     "name": "EXEC"
+                },
+                {
+                    "id": 1227742042704,
+                    "index": 4,
+                    "multi_edges": false,
+                    "position": 6,
+                    "socket_type": 1,
+                    "name": "EXEC"
                 }
             ],
             "content": {},
-            "op_code": 206,
+            "op_code": 198,
             "content_label_objname": "deforum_framewarp_node"
         },
         {
@@ -1221,8 +1176,117 @@
                 "Copy to Clipboard_visible": true,
                 "Copy to Clipboard_converted": false
             },
-            "op_code": 185,
+            "op_code": 205,
             "content_label_objname": "image_output_node"
+        },
+        {
+            "id": 1227742052112,
+            "title": "Deforum Color Params",
+            "pos_x": -1169.4335937499995,
+            "pos_y": 1115.7226562499995,
+            "inputs": [
+                {
+                    "id": 1227742048560,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 6,
+                    "name": "DATA"
+                },
+                {
+                    "id": 1227742048416,
+                    "index": 1,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 1,
+                    "name": "EXEC"
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 1227742048944,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 6,
+                    "name": "DATA"
+                },
+                {
+                    "id": 1227742048800,
+                    "index": 1,
+                    "multi_edges": false,
+                    "position": 6,
+                    "socket_type": 1,
+                    "name": "EXEC"
+                }
+            ],
+            "content": {
+                "color_coherence_value_combobox": "None",
+                "color_coherence_value_combobox_visible": true,
+                "color_coherence_image_path": "",
+                "color_coherence_image_path_visible": true,
+                "color_coherence_video_every_N_frames": 1,
+                "color_coherence_video_every_N_frames_visible": true,
+                "color_force_grayscale": "False",
+                "color_force_grayscale_visible": true,
+                "legacy_colormatch": "False",
+                "legacy_colormatch_visible": true
+            },
+            "op_code": 192,
+            "content_label_objname": "deforum_color_params_node"
+        },
+        {
+            "id": 1227741706080,
+            "title": "VAE Encode (aiNodes)",
+            "pos_x": 1468.9609375,
+            "pos_y": 1369.0703125,
+            "inputs": [
+                {
+                    "id": 1227742050816,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 4,
+                    "name": "VAE"
+                },
+                {
+                    "id": 1227742051440,
+                    "index": 1,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 5,
+                    "name": "IMAGE"
+                },
+                {
+                    "id": 1227742051296,
+                    "index": 2,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 1,
+                    "name": "EXEC"
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 1227742051152,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 2,
+                    "name": "LATENT"
+                },
+                {
+                    "id": 1227742050432,
+                    "index": 1,
+                    "multi_edges": false,
+                    "position": 6,
+                    "socket_type": 1,
+                    "name": "EXEC"
+                }
+            ],
+            "content": {},
+            "op_code": 218,
+            "content_label_objname": "vae_encode_node"
         }
     ],
     "edges": [
@@ -1281,12 +1345,6 @@
             "end": 139699640150256
         },
         {
-            "id": 139699946490416,
-            "edge_type": 2,
-            "start": 139697659378944,
-            "end": 139699640140224
-        },
-        {
             "id": 139699946497616,
             "edge_type": 2,
             "start": 139699640146224,
@@ -1315,12 +1373,6 @@
             "edge_type": 2,
             "start": 139699640149968,
             "end": 139699640147232
-        },
-        {
-            "id": 139699946497952,
-            "edge_type": 2,
-            "start": 139697659378368,
-            "end": 139699640141088
         },
         {
             "id": 139699946499104,
@@ -1401,24 +1453,6 @@
             "end": 139699640142288
         },
         {
-            "id": 139697656922896,
-            "edge_type": 2,
-            "start": 139699640149488,
-            "end": 139697659378128
-        },
-        {
-            "id": 139697669838672,
-            "edge_type": 2,
-            "start": 139699640146464,
-            "end": 139697659369680
-        },
-        {
-            "id": 139697668012112,
-            "edge_type": 2,
-            "start": 139697659371408,
-            "end": 139699640142000
-        },
-        {
             "id": 139699640149536,
             "edge_type": 2,
             "start": 139699640143824,
@@ -1435,18 +1469,6 @@
             "edge_type": 2,
             "start": 139699640143776,
             "end": 139699640143824
-        },
-        {
-            "id": 139697670746128,
-            "edge_type": 2,
-            "start": 139699640148624,
-            "end": 139697659374528
-        },
-        {
-            "id": 139697668001600,
-            "edge_type": 2,
-            "start": 139697659379616,
-            "end": 139699640147856
         },
         {
             "id": 139697657284832,
@@ -1477,6 +1499,60 @@
             "edge_type": 2,
             "start": 139699640149776,
             "end": 140217908937488
+        },
+        {
+            "id": 1227742052160,
+            "edge_type": 2,
+            "start": 139697659378944,
+            "end": 1227742048416
+        },
+        {
+            "id": 1227349672624,
+            "edge_type": 2,
+            "start": 1227742048560,
+            "end": 139697659378368
+        },
+        {
+            "id": 1227741696192,
+            "edge_type": 2,
+            "start": 1227742048800,
+            "end": 139699640140224
+        },
+        {
+            "id": 1227741706176,
+            "edge_type": 2,
+            "start": 1227742048944,
+            "end": 139699640141088
+        },
+        {
+            "id": 1227349675024,
+            "edge_type": 2,
+            "start": 1227742051296,
+            "end": 139699640149488
+        },
+        {
+            "id": 1227742051584,
+            "edge_type": 2,
+            "start": 139699640142000,
+            "end": 1227742051440
+        },
+        {
+            "id": 1227742050240,
+            "edge_type": 2,
+            "start": 139699640146464,
+            "end": 1227742050816
+        },
+        {
+            "id": 1227349672816,
+            "edge_type": 2,
+            "start": 1227742051152,
+            "end": 139699640148624
+        },
+        {
+            "id": 1227742038192,
+            "edge_type": 2,
+            "start": 139699640147856,
+            "end": 1227742050432
         }
     ]
 }
