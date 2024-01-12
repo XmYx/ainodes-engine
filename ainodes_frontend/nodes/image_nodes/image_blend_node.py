@@ -35,7 +35,7 @@ class BlendNode(AiNode):
     op_code = OP_NODE_IMAGE_BLEND
     op_title = "Image Blend"
     content_label_objname = "image_blend_node"
-    category = "aiNodes Base/Image"
+    category = "base/image"
     help_text = "Image Blend / Composite node\n\n" \
                 ""
 
