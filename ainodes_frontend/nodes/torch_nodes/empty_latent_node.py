@@ -283,10 +283,15 @@ class LatentCompositeNode(AiNode):
         x =  width // 8
         y = height // 8
         feather = feather // 8
-        samples_out = self.getInput(0)
+        # samples_out = self.getInput(0)
         s = self.getInput(0)
         samples_to = self.getInput(0)
         samples_from = self.getInput(1)
+
+        if samples_to is not None and samples_from is not None:
+            samples_to = samples_to["samples"]
+            samples_from = samples_from["samples"]
+
         if feather == 0:
             s[:,:,y:y+samples_from.shape[2],x:x+samples_from.shape[3]] = samples_from[:,:,:samples_to.shape[2] - y, :samples_to.shape[3] - x]
         else:
@@ -305,8 +310,8 @@ class LatentCompositeNode(AiNode):
             rev_mask = torch.ones_like(mask) - mask
             s[:,:,y:y+samples_from.shape[2],x:x+samples_from.shape[3]] = samples_from[:,:,:samples_to.shape[2] - y, :samples_to.shape[3] - x] * mask + s[:,:,y:y+samples_from.shape[2],x:x+samples_from.shape[3]] * rev_mask
 
-        self.setOutput(0, s)
-        return s
+        #self.setOutput(0, s)
+        return {"samples":s}
 def load_img(image, shape=None, use_alpha_as_mask=False):
     # use_alpha_as_mask: Read the alpha channel of the image as the mask image
     #if path.startswith('http://') or path.startswith('https://'):
