@@ -41,7 +41,7 @@ class LatentNode(AiNode):
     op_code = OP_NODE_LATENT
     op_title = "Empty Latent Image"
     content_label_objname = "empty_latent_node"
-    category = "aiNodes Base/Latent"
+    category = "base/torch"
     custom_input_socket_name = ["VAE", "LATENT", "IMAGE", "EXEC"]
 
     make_dirty = True
@@ -249,7 +249,7 @@ class LatentCompositeNode(AiNode):
     op_code = OP_NODE_LATENT_COMPOSITE
     op_title = "Composite Latent Images"
     content_label_objname = "latent_comp_node"
-    category = "aiNodes Base/Latent"
+    category = "base/torch"
 
     def __init__(self, scene):
         super().__init__(scene, inputs=[2,2,3], outputs=[2,3])
