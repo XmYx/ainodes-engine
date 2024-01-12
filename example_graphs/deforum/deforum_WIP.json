@@ -68,7 +68,7 @@
                 "Keep Buffer_converted": false,
                 "_visible": true
             },
-            "op_code": 208,
+            "op_code": 193,
             "content_label_objname": "video_output_node"
         },
         {
@@ -144,7 +144,7 @@
                 "rotation_3d_z_visible": true,
                 "rotation_3d_z_converted": false
             },
-            "op_code": 191,
+            "op_code": 202,
             "content_label_objname": "deforum_translation_node"
         },
         {
@@ -250,7 +250,7 @@
                 "seed_internal_visible": true,
                 "seed_internal_converted": false
             },
-            "op_code": 185,
+            "op_code": 196,
             "content_label_objname": "deforum_base_params_node"
         },
         {
@@ -311,7 +311,7 @@
                 }
             ],
             "content": {},
-            "op_code": 183,
+            "op_code": 213,
             "content_label_objname": "deforum_colormatch_node"
         },
         {
@@ -350,7 +350,7 @@
             "content": {
                 "_visible": true
             },
-            "op_code": 179,
+            "op_code": 187,
             "content_label_objname": "exec_node"
         },
         {
@@ -414,7 +414,7 @@
                 "use_looper_visible": true,
                 "use_looper_converted": false
             },
-            "op_code": 190,
+            "op_code": 201,
             "content_label_objname": "deforum_anim_params_node"
         },
         {
@@ -459,7 +459,7 @@
                 }
             ],
             "content": {},
-            "op_code": 215,
+            "op_code": 223,
             "content_label_objname": "sfast_node"
         },
         {
@@ -534,7 +534,7 @@
                 "Timeline_converted": false,
                 "_visible": true
             },
-            "op_code": 200,
+            "op_code": 210,
             "content_label_objname": "deforum_iterate_node"
         },
         {
@@ -583,7 +583,7 @@
                 "150": "\"alien planet , japanese line art, highly detailed\"",
                 "350": "\"cyberpunk artwork of the universe with ink splashes and planets\""
             },
-            "op_code": 201,
+            "op_code": 209,
             "content_label_objname": "deforum_prompt_node"
         },
         {
@@ -644,7 +644,7 @@
                 }
             ],
             "content": {},
-            "op_code": 181,
+            "op_code": 215,
             "content_label_objname": "deforum_addnoise_node"
         },
         {
@@ -697,7 +697,7 @@
                 }
             ],
             "content": {
-                "Model:": "\\dreamshaperXL10_alpha2Xl10.safetensors",
+                "Model:": "protovisionXLHighFidelity3D_release0620Bakedvae.safetensors",
                 "Model:_visible": true,
                 "Model:_converted": false,
                 "Vae": "default",
@@ -707,7 +707,7 @@
                 "Force Reload_visible": true,
                 "Force Reload_converted": false
             },
-            "op_code": 217,
+            "op_code": 224,
             "content_label_objname": "torch_loader_node"
         },
         {
@@ -796,7 +796,7 @@
                 "Blend Method_visible": true,
                 "Blend Method_converted": false
             },
-            "op_code": 184,
+            "op_code": 212,
             "content_label_objname": "deforum_sdcond_node"
         },
         {
@@ -936,6 +936,8 @@
                 "Use latent from loop": "False",
                 "Use latent from loop_visible": true,
                 "Use latent from loop_converted": false,
+                "Use float32 for decode/encode": "False",
+                "Use float32 for decode/encode_visible": true,
                 "Denoise:": 1.0,
                 "Denoise:_visible": true,
                 "Denoise:_converted": false,
@@ -945,7 +947,7 @@
                 "_visible": true,
                 "progress_visible": true
             },
-            "op_code": 213,
+            "op_code": 217,
             "content_label_objname": "K_sampling_node"
         },
         {
@@ -1021,85 +1023,8 @@
                 "ancestral_eta_schedule_visible": true,
                 "ancestral_eta_schedule_converted": false
             },
-            "op_code": 195,
+            "op_code": 206,
             "content_label_objname": "deforum_diffusion_params_node"
-        },
-        {
-            "id": 139697649704800,
-            "title": "Deforum Frame Warp",
-            "pos_x": 1531.9090118408176,
-            "pos_y": 1000.9229164123531,
-            "inputs": [
-                {
-                    "id": 139699640141280,
-                    "index": 0,
-                    "multi_edges": true,
-                    "position": 3,
-                    "socket_type": 6,
-                    "name": "DATA"
-                },
-                {
-                    "id": 139699640142576,
-                    "index": 1,
-                    "multi_edges": true,
-                    "position": 3,
-                    "socket_type": 5,
-                    "name": "IMAGE"
-                },
-                {
-                    "id": 139699640149776,
-                    "index": 2,
-                    "multi_edges": false,
-                    "position": 3,
-                    "socket_type": 1,
-                    "name": "EXEC"
-                }
-            ],
-            "outputs": [
-                {
-                    "id": 139699640147760,
-                    "index": 0,
-                    "multi_edges": true,
-                    "position": 6,
-                    "socket_type": 6,
-                    "name": "DATA"
-                },
-                {
-                    "id": 139699640147568,
-                    "index": 1,
-                    "multi_edges": true,
-                    "position": 6,
-                    "socket_type": 5,
-                    "name": "IMAGE"
-                },
-                {
-                    "id": 139699640142144,
-                    "index": 2,
-                    "multi_edges": true,
-                    "position": 6,
-                    "socket_type": 5,
-                    "name": "MASK"
-                },
-                {
-                    "id": 139699640143152,
-                    "index": 3,
-                    "multi_edges": false,
-                    "position": 6,
-                    "socket_type": 1,
-                    "name": "EXEC"
-                },
-                {
-                    "id": 1227742042704,
-                    "index": 4,
-                    "multi_edges": false,
-                    "position": 6,
-                    "socket_type": 1,
-                    "name": "EXEC"
-                }
-            ],
-            "content": {},
-            "op_code": 198,
-            "content_label_objname": "deforum_framewarp_node"
         },
         {
             "id": 139697659368096,
@@ -1176,7 +1101,7 @@
                 "Copy to Clipboard_visible": true,
                 "Copy to Clipboard_converted": false
             },
-            "op_code": 205,
+            "op_code": 190,
             "content_label_objname": "image_output_node"
         },
         {
@@ -1223,16 +1148,21 @@
             "content": {
                 "color_coherence_value_combobox": "None",
                 "color_coherence_value_combobox_visible": true,
+                "color_coherence_value_combobox_converted": false,
                 "color_coherence_image_path": "",
                 "color_coherence_image_path_visible": true,
+                "color_coherence_image_path_converted": false,
                 "color_coherence_video_every_N_frames": 1,
                 "color_coherence_video_every_N_frames_visible": true,
+                "color_coherence_video_every_N_frames_converted": false,
                 "color_force_grayscale": "False",
                 "color_force_grayscale_visible": true,
+                "color_force_grayscale_converted": false,
                 "legacy_colormatch": "False",
-                "legacy_colormatch_visible": true
+                "legacy_colormatch_visible": true,
+                "legacy_colormatch_converted": false
             },
-            "op_code": 192,
+            "op_code": 203,
             "content_label_objname": "deforum_color_params_node"
         },
         {
@@ -1285,8 +1215,85 @@
                 }
             ],
             "content": {},
-            "op_code": 218,
+            "op_code": 219,
             "content_label_objname": "vae_encode_node"
+        },
+        {
+            "id": 140524937297632,
+            "title": "Deforum Frame Warp",
+            "pos_x": 1524.0,
+            "pos_y": 991.0,
+            "inputs": [
+                {
+                    "id": 140525450600960,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 6,
+                    "name": "DATA"
+                },
+                {
+                    "id": 140525450600864,
+                    "index": 1,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 5,
+                    "name": "IMAGE"
+                },
+                {
+                    "id": 140525450600816,
+                    "index": 2,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 1,
+                    "name": "EXEC"
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 140525450600912,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 6,
+                    "name": "DATA"
+                },
+                {
+                    "id": 140524903275616,
+                    "index": 1,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 5,
+                    "name": "IMAGE"
+                },
+                {
+                    "id": 140524903275472,
+                    "index": 2,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 5,
+                    "name": "MASK"
+                },
+                {
+                    "id": 140524903275568,
+                    "index": 3,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 4,
+                    "name": "DEPTH_MODEL"
+                },
+                {
+                    "id": 140524903275424,
+                    "index": 4,
+                    "multi_edges": false,
+                    "position": 6,
+                    "socket_type": 1,
+                    "name": "EXEC"
+                }
+            ],
+            "content": {},
+            "op_code": 214,
+            "content_label_objname": "deforum_framewarp_node"
         }
     ],
     "edges": [
@@ -1447,40 +1454,16 @@
             "end": 139697659370400
         },
         {
-            "id": 139697668008512,
-            "edge_type": 2,
-            "start": 139699640143152,
-            "end": 139699640142288
-        },
-        {
             "id": 139699640149536,
             "edge_type": 2,
             "start": 139699640143824,
             "end": 139699640147040
         },
         {
-            "id": 139697668006304,
-            "edge_type": 2,
-            "start": 139699640141280,
-            "end": 139699640143824
-        },
-        {
             "id": 139697669837952,
             "edge_type": 2,
             "start": 139699640143776,
             "end": 139699640143824
-        },
-        {
-            "id": 139697657284832,
-            "edge_type": 2,
-            "start": 139699640142576,
-            "end": 139699640140032
-        },
-        {
-            "id": 139697659371504,
-            "edge_type": 2,
-            "start": 139699640148336,
-            "end": 139699640147568
         },
         {
             "id": 139699134567312,
@@ -1493,12 +1476,6 @@
             "edge_type": 2,
             "start": 140217908937392,
             "end": 139697659374192
-        },
-        {
-            "id": 139694607439264,
-            "edge_type": 2,
-            "start": 139699640149776,
-            "end": 140217908937488
         },
         {
             "id": 1227742052160,
@@ -1553,6 +1530,36 @@
             "edge_type": 2,
             "start": 139699640147856,
             "end": 1227742050432
+        },
+        {
+            "id": 140524937293072,
+            "edge_type": 2,
+            "start": 140525450600864,
+            "end": 139699640140032
+        },
+        {
+            "id": 140524292697936,
+            "edge_type": 2,
+            "start": 140525450600960,
+            "end": 139699640143824
+        },
+        {
+            "id": 140524903271680,
+            "edge_type": 2,
+            "start": 140217908937488,
+            "end": 140525450600816
+        },
+        {
+            "id": 140530855523328,
+            "edge_type": 2,
+            "start": 140524903275616,
+            "end": 139699640148336
+        },
+        {
+            "id": 140524903270528,
+            "edge_type": 2,
+            "start": 139699640142288,
+            "end": 140524903275424
         }
     ]
 }
