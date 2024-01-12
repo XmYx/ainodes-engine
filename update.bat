@@ -71,6 +71,8 @@ if exist "%SRC_DIR%\deforum\src\ComfyUI\custom_nodes\ComfyUI-Manager" (
     cd "%~dp0"
 )
 
+pip install -r requirements.txt
+
 REM Run root folder's main.py
 echo Running main.py...
 python main.py
