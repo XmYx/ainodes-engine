@@ -354,6 +354,7 @@ class AiNode(Node):
             for port in ports:
                 if result[x] is not None:
                     self.markDirty(False)
+                #print(f"setting port {port} to {result[x]}")
                 self.setOutput(port, result[x])
                 x += 1
 

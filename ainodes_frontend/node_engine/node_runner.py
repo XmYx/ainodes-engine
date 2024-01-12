@@ -192,6 +192,7 @@ class NodeRunner:
         #print("starting nodes",self.starting_nodes)
 
     def start(self, loop=False):
+
         use_api = False
         gs.should_run = True
         if use_api:

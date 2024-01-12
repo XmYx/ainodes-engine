@@ -53,37 +53,19 @@ Requirements:
   <li>It will create a virtual environment, and install all dependencies, to start next time, you can use the shortcut on your Desktop.</li>
 </ol>
 
+To update, you can run update.bat.
+
+
 Linux:
 ```shell
 git clone https://github.com/XmYx/ainodes-engine
 cd ainodes-engine
-pip install virtualenv
-python -m virtualenv nodes_env -p=3.10
-source nodes_env/bin/activate
-pip install -r requirements.txt
-cd ai_nodes
-git clone https://github.com/XmYx/ainodes_engine_base_nodes
-cd ainodes_engine_base_nodes
-pip install -r requirements.txt
-cd ..
-git clone https://github.com/XmYx/ainodes_engine_deforum_nodes
-cd ainodes_engine_deforum_nodes
-pip install -r requirements.txt
+bash ainodes.sh
 ```
 
 MacOs:
 ```shell
-git clone https://github.com/XmYx/ainodes-engine
-cd ainodes-engine
-pip install virtualenv
-python -m virtualenv nodes_env -p=3.10
-source nodes_env/bin/activate
-pip install -r requirements.txt
-cd ai_nodes
-git clone https://github.com/XmYx/ainodes_engine_base_nodes
-cd ainodes_engine_base_nodes
-pip install torch torchvision
-pip install -r requirements_mac.txt
+support coming up
 ```
 launch with:
 ```
