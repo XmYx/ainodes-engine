@@ -45,7 +45,7 @@ class TinyVAEDecode(AiNode):
         with torch.inference_mode():
             vae = self.getInputData(0)
             latent = self.getInputData(1)
-
+            print(latent["samples"].shape)
             if not vae:
                 if not self.vae or self.version != self.content.is_xl.isChecked():
                     vae_version = "madebyollin/taesdxl" if self.content.is_xl.isChecked() else "madebyollin/taesd"
@@ -63,10 +63,11 @@ class TinyVAEDecode(AiNode):
             else:
                 return [self.vae, None]
     def remove(self):
-        if self.vae:
-            try:
-                self.vae.to('cpu')
-                del self.vae
-            except:
-                pass
+        if hasattr(self, "vae"):
+            if self.vae:
+                try:
+                    self.vae.to('cpu')
+                except:
+                    pass
         self.vae = None
+        super().remove()

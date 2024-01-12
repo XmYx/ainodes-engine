@@ -255,22 +255,14 @@ class LatentCompositeNode(AiNode):
 
     def __init__(self, scene):
         super().__init__(scene, inputs=[2,2,1], outputs=[2,1])
-    # def initInnerClasses(self):
-    #     self.content = LatentCompositeWidget(self)
-    #     self.grNode = CalcGraphicsNode(self)
-    #     self.input_socket_name = ["EXEC", "LATENT1", "LATENT2"]
-    #     self.output_socket_name = ["EXEC", "LATENT"]
-    #     self.grNode.height = 220
-    #     self.grNode.width = 240
-    #     self.grNode.icon = self.icon
-    #     self.content.eval_signal.connect(self.evalImplementation)
+
 
     def evalImplementation_thread(self, index=0):
 
         if self.isDirty() == True:
             if self.getInput(index) != None:
-
                 self.value = self.composite()
+                return [self.value]
         else:
             return [self.value]
 
@@ -286,34 +278,36 @@ class LatentCompositeNode(AiNode):
         y = height // 8
         feather = feather // 8
         # samples_out = self.getInput(0)
-        s = self.getInput(0)
-        samples_to = self.getInput(0)
-        samples_from = self.getInput(1)
+        s = self.getInputData(0)
+        samples_to = self.getInputData(0)
+        samples_from = self.getInputData(1)
 
-        if samples_to is not None and samples_from is not None:
-            samples_to = samples_to["samples"]
-            samples_from = samples_from["samples"]
+        with torch.inference_mode():
+            if samples_to is not None and samples_from is not None:
+                s = samples_to["samples"]
+                samples_to = samples_to["samples"]
+                samples_from = samples_from["samples"]
 
-        if feather == 0:
-            s[:,:,y:y+samples_from.shape[2],x:x+samples_from.shape[3]] = samples_from[:,:,:samples_to.shape[2] - y, :samples_to.shape[3] - x]
-        else:
-            samples_from = samples_from[:,:,:samples_to.shape[2] - y, :samples_to.shape[3] - x]
-            mask = torch.ones_like(samples_from)
-            for t in range(feather):
-                if y != 0:
-                    mask[:,:,t:1+t,:] *= ((1.0/feather) * (t + 1))
+            if feather == 0:
+                s[:,:,y:y+samples_from.shape[2],x:x+samples_from.shape[3]] = samples_from[:,:,:samples_to.shape[2] - y, :samples_to.shape[3] - x]
+            else:
+                samples_from = samples_from[:,:,:samples_to.shape[2] - y, :samples_to.shape[3] - x]
+                mask = torch.ones_like(samples_from)
+                for t in range(feather):
+                    if y != 0:
+                        mask[:,:,t:1+t,:] *= ((1.0/feather) * (t + 1))
 
-                if y + samples_from.shape[2] < samples_to.shape[2]:
-                    mask[:,:,mask.shape[2] -1 -t: mask.shape[2]-t,:] *= ((1.0/feather) * (t + 1))
-                if x != 0:
-                    mask[:,:,:,t:1+t] *= ((1.0/feather) * (t + 1))
-                if x + samples_from.shape[3] < samples_to.shape[3]:
-                    mask[:,:,:,mask.shape[3]- 1 - t: mask.shape[3]- t] *= ((1.0/feather) * (t + 1))
-            rev_mask = torch.ones_like(mask) - mask
-            s[:,:,y:y+samples_from.shape[2],x:x+samples_from.shape[3]] = samples_from[:,:,:samples_to.shape[2] - y, :samples_to.shape[3] - x] * mask + s[:,:,y:y+samples_from.shape[2],x:x+samples_from.shape[3]] * rev_mask
+                    if y + samples_from.shape[2] < samples_to.shape[2]:
+                        mask[:,:,mask.shape[2] -1 -t: mask.shape[2]-t,:] *= ((1.0/feather) * (t + 1))
+                    if x != 0:
+                        mask[:,:,:,t:1+t] *= ((1.0/feather) * (t + 1))
+                    if x + samples_from.shape[3] < samples_to.shape[3]:
+                        mask[:,:,:,mask.shape[3]- 1 - t: mask.shape[3]- t] *= ((1.0/feather) * (t + 1))
+                rev_mask = torch.ones_like(mask) - mask
+                s[:,:,y:y+samples_from.shape[2],x:x+samples_from.shape[3]] = samples_from[:,:,:samples_to.shape[2] - y, :samples_to.shape[3] - x] * mask + s[:,:,y:y+samples_from.shape[2],x:x+samples_from.shape[3]] * rev_mask
 
-        #self.setOutput(0, s)
-        return {"samples":s}
+            #self.setOutput(0, s)
+            return {"samples":s}
 def load_img(image, shape=None, use_alpha_as_mask=False):
     # use_alpha_as_mask: Read the alpha channel of the image as the mask image
     #if path.startswith('http://') or path.startswith('https://'):
