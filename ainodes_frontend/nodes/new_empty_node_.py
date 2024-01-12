@@ -16,6 +16,7 @@ Use the built in torch_gc function to clear some VRAM, and don't forget to unloa
 
 There are also other methods available: tensor2pil, pil2tensor
 
+Put this file in any folder ending with nodes, and remove the "_" from the end for it to show up on start.
 """
 OP_NODE_UNIQUE = get_next_opcode()
 
