@@ -30,4 +30,7 @@ aiohttp
 torchsde
 einops
 openai
-pyqtgraph==0.13.3
+gradio==3.50.2
+librosa
+audiocraft
+accelerate

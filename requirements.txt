@@ -27,3 +27,6 @@ aiohttp
 torchsde
 einops
 openai
+librosa
+audiocraft
+accelerate
