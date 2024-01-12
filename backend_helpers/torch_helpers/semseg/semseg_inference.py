@@ -2,7 +2,7 @@ from io import BytesIO
 
 import numpy as np
 import torch
-from .models import *
+from .semseg_models import *
 from .datasets import *
 from torchvision import transforms as T
 from torchvision import io
@@ -17,7 +17,7 @@ from torch.nn import functional as F
 from pathlib import Path
 from torchvision import io
 from torchvision import transforms as T
-from .models import *
+from .semseg_models import *
 from .datasets import *
 from .utils.utils import timer
 from .utils.visualize import draw_text

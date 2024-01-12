@@ -1,7 +1,7 @@
 from tabulate import tabulate
-from . import models
+from . import semseg_models as models
 from . import datasets
-from .models import backbones, heads
+from .semseg_models import backbones, heads
 
 
 def show_models():

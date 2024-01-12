@@ -30,3 +30,4 @@ openai
 librosa
 audiocraft
 accelerate
+tabulate
