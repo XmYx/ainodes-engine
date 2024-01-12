@@ -50,5 +50,5 @@ class AddNoiseNode(AiNode):
                     result = add_noise(tensor, noise_type=noise_type, noise_amount=noise_amount)
                 results.append(result)
 
-        return [torch.stack(results)]
+        return [torch.stack(results).to("cpu")]
 
