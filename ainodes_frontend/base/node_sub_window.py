@@ -65,6 +65,7 @@ class NodeSearchDialog(QtWidgets.QDialog):
 
 
 class CalculatorSubWindow(NodeEditorWidget):
+    json_name = None
     def __init__(self):
         super().__init__()
         self.context_menu_style = 'modern'
