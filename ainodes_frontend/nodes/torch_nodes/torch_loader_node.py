@@ -309,8 +309,31 @@ class TorchLoaderNode(AiNode):
             self.loaded_sd = model_name
 
             torch_gc()
+        if self.content.vae_dropdown.currentText() != 'default':
+            model = self.content.vae_dropdown.currentText()
+            gs.models[self.loaded_sd]["vae"] = self.load_vae(model)
+            self.loaded_vae = model
+        else:
+            self.loaded_vae = 'default'
+        if self.loaded_vae != self.content.vae_dropdown.currentText():
+            model = self.content.vae_dropdown.currentText()
+            gs.models[self.loaded_sd]["vae"] = self.load_vae(model)
+            self.loaded_vae = model
         return [None, None, None, None]
 
+    def load_vae(self, file):
+        from comfy.sd import VAE
+        import comfy
+        path = os.path.join('models/vae', file)
+        print("Loading", path)
+        # gs.models["sd"].first_stage_model.cpu()
+        # gs.models["sd"].first_stage_model = None
+        # gs.models["sd"].first_stage_model = VAE(ckpt_path=path)
+        sd = comfy.utils.load_torch_file(path)
+        vae = VAE(sd=sd)
+        vae.first_stage_model.half().cuda()
+        print("VAE Loaded", file)
+        return vae
         # if self.loaded_sd != model_name or self.content.force_reload.isChecked() == True:
         #     self.clean_sd()
         #     self.model, self.clip, self.vae, self.clipvision = self.loader.load_checkpoint_guess_config(model_name, style="None")
