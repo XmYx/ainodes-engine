@@ -115,7 +115,8 @@ class LatentNode(AiNode):
                                                 max_numerator=10, pad_mode='reflect')#.half()
 
                 rescaled_samples.append(return_sample)
-            samples = rescaled_samples
+
+            samples = torch.stack(rescaled_samples, dim=0)
             if gs.logging:
                 print(f"{len(samples)}x Latents rescaled to: {samples[0].shape}")
         #print(samples[0].shape)
