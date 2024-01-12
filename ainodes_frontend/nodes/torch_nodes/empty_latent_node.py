@@ -250,18 +250,20 @@ class LatentCompositeNode(AiNode):
     op_title = "Composite Latent Images"
     content_label_objname = "latent_comp_node"
     category = "base/torch"
+    NodeContent_class = LatentCompositeWidget
+    dim = (340, 340)
 
     def __init__(self, scene):
-        super().__init__(scene, inputs=[2,2,3], outputs=[2,3])
-    def initInnerClasses(self):
-        self.content = LatentCompositeWidget(self)
-        self.grNode = CalcGraphicsNode(self)
-        self.input_socket_name = ["EXEC", "LATENT1", "LATENT2"]
-        self.output_socket_name = ["EXEC", "LATENT"]
-        self.grNode.height = 220
-        self.grNode.width = 240
-        self.grNode.icon = self.icon
-        self.content.eval_signal.connect(self.evalImplementation)
+        super().__init__(scene, inputs=[2,2,1], outputs=[2,1])
+    # def initInnerClasses(self):
+    #     self.content = LatentCompositeWidget(self)
+    #     self.grNode = CalcGraphicsNode(self)
+    #     self.input_socket_name = ["EXEC", "LATENT1", "LATENT2"]
+    #     self.output_socket_name = ["EXEC", "LATENT"]
+    #     self.grNode.height = 220
+    #     self.grNode.width = 240
+    #     self.grNode.icon = self.icon
+    #     self.content.eval_signal.connect(self.evalImplementation)
 
     def evalImplementation_thread(self, index=0):
 
