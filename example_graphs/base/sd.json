@@ -6,8 +6,8 @@
         {
             "id": 139729489042240,
             "title": "EmptyLatentImage",
-            "pos_x": -784.9079589843748,
-            "pos_y": 533.4291992187505,
+            "pos_x": -841.1579589843747,
+            "pos_y": 684.9916992187506,
             "inputs": [
                 {
                     "id": 139726906321952,
@@ -53,8 +53,8 @@
         {
             "id": 139731165077872,
             "title": "CLIPTextEncode",
-            "pos_x": -788.3923339843752,
-            "pos_y": 236.6791992187508,
+            "pos_x": -849.3298339843751,
+            "pos_y": 394.49169921875057,
             "inputs": [
                 {
                     "id": 139731165074224,
@@ -102,8 +102,8 @@
         {
             "id": 139731165077296,
             "title": "CLIPTextEncode",
-            "pos_x": -789.189208984375,
-            "pos_y": -62.46142578124966,
+            "pos_x": -854.8142089843751,
+            "pos_y": 103.16357421875028,
             "inputs": [
                 {
                     "id": 139731165080752,
@@ -151,8 +151,8 @@
         {
             "id": 139731165071056,
             "title": "K Sampler",
-            "pos_x": -366.8610839843748,
-            "pos_y": -75.36767578125,
+            "pos_x": -413.73608398437466,
+            "pos_y": 69.94482421874997,
             "inputs": [
                 {
                     "id": 139726906416224,
@@ -285,6 +285,8 @@
                 "Use latent from loop": "False",
                 "Use latent from loop_visible": true,
                 "Use latent from loop_converted": false,
+                "Use float32 for decode/encode": "False",
+                "Use float32 for decode/encode_visible": true,
                 "Denoise:": 1.0,
                 "Denoise:_visible": true,
                 "Denoise:_converted": false,
@@ -300,8 +302,8 @@
         {
             "id": 139726906419344,
             "title": "Torch Loader",
-            "pos_x": -824.539794921875,
-            "pos_y": -368.87158203124966,
+            "pos_x": -879.539794921875,
+            "pos_y": -255.12158203124966,
             "inputs": [
                 {
                     "id": 139731165074464,
@@ -363,8 +365,8 @@
         {
             "id": 139731165082240,
             "title": "Image Preview",
-            "pos_x": 47.420166015625114,
-            "pos_y": -617.8051757812499,
+            "pos_x": 29.920166015625114,
+            "pos_y": -522.1801757812499,
             "inputs": [
                 {
                     "id": 139726906325408,
@@ -441,8 +443,8 @@
         {
             "id": 140097821726976,
             "title": "Execute",
-            "pos_x": -519.3190917968742,
-            "pos_y": -610.8686523437493,
+            "pos_x": -624.9440917968741,
+            "pos_y": -506.8061523437494,
             "inputs": [
                 {
                     "id": 140097821732880,
@@ -476,6 +478,66 @@
             },
             "op_code": 187,
             "content_label_objname": "exec_node"
+        },
+        {
+            "id": 140223755584752,
+            "title": "Model Loading / Run",
+            "pos_x": -941.25,
+            "pos_y": -580.9375,
+            "inputs": [],
+            "outputs": [],
+            "content": {},
+            "op_code": 185,
+            "content_label_objname": "bg_node",
+            "color": "#fff5c211",
+            "width": 919.75,
+            "height": 606.0
+        },
+        {
+            "id": 140226153388528,
+            "title": "Sampling",
+            "pos_x": -937.5,
+            "pos_y": 31.562499999999915,
+            "inputs": [],
+            "outputs": [],
+            "content": {},
+            "op_code": 185,
+            "content_label_objname": "bg_node",
+            "color": "#ffb5835a",
+            "width": 918.5,
+            "height": 856.0
+        },
+        {
+            "id": 140223751688096,
+            "title": "Result",
+            "pos_x": -7.812499999999886,
+            "pos_y": -576.5624999999997,
+            "inputs": [],
+            "outputs": [],
+            "content": {},
+            "op_code": 185,
+            "content_label_objname": "bg_node",
+            "color": "#ff1c71d8",
+            "width": 1141.9374999999993,
+            "height": 1470.0624999999998
+        },
+        {
+            "id": 140223755588064,
+            "title": "Help",
+            "pos_x": -965.9374999999997,
+            "pos_y": -936.2499999999992,
+            "inputs": [],
+            "outputs": [],
+            "content": {
+                "Info": "Stable Diffusion TXT2IMG Example",
+                "Info_visible": true,
+                "Info_converted": false
+            },
+            "op_code": 186,
+            "content_label_objname": "bg_node_info",
+            "color": "#e3212121",
+            "width": 2109.4375000000005,
+            "height": 337.5624999999999
         }
     ],
     "edges": [

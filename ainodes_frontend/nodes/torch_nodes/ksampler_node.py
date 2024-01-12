@@ -61,6 +61,7 @@ class KSamplerWidget(QDMNodeContentWidget):
         self.disable_noise = self.create_check_box("Disable noise generation")
         self.iterate_seed = self.create_check_box("Iterate seed")
         self.use_internal_latent = self.create_check_box("Use latent from loop")
+        self.fp32_vae = self.create_check_box("Use float32 for decode/encode")
         self.denoise = self.create_double_spin_box("Denoise:", 0.00, 25.00, 0.01, 1.00)
         self.guidance_scale = self.create_double_spin_box("Guidance Scale:", 1.01, 100.00, 0.01, 7.50)
         #self.button = QtWidgets.QPushButton("Run")
@@ -310,6 +311,15 @@ class KSamplerNode(AiNode):
             return [None, None]
     def decode_tiled(self, vae, samples, tile_x=64, tile_y=64, overlap = 16):
         #model_management.load_model_gpu(self.patcher)
+
+        if self.content.fp32_vae.isChecked():
+            vae.first_stage_model.float()
+            samples = samples.float().to(gs.device)
+        else:
+            vae.first_stage_model.half()
+            samples = samples.half().to(gs.device)
+
+
         output = vae.decode_tiled_(samples, tile_x, tile_y, overlap)
         return output.movedim(1,-1)
     def decode_sample(self, sample, vae):
