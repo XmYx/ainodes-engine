@@ -158,7 +158,6 @@ nodes_env/
 controlnet
 torch
 
-semseg/
 *.pt
 *.mp4
 *.gif
