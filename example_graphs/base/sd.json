@@ -6,8 +6,8 @@
         {
             "id": 139729489042240,
             "title": "EmptyLatentImage",
-            "pos_x": -131.15795898437477,
-            "pos_y": -712.7426757812493,
+            "pos_x": -784.9079589843748,
+            "pos_y": 533.4291992187505,
             "inputs": [
                 {
                     "id": 139726906321952,
@@ -53,8 +53,8 @@
         {
             "id": 139731165077872,
             "title": "CLIPTextEncode",
-            "pos_x": -588.782958984375,
-            "pos_y": -139.80517578124932,
+            "pos_x": -788.3923339843752,
+            "pos_y": 236.6791992187508,
             "inputs": [
                 {
                     "id": 139731165074224,
@@ -102,8 +102,8 @@
         {
             "id": 139731165077296,
             "title": "CLIPTextEncode",
-            "pos_x": -584.345458984375,
-            "pos_y": -466.0551757812494,
+            "pos_x": -789.189208984375,
+            "pos_y": -62.46142578124966,
             "inputs": [
                 {
                     "id": 139731165080752,
@@ -141,7 +141,7 @@
                 }
             ],
             "content": {
-                "text": "dart vader as mickey mouse",
+                "text": "surrene landscape with tiny butterflies, a tiny isometric polygon city sitting on top of a 3d tree, roots hanging, ethereal lights, 3d, highly detailed, Trending on Artstation",
                 "text_visible": true,
                 "text_converted": false
             },
@@ -151,8 +151,8 @@
         {
             "id": 139731165071056,
             "title": "K Sampler",
-            "pos_x": -111.7829589843747,
-            "pos_y": -495.68017578124983,
+            "pos_x": -366.8610839843748,
+            "pos_y": -75.36767578125,
             "inputs": [
                 {
                     "id": 139726906416224,
@@ -246,10 +246,10 @@
                 }
             ],
             "content": {
-                "Scheduler:": "normal",
+                "Scheduler:": "karras",
                 "Scheduler:_visible": true,
                 "Scheduler:_converted": false,
-                "Sampler:": "euler",
+                "Sampler:": "dpmpp_2m_sde",
                 "Sampler:_visible": true,
                 "Sampler:_converted": false,
                 "Seed:": "",
@@ -266,36 +266,42 @@
                 "Last Step:_converted": false,
                 "Stop Sampling Early": "False",
                 "Stop Sampling Early_visible": true,
+                "Stop Sampling Early_converted": false,
                 "Force full denoise": "True",
                 "Force full denoise_visible": true,
+                "Force full denoise_converted": false,
                 "Preview Type": "quick-rgb",
                 "Preview Type_visible": true,
                 "Preview Type_converted": false,
                 "Show Tensor Preview": "True",
                 "Show Tensor Preview_visible": true,
+                "Show Tensor Preview_converted": false,
                 "Disable noise generation": "False",
                 "Disable noise generation_visible": true,
+                "Disable noise generation_converted": false,
                 "Iterate seed": "False",
                 "Iterate seed_visible": true,
+                "Iterate seed_converted": false,
                 "Use latent from loop": "False",
                 "Use latent from loop_visible": true,
+                "Use latent from loop_converted": false,
                 "Denoise:": 1.0,
                 "Denoise:_visible": true,
                 "Denoise:_converted": false,
-                "Guidance Scale:": 4.0,
+                "Guidance Scale:": 6.0,
                 "Guidance Scale:_visible": true,
                 "Guidance Scale:_converted": false,
                 "_visible": true,
                 "progress_visible": true
             },
-            "op_code": 208,
+            "op_code": 216,
             "content_label_objname": "K_sampling_node"
         },
         {
             "id": 139726906419344,
             "title": "Torch Loader",
-            "pos_x": -121.25854492187526,
-            "pos_y": 291.5971679687501,
+            "pos_x": -824.539794921875,
+            "pos_y": -368.87158203124966,
             "inputs": [
                 {
                     "id": 139731165074464,
@@ -348,16 +354,17 @@
                 "Vae_visible": true,
                 "Vae_converted": false,
                 "Force Reload": "False",
-                "Force Reload_visible": true
+                "Force Reload_visible": true,
+                "Force Reload_converted": false
             },
-            "op_code": 210,
+            "op_code": 221,
             "content_label_objname": "torch_loader_node"
         },
         {
             "id": 139731165082240,
             "title": "Image Preview",
-            "pos_x": 286.40454101562517,
-            "pos_y": -722.1801757812498,
+            "pos_x": 47.420166015625114,
+            "pos_y": -617.8051757812499,
             "inputs": [
                 {
                     "id": 139726906325408,
@@ -428,14 +435,14 @@
                 "Copy to Clipboard_visible": true,
                 "Copy to Clipboard_converted": false
             },
-            "op_code": 185,
+            "op_code": 190,
             "content_label_objname": "image_output_node"
         },
         {
             "id": 140097821726976,
             "title": "Execute",
-            "pos_x": -547.1315917968741,
-            "pos_y": -719.3061523437493,
+            "pos_x": -519.3190917968742,
+            "pos_y": -610.8686523437493,
             "inputs": [
                 {
                     "id": 140097821732880,
@@ -467,92 +474,92 @@
             "content": {
                 "_visible": true
             },
-            "op_code": 183,
+            "op_code": 187,
             "content_label_objname": "exec_node"
         }
     ],
     "edges": [
         {
             "id": 139726906323104,
-            "edge_type": 2,
+            "edge_type": 3,
             "start": 139731165076768,
             "end": 139726906417040
         },
         {
             "id": 139726906322720,
-            "edge_type": 2,
+            "edge_type": 3,
             "start": 139731165077056,
             "end": 139731165080752
         },
         {
             "id": 139726906324448,
-            "edge_type": 2,
+            "edge_type": 3,
             "start": 139726906322336,
             "end": 139726906418048
         },
         {
             "id": 139726906326752,
-            "edge_type": 2,
+            "edge_type": 3,
             "start": 139726906416608,
             "end": 139731165071776
         },
         {
             "id": 139726906416848,
-            "edge_type": 2,
+            "edge_type": 3,
             "start": 139731165081616,
             "end": 139726906415792
         },
         {
             "id": 139726906418336,
-            "edge_type": 2,
+            "edge_type": 3,
             "start": 139726906325408,
             "end": 139726906416704
         },
         {
             "id": 139726906414784,
-            "edge_type": 2,
+            "edge_type": 3,
             "start": 139731165080320,
             "end": 139726906417952
         },
         {
             "id": 139726906414928,
-            "edge_type": 2,
+            "edge_type": 3,
             "start": 139731165077056,
             "end": 139731165074224
         },
         {
             "id": 140097822058448,
-            "edge_type": 2,
+            "edge_type": 3,
             "start": 139731165077248,
             "end": 139731165081952
         },
         {
             "id": 140096426282384,
-            "edge_type": 2,
+            "edge_type": 3,
             "start": 139731165081136,
             "end": 139731165076432
         },
         {
             "id": 140097822051968,
-            "edge_type": 2,
+            "edge_type": 3,
             "start": 139731165076336,
             "end": 139726906321952
         },
         {
             "id": 140096443333120,
-            "edge_type": 2,
+            "edge_type": 3,
             "start": 139726906326560,
             "end": 139726906418768
         },
         {
             "id": 140097822056720,
-            "edge_type": 2,
+            "edge_type": 3,
             "start": 139726906324832,
             "end": 139726906416800
         },
         {
             "id": 140097822052112,
-            "edge_type": 2,
+            "edge_type": 3,
             "start": 140097821721360,
             "end": 139731165074464
         }
