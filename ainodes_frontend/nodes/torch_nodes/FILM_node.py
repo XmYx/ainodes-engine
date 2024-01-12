@@ -32,6 +32,8 @@ class FILMNode(AiNode):
     content_label_objname = "FILM_node"
     category = "base/video"
     make_dirty = True
+    help_text = "Film Interpolation:\nUse Both inputs to directly interpolate\nbetween two images.\nConnect only IMG_1 for continous interpolations [deforum, animatediff, etc.]"
+    custom_input_socket_name = ["IMG_0", "IMG_1", "EXEC"]
 
     def __init__(self, scene):
         super().__init__(scene, inputs=[5,5,1], outputs=[5,1])
@@ -120,7 +122,7 @@ class FILMNode(AiNode):
             print(f"[ FILM NODE: Created {len(return_frames)} frames ]")
         if len(return_frames) > 0:
             return_frames = torch.stack(return_frames, dim=0)
-
+            print(return_frames.shape)
             return [return_frames]
         else:
             return [pixmap1]
