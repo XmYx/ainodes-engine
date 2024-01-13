@@ -1,4 +1,5 @@
 import json
+import os
 import re
 
 from functools import partial
@@ -8,7 +9,7 @@ from qtpy import QtWidgets
 
 from ainodes_frontend.base import register_node, get_next_opcode
 from ainodes_frontend.base import AiNode, CalcGraphicsNode
-from ainodes_frontend.node_engine.node_content_widget import QDMNodeContentWidget
+from ainodes_frontend.node_engine.node_content_widget import QDMNodeContentWidget, load_stylesheet
 from ainodes_frontend.nodes.deforum_nodes.deforum_data_nodes import merge_dicts
 
 #from ai_nodes.ainodes_engine_deforum_nodes.deforum_nodes.deforum_data_nodes import merge_dicts
@@ -45,6 +46,9 @@ class DeforumPromptWidget(QDMNodeContentWidget):
 
         textedit = QtWidgets.QTextEdit()
         row_layout.addWidget(textedit)
+        from ainodes_frontend import singleton as gs
+        stylesheet = load_stylesheet(os.path.join("ainodes_frontend", gs.qss))
+        textedit.setStyleSheet(stylesheet)
 
         removeButton = QtWidgets.QPushButton("Remove")
         removeButton.clicked.connect(lambda: self.remove_row(row_widget))
@@ -59,7 +63,8 @@ class DeforumPromptWidget(QDMNodeContentWidget):
 
     def deserialize(self, data, hashmap={}, restore_id:bool=True):
         #self.clear_rows()
-
+        from ainodes_frontend import singleton as gs
+        stylesheet = load_stylesheet(os.path.join("ainodes_frontend", gs.qss))
 
         for value, text in data.items():
             row_widget = QtWidgets.QWidget()
@@ -70,6 +75,10 @@ class DeforumPromptWidget(QDMNodeContentWidget):
             row_layout.addWidget(spinbox)
 
             textedit = QtWidgets.QTextEdit()
+
+
+            textedit.setStyleSheet(stylesheet)
+
             textedit.setPlainText(text.replace("\"", ""))
             row_layout.addWidget(textedit)
 

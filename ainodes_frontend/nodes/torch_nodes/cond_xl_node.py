@@ -139,7 +139,7 @@ class ConditioningXLAiNode(AiNode):
 
     custom_input_socket_name = ["CLIP", "DATA", "EXEC"]
     NodeContent_class = ConditioningXLWidget
-    dim = (400, 800)
+    dim = (400, 820)
 
     def __init__(self, scene):
         super().__init__(scene, inputs=[4,6,1], outputs=[3,6,1])

@@ -69,7 +69,7 @@ class VideoInputNode(AiNode):
 
     def __init__(self, scene):
         super().__init__(scene, inputs=[1], outputs=[5,1])
-        self.content.eval_signal.connect(self.evalImplementation)
+        # self.content.eval_signal.connect(self.evalImplementation)
 
     def initInnerClasses(self):
         self.content = VideoInputWidget(self)

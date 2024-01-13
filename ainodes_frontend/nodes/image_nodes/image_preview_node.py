@@ -38,7 +38,7 @@ class ImagePreviewWidget(QDMNodeContentWidget):
         # # Create checkboxes and store the horizontal layout
 
         self.autosave_checkbox = self.create_check_box("Autosave")
-        self.autosave_checkbox.setChecked(True)
+        #self.autosave_checkbox.setChecked(True)
 
         self.meta_checkbox = self.create_check_box("Embed Node graph in PNG")
         self.clipboard = self.create_check_box("Copy to Clipboard")

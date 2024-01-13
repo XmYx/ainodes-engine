@@ -92,7 +92,7 @@ class VideoOutputNode(AiNode):
     def __init__(self, scene):
         super().__init__(scene, inputs=[5,1], outputs=[5,1])
         self.filename = ""
-        self.content.eval_signal.connect(self.evalImplementation)
+        # self.content.eval_signal.connect(self.evalImplementation)
         pass
     def initInnerClasses(self):
         self.content = VideoOutputWidget(self)

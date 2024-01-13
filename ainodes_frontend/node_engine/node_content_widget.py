@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 """A module containing the base class for the Node's content graphical representation. It also contains an example of
 an overridden Text Widget, which can pass a notification to it's parent about being modified."""
+import os
 import re
 from typing import List
 
-from PyQt6.QtWidgets import QSpinBox, QDoubleSpinBox, QLineEdit, QComboBox, QMenu
+from PyQt6.QtWidgets import QSpinBox, QDoubleSpinBox, QLineEdit, QComboBox, QMenu, QStyle
 from qtpy.QtCore import Qt
 from qtpy.QtGui import QKeyEvent, QTextCursor
 from qtpy import QtCore, QtWidgets
@@ -12,6 +13,7 @@ from qtpy import QtGui
 from qtpy.QtWidgets import QWidget, QLabel, QVBoxLayout, QTextEdit
 
 from ainodes_frontend.node_engine.node_serializable import Serializable
+from ainodes_frontend import singleton as gs
 
 
 class CustomSlider(QtWidgets.QSlider):
@@ -214,6 +216,9 @@ class QDMNodeContentWidget(QWidget, Serializable):
                 created_widget.textChanged.connect(self.mark_node_dirty)
             elif isinstance(created_widget, QComboBox):
                 created_widget.currentIndexChanged.connect(self.mark_node_dirty)
+        self.setStyleSheet(
+            "background-color: transparent; "
+        )
     @QtCore.Slot()
     def mark_node_dirty(self, value=None):
         # print("marking")
@@ -226,13 +231,14 @@ class QDMNodeContentWidget(QWidget, Serializable):
     def initUI(self):
         """Sets up layouts and widgets to be rendered in :py:class:`~node_engine.node_graphics_node.QDMGraphicsNode` class.
         """
-        self.layout = QVBoxLayout()
-        self.layout.setContentsMargins(0,0,0,0)
-        self.setLayout(self.layout)
-
-        self.wdg_label = QLabel("Some Title")
-        self.layout.addWidget(self.wdg_label)
-        self.layout.addWidget(QDMTextEdit("foo"))
+        pass
+        # self.layout = QVBoxLayout()
+        # self.layout.setContentsMargins(0,0,0,0)
+        # self.setLayout(self.layout)
+        #
+        # self.wdg_label = QLabel("Some Title")
+        # self.layout.addWidget(self.wdg_label)
+        # self.layout.addWidget(QDMTextEdit("foo"))
     def convertWidgetToNodeInput(self, widget):
         """Converts a given widget to a node input."""
         # Step 1: Hide the widget
@@ -345,6 +351,8 @@ class QDMNodeContentWidget(QWidget, Serializable):
             QtWidgets.QComboBox: A combo box widget.
         """
         combo_box = CustomComboBox()
+        #combo_box.setStyleSheet(gs.qss)
+
         combo_box.addItems(items)
         combo_box.setObjectName(label_text)
         if object_name:
@@ -485,6 +493,9 @@ class QDMNodeContentWidget(QWidget, Serializable):
             QtWidgets.QSpinBox: A spin box widget.
         """
         spin_box = CustomSpinBox()
+
+        # spin_box.setStyleSheet("background:black")
+
         spin_box.setMinimum(min_val)
         spin_box.setMaximum(max_val)
         spin_box.setValue(default_val)
@@ -536,7 +547,7 @@ class QDMNodeContentWidget(QWidget, Serializable):
         layout = QtWidgets.QHBoxLayout()
         layout.addWidget(label,1)
         layout.addWidget(slider,2)
-        slider.layout = layout
+        # slider.layout = layout
         self.widget_list.append(slider)
         if spawn:
             setattr(self, spawn, slider)
@@ -594,14 +605,29 @@ class QDMNodeContentWidget(QWidget, Serializable):
         check_box = QtWidgets.QCheckBox(label_text)
         check_box.setChecked(checked)
         check_box.setObjectName(label_text)
+
+        # check_box.setStyleSheet("""
+        #     QCheckBox::indicator {
+        #         border: 2px solid black;
+        #         background: transparent;
+        #         width: 20px;
+        #         height: 20px;
+        #     }
+        #     QCheckBox::indicator:checked {
+        #         background-color: white;
+        #         border: 2px solid black;
+        #         image: url('ainodes-frontend/icons/mul.png');
+        #     }
+        # """)
+
         if object_name:
             check_box.setObjectName(object_name)
         if accessible_name is not None:
             check_box.setAccessibleName(accessible_name)
-        palette = QtGui.QPalette()
-        palette.setColor(QtGui.QPalette.WindowText, QtGui.QColor("white"))
-        palette.setColor(QtGui.QPalette.Disabled, QtGui.QPalette.WindowText, QtGui.QColor("black"))
-        check_box.setPalette(palette)
+        # palette = QtGui.QPalette()
+        # palette.setColor(QtGui.QPalette.WindowText, QtGui.QColor("white"))
+        # palette.setColor(QtGui.QPalette.Disabled, QtGui.QPalette.WindowText, QtGui.QColor("black"))
+        # check_box.setPalette(palette)
         self.widget_list.append(check_box)
         if spawn:
 
@@ -694,48 +720,53 @@ class QDMNodeContentWidget(QWidget, Serializable):
         The layout is a QVBoxLayout with custom margins and will be set as the layout for the widget.
         If grid parameter is provided, a QGridLayout with grid number of columns will be created.
         """
+        stylesheet = load_stylesheet(os.path.join("ainodes_frontend", gs.qss))
 
         if self.node.use_gpu:
-            from ainodes_frontend import singleton as gs
             self.create_combo_box(gs.available_gpus, "Select GPU", spawn="gpu_id")
 
-        self.main_layout = QtWidgets.QVBoxLayout(self)
-        self.main_layout.setContentsMargins(5, 5, 5, 5)
+        if len(self.widget_list) > 0:
+            self.main_layout = QtWidgets.QVBoxLayout(self)
+            self.main_layout.setContentsMargins(5, 5, 5, 5)
+            if grid:
+                # Create a QGridLayout with the specified number of columns
+                self.grid_layout = QtWidgets.QGridLayout()
+                self.grid_layout.setSpacing(10)  # Adjust the spacing between items
 
-        if grid:
-            # Create a QGridLayout with the specified number of columns
-            self.grid_layout = QtWidgets.QGridLayout()
-            self.grid_layout.setSpacing(10)  # Adjust the spacing between items
+                # Add widgets to the grid layout
+                for i, item in enumerate(self.widget_list):
+                    row = i // grid
+                    column = i % grid
+                    if isinstance(item, QtWidgets.QWidget):
+                        try:
+                            item.setStyleSheet(stylesheet)
+                        except:
+                            pass
 
-            # Add widgets to the grid layout
-            for i, item in enumerate(self.widget_list):
-                row = i // grid
-                column = i % grid
-                if isinstance(item, QtWidgets.QWidget):
-                    item.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
+                        item.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
 
-                    if isinstance(item, QtWidgets.QComboBox) or isinstance(item, QtWidgets.QLineEdit) or isinstance(item, QtWidgets.QSpinBox) or isinstance(item, QtWidgets.QDoubleSpinBox) or isinstance(item, QtWidgets.QSlider):
-                        self.grid_layout.addLayout(item.layout, row, column)
-                    else:
-                        item.layout = None
-                        self.grid_layout.addWidget(item, row, column)
-                elif isinstance(item, QtWidgets.QLayout):
-                    self.grid_layout.addLayout(item, row, column)
+                        if isinstance(item, QtWidgets.QComboBox) or isinstance(item, QtWidgets.QLineEdit) or isinstance(item, QtWidgets.QSpinBox) or isinstance(item, QtWidgets.QDoubleSpinBox) or isinstance(item, QtWidgets.QSlider):
+                            self.grid_layout.addLayout(item.layout, row, column)
+                        else:
+                            item.layout = None
+                            self.grid_layout.addWidget(item, row, column)
+                    elif isinstance(item, QtWidgets.QLayout):
+                        self.grid_layout.addLayout(item, row, column)
 
-            self.main_layout.addLayout(self.grid_layout)
-        else:
-            # Add items to the main layout without a grid
-            for item in self.widget_list:
-                if isinstance(item, QtWidgets.QLayout):
-                    self.main_layout.addLayout(item)
-                elif isinstance(item, QtWidgets.QWidget):
-                    self.main_layout.addWidget(item)
+                self.main_layout.addLayout(self.grid_layout)
+            else:
+                # Add items to the main layout without a grid
+                for item in self.widget_list:
+                    if isinstance(item, QtWidgets.QLayout):
+                        self.main_layout.addLayout(item)
+                    elif isinstance(item, QtWidgets.QWidget):
+                        self.main_layout.addWidget(item)
 
-        self.setLayout(self.main_layout)
+            self.setLayout(self.main_layout)
 
     def wheelEvent(self, event: QtGui.QWheelEvent):
-        pass
-        #event.ignore()
+        #pass
+        event.ignore()
         #print("IGNORE IN CONTENT WIDGET")
 
 
@@ -765,3 +796,7 @@ class QDMTextEdit(QTextEdit):
         """
         self.parentWidget().setEditingFlag(False)
         super().focusOutEvent(event)
+def load_stylesheet(file_path):
+    """ Load the contents of the QSS file at the given path. """
+    with open(file_path, "r") as file:
+        return file.read()
