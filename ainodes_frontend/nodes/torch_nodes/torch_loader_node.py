@@ -105,7 +105,7 @@ def load_checkpoint_guess_config(ckpt_path, output_vae=True, output_clip=True, o
         vae_sd = comfy.utils.state_dict_prefix_replace(sd, {"first_stage_model.": ""}, filter_keys=True)
         vae_sd = model_config.process_vae_state_dict(vae_sd)
         gs.models[ckpt_path]["vae"] = VAE(sd=vae_sd, device=torch.device("cuda"), dtype=torch.bfloat16)
-        gs.models[ckpt_path]["vae"].first_stage_model.to(torch.bfloat16)
+        gs.models[ckpt_path]["vae"].first_stage_model.bfloat16()
         gs.models[ckpt_path]["vae"].device = gs.device
         # gs.models[ckpt_path]["vae"].vae_dtype = torch.bfloat16
 
@@ -139,18 +139,32 @@ def load_checkpoint_guess_config(ckpt_path, output_vae=True, output_clip=True, o
     def load_model():
         #print("Load HiJacked")
         pass
+    def decode_tiled_(samples, tile_x=64, tile_y=64, overlap = 16):
+        steps = samples.shape[0] * comfy.utils.get_tiled_scale_steps(samples.shape[3], samples.shape[2], tile_x, tile_y, overlap)
+        steps += samples.shape[0] * comfy.utils.get_tiled_scale_steps(samples.shape[3], samples.shape[2], tile_x // 2, tile_y * 2, overlap)
+        steps += samples.shape[0] * comfy.utils.get_tiled_scale_steps(samples.shape[3], samples.shape[2], tile_x * 2, tile_y // 2, overlap)
+        pbar = comfy.utils.ProgressBar(steps)
+        gs.models[ckpt_path]["vae"].first_stage_model.bfloat16()
+        decode_fn = lambda a: (gs.models[ckpt_path]["vae"].first_stage_model.decode(a.to(gs.models[ckpt_path]["vae"].vae_dtype).to(gs.models[ckpt_path]["vae"].device)) + 1.0).float()
+        output = torch.clamp((
+            (comfy.utils.tiled_scale(samples, decode_fn, tile_x // 2, tile_y * 2, overlap, upscale_amount = gs.models[ckpt_path]["vae"].downscale_ratio, output_device=gs.models[ckpt_path]["vae"].output_device, pbar = pbar) +
+            comfy.utils.tiled_scale(samples, decode_fn, tile_x * 2, tile_y // 2, overlap, upscale_amount = gs.models[ckpt_path]["vae"].downscale_ratio, output_device=gs.models[ckpt_path]["vae"].output_device, pbar = pbar) +
+             comfy.utils.tiled_scale(samples, decode_fn, tile_x, tile_y, overlap, upscale_amount = gs.models[ckpt_path]["vae"].downscale_ratio, output_device=gs.models[ckpt_path]["vae"].output_device, pbar = pbar))
+            / 3.0) / 2.0, min=0.0, max=1.0)
+        return output
 
     gs.models[ckpt_path]["clip"].load_model = load_model
     gs.models[ckpt_path]["vae"].load_model = load_model
+    gs.models[ckpt_path]["vae"].decode_tiled_ = decode_tiled_
     #gs.models[ckpt_path]["vae"].encode = replace_fn(gs.models[ckpt_path]["vae"], encode)
     gs.models[ckpt_path]["model"].load_model = load_model
 
     if gs.vram_state != "low":
-        gs.models[ckpt_path]["vae"].first_stage_model.cuda()
+        gs.models[ckpt_path]["vae"].first_stage_model.bfloat16().cuda()
         gs.models[ckpt_path]["clip"].cond_stage_model.half().cuda()
         gs.models[ckpt_path]["model"].model.half().cuda()
     else:
-        gs.models[ckpt_path]["vae"].first_stage_model.cpu()
+        gs.models[ckpt_path]["vae"].first_stage_model.bfloat16().cpu()
         gs.models[ckpt_path]["clip"].cond_stage_model.half().cpu()
         gs.models[ckpt_path]["model"].model.half().cpu()
     torch_gc()
