@@ -49,7 +49,7 @@ from ainodes_frontend.base.import_utils import update_all_nodes_req, import_node
 # if "Linux" in platform.platform():
 #     import subprocess
 #     subprocess.check_call(["pip", "install", "triton==2.0.0"])
-if "Linux" in platform.platform():
+if "linux" in platform.platform().lower():
 
     # try:
     #     try:
