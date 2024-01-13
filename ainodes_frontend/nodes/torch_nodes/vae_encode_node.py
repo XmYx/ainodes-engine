@@ -52,7 +52,7 @@ class VAEEncodeNode(AiNode):
 
         with torch.inference_mode():
             offload_to_device(vae, gs.device)
-            t = vae.encode_tiled_(latent.half(), tile_x=tile_x, tile_y=tile_y, overlap=overlap)
+            t = vae.encode_tiled_(latent.to(torch.bfloat16), tile_x=tile_x, tile_y=tile_y, overlap=overlap)
         if gs.vram_state in ["low", "medium"]:
             offload_to_device(vae, "cpu")
         #t = vae.encode(latent[:,:,:,:3])

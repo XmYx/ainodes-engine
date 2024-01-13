@@ -284,8 +284,9 @@ class KSamplerNode(AiNode):
             vae.first_stage_model.float()
             samples = samples.float().to(gs.device)
         else:
-            vae.first_stage_model.half()
-            samples = samples.half().to(gs.device)
+            vae.first_stage_model.bfloat16()
+            samples = samples.to(gs.device)
+            samples = samples.to(torch.bfloat16)
 
 
         output = vae.decode_tiled_(samples, tile_x, tile_y, overlap)

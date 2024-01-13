@@ -1,6 +1,7 @@
 import os
 import platform
 
+import torch
 from qtpy import QtCore, QtGui
 from qtpy import QtWidgets
 
@@ -103,9 +104,10 @@ def load_checkpoint_guess_config(ckpt_path, output_vae=True, output_clip=True, o
     if output_vae:
         vae_sd = comfy.utils.state_dict_prefix_replace(sd, {"first_stage_model.": ""}, filter_keys=True)
         vae_sd = model_config.process_vae_state_dict(vae_sd)
-        gs.models[ckpt_path]["vae"] = VAE(sd=vae_sd, device=torch.device("cpu"))
-
+        gs.models[ckpt_path]["vae"] = VAE(sd=vae_sd, device=torch.device("cuda"), dtype=torch.bfloat16)
+        gs.models[ckpt_path]["vae"].first_stage_model.to(torch.bfloat16)
         gs.models[ckpt_path]["vae"].device = gs.device
+        # gs.models[ckpt_path]["vae"].vae_dtype = torch.bfloat16
 
 
     if output_clip:
@@ -144,11 +146,11 @@ def load_checkpoint_guess_config(ckpt_path, output_vae=True, output_clip=True, o
     gs.models[ckpt_path]["model"].load_model = load_model
 
     if gs.vram_state != "low":
-        gs.models[ckpt_path]["vae"].first_stage_model.half().cuda()
+        gs.models[ckpt_path]["vae"].first_stage_model.cuda()
         gs.models[ckpt_path]["clip"].cond_stage_model.half().cuda()
         gs.models[ckpt_path]["model"].model.half().cuda()
     else:
-        gs.models[ckpt_path]["vae"].first_stage_model.half().cpu()
+        gs.models[ckpt_path]["vae"].first_stage_model.cpu()
         gs.models[ckpt_path]["clip"].cond_stage_model.half().cpu()
         gs.models[ckpt_path]["model"].model.half().cpu()
     torch_gc()
@@ -337,7 +339,7 @@ class TorchLoaderNode(AiNode):
         # gs.models["sd"].first_stage_model = VAE(ckpt_path=path)
         sd = comfy.utils.load_torch_file(path)
         vae = VAE(sd=sd)
-        vae.first_stage_model.half().cuda()
+        vae.first_stage_model.bfloat16().cuda()
         print("VAE Loaded", file)
         return vae
         # if self.loaded_sd != model_name or self.content.force_reload.isChecked() == True:
