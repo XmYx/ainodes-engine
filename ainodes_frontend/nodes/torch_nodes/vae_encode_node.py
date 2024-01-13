@@ -11,7 +11,8 @@ import openai
 from ainodes_frontend.base import register_node, get_next_opcode
 from ainodes_frontend.base import AiNode
 from ainodes_frontend.node_engine.node_content_widget import QDMNodeContentWidget
-
+from backend_helpers.torch_helpers.vram_management import offload_to_device
+from ainodes_frontend import singleton as gs
 VAE_ENCODE = get_next_opcode()
 
 class VAEEncodeWidget(QDMNodeContentWidget):
@@ -50,8 +51,10 @@ class VAEEncodeNode(AiNode):
         latent = remove_fourth_channel(latent)
 
         with torch.inference_mode():
+            offload_to_device(vae, gs.device)
             t = vae.encode_tiled_(latent.half(), tile_x=tile_x, tile_y=tile_y, overlap=overlap)
-
+        if gs.vram_state in ["low", "medium"]:
+            offload_to_device(vae, "cpu")
         #t = vae.encode(latent[:,:,:,:3])
 
 
