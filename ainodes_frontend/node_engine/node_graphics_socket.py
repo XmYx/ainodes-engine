@@ -133,7 +133,13 @@ class QDMGraphicsSocket(QGraphicsItem):
             #painter.setFont(font)
             #text_width = painter.fontMetrics().width(text) * 1.13
             #text_height = painter.fontMetrics().height() - 29
-            text_width = 71.2
+
+            # print(painter.fontMetrics().width(f"{self.socket.name}"))
+
+            text_width = 75
+            proposed_width = painter.fontMetrics().width(f"{self.socket.name}")
+            if proposed_width > text_width:
+                text_width = proposed_width
             text_height = -12
             if self.socket.is_input:
                 painter.drawEllipse(-self.radius - 15, -self.radius, 2 * self.radius, 2 * self.radius)

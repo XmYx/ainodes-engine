@@ -79,7 +79,7 @@ class KSamplerNode(AiNode):
     category = "base/sampling"
 
     NodeContent_class = KSamplerWidget
-    #dim = (256, 800)
+    # dim = (340, 900)
 
     make_dirty = True
 
@@ -94,10 +94,10 @@ class KSamplerNode(AiNode):
         self.content.progress_signal.connect(self.setProgress)
         self.content.preview_signal.connect(self.handle_preview)
         self.device = get_torch_device()
-        self.grNode.height = 800
+        self.grNode.height = 900
         self.grNode.width = 320
-        self.content.setMinimumWidth(316)
-        self.content.setMinimumHeight(500)
+        self.content.setMinimumWidth(310)
+        self.content.setMinimumHeight(600)
         self.update_all_sockets()
         self.taesd = None
         self.decoder_version = ""

@@ -133,9 +133,9 @@ class APIHandler(QObject):
 class ConditioningXLAiNode(AiNode):
     icon = "ainodes_frontend/icons/base_nodes/v2/conditioning.png"
     op_code = OP_NODE_CONDITIONING_XL
-    op_title = "Conditioning"
+    op_title = "Conditioning XL"
     content_label_objname = "cond_ainode_xl"
-    category = "aiNodes Base/Conditioning"
+    category = "base/sampling"
 
     custom_input_socket_name = ["CLIP", "DATA", "EXEC"]
     NodeContent_class = ConditioningXLWidget
