@@ -101,6 +101,7 @@ class KSamplerNode(AiNode):
         self.update_all_sockets()
         self.taesd = None
         self.decoder_version = ""
+        self.last_seed = None
     #     # Create a worker object
     # def initInnerClasses(self):
     #     self.content = KSamplerWidget(self)
@@ -133,34 +134,6 @@ class KSamplerNode(AiNode):
                 [-0.3112, -0.2359, -0.2076]
             ], dtype=torch.float16, device="cuda")
 
-    def evalImplementation_thread_(self):
-        from nodes import common_ksampler as ksampler
-
-        model = self.getInputData(2)
-
-        seed = self.content.seed.text()
-        try:
-            seed = int(seed)
-        except:
-            seed = get_fixed_seed('')
-        if self.content.iterate_seed.isChecked() == True:
-            self.content.seed_signal.emit()
-            seed += 1
-        steps = self.content.steps.value()
-        cfg = self.content.guidance_scale.value()
-        sampler_name = self.content.sampler.currentText()
-        scheduler = self.content.schedulers.currentText()
-        positive = self.getInputData(6)
-        negative = self.getInputData(5)
-        latent_image = self.getInputData(4)
-        denoise = self.content.denoise.value()
-
-        print(model, seed, steps, cfg, sampler_name, scheduler, positive, negative, latent_image, denoise)
-
-        return [ksampler(model, seed, steps, cfg, sampler_name, scheduler, positive, negative, latent_image,
-                               denoise=denoise)]
-
-    #@QtCore.Slot()
 
 
     def evalImplementation_thread(self, cond_override = None, args = None, latent_override=None):
@@ -196,6 +169,8 @@ class KSamplerNode(AiNode):
         except:
             seed = get_fixed_seed('')
         if self.content.iterate_seed.isChecked() == True:
+            if self.last_seed:
+                seed = (int(self.last_seed))
             self.content.seed_signal.emit()
             seed += 1
 
@@ -255,8 +230,7 @@ class KSamplerNode(AiNode):
                     self.preview_mode = "quick-rgb"
 
             print(f"[ SEED: {seed} LAST STEP:{last_step} DENOISE:{denoise}]")
-            #from nodes import common_ksampler as ksampler
-
+            self.last_seed = seed
             if gs.vram_state in ["low", "medium"]:
                 offload_to_device(vae, "cpu")
             offload_to_device(unet, gs.device)
@@ -279,25 +253,7 @@ class KSamplerNode(AiNode):
             if gs.vram_state == "low":
                 offload_to_device(unet, "cpu")
                                      # callback=self.callback)
-            # sample = common_ksampler(model=unet,
-            #                          seed=seed,
-            #                          steps=steps,
-            #                          cfg=cfg,
-            #                          sampler_name=sampler_name,
-            #                          scheduler=scheduler,
-            #                          positive=cond,
-            #                          negative=n_cond,
-            #                          latent=latent,
-            #                          denoise=denoise,
-            #                          disable_noise=self.content.disable_noise.isChecked(),
-            #                          start_step=start_step,
-            #                          last_step=steps,
-            #                          force_full_denoise=force_full_denoise,
-            #                          callback=self.callback)
-            # from nodes import common_ksampler as ksampler
-            #
-            # sample = ksampler(unet, seed, steps, cfg, sampler_name, scheduler, cond, n_cond, latent,
-            #          denoise=denoise)
+
             if vae:
 
                 # if gs.vram_state in ["low", "medium"]:
@@ -403,7 +359,8 @@ class KSamplerNode(AiNode):
 
 
     def setSeed(self):
-        self.content.seed.setText(str(self.seed))
+        if self.last_seed:
+            self.content.seed.setText(str(self.last_seed))
 
     def setProgress(self, progress=None):
 
