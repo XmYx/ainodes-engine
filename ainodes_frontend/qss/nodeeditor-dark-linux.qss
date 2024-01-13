@@ -1,7 +1,7 @@
 CustomSlider, CustomSpinBox, CustomComboBox, CustomCheckBox, CustomDoubleSpinBox, QDoubleSpinBox, QSpinBox {
-    background-color: #111111;  /* Very dark background */
-    color: #FFFFFF;             /* White text */
-    font-weight: bold;          /* Bold font */
+    background-color: #111111;
+    color: #FFFFFF;
+    font-weight: bold;
 }
 QCheckBox::indicator {
 	border: 2px solid black;
@@ -18,7 +18,6 @@ QCheckBox::indicator:checked {
 CustomTextEdit, CustomLineEdit, QLineEdit {
     background-color: black;  /* Very dark background */
     color: #FFFFFF;             /* White text */
-    font-weight: bold;          /* Bold font */
     border: 1px solid #333333;  /* Optional: adding a subtle border */
     padding: 2px;               /* Optional: padding inside the text edit */
 }
@@ -26,9 +25,7 @@ CustomTextEdit, CustomLineEdit, QLineEdit {
 QTextEdit {
     background-color: black;  /* Very dark background */
     color: #FFFFFF;             /* White text */
-    font-weight: bold;          /* Bold font */
 }
-
 
 QFrame,QDialog,QMainWindow{background:$black}
 QSplitter,QMainWindow::separator{background:#474747}
