@@ -140,8 +140,10 @@ def load_settings(file_path=None):
         settings.load_from_dict(settings_dict)
         #save_settings(settings)
     gs.prefs = settings
-
-    gs.vram_state = gs.prefs.vram_state["selected"]
+    try:
+        gs.vram_state = gs.prefs.vram_state["selected"]
+    except:
+        gs.vram_state = "low"
 
 
 def init_globals():
