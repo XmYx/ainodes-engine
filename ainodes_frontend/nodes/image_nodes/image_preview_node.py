@@ -167,7 +167,11 @@ class ImagePreviewNode(AiNode):
                     filename = f"{directory}/{timestamp}.png"
 
                 print("Saving Image", filename)
-                self.save_image(image, filename)
+                if image.shape[0] > 1:
+                    print("Only saving last image")
+                    self.save_image(image[-1].unsqueeze(0).detach(), filename)
+                else:
+                    self.save_image(image.detach(), filename)
             return [image]
         else:
             return [None]

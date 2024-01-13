@@ -1,4 +1,10 @@
-QFrame,QDialog,QMainWindow{background:#474747}
+
+$red = #E01B24;
+$black = #241F31;
+
+
+
+QFrame,QDialog,QMainWindow{background:$black}
 QSplitter,QMainWindow::separator{background:#474747}
 QStatusBar{background:#474747;color:#ccc}
 QTabWidget{border:0}
@@ -42,14 +48,14 @@ QLineEdit,QTextEdit {
 }
 
 QLineEdit:selected,QTextEdit:selected {
-    background-color: #e6e6e6;
+    background-color: $black;
     color: #5a5a5a;
     selection-background-color: #5a5a5a;
     selection-color: #e6e6e6;
 }
 
 QLineEdit:!selected,QTextEdit:!selected {
-    background-color: #5a5a5a;
+    background-color: $black;
     color: #e6e6e6;
 }
 QLineEdit{border:1px solid #3a3a3a;border-radius:2px;padding:1px 2px}
@@ -65,7 +71,7 @@ QComboBox {
 }
 QComboBox QListView
 {
-background-color: #666;
+background-color: $black;
 }
 
 QTreeWidget {

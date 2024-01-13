@@ -1,5 +1,11 @@
-QFrame,QDialog,QMainWindow{background:#474747}
-QSplitter,QMainWindow::separator{background:#474747}
+
+$red = #E01B24;
+$black = #241F31;
+
+
+
+QFrame,QDialog,QMainWindow{background:$black}
+QSplitter,QMainWindow::separator{background:$black}
 QStatusBar{background:#474747;color:#ccc}
 QTabWidget{border:0}
 QTabBar{background:#474747;color:#ccc}
