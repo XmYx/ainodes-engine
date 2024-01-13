@@ -152,10 +152,23 @@ def load_checkpoint_guess_config(ckpt_path, output_vae=True, output_clip=True, o
              comfy.utils.tiled_scale(samples, decode_fn, tile_x, tile_y, overlap, upscale_amount = gs.models[ckpt_path]["vae"].downscale_ratio, output_device=gs.models[ckpt_path]["vae"].output_device, pbar = pbar))
             / 3.0) / 2.0, min=0.0, max=1.0)
         return output
+    def encode_tiled_(pixel_samples, tile_x=512, tile_y=512, overlap = 64):
+        steps = pixel_samples.shape[0] * comfy.utils.get_tiled_scale_steps(pixel_samples.shape[3], pixel_samples.shape[2], tile_x, tile_y, overlap)
+        steps += pixel_samples.shape[0] * comfy.utils.get_tiled_scale_steps(pixel_samples.shape[3], pixel_samples.shape[2], tile_x // 2, tile_y * 2, overlap)
+        steps += pixel_samples.shape[0] * comfy.utils.get_tiled_scale_steps(pixel_samples.shape[3], pixel_samples.shape[2], tile_x * 2, tile_y // 2, overlap)
+        pbar = comfy.utils.ProgressBar(steps)
+        gs.models[ckpt_path]["vae"].first_stage_model.bfloat16()
+        encode_fn = lambda a: gs.models[ckpt_path]["vae"].first_stage_model.encode((2. * a - 1.).to(gs.models[ckpt_path]["vae"].vae_dtype).to(gs.models[ckpt_path]["vae"].device)).float()
+        samples = comfy.utils.tiled_scale(pixel_samples, encode_fn, tile_x, tile_y, overlap, upscale_amount = (1/gs.models[ckpt_path]["vae"].downscale_ratio), out_channels=gs.models[ckpt_path]["vae"].latent_channels, output_device=gs.models[ckpt_path]["vae"].output_device, pbar=pbar)
+        samples += comfy.utils.tiled_scale(pixel_samples, encode_fn, tile_x * 2, tile_y // 2, overlap, upscale_amount = (1/gs.models[ckpt_path]["vae"].downscale_ratio), out_channels=gs.models[ckpt_path]["vae"].latent_channels, output_device=gs.models[ckpt_path]["vae"].output_device, pbar=pbar)
+        samples += comfy.utils.tiled_scale(pixel_samples, encode_fn, tile_x // 2, tile_y * 2, overlap, upscale_amount = (1/gs.models[ckpt_path]["vae"].downscale_ratio), out_channels=gs.models[ckpt_path]["vae"].latent_channels, output_device=gs.models[ckpt_path]["vae"].output_device, pbar=pbar)
+        samples /= 3.0
+        return samples
 
     gs.models[ckpt_path]["clip"].load_model = load_model
     gs.models[ckpt_path]["vae"].load_model = load_model
     gs.models[ckpt_path]["vae"].decode_tiled_ = decode_tiled_
+    gs.models[ckpt_path]["vae"].encode_tiled_ = encode_tiled_
     #gs.models[ckpt_path]["vae"].encode = replace_fn(gs.models[ckpt_path]["vae"], encode)
     gs.models[ckpt_path]["model"].load_model = load_model
 
