@@ -173,8 +173,6 @@ models/other
 # vscode
 .vscode
 
-
-
 .ignore/
 .tests/
 src/python/
@@ -192,6 +190,7 @@ temp/
 *._pth
 
 config/user/
+config/user/settings.yaml
 config/cache.json
 
 web/
