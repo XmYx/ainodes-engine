@@ -142,7 +142,7 @@ class ConditioningXLAiNode(AiNode):
     dim = (400, 800)
 
     def __init__(self, scene):
-        super().__init__(scene, inputs=[4,6,1], outputs=[6,3,1])
+        super().__init__(scene, inputs=[4,6,1], outputs=[3,6,1])
         self.content.button.clicked.connect(self.evalImplementation)
         self.content.set_embeds.clicked.connect(self.show_embeds)
         self.embed_dict = []
@@ -156,30 +156,7 @@ class ConditioningXLAiNode(AiNode):
         else:
             self.context = torch.autocast(gs.device.type)
 
-        # self.content.eval_signal.connect(self.evalImplementation)
-        # Create a worker object
-    # def initInnerClasses(self):
-    #     self.content = ConditioningXLWidget(self)
-    #     self.grNode = CalcGraphicsNode(self)
-    #     self.grNode.icon = self.icon
-    #     self.grNode.thumbnail = QtGui.QImage(self.grNode.icon).scaled(64, 64, QtCore.Qt.KeepAspectRatio)
-    #
-    #     self.grNode.height = 800
-    #     self.grNode.width = 320
-    #     self.content.setMinimumHeight(600)
-    #     self.content.setMinimumWidth(320)
-    #     self.content.button.clicked.connect(self.evalImplementation)
-    #     self.content.set_embeds.clicked.connect(self.show_embeds)
-    #     self.embed_dict = []
-    #     self.apihandler = APIHandler()
-    #     self.apihandler.response_received.connect(self.handle_response)
-    #     self.string = ""
-    #     self.clip_skip = self.content.skip.value()
-    #     self.device = gs.device
-    #     if self.device in [torch.device('mps'), torch.device('cpu')]:
-    #         self.context = contextlib.nullcontext()
-    #     else:
-    #         self.context = torch.autocast(gs.device.type)
+
 
 
     def show_embeds(self):
@@ -284,35 +261,6 @@ class ConditioningXLAiNode(AiNode):
                 string = f'{string} embedding:{item["embed"]["word"]}'
         self.string = string
 
-    def get_conditioning_(self, prompt="", clip=None, progress_callback=None):
-
-        """if gs.loaded_models["loaded"] == []:
-            for node in self.scene.nodes:
-                if isinstance(node, TorchLoaderNode):
-                    node.evalImplementation()
-                    #print("Node found")"""
-
-
-
-        with self.context:
-            with torch.inference_mode():
-
-
-                clip_skip = self.content.skip.value()
-                if self.clip_skip != clip_skip or clip.layer_idx != clip_skip:
-                    clip.layer_idx = clip_skip
-                    clip.clip_layer(clip_skip)
-                    self.clip_skip = clip_skip
-
-                tokens = clip.tokenize(prompt)
-                cond, pooled = clip.encode_from_tokens(tokens, return_pooled=True)
-
-
-                return {"conds":[[cond, {"pooled_output": pooled}]]}
-
-                # c = clip.encode(prompt)
-                # uc = {}
-                # return {"conds":[[c, uc]]}
     def get_conditioning(self,
                  text_g:str="",
                  text_l:str="",

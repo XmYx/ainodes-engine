@@ -118,7 +118,9 @@ class AiNode(Node):
                            4: PIPE/MODEL
                            5: IMAGE
                            6: DATA
-                           (4 is not used yet)
+                           7: STRING
+                           8: INT
+                           9: FLOAT
                            Defaults to [2,2].
              outputs (list): A list of output sockets, with values representing their types.
                            1: EXEC
@@ -127,7 +129,9 @@ class AiNode(Node):
                            4: PIPE/MODEL
                            5: IMAGE
                            6: DATA
-                           (4 is not used yet)
+                           7: STRING
+                           8: INT
+                           9: FLOAT
                            Defaults to [1].
          """
         super().__init__(scene, self.__class__.op_title, inputs, outputs)
@@ -140,6 +144,7 @@ class AiNode(Node):
         self.busy = False
         self.init_done = None
         self.exec_port = len(self.outputs) - 1
+        self.worker = None
     def initInnerClasses(self):
         self._output_values = {}
         node_content_class = self.getNodeContentClass()
@@ -237,7 +242,10 @@ class AiNode(Node):
 
     def getInputData(self, index=0, origin_index=0):
         """
-        Get the data from the connected input socket specified by 'index'.
+        Retrieve data from a connected input socket.
+
+        Sockets are numbered from the bottom of the node, starting at 0.
+        For example, in a node with 3 inputs, the bottom-most socket is 0, and the top-most is 2.
 
         :param index: The index of the input socket to get data from.
         :type index: int
@@ -290,38 +298,19 @@ class AiNode(Node):
 
     ##@QtCore.Slot()
     def evalImplementation(self, index=0, *args, **kwargs):
-        """if gs.should_run:
-            if not self.busy:
-                self.busy = True
-                thread = WorkerThread(target=self.evalImplementationThreadHandler,
-                                      on_finished=self.onWorkerFinished)
-                thread.start()
-            else:
-                return
-        else:
-            gs.should_run = True
-            return"""
+
         if gs.should_run:
             if not self.busy:
                 self.busy = True
-                worker = Worker(self.evalImplementationThreadHandler)
-                worker.signals.result.connect(self.onWorkerFinished)
-                self.scene.threadpool.start(worker)
+                self.worker = Worker(self.evalImplementationThreadHandler)
+                self.worker.signals.result.connect(self.onWorkerFinished)
+                #self.worker.signals.interrupt.connect(self.stop_worker)
+                self.scene.threadpool.start(self.worker)
                 return
             else:
                 return
         else:
             return
-
-        """if self.busy == False:
-            self.busy = True
-            worker = Worker(self.evalImplementation_thread)
-            worker.signals.result.connect(self.onWorkerFinished)
-            #self.worker.setAutoDelete(True)
-            self.scene.threadpool.start(worker)
-            return
-        else:
-            return"""
 
     def evalImplementationThreadHandler(self, *args, **kwargs):
         try:
@@ -330,8 +319,14 @@ class AiNode(Node):
         except:
             handle_ainodes_exception()
             return None
-
+    def stop_worker(self):
+        self.worker.stop_fn()
     def evalImplementation_thread(self):
+        """
+        The core evaluation logic of the node, to be run in a separate thread.
+        This method should implement the processing logic of the node,
+        which is executed when the node is evaluated.
+        """
         return None
 
     def clearOutputs(self):
@@ -340,7 +335,15 @@ class AiNode(Node):
             self.setOutput(port, None)
 
     def onWorkerFinished(self, result, exec=True):
+        """
+        Callback method that is called when the worker thread has finished processing.
 
+        The 'result' argument should always be a list, as this method sets the node's outputs based on this list.
+        Each element in the list corresponds to an output socket, in the order of the sockets.
+
+        :param result: The result data from the worker thread, expected to be a list.
+        :param exec: Flag to indicate if subsequent connected nodes should be triggered for execution.
+        """
         self.busy = False
         if result is not None and isinstance(result, list):
 
@@ -475,7 +478,7 @@ class AiNode(Node):
          Remove the node, clearing the values in its output sockets.
          """
         x = 0
-
+        self.clearOutputs()
         self.values = None
         self.values = {}
         super().remove()

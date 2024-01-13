@@ -6,8 +6,8 @@
         {
             "id": 139729489042240,
             "title": "EmptyLatentImage",
-            "pos_x": -841.1579589843747,
-            "pos_y": 684.9916992187506,
+            "pos_x": -462.0329589843748,
+            "pos_y": 888.4916992187505,
             "inputs": [
                 {
                     "id": 139726906321952,
@@ -51,108 +51,10 @@
             "content_label_objname": "emptylatentimage"
         },
         {
-            "id": 139731165077872,
-            "title": "CLIPTextEncode",
-            "pos_x": -849.3298339843751,
-            "pos_y": 394.49169921875057,
-            "inputs": [
-                {
-                    "id": 139731165074224,
-                    "index": 0,
-                    "multi_edges": true,
-                    "position": 3,
-                    "socket_type": 4,
-                    "name": "CLIP"
-                },
-                {
-                    "id": 139731165076432,
-                    "index": 1,
-                    "multi_edges": false,
-                    "position": 3,
-                    "socket_type": 1,
-                    "name": "EXEC"
-                }
-            ],
-            "outputs": [
-                {
-                    "id": 139731165076768,
-                    "index": 0,
-                    "multi_edges": true,
-                    "position": 6,
-                    "socket_type": 3,
-                    "name": "CONDITIONING"
-                },
-                {
-                    "id": 139731165076336,
-                    "index": 1,
-                    "multi_edges": false,
-                    "position": 6,
-                    "socket_type": 1,
-                    "name": "EXEC"
-                }
-            ],
-            "content": {
-                "text": " ",
-                "text_visible": true,
-                "text_converted": false
-            },
-            "op_code": 2,
-            "content_label_objname": "cliptextencode"
-        },
-        {
-            "id": 139731165077296,
-            "title": "CLIPTextEncode",
-            "pos_x": -854.8142089843751,
-            "pos_y": 103.16357421875028,
-            "inputs": [
-                {
-                    "id": 139731165080752,
-                    "index": 0,
-                    "multi_edges": true,
-                    "position": 3,
-                    "socket_type": 4,
-                    "name": "CLIP"
-                },
-                {
-                    "id": 139731165081952,
-                    "index": 1,
-                    "multi_edges": false,
-                    "position": 3,
-                    "socket_type": 1,
-                    "name": "EXEC"
-                }
-            ],
-            "outputs": [
-                {
-                    "id": 139731165081616,
-                    "index": 0,
-                    "multi_edges": true,
-                    "position": 6,
-                    "socket_type": 3,
-                    "name": "CONDITIONING"
-                },
-                {
-                    "id": 139731165081136,
-                    "index": 1,
-                    "multi_edges": false,
-                    "position": 6,
-                    "socket_type": 1,
-                    "name": "EXEC"
-                }
-            ],
-            "content": {
-                "text": "surrene landscape with tiny butterflies, a tiny isometric polygon city sitting on top of a 3d tree, roots hanging, ethereal lights, 3d, highly detailed, Trending on Artstation",
-                "text_visible": true,
-                "text_converted": false
-            },
-            "op_code": 2,
-            "content_label_objname": "cliptextencode"
-        },
-        {
             "id": 139731165071056,
             "title": "K Sampler",
-            "pos_x": -413.73608398437466,
-            "pos_y": 69.94482421874997,
+            "pos_x": -452.48608398437466,
+            "pos_y": 53.69482421875,
             "inputs": [
                 {
                     "id": 139726906416224,
@@ -287,6 +189,7 @@
                 "Use latent from loop_converted": false,
                 "Use float32 for decode/encode": "False",
                 "Use float32 for decode/encode_visible": true,
+                "Use float32 for decode/encode_converted": false,
                 "Denoise:": 1.0,
                 "Denoise:_visible": true,
                 "Denoise:_converted": false,
@@ -296,14 +199,14 @@
                 "_visible": true,
                 "progress_visible": true
             },
-            "op_code": 216,
+            "op_code": 217,
             "content_label_objname": "K_sampling_node"
         },
         {
             "id": 139726906419344,
             "title": "Torch Loader",
-            "pos_x": -879.539794921875,
-            "pos_y": -255.12158203124966,
+            "pos_x": -1101.727294921875,
+            "pos_y": -317.30908203124966,
             "inputs": [
                 {
                     "id": 139731165074464,
@@ -359,7 +262,7 @@
                 "Force Reload_visible": true,
                 "Force Reload_converted": false
             },
-            "op_code": 221,
+            "op_code": 226,
             "content_label_objname": "torch_loader_node"
         },
         {
@@ -443,8 +346,8 @@
         {
             "id": 140097821726976,
             "title": "Execute",
-            "pos_x": -624.9440917968741,
-            "pos_y": -506.8061523437494,
+            "pos_x": -847.1315917968741,
+            "pos_y": -568.9936523437493,
             "inputs": [
                 {
                     "id": 140097821732880,
@@ -482,8 +385,8 @@
         {
             "id": 140223755584752,
             "title": "Model Loading / Run",
-            "pos_x": -941.25,
-            "pos_y": -580.9375,
+            "pos_x": -1163.4375,
+            "pos_y": -643.125,
             "inputs": [],
             "outputs": [],
             "content": {},
@@ -496,16 +399,16 @@
         {
             "id": 140226153388528,
             "title": "Sampling",
-            "pos_x": -937.5,
-            "pos_y": 31.562499999999915,
+            "pos_x": -1509.0625,
+            "pos_y": -12.8125,
             "inputs": [],
             "outputs": [],
             "content": {},
             "op_code": 185,
             "content_label_objname": "bg_node",
             "color": "#ffb5835a",
-            "width": 918.5,
-            "height": 856.0
+            "width": 1457.875,
+            "height": 1115.0625
         },
         {
             "id": 140223751688096,
@@ -524,8 +427,8 @@
         {
             "id": 140223755588064,
             "title": "Help",
-            "pos_x": -965.9374999999997,
-            "pos_y": -936.2499999999992,
+            "pos_x": -1134.6874999999995,
+            "pos_y": -1054.999999999999,
             "inputs": [],
             "outputs": [],
             "content": {
@@ -538,21 +441,180 @@
             "color": "#e3212121",
             "width": 2109.4375000000005,
             "height": 337.5624999999999
+        },
+        {
+            "id": 139643830243136,
+            "title": "Conditioning",
+            "pos_x": -1462.5,
+            "pos_y": 46.25,
+            "inputs": [
+                {
+                    "id": 139643830242128,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 4,
+                    "name": "CLIP"
+                },
+                {
+                    "id": 139643830241744,
+                    "index": 1,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 6,
+                    "name": "DATA"
+                },
+                {
+                    "id": 139643830241648,
+                    "index": 2,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 1,
+                    "name": "EXEC"
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 139643830241504,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 3,
+                    "name": "COND"
+                },
+                {
+                    "id": 139643830241552,
+                    "index": 1,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 6,
+                    "name": "DATA"
+                },
+                {
+                    "id": 139643830241408,
+                    "index": 2,
+                    "multi_edges": false,
+                    "position": 6,
+                    "socket_type": 1,
+                    "name": "EXEC"
+                }
+            ],
+            "content": {
+                "Prompt": "",
+                "Prompt_visible": true,
+                "Prompt 2": "surrene landscape with tiny butterflies, a tiny isometric polygon city sitting on top of a 3d tree, roots hanging, ethereal lights, 3d, highly detailed, Trending on Artstation",
+                "Prompt 2_visible": true,
+                "Height": 1024,
+                "Height_visible": true,
+                "Crop Width": 0,
+                "Crop Width_visible": true,
+                "Crop Height": 0,
+                "Crop Height_visible": true,
+                "Target Width": 1024,
+                "Target Width_visible": true,
+                "Target Height": 1024,
+                "Target Height_visible": true,
+                "Clip Skip": -1,
+                "Clip Skip_visible": true,
+                "Use embeds": "False",
+                "Use embeds_visible": true,
+                "_visible": true
+            },
+            "op_code": 225,
+            "content_label_objname": "cond_ainode_xl"
+        },
+        {
+            "id": 139645806157616,
+            "title": "Conditioning",
+            "pos_x": -950.0,
+            "pos_y": 50.0,
+            "inputs": [
+                {
+                    "id": 139633281018624,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 4,
+                    "name": "CLIP"
+                },
+                {
+                    "id": 139633281013056,
+                    "index": 1,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 6,
+                    "name": "DATA"
+                },
+                {
+                    "id": 139633281012768,
+                    "index": 2,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 1,
+                    "name": "EXEC"
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 139633281012384,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 3,
+                    "name": "COND"
+                },
+                {
+                    "id": 139633281013104,
+                    "index": 1,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 6,
+                    "name": "DATA"
+                },
+                {
+                    "id": 139633281013200,
+                    "index": 2,
+                    "multi_edges": false,
+                    "position": 6,
+                    "socket_type": 1,
+                    "name": "EXEC"
+                }
+            ],
+            "content": {
+                "Prompt": "",
+                "Prompt_visible": true,
+                "Prompt_converted": false,
+                "Prompt 2": "",
+                "Prompt 2_visible": true,
+                "Prompt 2_converted": false,
+                "Height": 1024,
+                "Height_visible": true,
+                "Height_converted": false,
+                "Crop Width": 0,
+                "Crop Width_visible": true,
+                "Crop Width_converted": false,
+                "Crop Height": 0,
+                "Crop Height_visible": true,
+                "Crop Height_converted": false,
+                "Target Width": 1024,
+                "Target Width_visible": true,
+                "Target Width_converted": false,
+                "Target Height": 1024,
+                "Target Height_visible": true,
+                "Target Height_converted": false,
+                "Clip Skip": -1,
+                "Clip Skip_visible": true,
+                "Clip Skip_converted": false,
+                "Use embeds": "False",
+                "Use embeds_visible": true,
+                "Use embeds_converted": false,
+                "_visible": true
+            },
+            "op_code": 225,
+            "content_label_objname": "cond_ainode_xl"
         }
     ],
     "edges": [
-        {
-            "id": 139726906323104,
-            "edge_type": 3,
-            "start": 139731165076768,
-            "end": 139726906417040
-        },
-        {
-            "id": 139726906322720,
-            "edge_type": 3,
-            "start": 139731165077056,
-            "end": 139731165080752
-        },
         {
             "id": 139726906324448,
             "edge_type": 3,
@@ -564,12 +626,6 @@
             "edge_type": 3,
             "start": 139726906416608,
             "end": 139731165071776
-        },
-        {
-            "id": 139726906416848,
-            "edge_type": 3,
-            "start": 139731165081616,
-            "end": 139726906415792
         },
         {
             "id": 139726906418336,
@@ -584,36 +640,6 @@
             "end": 139726906417952
         },
         {
-            "id": 139726906414928,
-            "edge_type": 3,
-            "start": 139731165077056,
-            "end": 139731165074224
-        },
-        {
-            "id": 140097822058448,
-            "edge_type": 3,
-            "start": 139731165077248,
-            "end": 139731165081952
-        },
-        {
-            "id": 140096426282384,
-            "edge_type": 3,
-            "start": 139731165081136,
-            "end": 139731165076432
-        },
-        {
-            "id": 140097822051968,
-            "edge_type": 3,
-            "start": 139731165076336,
-            "end": 139726906321952
-        },
-        {
-            "id": 140096443333120,
-            "edge_type": 3,
-            "start": 139726906326560,
-            "end": 139726906418768
-        },
-        {
             "id": 140097822056720,
             "edge_type": 3,
             "start": 139726906324832,
@@ -624,6 +650,48 @@
             "edge_type": 3,
             "start": 140097821721360,
             "end": 139731165074464
+        },
+        {
+            "id": 139633281012336,
+            "edge_type": 2,
+            "start": 139643830242128,
+            "end": 139731165077056
+        },
+        {
+            "id": 139633280866752,
+            "edge_type": 2,
+            "start": 139643830241504,
+            "end": 139726906415792
+        },
+        {
+            "id": 139643830255776,
+            "edge_type": 2,
+            "start": 139633281018624,
+            "end": 139731165077056
+        },
+        {
+            "id": 139633281013440,
+            "edge_type": 2,
+            "start": 139633281012384,
+            "end": 139726906417040
+        },
+        {
+            "id": 139645806165296,
+            "edge_type": 2,
+            "start": 139643830241408,
+            "end": 139633281012768
+        },
+        {
+            "id": 139645802076944,
+            "edge_type": 2,
+            "start": 139731165077248,
+            "end": 139643830241648
+        },
+        {
+            "id": 139633281022080,
+            "edge_type": 2,
+            "start": 139633281013200,
+            "end": 139726906418768
         }
     ]
 }

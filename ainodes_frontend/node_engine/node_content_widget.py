@@ -249,17 +249,7 @@ class QDMNodeContentWidget(QWidget, Serializable):
 
         # Step 4: Update the node's preview
         self.node.updateConnectedEdges()
-    # def contextMenuEvent(self, event, widget=None):
-    #     """Override the context menu to provide an option to convert the widget to a node input."""
-    #     menu = QMenu(self)
-    #     convert_action = menu.addAction("Convert to Node Input")
-    #     action = menu.exec(self.mapToGlobal(event.pos()))
-    #
-    #     if action == convert_action:
-    #         #clicked_widget = self.childAt(event.pos())
-    #         print(widget)
-    #         if widget:  # Make sure we have a widget at the clicked position
-    #             self.convertWidgetToNodeInput(widget)
+
     def setEditingFlag(self, value:bool):
         """
         .. note::
@@ -344,7 +334,7 @@ class QDMNodeContentWidget(QWidget, Serializable):
 
         return True
 
-    def create_combo_box(self, items, label_text, accessible_name=None, spawn=None) -> QtWidgets.QComboBox:
+    def create_combo_box(self, items, label_text, accessible_name=None, spawn=None, object_name=None) -> QtWidgets.QComboBox:
         """Create a combo box widget with the given items and label text.
 
         Args:
@@ -357,6 +347,8 @@ class QDMNodeContentWidget(QWidget, Serializable):
         combo_box = CustomComboBox()
         combo_box.addItems(items)
         combo_box.setObjectName(label_text)
+        if object_name:
+            combo_box.setObjectName(object_name)
         if accessible_name is not None:
             combo_box.setAccessibleName(accessible_name)
         label = QtWidgets.QLabel(label_text)
@@ -371,7 +363,7 @@ class QDMNodeContentWidget(QWidget, Serializable):
         else:
             return combo_box
 
-    def create_line_edit(self, label_text, accessible_name=None, default=None, placeholder=None, spawn=None, schedule=None) -> QtWidgets.QLineEdit:
+    def create_line_edit(self, label_text, accessible_name=None, default=None, placeholder=None, spawn=None, schedule=None, object_name=None) -> QtWidgets.QLineEdit:
         """Create a line edit widget with the given label text.
 
         Args:
@@ -382,6 +374,8 @@ class QDMNodeContentWidget(QWidget, Serializable):
         """
         line_edit = CustomLineEdit(schedule=schedule)
         line_edit.setObjectName(label_text)
+        if object_name:
+            line_edit.setObjectName(object_name)
         if default is not None:
             line_edit.setText(default)
         if accessible_name is not None:
@@ -400,7 +394,7 @@ class QDMNodeContentWidget(QWidget, Serializable):
             setattr(self, spawn, line_edit)
         else:
             return line_edit
-    def create_text_edit(self, label_text, placeholder="", default="", spawn=None) -> QtWidgets.QTextEdit:
+    def create_text_edit(self, label_text, placeholder="", default="", spawn=None, object_name=None) -> QtWidgets.QTextEdit:
         """Create a line edit widget with the given label text.
 
         Args:
@@ -416,6 +410,8 @@ class QDMNodeContentWidget(QWidget, Serializable):
         line_edit.label = label
 
         line_edit.setObjectName(label_text)
+        if object_name:
+            line_edit.setObjectName(object_name)
         layout = QtWidgets.QHBoxLayout()
         layout.addWidget(label)
         layout.addWidget(line_edit)
@@ -429,7 +425,7 @@ class QDMNodeContentWidget(QWidget, Serializable):
 
 
 
-    def create_list_view(self, label_text, spawn=None) -> QtWidgets.QListWidget:
+    def create_list_view(self, label_text, spawn=None, object_name=None) -> QtWidgets.QListWidget:
         """Create a list widget with the given label text.
 
         Args:
@@ -441,6 +437,8 @@ class QDMNodeContentWidget(QWidget, Serializable):
         list_view = QtWidgets.QListWidget()
         label = QtWidgets.QLabel(label_text)
         list_view.setObjectName(label_text)
+        if object_name:
+            list_view.setObjectName(object_name)
         layout = QtWidgets.QHBoxLayout()
         layout.addWidget(label)
         layout.addWidget(list_view)
@@ -452,7 +450,7 @@ class QDMNodeContentWidget(QWidget, Serializable):
             return list_view
 
 
-    def create_label(self, label_text, spawn=None) -> QtWidgets.QLabel:
+    def create_label(self, label_text, spawn=None, object_name=None) -> QtWidgets.QLabel:
         """Create a label widget with the given label text.
 
         Args:
@@ -473,7 +471,7 @@ class QDMNodeContentWidget(QWidget, Serializable):
             return label
 
 
-    def create_spin_box(self, label_text, min_val, max_val, default_val, step=1, accessible_name=None, spawn=None) -> QtWidgets.QSpinBox:
+    def create_spin_box(self, label_text, min_val, max_val, default_val, step=1, accessible_name=None, spawn=None, object_name=None) -> QtWidgets.QSpinBox:
         """Create a spin box widget with the given label text, minimum value, maximum value, default value, and step value.
 
         Args:
@@ -492,6 +490,8 @@ class QDMNodeContentWidget(QWidget, Serializable):
         spin_box.setValue(default_val)
         spin_box.setSingleStep(step)
         spin_box.setObjectName(label_text)
+        if object_name:
+            spin_box.setObjectName(object_name)
         if accessible_name is not None:
             spin_box.setAccessibleName(accessible_name)
         label = QtWidgets.QLabel(label_text)
@@ -506,7 +506,7 @@ class QDMNodeContentWidget(QWidget, Serializable):
             setattr(self, spawn, spin_box)
         else:
             return spin_box
-    def create_slider(self, label_text, min_val, max_val, default_val, step=1, accessible_name=None, spawn=None) -> QtWidgets.QSlider:
+    def create_slider(self, label_text, min_val, max_val, default_val, step=1, accessible_name=None, spawn=None, object_name=None) -> QtWidgets.QSlider:
         """Create a spin box widget with the given label text, minimum value, maximum value, default value, and step value.
 
         Args:
@@ -526,6 +526,8 @@ class QDMNodeContentWidget(QWidget, Serializable):
         slider.setValue(default_val)
         slider.setSingleStep(step)
         slider.setObjectName(label_text)
+        if object_name:
+            slider.setObjectName(object_name)
         if accessible_name is not None:
             slider.setAccessibleName(accessible_name)
         label = QtWidgets.QLabel(label_text)
@@ -540,7 +542,7 @@ class QDMNodeContentWidget(QWidget, Serializable):
             setattr(self, spawn, slider)
         else:
             return slider
-    def create_double_spin_box(self, label_text:str, min_val:float =0.0, max_val:float=10.0, step:float=0.01, default_val:float=1.0, accessible_name=None, spawn=None) -> QtWidgets.QDoubleSpinBox:
+    def create_double_spin_box(self, label_text:str, min_val:float =0.0, max_val:float=10.0, step:float=0.01, default_val:float=1.0, accessible_name=None, spawn=None, object_name=None) -> QtWidgets.QDoubleSpinBox:
         """Create a double spin box widget with the given label text, minimum value, maximum value, step, and default value.
 
          Args:
@@ -559,6 +561,8 @@ class QDMNodeContentWidget(QWidget, Serializable):
         double_spin_box.setSingleStep(step)
         double_spin_box.setValue(default_val)
         double_spin_box.setObjectName(label_text)
+        if object_name:
+            double_spin_box.setObjectName(object_name)
         if accessible_name is not None:
             double_spin_box.setAccessibleName(accessible_name)
         label = QtWidgets.QLabel(label_text)
@@ -573,7 +577,7 @@ class QDMNodeContentWidget(QWidget, Serializable):
         else:
             return double_spin_box
 
-    def create_check_box(self, label_text, checked=False, accessible_name=None, spawn=None) -> QtWidgets.QCheckBox:
+    def create_check_box(self, label_text, checked=False, accessible_name=None, spawn=None, object_name=None) -> QtWidgets.QCheckBox:
         """Create a double spin box widget with the given label text, minimum value, maximum value, step, and default value.
 
          Args:
@@ -590,6 +594,8 @@ class QDMNodeContentWidget(QWidget, Serializable):
         check_box = QtWidgets.QCheckBox(label_text)
         check_box.setChecked(checked)
         check_box.setObjectName(label_text)
+        if object_name:
+            check_box.setObjectName(object_name)
         if accessible_name is not None:
             check_box.setAccessibleName(accessible_name)
         palette = QtGui.QPalette()

@@ -25,6 +25,7 @@ OP_NODE_DEFORUM_FRAMEWARP = get_next_opcode()
 
 class DeforumFramewarpWidget(QDMNodeContentWidget):
     def initUI(self):
+        self.create_label("...")
         self.create_main_layout(grid=1)
 
 @register_node(OP_NODE_DEFORUM_FRAMEWARP)
@@ -36,13 +37,13 @@ class DeforumFramewarpNode(AiNode):
     content_label_objname = "deforum_framewarp_node"
     category = "base/deforum"
     NodeContent_class = DeforumFramewarpWidget
-    dim = (240, 120)
-    custom_output_socket_name = ["DATA", "IMAGE", "MASK", "DEPTH_MODEL", "EXEC"]
+    dim = [340, 240]
+    custom_output_socket_name = ["DATA", "IMAGE", "MASK", "DEPTH", "DEPTH_MODEL", "EXEC"]
 
     make_dirty = True
 
     def __init__(self, scene):
-        super().__init__(scene, inputs=[6,5,1], outputs=[6,5,5,4,1])
+        super().__init__(scene, inputs=[6,5,1], outputs=[6,5,5,5,4,1])
         self.depth_model = None
         self.depth = None
         self.algo = ""
@@ -70,9 +71,14 @@ class DeforumFramewarpNode(AiNode):
             predict_depths = predict_depths or (
                     anim_args.hybrid_composite and anim_args.hybrid_comp_mask_type in ['Depth', 'Video Depth'])
 
-            print(predict_depths)
 
             if self.depth_model == None or self.algo != anim_args.depth_algorithm:
+
+                if self.depth_model is not None:
+                    self.depth_model.to("cpu")
+                    del self.depth_model
+                    torch_gc()
+
                 self.algo = anim_args.depth_algorithm
                 if predict_depths:
                     keep_in_vram = True if gs.vram_state == 'high' else False
@@ -91,15 +97,17 @@ class DeforumFramewarpNode(AiNode):
                 else:
                     self.depth_model = None
                     anim_args.save_depth_maps = False
-
             if self.depth_model != None and not predict_depths:
                 self.depth_model = None
             if self.depth_model is not None:
                 self.depth_model.to(gs.device)
 
-            # with torch.no_grad():
-            warped_np_img, self.depth, mask = anim_frame_warp(np_image, args, anim_args, keys, frame_idx, depth_model=self.depth_model, depth=None, device='cuda',
-                            half_precision=True)
+            with torch.inference_mode():
+                warped_np_img, self.depth, mask = anim_frame_warp(np_image, args, anim_args, keys, frame_idx, depth_model=self.depth_model, depth=None, device='cuda',
+                                half_precision=True)
+                print(self.depth.shape)
+                depth_image = self.depth_model.to_image(self.depth)
+                ret_depth = pil2tensor(depth_image)
             torch_gc()
             if gs.vram_state in ["low", "medium"] and self.depth_model is not None:
                 self.depth_model.to('cpu')
@@ -110,14 +118,10 @@ class DeforumFramewarpNode(AiNode):
             if mask is not None:
                 mask = mask.detach().cpu()
                 #mask = mask.reshape((-1, 1, mask.shape[-2], mask.shape[-1])).movedim(1, -1).expand(-1, -1, -1, 3)
-
-            # print(mask.shape)
-            #
-            # print(mask)
-            #
-            mask = mask.mean(dim=0, keepdim=False)
-            mask[mask > 1e-05] = 1
-            mask[mask < 1e-05] = 0
+                mask = mask.mean(dim=0, keepdim=False)
+                mask[mask > 1e-05] = 1
+                mask[mask < 1e-05] = 0
+                mask = mask[0].unsqueeze(0)
 
             # print(mask)
             # print(mask.shape)
@@ -132,7 +136,7 @@ class DeforumFramewarpNode(AiNode):
             #                                     antialiasing=True, by_convs=True, scale_tolerance=None,
             #                                     max_numerator=10, pad_mode='reflect')
             # print(mask.shape)
-            return [data, tensor, mask[0].unsqueeze(0), self.depth_model]
+            return [data, tensor, mask, ret_depth, self.depth_model]
         else:
             return [data, image, None]
 
