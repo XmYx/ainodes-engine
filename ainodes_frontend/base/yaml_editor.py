@@ -187,7 +187,16 @@ class YamlEditorWidget(QWidget):
                 checkbox.setObjectName(key)
                 checkbox.setChecked(value)
                 self.settings_layout.addWidget(checkbox)
-
+            elif isinstance(value, dict):
+                combobox = QComboBox()
+                combobox.setObjectName(key)
+                i = 0
+                for item in value["options"]:
+                    combobox.addItem(item)
+                    if item == value["selected"]:
+                        combobox.setCurrentIndex(i)
+                    i += 1
+                self.settings_layout.addWidget(combobox)
             else:  # Add QLineEdit and QPushButton for string values
                 layout = QHBoxLayout()
 
@@ -302,7 +311,8 @@ class YamlEditorWidget(QWidget):
 
                 elif isinstance(widget, QComboBox):
                     key = widget.objectName()
-                    value = widget.currentText()
+                    value = {"selected":widget.currentText(),
+                             "options":[widget.itemText(i) for i in range(widget.count())]}
                     self.values[key] = value
                 elif isinstance(widget, QKeySequenceEdit):
                     #print("found keysequence to save", widget.keySequence().toString())

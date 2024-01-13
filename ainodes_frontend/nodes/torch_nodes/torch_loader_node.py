@@ -103,7 +103,10 @@ def load_checkpoint_guess_config(ckpt_path, output_vae=True, output_clip=True, o
     if output_vae:
         vae_sd = comfy.utils.state_dict_prefix_replace(sd, {"first_stage_model.": ""}, filter_keys=True)
         vae_sd = model_config.process_vae_state_dict(vae_sd)
-        gs.models[ckpt_path]["vae"] = VAE(sd=vae_sd)
+        gs.models[ckpt_path]["vae"] = VAE(sd=vae_sd, device=torch.device("cpu"))
+
+        gs.models[ckpt_path]["vae"].device = gs.device
+
 
     if output_clip:
         w = WeightsLoader()
@@ -119,7 +122,7 @@ def load_checkpoint_guess_config(ckpt_path, output_vae=True, output_clip=True, o
         print("left over keys:", left_over)
 
     # if output_model:
-    gs.models[ckpt_path]["model"] = comfy.model_patcher.ModelPatcher(model, load_device=load_device, offload_device=load_device, current_device=load_device)
+    gs.models[ckpt_path]["model"] = comfy.model_patcher.ModelPatcher(model, load_device=gs.device, offload_device=torch.device("cpu"), current_device=torch.device("cpu"))
         # if inital_load_device != torch.device("cpu"):
         #     print("loaded straight to GPU")
         #     model_management.load_model_gpu(model_patcher)
@@ -139,13 +142,16 @@ def load_checkpoint_guess_config(ckpt_path, output_vae=True, output_clip=True, o
     gs.models[ckpt_path]["vae"].load_model = load_model
     #gs.models[ckpt_path]["vae"].encode = replace_fn(gs.models[ckpt_path]["vae"], encode)
     gs.models[ckpt_path]["model"].load_model = load_model
-    if "windows" not in platform.platform().lower():
-        gs.models[ckpt_path]["vae"].first_stage_model.half().cuda()
-    else:
-        gs.models[ckpt_path]["vae"].first_stage_model.cuda()
-    gs.models[ckpt_path]["clip"].cond_stage_model.half().cuda()
-    gs.models[ckpt_path]["model"].model.half().cuda()
 
+    if gs.vram_state != "low":
+        gs.models[ckpt_path]["vae"].first_stage_model.half().cuda()
+        gs.models[ckpt_path]["clip"].cond_stage_model.half().cuda()
+        gs.models[ckpt_path]["model"].model.half().cuda()
+    else:
+        gs.models[ckpt_path]["vae"].first_stage_model.half().cpu()
+        gs.models[ckpt_path]["clip"].cond_stage_model.half().cpu()
+        gs.models[ckpt_path]["model"].model.half().cpu()
+    torch_gc()
     return
 
 

@@ -93,6 +93,7 @@ class Settings:
         self.keybindings = DEFAULT_KEYBINDINGS
         self.use_exec = False
         self.opengl = False
+        self.vram_state = "medium"
 
     def load_from_dict(self, settings_dict):
         for key, value in settings_dict.items():
@@ -139,6 +140,8 @@ def load_settings(file_path=None):
         settings.load_from_dict(settings_dict)
         #save_settings(settings)
     gs.prefs = settings
+
+    gs.vram_state = gs.prefs.vram_state["selected"]
 
 
 def init_globals():

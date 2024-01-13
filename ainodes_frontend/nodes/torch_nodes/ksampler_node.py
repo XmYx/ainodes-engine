@@ -25,6 +25,7 @@ from ainodes_frontend.node_engine.node_content_widget import QDMNodeContentWidge
 from queue import Queue
 
 from backend_helpers.torch_helpers.torch_gc import torch_gc
+from backend_helpers.torch_helpers.vram_management import offload_to_device
 from main import get_torch_device
 from ..image_nodes.image_preview_node import ImagePreviewNode
 from ...base.qimage_ops import tensor_image_to_pixmap
@@ -160,6 +161,8 @@ class KSamplerNode(AiNode):
                                denoise=denoise)]
 
     #@QtCore.Slot()
+
+
     def evalImplementation_thread(self, cond_override = None, args = None, latent_override=None):
         #from ai_nodes.ainodes_engine_comfy_nodes.adapter_nodes.was_adapter_node import latent_preview
 
@@ -254,7 +257,9 @@ class KSamplerNode(AiNode):
             print(f"[ SEED: {seed} LAST STEP:{last_step} DENOISE:{denoise}]")
             #from nodes import common_ksampler as ksampler
 
-
+            if gs.vram_state in ["low", "medium"]:
+                offload_to_device(vae, "cpu")
+            offload_to_device(unet, gs.device)
 
             sample = common_ksampler(model=unet,
                                      seed=seed,
@@ -270,6 +275,9 @@ class KSamplerNode(AiNode):
                                      start_step=start_step,
                                      last_step=last_step,
                                      force_full_denoise=force_full_denoise)
+
+            if gs.vram_state == "low":
+                offload_to_device(unet, "cpu")
                                      # callback=self.callback)
             # sample = common_ksampler(model=unet,
             #                          seed=seed,
@@ -291,10 +299,14 @@ class KSamplerNode(AiNode):
             # sample = ksampler(unet, seed, steps, cfg, sampler_name, scheduler, cond, n_cond, latent,
             #          denoise=denoise)
             if vae:
+
+                # if gs.vram_state in ["low", "medium"]:
+                offload_to_device(vae, gs.device)
                 x_sample = self.decode_sample(sample[0]["samples"], vae).detach().cpu()
-                return_latents = x_sample.detach().cpu()
+                if gs.vram_state in ["low", "medium"]:
+                    offload_to_device(vae, 'cpu')
             else:
-                return_latents = None
+                x_sample = None
             return_samples = sample[0]["samples"].detach().cpu()
             # if self.content.tensor_preview.isChecked():
             #     if len(self.getOutputs(2)) > 0:
@@ -304,7 +316,7 @@ class KSamplerNode(AiNode):
             #                 node.content.preview_signal.emit(tensor_image_to_pixmap(x_sample))
             latent_preview.set_callback(None)
 
-            return [return_latents, {"samples": return_samples}]
+            return [x_sample, {"samples": return_samples}]
         else:
             latent_preview.set_callback(None)
 
@@ -503,7 +515,9 @@ def sample_k(model, noise, positive, negative, cfg, device, sampler, sigmas, mod
 
     samples = sampler.sample(model_wrap, sigmas, extra_args, callback, noise, latent_image, denoise_mask, disable_pbar)
     #return samples
-    return model.process_latent_out(samples.to(torch.float32))
+    sample = model.process_latent_out(samples.to(torch.float32))
+
+    return sample, model_wrap
 
 
 class KSampler:
@@ -569,32 +583,33 @@ class KSampler:
         from comfy.samplers import sampler_object
         sampler = sampler_object(self.sampler)
 
-        return sample_k(model.model, noise, positive, negative, cfg, self.device, sampler, sigmas, self.model_options, latent_image=latent_image, denoise_mask=denoise_mask, callback=callback, disable_pbar=disable_pbar, seed=seed)
+        model.model.to(gs.device)
+
+        sample, model_wrap = sample_k(model.model, noise, positive, negative, cfg, self.device, sampler, sigmas, self.model_options, latent_image=latent_image, denoise_mask=denoise_mask, callback=callback, disable_pbar=disable_pbar, seed=seed)
+        model_wrap.inner_model.to("cpu")
+        model_wrap.to('cpu')
+        del model_wrap
+        torch_gc()
+
+        return sample
 
 
-def sample(model, noise, steps, cfg, sampler_name, scheduler, positive, negative, latent_image, denoise=1.0, disable_noise=False, start_step=None, last_step=None, force_full_denoise=False, noise_mask=None, sigmas=None, callback=None, disable_pbar=False, seed=None):
-    import comfy
-    #from comfy.sample import cleanup_additional_models, get_models_from_cond
-    positive_copy, negative_copy, noise_mask = prepare_sampling(model, noise.shape, positive, negative, noise_mask)
-
-    noise = noise.to(gs.device)
-    latent_image = latent_image.to(gs.device)
-
-
-
-
-    sampler = KSampler(model.model, steps=steps, device=model.load_device, sampler=sampler_name, scheduler=scheduler, denoise=denoise, model_options=model.model_options)
-
-    samples = sampler.sample(model, noise, positive_copy, negative_copy, cfg=cfg, latent_image=latent_image, start_step=start_step, last_step=last_step, force_full_denoise=force_full_denoise, denoise_mask=noise_mask, sigmas=sigmas, callback=callback, disable_pbar=disable_pbar, seed=seed)
-    samples = samples.to(comfy.model_management.intermediate_device())
-
-    #cleanup_additional_models(models)
-    #cleanup_additional_models(set(get_models_from_cond(positive_copy, "control") + get_models_from_cond(negative_copy, "control")))
-
-    del sampler
-    torch_gc()
-
-    return samples
+# def sample(model, noise, steps, cfg, sampler_name, scheduler, positive, negative, latent_image, denoise=1.0, disable_noise=False, start_step=None, last_step=None, force_full_denoise=False, noise_mask=None, sigmas=None, callback=None, disable_pbar=False, seed=None):
+#     import comfy
+#     #from comfy.sample import cleanup_additional_models, get_models_from_cond
+#     positive_copy, negative_copy, noise_mask = prepare_sampling(model, noise.shape, positive, negative, noise_mask)
+#
+#     noise = noise.to(gs.device)
+#     latent_image = latent_image.to(gs.device)
+#     sampler = KSampler(model.model, steps=steps, device=model.load_device, sampler=sampler_name, scheduler=scheduler, denoise=denoise, model_options=model.model_options)
+#     samples = sampler.sample(model, noise, positive_copy, negative_copy, cfg=cfg, latent_image=latent_image, start_step=start_step, last_step=last_step, force_full_denoise=force_full_denoise, denoise_mask=noise_mask, sigmas=sigmas, callback=callback, disable_pbar=disable_pbar, seed=seed)
+#     #samples = samples.to(comfy.model_management.intermediate_device())
+#     #cleanup_additional_models(models)
+#     #cleanup_additional_models(set(get_models_from_cond(positive_copy, "control") + get_models_from_cond(negative_copy, "control")))
+#     del sampler
+#     torch_gc()
+#
+#     return samples
 
 def common_ksampler(model, seed, steps, cfg, sampler_name, scheduler, positive, negative, latent, denoise=1.0, disable_noise=False, start_step=None, last_step=None, force_full_denoise=False):
     import comfy
@@ -611,9 +626,22 @@ def common_ksampler(model, seed, steps, cfg, sampler_name, scheduler, positive, 
 
     callback = latent_preview.prepare_callback(model, steps)
     disable_pbar = not comfy.utils.PROGRESS_BAR_ENABLED
-    samples = sample(model, noise, steps, cfg, sampler_name, scheduler, positive, negative, latent_image,
-                                  denoise=denoise, disable_noise=disable_noise, start_step=start_step, last_step=last_step,
-                                  force_full_denoise=force_full_denoise, noise_mask=noise_mask, callback=callback, disable_pbar=disable_pbar, seed=seed)
+    # samples = sample(model, noise, steps, cfg, sampler_name, scheduler, positive, negative, latent_image,
+    #                               denoise=denoise, disable_noise=disable_noise, start_step=start_step, last_step=last_step,
+    #                               force_full_denoise=force_full_denoise, noise_mask=noise_mask, callback=callback, disable_pbar=disable_pbar, seed=seed)
+    positive_copy, negative_copy, noise_mask = prepare_sampling(model, noise.shape, positive, negative, noise_mask)
+
+    noise = noise.to(gs.device)
+    latent_image = latent_image.to(gs.device)
+
+    sampler = KSampler(model.model, steps=steps, device=gs.device, sampler=sampler_name, scheduler=scheduler, denoise=denoise, model_options=model.model_options)
+
+    samples = sampler.sample(model, noise, positive_copy, negative_copy, cfg=cfg, latent_image=latent_image, start_step=start_step, last_step=last_step, force_full_denoise=force_full_denoise, denoise_mask=noise_mask, sigmas=None, callback=callback, disable_pbar=disable_pbar, seed=seed)
+
+
+
+
+
     out = {}#latent.copy()
     out["samples"] = samples
     return (out, )

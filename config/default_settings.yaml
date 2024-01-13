@@ -10,7 +10,9 @@ output: output
 t2i_adapter: models/t2i_adapter
 upscalers: models/upscalers
 vae: models/vae
-
+vram_state:
+  {"selected":"medium",
+  "options":["low", "medium", "high"]}
 keybindings:
     console:
         name: Console
