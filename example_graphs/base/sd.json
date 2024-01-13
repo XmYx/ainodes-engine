@@ -6,8 +6,8 @@
         {
             "id": 139729489042240,
             "title": "EmptyLatentImage",
-            "pos_x": -462.0329589843748,
-            "pos_y": 888.4916992187505,
+            "pos_x": -1135.8610839843745,
+            "pos_y": 904.1166992187505,
             "inputs": [
                 {
                     "id": 139726906321952,
@@ -502,22 +502,31 @@
             "content": {
                 "Prompt": "",
                 "Prompt_visible": true,
-                "Prompt 2": "surrene landscape with tiny butterflies, a tiny isometric polygon city sitting on top of a 3d tree, roots hanging, ethereal lights, 3d, highly detailed, Trending on Artstation",
+                "Prompt_converted": false,
+                "Prompt 2": "photo of an ai art dealer wearing a long coat, opening coat with hands showing many articles",
                 "Prompt 2_visible": true,
+                "Prompt 2_converted": false,
                 "Height": 1024,
                 "Height_visible": true,
+                "Height_converted": false,
                 "Crop Width": 0,
                 "Crop Width_visible": true,
+                "Crop Width_converted": false,
                 "Crop Height": 0,
                 "Crop Height_visible": true,
+                "Crop Height_converted": false,
                 "Target Width": 1024,
                 "Target Width_visible": true,
+                "Target Width_converted": false,
                 "Target Height": 1024,
                 "Target Height_visible": true,
+                "Target Height_converted": false,
                 "Clip Skip": -1,
                 "Clip Skip_visible": true,
+                "Clip Skip_converted": false,
                 "Use embeds": "False",
                 "Use embeds_visible": true,
+                "Use embeds_converted": false,
                 "_visible": true
             },
             "op_code": 225,
@@ -526,8 +535,8 @@
         {
             "id": 139645806157616,
             "title": "Conditioning",
-            "pos_x": -950.0,
-            "pos_y": 50.0,
+            "pos_x": -1006.2500000000001,
+            "pos_y": 52.5,
             "inputs": [
                 {
                     "id": 139633281018624,
@@ -688,9 +697,15 @@
             "end": 139643830241648
         },
         {
-            "id": 139633281022080,
+            "id": 139994599766720,
             "edge_type": 2,
             "start": 139633281013200,
+            "end": 139726906321952
+        },
+        {
+            "id": 139994598391968,
+            "edge_type": 2,
+            "start": 139726906326560,
             "end": 139726906418768
         }
     ]
