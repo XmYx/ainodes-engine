@@ -785,14 +785,14 @@ class CalculatorWindow(NodeEditorWindow):
         print(f"|       Help     |")
         print("------------------")
 
-        # Create a QDockWidget
-        self.bdock_widget = QDockWidget("Embedded Browser", None)
-
-        # Set the BrowserWidget as the central widget of the QDockWidget
-        browser_widget = BrowserWidget()
-        self.bdock_widget.setWidget(browser_widget)
-        self.addDockWidget(Qt.RightDockWidgetArea, self.bdock_widget)
-        self.bdock_widget.setVisible(False)
+        # # Create a QDockWidget
+        # self.bdock_widget = QDockWidget("Embedded Browser", None)
+        #
+        # # Set the BrowserWidget as the central widget of the QDockWidget
+        # browser_widget = BrowserWidget()
+        # self.bdock_widget.setWidget(browser_widget)
+        # self.addDockWidget(Qt.RightDockWidgetArea, self.bdock_widget)
+        # self.bdock_widget.setVisible(False)
         self.subgraph = None
 
         self.animation = QPropertyAnimation(self.nodesDock, b"geometry")
@@ -1368,6 +1368,8 @@ class CalculatorWindow(NodeEditorWindow):
         self.dockWidgetContents = QWidget()
         self.dock.setWidget(self.dockWidgetContents)
         self.updateDockContents()
+
+        self.tabifyDockWidget(self.dock, self.nodesDock)
 
     def updateDockContents(self):
         current_layout = self.dockWidgetContents.layout()
