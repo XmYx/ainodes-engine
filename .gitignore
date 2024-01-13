@@ -189,8 +189,7 @@ temp/
 *.pkl
 *._pth
 
-config/user/
-config/user/settings.yaml
+config/user
 config/cache.json
 
 web/

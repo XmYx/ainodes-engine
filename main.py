@@ -51,23 +51,23 @@ from ainodes_frontend.base.import_utils import update_all_nodes_req, import_node
 #     subprocess.check_call(["pip", "install", "triton==2.0.0"])
 if "linux" in platform.platform().lower():
 
-    # try:
-    #     try:
-    #         from gi.repository import Gtk
-    #     except:
-    #         subprocess.check_call(["pip", "install", "pygobject"])
-    #         from gi.repository import Gtk
-    #
-    #     # Get the current GTK settings
-    #     settings = Gtk.Settings.get_default()
-    #     gtk_theme = settings.get_property("gtk-theme-name")
-    #     # Check the GTK theme
-    #     if gtk_theme.endswith("dark"):
-    #         qss_file = "ainodes_frontend/qss/nodeeditor-dark-linux.qss"
-    #     else:
-    #         qss_file = "ainodes_frontend/qss/nodeeditor.qss"
-    # except:
-    gs.qss = "qss/nodeeditor-dark-linux.qss"
+    try:
+        try:
+            from gi.repository import Gtk
+        except:
+            subprocess.check_call(["pip", "install", "pygobject"])
+            from gi.repository import Gtk
+
+        # Get the current GTK settings
+        settings = Gtk.Settings.get_default()
+        gtk_theme = settings.get_property("gtk-theme-name")
+        # Check the GTK theme
+        if gtk_theme.endswith("dark"):
+            qss_file = "ainodes_frontend/qss/nodeeditor-dark-linux.qss"
+        else:
+            qss_file = "ainodes_frontend/qss/nodeeditor.qss"
+    except:
+        gs.qss = "qss/nodeeditor-dark-linux.qss"
 elif "Windows" in platform.platform():
 
     settings = QtCore.QSettings('HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize',
@@ -411,6 +411,7 @@ if __name__ == "__main__":
 
     end_time = datetime.datetime.now()
     print(f"Initialization took: {end_time - start_time}")
+    print("Theme set to:", gs.qss)
     sys.exit(ainodes_qapp.exec())
 
 
