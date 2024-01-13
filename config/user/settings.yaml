@@ -1,3 +1,5 @@
+checkpoints: models/checkpoints
+controlnet: models/controlnet
 embeddings: models/embeddings
 hypernetworks: models/hypernetworks
 keybindings:

@@ -173,8 +173,6 @@ models/other
 # vscode
 .vscode
 
-
-
 .ignore/
 .tests/
 src/python/
