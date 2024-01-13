@@ -120,7 +120,9 @@ class LoraLoaderNode(AiNode):
             #     unet.unpatch_model()
             #     clip.patcher.unpatch_model()
             # new_unet, new_clip = self.load_lora_to_ckpt(file, unet, clip)
-        new_unet, new_clip = self.load_lora(unet, clip, file, strength_model, strength_clip)
+        if self.values != data or self.current_lora != file:
+
+            unet, clip = self.load_lora(unet, clip, file, strength_model, strength_clip)
         self.current_lora = file
         self.values = data
 
@@ -133,7 +135,7 @@ class LoraLoaderNode(AiNode):
                 if file not in gs.loaded_loras:
                     gs.loaded_loras.append(file)
                 self.current_lora = file"""
-        return [new_clip, new_unet]
+        return [clip, unet]
     #@QtCore.Slot(object)
     def handle_response(self, data):
         # Process the received data
