@@ -35,7 +35,7 @@ def sigmoidal_blend(tensor1, tensor2, blend_value):
     return (1 - weight) * tensor1 + weight * tensor2
 
 
-blend_methods = ["linear", "sigmoidal", "gaussian", "pyramid"]
+blend_methods = ["linear", "sigmoidal", "gaussian", "pyramid", "none"]
 
 def blend_tensors(obj1, obj2, blend_value, blend_method="linear"):
     """
@@ -91,6 +91,9 @@ class DeforumConditioningNode(AiNode):
         else:
             self.context = torch.autocast(gs.device.type)
         self.clip_skip = -2
+        self.prompt = None
+        self.n_prompt = None
+        self.next_prompt = None
 
     #@QtCore.Slot()
     def evalImplementation_thread(self, index=0, prompt_override=None):
@@ -106,9 +109,12 @@ class DeforumConditioningNode(AiNode):
             next_prompt = data.get("next_prompt", None)
 
             print(f"[ Deforum Conds: {prompt}, {negative_prompt} ]")
-            with torch.inference_mode():
+            if prompt is not self.prompt:
+                with torch.inference_mode():
 
-                cond = self.get_conditioning(prompt=prompt, clip=clip)
+                    self.cond = self.get_conditioning(prompt=prompt, clip=clip)
+                self.prompt = prompt
+            cond = self.cond
             image = self.getInputData(2)
             controlnet = self.getInputData(3)
             if image is not None:
@@ -118,14 +124,18 @@ class DeforumConditioningNode(AiNode):
                         print("[ Applying controlnet - Loopback Mode] ")
                         cond = self.apply_controlnet(cond, controlnet, cnet_image, 0.7)
             prompt_blend = data.get("prompt_blend", 0.0)
-            if next_prompt != prompt and prompt_blend != 0.0 and next_prompt is not None:
+            method = self.content.blend_method.currentText()
+            if method != 'none':
+                if next_prompt != prompt and prompt_blend != 0.0 and next_prompt is not None:
+                    with torch.inference_mode():
+                        next_cond = self.get_conditioning(prompt=next_prompt, clip=clip)
+                        cond = blend_tensors(cond[0], next_cond[0], prompt_blend, method)
+                    print(f"[ Deforum Cond Blend: {next_prompt}, {prompt_blend} ]")
+            if self.n_prompt != negative_prompt:
                 with torch.inference_mode():
-                    next_cond = self.get_conditioning(prompt=next_prompt, clip=clip)
-                    cond = blend_tensors(cond[0], next_cond[0], prompt_blend, self.content.blend_method.currentText())
-                print(f"[ Deforum Cond Blend: {next_prompt}, {prompt_blend} ]")
-            with torch.inference_mode():
-                n_cond = self.get_conditioning(prompt=negative_prompt, clip=clip)
-
+                    self.n_cond = self.get_conditioning(prompt=negative_prompt, clip=clip)
+                self.n_prompt = negative_prompt
+            n_cond = self.n_cond
 
 
             if gs.vram_state in ["low", "medium"]:
