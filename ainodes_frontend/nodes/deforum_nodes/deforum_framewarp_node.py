@@ -1,6 +1,7 @@
 
 import cv2
 import numpy as np
+import torch
 
 from deforum.models import DepthModel
 from deforum.utils.deforum_framewarp_utils import anim_frame_warp
@@ -16,6 +17,8 @@ from ainodes_frontend.base import register_node, get_next_opcode
 from ainodes_frontend.base import AiNode
 from ainodes_frontend.node_engine.node_content_widget import QDMNodeContentWidget
 from ainodes_frontend import singleton as gs
+from backend_helpers.torch_helpers.torch_gc import torch_gc
+from backend_helpers.torch_helpers.vram_management import offload_to_device
 
 OP_NODE_DEFORUM_FRAMEWARP = get_next_opcode()
 
@@ -66,14 +69,17 @@ class DeforumFramewarpNode(AiNode):
                                          anim_args.animation_mode == '3D' and anim_args.use_depth_warping) or anim_args.save_depth_maps
             predict_depths = predict_depths or (
                     anim_args.hybrid_composite and anim_args.hybrid_comp_mask_type in ['Depth', 'Video Depth'])
+
+            print(predict_depths)
+
             if self.depth_model == None or self.algo != anim_args.depth_algorithm:
                 self.algo = anim_args.depth_algorithm
                 if predict_depths:
-                    keep_in_vram = True
+                    keep_in_vram = True if gs.vram_state == 'high' else False
                     # device = ('cpu' if cmd_opts.lowvram or cmd_opts.medvram else self.root.device)
                     # TODO Set device in root in webui
                     device = gs.device.type
-                    self.depth_model = DepthModel("models/other", device, True,
+                    self.depth_model = DepthModel("models/other", device,
                                              keep_in_vram=keep_in_vram,
                                              depth_algorithm=anim_args.depth_algorithm, Width=args.width,
                                              Height=args.height,
@@ -88,18 +94,21 @@ class DeforumFramewarpNode(AiNode):
 
             if self.depth_model != None and not predict_depths:
                 self.depth_model = None
+            if self.depth_model is not None:
+                self.depth_model.to(gs.device)
 
-
-
+            # with torch.no_grad():
             warped_np_img, self.depth, mask = anim_frame_warp(np_image, args, anim_args, keys, frame_idx, depth_model=self.depth_model, depth=None, device='cuda',
                             half_precision=True)
-
+            torch_gc()
+            if gs.vram_state in ["low", "medium"] and self.depth_model is not None:
+                self.depth_model.to('cpu')
             image = Image.fromarray(cv2.cvtColor(warped_np_img, cv2.COLOR_BGR2RGB))
 
             tensor = pil2tensor(image)
 
             if mask is not None:
-                mask = mask.cpu()
+                mask = mask.detach().cpu()
                 #mask = mask.reshape((-1, 1, mask.shape[-2], mask.shape[-1])).movedim(1, -1).expand(-1, -1, -1, 3)
 
             # print(mask.shape)

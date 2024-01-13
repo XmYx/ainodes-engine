@@ -86,16 +86,22 @@ class ConditioningXLWidget(QDMNodeContentWidget):
         self.create_widgets()
         self.create_main_layout(grid=1)
     def create_widgets(self):
+        # self.create_text_edit("Prompt", spawn="prompt")
 
-        self.prompt_l = self.create_text_edit("Prompt", placeholder="Prompt or Negative Prompt (use 2x Conditioning Nodes for Stable Diffusion),\n"
+
+
+
+
+        # # self.create_text_edit("prompt")
+        self.create_text_edit("Prompt", placeholder="Prompt or Negative Prompt (use 2x Conditioning Nodes for Stable Diffusion),\n"
                                                                   "and connect them to a K Sampler.\n"
                                                                   "If you want to control your resolution,\n"
-                                                                  "or use an init image, use an Empty Latent Node.")
+                                                                  "or use an init image, use an Empty Latent Node.", spawn='prompt_l')
 
-        self.prompt_g = self.create_text_edit("Prompt", placeholder="Prompt or Negative Prompt (use 2x Conditioning Nodes for Stable Diffusion),\n"
+        self.create_text_edit("Prompt 2", placeholder="Prompt or Negative Prompt (use 2x Conditioning Nodes for Stable Diffusion),\n"
                                                                   "and connect them to a K Sampler.\n"
                                                                   "If you want to control your resolution,\n"
-                                                                  "or use an init image, use an Empty Latent Node.")
+                                                                  "or use an init image, use an Empty Latent Node.", spawn='prompt_g')
 
         self.width_val = self.create_spin_box("Height", min_val=256, max_val=4096, default_val=1024)
         self.height_val = self.create_spin_box("Height", min_val=256, max_val=4096, default_val=1024)
@@ -124,42 +130,56 @@ class APIHandler(QObject):
             self.response_received.emit({})
 
 @register_node(OP_NODE_CONDITIONING_XL)
-class ConditioningXLNode(AiNode):
+class ConditioningXLAiNode(AiNode):
     icon = "ainodes_frontend/icons/base_nodes/v2/conditioning.png"
     op_code = OP_NODE_CONDITIONING_XL
     op_title = "Conditioning"
-    content_label_objname = "cond_node_xl"
+    content_label_objname = "cond_ainode_xl"
     category = "aiNodes Base/Conditioning"
 
     custom_input_socket_name = ["CLIP", "DATA", "EXEC"]
-
+    NodeContent_class = ConditioningXLWidget
+    dim = (400, 800)
 
     def __init__(self, scene):
         super().__init__(scene, inputs=[4,6,1], outputs=[6,3,1])
-        self.content.eval_signal.connect(self.evalImplementation)
-        # Create a worker object
-    def initInnerClasses(self):
-        self.content = ConditioningXLWidget(self)
-        self.grNode = CalcGraphicsNode(self)
-        self.grNode.icon = self.icon
-        self.grNode.thumbnail = QtGui.QImage(self.grNode.icon).scaled(64, 64, QtCore.Qt.KeepAspectRatio)
-
-        self.grNode.height = 800
-        self.grNode.width = 320
-        self.content.setMinimumHeight(600)
-        self.content.setMinimumWidth(320)
         self.content.button.clicked.connect(self.evalImplementation)
         self.content.set_embeds.clicked.connect(self.show_embeds)
         self.embed_dict = []
         self.apihandler = APIHandler()
         self.apihandler.response_received.connect(self.handle_response)
         self.string = ""
-        self.clip_skip = self.content.skip.value()
+        self.clip_skip = -1
         self.device = gs.device
         if self.device in [torch.device('mps'), torch.device('cpu')]:
             self.context = contextlib.nullcontext()
         else:
             self.context = torch.autocast(gs.device.type)
+
+        # self.content.eval_signal.connect(self.evalImplementation)
+        # Create a worker object
+    # def initInnerClasses(self):
+    #     self.content = ConditioningXLWidget(self)
+    #     self.grNode = CalcGraphicsNode(self)
+    #     self.grNode.icon = self.icon
+    #     self.grNode.thumbnail = QtGui.QImage(self.grNode.icon).scaled(64, 64, QtCore.Qt.KeepAspectRatio)
+    #
+    #     self.grNode.height = 800
+    #     self.grNode.width = 320
+    #     self.content.setMinimumHeight(600)
+    #     self.content.setMinimumWidth(320)
+    #     self.content.button.clicked.connect(self.evalImplementation)
+    #     self.content.set_embeds.clicked.connect(self.show_embeds)
+    #     self.embed_dict = []
+    #     self.apihandler = APIHandler()
+    #     self.apihandler.response_received.connect(self.handle_response)
+    #     self.string = ""
+    #     self.clip_skip = self.content.skip.value()
+    #     self.device = gs.device
+    #     if self.device in [torch.device('mps'), torch.device('cpu')]:
+    #         self.context = contextlib.nullcontext()
+    #     else:
+    #         self.context = torch.autocast(gs.device.type)
 
 
     def show_embeds(self):
@@ -247,7 +267,7 @@ class ConditioningXLNode(AiNode):
                 print("Clip / SD Model not loaded yet, please place and validate a Torch loader node")
             else:
                 print(repr(e))
-            return None
+            return [None]
 
     #@QtCore.Slot(object)
     def handle_response(self, data):
@@ -322,19 +342,13 @@ class ConditioningXLNode(AiNode):
                    "target_width": target_width, "target_height": target_height}]]
 
     #@QtCore.Slot(object)
-    def onWorkerFinished(self, result, exec=True):
-        self.busy = False
-        #super().onWorkerFinished(None)
-        if result is not None:
-            self.setOutput(1, result[0])
-            self.setOutput(0, result[1])
-            self.markDirty(False)
-            self.markInvalid(False)
-            if gs.should_run:
-                self.executeChild(2)
-
-
-SCHEDULERS = ["karras", "normal", "simple", "ddim_uniform"]
-SAMPLERS = ["euler", "euler_ancestral", "heun", "dpm_2", "dpm_2_ancestral",
-            "lms", "dpm_fast", "dpm_adaptive", "dpmpp_2s_ancestral", "dpmpp_sde",
-            "dpmpp_2m", "ddim", "uni_pc", "uni_pc_bh2"]
+    # def onWorkerFinished(self, result, exec=True):
+    #     self.busy = False
+    #     #super().onWorkerFinished(None)
+    #     if result is not None:
+    #         self.setOutput(1, result[0])
+    #         self.setOutput(0, result[1])
+    #         self.markDirty(False)
+    #         self.markInvalid(False)
+    #         if gs.should_run:
+    #             self.executeChild(2)

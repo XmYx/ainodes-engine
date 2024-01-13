@@ -16,11 +16,11 @@ class DeforumBaseWidget(QDMNodeContentWidget):
         for key, value in params.items():
             t = value["type"]
             if t == "dropdown":
-                self.create_combo_box(value["choices"], f"{key}_value_combobox", accessible_name=key)
+                self.create_combo_box(value["choices"], label_text=key, object_name=f"{key}_value_combobox", accessible_name=key)
             elif t == "checkbox":
-                self.create_check_box(key, accessible_name=f"{key}_value_checkbox", checked=value['default'])
+                self.create_check_box(key, accessible_name=key, object_name=f"{key}_value_checkbox", checked=value['default'])
             elif t == "lineedit":
-                self.create_line_edit(key, accessible_name=f"{key}_value_lineedit", default=value['default'], schedule=True)
+                self.create_line_edit(key, accessible_name=key, object_name=f"{key}_value_lineedit", default=value['default'], schedule=True)
             elif t == "spinbox":
                 self.create_spin_box(key, int(value["min"]), int(value["max"]), int(value["default"]), int(value["step"]), accessible_name=f"{key}_value_spinbox")
             elif t == "doublespinbox":

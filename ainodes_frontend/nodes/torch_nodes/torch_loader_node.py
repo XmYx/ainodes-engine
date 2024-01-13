@@ -239,7 +239,7 @@ class TorchLoaderNode(AiNode):
         self.model = None
         self.clip = None
         self.vae = None
-
+        self.loaded_vae = None
         self.loaded_sd = ""
     def remove(self):
         self.clean_sd()

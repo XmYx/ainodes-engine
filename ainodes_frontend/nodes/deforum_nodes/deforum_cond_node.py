@@ -10,6 +10,8 @@ from ainodes_frontend.base import register_node, get_next_opcode
 from ainodes_frontend.base import AiNode, CalcGraphicsNode
 from ainodes_frontend.node_engine.node_content_widget import QDMNodeContentWidget
 from ainodes_frontend import singleton as gs
+from backend_helpers.torch_helpers.vram_management import offload_to_device
+
 OP_NODE_DEFORUM_SD_COND = get_next_opcode()
 import torch.nn.functional as F
 
@@ -93,6 +95,7 @@ class DeforumConditioningNode(AiNode):
     #@QtCore.Slot()
     def evalImplementation_thread(self, index=0, prompt_override=None):
         clip = self.getInputData(0)
+        offload_to_device(clip, gs.device)
 
         data = self.getInputData(1)
         if data is not None and gs.should_run:
@@ -103,7 +106,9 @@ class DeforumConditioningNode(AiNode):
             next_prompt = data.get("next_prompt", None)
 
             print(f"[ Deforum Conds: {prompt}, {negative_prompt} ]")
-            cond = self.get_conditioning(prompt=prompt, clip=clip)
+            with torch.inference_mode():
+
+                cond = self.get_conditioning(prompt=prompt, clip=clip)
             image = self.getInputData(2)
             controlnet = self.getInputData(3)
             if image is not None:
@@ -114,16 +119,17 @@ class DeforumConditioningNode(AiNode):
                         cond = self.apply_controlnet(cond, controlnet, cnet_image, 0.7)
             prompt_blend = data.get("prompt_blend", 0.0)
             if next_prompt != prompt and prompt_blend != 0.0 and next_prompt is not None:
-                next_cond = self.get_conditioning(prompt=next_prompt, clip=clip)
                 with torch.inference_mode():
+                    next_cond = self.get_conditioning(prompt=next_prompt, clip=clip)
                     cond = blend_tensors(cond[0], next_cond[0], prompt_blend, self.content.blend_method.currentText())
                 print(f"[ Deforum Cond Blend: {next_prompt}, {prompt_blend} ]")
-
-            n_cond = self.get_conditioning(prompt=negative_prompt, clip=clip)
-
-
+            with torch.inference_mode():
+                n_cond = self.get_conditioning(prompt=negative_prompt, clip=clip)
 
 
+
+            if gs.vram_state in ["low", "medium"]:
+                offload_to_device(clip, "cpu")
 
 
             return [data, n_cond, cond]
