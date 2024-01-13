@@ -330,7 +330,7 @@ class TorchLoaderNode(AiNode):
     def load_vae(self, file):
         from comfy.sd import VAE
         import comfy
-        path = os.path.join('models/vae', file)
+        path = os.path.join(gs.prefs.vae, file)
         print("Loading", path)
         # gs.models["sd"].first_stage_model.cpu()
         # gs.models["sd"].first_stage_model = None
