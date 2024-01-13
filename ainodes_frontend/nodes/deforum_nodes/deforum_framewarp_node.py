@@ -102,13 +102,10 @@ class DeforumFramewarpNode(AiNode):
             if self.depth_model is not None:
                 self.depth_model.to(gs.device)
 
-            with torch.inference_mode():
-                warped_np_img, self.depth, mask = anim_frame_warp(np_image, args, anim_args, keys, frame_idx, depth_model=self.depth_model, depth=None, device='cuda',
-                                half_precision=True)
-                print(self.depth.shape)
-                depth_image = self.depth_model.to_image(self.depth)
-                ret_depth = pil2tensor(depth_image)
-            torch_gc()
+            warped_np_img, self.depth, mask = anim_frame_warp(np_image, args, anim_args, keys, frame_idx, depth_model=self.depth_model, depth=None, device='cuda',
+                            half_precision=True)
+            depth_image = self.depth_model.to_image(self.depth.detach().cpu())
+            ret_depth = pil2tensor(depth_image).detach().cpu()
             if gs.vram_state in ["low", "medium"] and self.depth_model is not None:
                 self.depth_model.to('cpu')
             image = Image.fromarray(cv2.cvtColor(warped_np_img, cv2.COLOR_BGR2RGB))

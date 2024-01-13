@@ -72,9 +72,9 @@ def color_to_hex(color):
 def hex_to_color(hex_string):
     return QColor(hex_string)
 
-def save_settings(settings):
+def save_settings(settings, destination):
     settings_dict = settings.to_dict()
-    with open('config/settings.yaml', 'w') as file:
+    with open(destination, 'w') as file:
         print(f"Saving settings to YAML: {settings_dict}")  # Debug line
         yaml.dump(settings_dict, file, indent=4)
 class Settings:
@@ -130,21 +130,34 @@ def get_last_config():
     return "config/default_settings.yaml"
 def load_settings(file_path=None):
     settings = Settings()
-    # if file_path == None:
-    #     file_path = 'config/default_settings.yaml'
+    default_file_path = 'config/default_settings.yaml'
+
+    # Load default settings
+    with open(default_file_path, 'r') as file:
+        default_settings_dict = yaml.safe_load(file)
+
+    # Try to get the last used config or use default if not specified
     if file_path is None:
-        # Try to get the last used config
         file_path = get_last_config()
+
     with open(file_path, 'r') as file:
-        settings_dict = yaml.safe_load(file)
-        settings.load_from_dict(settings_dict)
-        #save_settings(settings)
+        custom_settings_dict = yaml.safe_load(file)
+
+    # Merge custom settings with default settings
+    for key in default_settings_dict:
+        if key not in custom_settings_dict:
+            custom_settings_dict[key] = default_settings_dict[key]
+
+    settings.load_from_dict(custom_settings_dict)
     gs.prefs = settings
+
     try:
         gs.vram_state = gs.prefs.vram_state["selected"]
-    except:
+    except KeyError:
         gs.vram_state = "low"
 
+    if file_path != default_file_path:
+        save_settings(settings, file_path)
 
 def init_globals():
     # Initialize global variables

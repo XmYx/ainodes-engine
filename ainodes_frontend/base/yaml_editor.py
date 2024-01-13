@@ -163,6 +163,16 @@ class YamlEditorWidget(QWidget):
         with open(file_path, 'r') as file:
             self.values = yaml.safe_load(file)
 
+        default_file_path = 'config/default_settings.yaml'
+
+        # Load default settings
+        with open(default_file_path, 'r') as file:
+            default_settings_dict = yaml.safe_load(file)
+        # Merge custom settings with default settings
+        for key in default_settings_dict:
+            if key not in self.values:
+                self.values[key] = default_settings_dict[key]
+
         if 'keybindings' not in self.values:
             self.values['keybindings'] = DEFAULT_KEYBINDINGS
         # Check for new or missing keybindings and add them from DEFAULT_KEYBINDINGS

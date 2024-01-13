@@ -98,7 +98,7 @@ class DeforumAddNoiseNode(AiNode):
 
             #image = Image.fromarray(noised_image)
             print(f"[ Deforum Adding Noise: {noise} {anim_args.noise_type}]")
-            image = pil2tensor(noised_image)
+            image = pil2tensor(noised_image).detach().cpu()
 
         return [data, image]
 

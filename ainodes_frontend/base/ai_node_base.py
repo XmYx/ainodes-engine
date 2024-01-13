@@ -1,6 +1,7 @@
 #import gc
 import threading
 
+import torch
 #import torch
 from qtpy import QtWidgets, QtCore, QtGui
 from qtpy.QtCore import QRectF
@@ -313,12 +314,17 @@ class AiNode(Node):
             return
 
     def evalImplementationThreadHandler(self, *args, **kwargs):
+        # with torch.inference_mode():
+        #     result = self.evalImplementation_thread()
+        #     return result
         try:
-            result = self.evalImplementation_thread()
-            return result
+            with torch.inference_mode():
+
+                result = self.evalImplementation_thread()
+                return result
         except:
             handle_ainodes_exception()
-            return None
+            return []
     def stop_worker(self):
         self.worker.stop_fn()
     def evalImplementation_thread(self):
