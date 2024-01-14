@@ -5,6 +5,7 @@ import datetime
 import torch
 import yaml
 from PyQt6.QtCore import QFile
+from PyQt6.QtWidgets import QTextEdit
 from qtpy.QtWidgets import QProgressBar
 
 from qtpy.QtCore import QPropertyAnimation, QEasingCurve
@@ -195,9 +196,9 @@ def hijack_comfy_paths():
 
     folder_paths.filename_list_cache = {}
 
-    from ainodes_frontend.base import modelmanagement_hijack
-    import comfy.model_management
-    comfy.model_management.unet_inital_load_device = modelmanagement_hijack.unet_inital_load_device
+    # from ainodes_frontend.base import modelmanagement_hijack
+    # import comfy.model_management
+    # comfy.model_management.unet_inital_load_device = modelmanagement_hijack.unet_inital_load_device
 
 
 if __name__ == "__main__":
@@ -208,10 +209,7 @@ if __name__ == "__main__":
     gs.args = get_args()
     gs.device = get_torch_device()
 
-    from deforum.generators.comfy_utils import ensure_comfy
-    ensure_comfy('src/ComfyUI')
-    hijack_comfy_paths()
-    from ainodes_frontend.comfy_fns.adapter_nodes import was_adapter_node
+
 
 
     # Set environment variables for Hugging Face cache if not using local cache
@@ -275,6 +273,16 @@ if __name__ == "__main__":
     from qtpy.QtGui import QPainter
 
 
+    class CustomOutputStream:
+        def __init__(self, update_text_func):
+            self.update_text_func = update_text_func
+
+        def write(self, text):
+            self.update_text_func(text)
+
+        def flush(self):
+            pass  # This can be an empty method
+
     class CustomSplashScreen(QSplashScreen):
         def __init__(self, pixmap):
             super(CustomSplashScreen, self).__init__(pixmap)
@@ -299,9 +307,18 @@ if __name__ == "__main__":
 
             self.progressBar.setGeometry(10, pixmap.height() - 25, pixmap.width() - 20, 20)
             self.progressBar.setValue(0)
+            # Initialize the text edit for displaying output
+            self.text_display = QTextEdit(self)
+            self.text_display.setGeometry(10, pixmap.height() - 100, pixmap.width() - 20,
+                                          75)  # Adjust geometry as needed
+            self.text_display.setReadOnly(True)
+            # Other initialization...
 
-
-
+        def append_text(self, text):
+            self.text_display.moveCursor(QtGui.QTextCursor.MoveOperation.End)
+            self.text_display.insertPlainText(text)
+            # Optionally, you can ensure the latest output is visible:
+            self.text_display.ensureCursorVisible()
 
         def setProgress(self, value):
             self.progressBar.setValue(value)
@@ -338,11 +355,22 @@ if __name__ == "__main__":
             rect = QRect(self.progressBar.geometry())
             self.progressBar.render(painter, rect.topLeft())
 
-
+    res = ''
+    file = QFile(os.path.join(os.path.dirname(__file__), 'ainodes_frontend',gs.qss))
+    file.open(QFile.ReadOnly | QFile.Text)
+    stylesheet = file.readAll()
+    res += "\n" + str(stylesheet, encoding='utf-8')
+    ainodes_qapp.setApplicationName("aiNodes - Engine")
+    ainodes_qapp.setStyleSheet(res)
     splash = CustomSplashScreen(splash_pix)
     splash.show()
 
+    sys.stdout = CustomOutputStream(splash.append_text)
+    from deforum.generators.comfy_utils import ensure_comfy
+    ensure_comfy('src/ComfyUI')
+    hijack_comfy_paths()
     load_settings()
+    from ainodes_frontend.comfy_fns.adapter_nodes import was_adapter_node
 
     base_folder = 'ainodes_frontend/nodes'
     if gs.args.update:
@@ -375,13 +403,7 @@ if __name__ == "__main__":
             current_step += 1
 
     from ainodes_frontend.base import CalculatorWindow
-    res = ''
-    file = QFile(os.path.join(os.path.dirname(__file__), 'ainodes_frontend',gs.qss))
-    file.open(QFile.ReadOnly | QFile.Text)
-    stylesheet = file.readAll()
-    res += "\n" + str(stylesheet, encoding='utf-8')
-    ainodes_qapp.setApplicationName("aiNodes - Engine")
-    ainodes_qapp.setStyleSheet(res)
+
     wnd = CalculatorWindow(ainodes_qapp)
     #wnd.stylesheet_filename = os.path.join(os.path.dirname(__file__), gs.qss)
 
