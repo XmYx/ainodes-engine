@@ -93,15 +93,9 @@ class ConditioningXLWidget(QDMNodeContentWidget):
 
 
         # # self.create_text_edit("prompt")
-        self.create_text_edit("Prompt", placeholder="Prompt or Negative Prompt (use 2x Conditioning Nodes for Stable Diffusion),\n"
-                                                                  "and connect them to a K Sampler.\n"
-                                                                  "If you want to control your resolution,\n"
-                                                                  "or use an init image, use an Empty Latent Node.", spawn='prompt_l')
+        self.create_text_edit("Prompt", placeholder="Linguistic Prompt (XL)", spawn='prompt_g')
 
-        self.create_text_edit("Prompt 2", placeholder="Prompt or Negative Prompt (use 2x Conditioning Nodes for Stable Diffusion),\n"
-                                                                  "and connect them to a K Sampler.\n"
-                                                                  "If you want to control your resolution,\n"
-                                                                  "or use an init image, use an Empty Latent Node.", spawn='prompt_g')
+        self.create_text_edit("Prompt 2", placeholder="Clasic Prompt", spawn='prompt_l')
 
         self.width_val = self.create_spin_box("Height", min_val=256, max_val=4096, default_val=1024)
         self.height_val = self.create_spin_box("Height", min_val=256, max_val=4096, default_val=1024)
@@ -135,7 +129,7 @@ class ConditioningXLAiNode(AiNode):
     op_code = OP_NODE_CONDITIONING_XL
     op_title = "Conditioning XL"
     content_label_objname = "cond_ainode_xl"
-    category = "base/sampling"
+    category = "base/conditioning"
 
     custom_input_socket_name = ["CLIP", "DATA", "EXEC"]
     NodeContent_class = ConditioningXLWidget

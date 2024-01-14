@@ -252,7 +252,7 @@
                 }
             ],
             "content": {
-                "Model:": "protovisionXLHighFidelity3D_releaseV660Bakedvae.safetensors",
+                "Model:": "/protovisionXLHighFidelity3D_release0620Bakedvae.safetensors",
                 "Model:_visible": true,
                 "Model:_converted": false,
                 "Vae": "default",
@@ -262,7 +262,7 @@
                 "Force Reload_visible": true,
                 "Force Reload_converted": false
             },
-            "op_code": 226,
+            "op_code": 225,
             "content_label_objname": "torch_loader_node"
         },
         {
@@ -340,7 +340,7 @@
                 "Copy to Clipboard_visible": true,
                 "Copy to Clipboard_converted": false
             },
-            "op_code": 190,
+            "op_code": 191,
             "content_label_objname": "image_output_node"
         },
         {
@@ -379,7 +379,7 @@
             "content": {
                 "_visible": true
             },
-            "op_code": 187,
+            "op_code": 188,
             "content_label_objname": "exec_node"
         },
         {
@@ -390,7 +390,7 @@
             "inputs": [],
             "outputs": [],
             "content": {},
-            "op_code": 185,
+            "op_code": 186,
             "content_label_objname": "bg_node",
             "color": "#fff5c211",
             "width": 919.75,
@@ -404,7 +404,7 @@
             "inputs": [],
             "outputs": [],
             "content": {},
-            "op_code": 185,
+            "op_code": 186,
             "content_label_objname": "bg_node",
             "color": "#ffb5835a",
             "width": 1457.875,
@@ -418,7 +418,7 @@
             "inputs": [],
             "outputs": [],
             "content": {},
-            "op_code": 185,
+            "op_code": 186,
             "content_label_objname": "bg_node",
             "color": "#ff1c71d8",
             "width": 1141.9374999999993,
@@ -436,7 +436,7 @@
                 "Info_visible": true,
                 "Info_converted": false
             },
-            "op_code": 186,
+            "op_code": 187,
             "content_label_objname": "bg_node_info",
             "color": "#e3212121",
             "width": 2109.4375000000005,
@@ -500,10 +500,10 @@
                 }
             ],
             "content": {
-                "Prompt": "",
+                "Prompt": "photo of an ai art dealer wearing a long coat, opening coat with hands showing many articles",
                 "Prompt_visible": true,
                 "Prompt_converted": false,
-                "Prompt 2": "photo of an ai art dealer wearing a long coat, opening coat with hands showing many articles",
+                "Prompt 2": "",
                 "Prompt 2_visible": true,
                 "Prompt 2_converted": false,
                 "Height": 1024,
@@ -529,7 +529,7 @@
                 "Use embeds_converted": false,
                 "_visible": true
             },
-            "op_code": 225,
+            "op_code": 180,
             "content_label_objname": "cond_ainode_xl"
         },
         {
@@ -619,7 +619,7 @@
                 "Use embeds_converted": false,
                 "_visible": true
             },
-            "op_code": 225,
+            "op_code": 180,
             "content_label_objname": "cond_ainode_xl"
         }
     ],
