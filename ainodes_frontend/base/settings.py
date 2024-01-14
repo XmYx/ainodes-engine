@@ -77,50 +77,76 @@ def save_settings(settings, destination):
     with open(destination, 'w') as file:
         print(f"Saving settings to YAML: {settings_dict}")  # Debug line
         yaml.dump(settings_dict, file, indent=4)
+# class Settings:
+#     def __init__(self):
+#         self.checkpoints = "models/checkpoints"
+#         self.checkpoints_xl = "models/checkpoints_xl"
+#         self.hypernetworks = "models/hypernetworks"
+#         self.vae = "models/vae"
+#         self.controlnet = "models/controlnet"
+#         self.embeddings = "models/embeddings"
+#         self.upscalers = "models/other"
+#         self.loras = "models/loras"
+#         self.t2i_adapter = "models/t2i"
+#         self.output = "output"
+#         self.opengl = ""
+#         self.keybindings = DEFAULT_KEYBINDINGS
+#         self.use_exec = False
+#         self.opengl = False
+#         self.vram_state = "medium"
+#
+#     def load_from_dict(self, settings_dict):
+#         for key, value in settings_dict.items():
+#             setattr(self, key, value)
+#
+#     def to_dict(self):
+#         if hasattr(gs, "prefs"):
+#             if hasattr(gs.prefs, "keybindings"):
+#                 self.keybindings = gs.prefs.keybindings
+#
+#         settings_dict = {
+#             'checkpoints': self.checkpoints,
+#             'hypernetworks': self.hypernetworks,
+#             'vae': self.vae,
+#             'controlnet': self.controlnet,
+#             'embeddings': self.embeddings,
+#             'upscalers': self.upscalers,
+#             'loras': self.loras,
+#             't2i_adapter': self.t2i_adapter,
+#             'output': self.output,
+#             'keybindings': self.keybindings if hasattr(self, 'keybindings') else {},
+#             'use_exec':self.use_exec,
+#             'opengl':self.opengl,
+#             'vram_state':self.vram_state
+#         }
+#
+#         return settings_dict
+#     #return settings
+
 class Settings:
-    def __init__(self):
-        self.checkpoints = "models/checkpoints"
-        self.checkpoints_xl = "models/checkpoints_xl"
-        self.hypernetworks = "models/hypernetworks"
-        self.vae = "models/vae"
-        self.controlnet = "models/controlnet"
-        self.embeddings = "models/embeddings"
-        self.upscalers = "models/other"
-        self.loras = "models/loras"
-        self.t2i_adapter = "models/t2i"
-        self.output = "output"
-        self.opengl = ""
-        self.keybindings = DEFAULT_KEYBINDINGS
-        self.use_exec = False
-        self.opengl = False
-        self.vram_state = "medium"
+    def __init__(self, **kwargs):
+        # Default settings
+        default_file_path = 'config/default_settings.yaml'
+
+        # Load default settings
+        with open(default_file_path, 'r') as file:
+            self.defaults = yaml.safe_load(file)
+        # Load from defaults and override with any provided kwargs
+        self.settings = {**self.defaults, **kwargs}
 
     def load_from_dict(self, settings_dict):
+        # Override defaults with settings from the dictionary
+
         for key, value in settings_dict.items():
             setattr(self, key, value)
 
+        self.settings = {**self.settings, **settings_dict}
+
     def to_dict(self):
-        if hasattr(gs, "prefs"):
-            if hasattr(gs.prefs, "keybindings"):
-                self.keybindings = gs.prefs.keybindings
+        return self.settings
 
-        settings_dict = {
-            'checkpoints': self.checkpoints,
-            'hypernetworks': self.hypernetworks,
-            'vae': self.vae,
-            'controlnet': self.controlnet,
-            'embeddings': self.embeddings,
-            'upscalers': self.upscalers,
-            'loras': self.loras,
-            't2i_adapter': self.t2i_adapter,
-            'output': self.output,
-            'keybindings': self.keybindings if hasattr(self, 'keybindings') else {},
-            'use_exec':self.use_exec,
-            'opengl':self.opengl
-        }
 
-        return settings_dict
-    #return settings
+
 def get_last_config():
     last_config_path = os.path.join('config', 'last_config.yaml')
     if os.path.exists(last_config_path):
@@ -128,6 +154,10 @@ def get_last_config():
             data = yaml.safe_load(file)
             return data.get('last_config')
     return "config/default_settings.yaml"
+
+
+
+
 def load_settings(file_path=None):
     settings = Settings()
     default_file_path = 'config/default_settings.yaml'
@@ -150,6 +180,9 @@ def load_settings(file_path=None):
 
     settings.load_from_dict(custom_settings_dict)
     gs.prefs = settings
+
+
+    # print(gs.prefs)
 
     try:
         gs.vram_state = gs.prefs.vram_state["selected"]

@@ -47,6 +47,7 @@ class DeforumFramewarpNode(AiNode):
         self.depth_model = None
         self.depth = None
         self.algo = ""
+        self.vram_state = None
     def evalImplementation_thread(self, index=0):
         np_image = None
         data = self.getInputData(0)
@@ -72,8 +73,8 @@ class DeforumFramewarpNode(AiNode):
                     anim_args.hybrid_composite and anim_args.hybrid_comp_mask_type in ['Depth', 'Video Depth'])
 
 
-            if self.depth_model == None or self.algo != anim_args.depth_algorithm:
-
+            if self.depth_model == None or self.algo != anim_args.depth_algorithm or self.vram_state != gs.vram_state:
+                self.vram_state = gs.vram_state
                 if self.depth_model is not None:
                     self.depth_model.to("cpu")
                     del self.depth_model

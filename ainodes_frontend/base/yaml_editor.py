@@ -6,6 +6,16 @@ from PyQt6.QtGui import QKeySequence
 from PyQt6.QtWidgets import QTabWidget, QKeySequenceEdit
 from qtpy.QtWidgets import QWidget, QVBoxLayout, QLabel, QLineEdit, QPushButton, QMessageBox, QFileDialog, QComboBox, \
     QCheckBox, QHBoxLayout
+import os
+from ainodes_frontend import singleton as gs
+import platform
+import subprocess
+import time
+from types import SimpleNamespace
+
+import yaml
+import traceback
+
 
 
 folder_options = [
@@ -301,6 +311,9 @@ class YamlEditorWidget(QWidget):
         self.set_last_config(file_path)
 
         load_settings(file_path)
+
+        gs.vram_state = gs.prefs.vram_state["selected"]
+
         self.close()
 
     def save_widgets_from_layout(self, layout):
@@ -357,3 +370,4 @@ class YamlEditorWidget(QWidget):
         return "config/default_settings.yaml"
     def cancel(self):
         self.close()
+
