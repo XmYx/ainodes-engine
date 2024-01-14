@@ -215,7 +215,10 @@ class KSamplerNode(AiNode):
             self.last_step = steps if self.content.stop_early.isChecked() == False else self.content.last_step.value()
             short_steps = self.last_step - self.content.start_step.value()
             self.single_step = int(100 / steps) if self.content.start_step.value() == 0 and self.last_step == steps else int(short_steps)
-            generator = torch.manual_seed(seed)
+            try:
+                generator = torch.manual_seed(seed)
+            except:
+                pass
             from comfy import model_base
             self.model_version = "xl" if type(unet.model) in [model_base.SDXL, model_base.SDXLRefiner] else "classic"
             self.set_rgb_factor(self.model_version)
