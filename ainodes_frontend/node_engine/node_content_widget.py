@@ -257,9 +257,9 @@ class QDMNodeContentWidget(QWidget, Serializable):
                 created_widget.textChanged.connect(self.mark_node_dirty)
             elif isinstance(created_widget, QComboBox):
                 created_widget.currentIndexChanged.connect(self.mark_node_dirty)
-        self.setStyleSheet(
-            "background-color: transparent; "
-        )
+        # self.setStyleSheet(
+        #     "background-color: transparent; "
+        # )
     @QtCore.Slot()
     def mark_node_dirty(self, value=None):
         # print("marking")
@@ -761,7 +761,7 @@ class QDMNodeContentWidget(QWidget, Serializable):
         The layout is a QVBoxLayout with custom margins and will be set as the layout for the widget.
         If grid parameter is provided, a QGridLayout with grid number of columns will be created.
         """
-        stylesheet = load_stylesheet(os.path.join("ainodes_frontend", gs.qss))
+        # stylesheet = load_stylesheet(os.path.join("ainodes_frontend", gs.qss))
 
         if self.node.use_gpu:
             self.create_combo_box(gs.available_gpus, "Select GPU", spawn="gpu_id")
@@ -779,10 +779,10 @@ class QDMNodeContentWidget(QWidget, Serializable):
                     row = i // grid
                     column = i % grid
                     if isinstance(item, QtWidgets.QWidget):
-                        try:
-                            item.setStyleSheet(stylesheet)
-                        except:
-                            pass
+                        # try:
+                        #     item.setStyleSheet(stylesheet)
+                        # except:
+                        #     pass
 
                         item.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
 

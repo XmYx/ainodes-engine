@@ -1,18 +1,62 @@
+CustomSpinBox, CustomComboBox, CustomCheckBox, CustomDoubleSpinBox, QDoubleSpinBox, QSpinBox, CustomTextEdit, CustomLineEdit, QLineEdit, QTextEdit {
+    background-color: black;
+    color: white;
+    font-weight: bold;
+}
+
+QDMNodeContentWidget CustomLineEdit {
+    background-color: black;
+}
+
+QCheckBox::indicator {
+	border: 2px solid black;
+	background: transparent;
+	width: 20px;
+	height: 20px;
+}
+QCheckBox::indicator:checked {
+	background-color: white;
+	border: 2px solid black;
+	image: url('ainodes-frontend/icons/mul.png');
+}
+
+QDMNodeContentWidget QTextEdit,
+QDMNodeContentWidget QLineEdit {
+  background-color: black;
+  color: white;
+}
+
+CustomLineEdit {
+    background-color: black;  /* Dark gray background */
+    color: #FFFFFF;             /* White text */
+    border: 1px solid #4a4a4a;  /* Light gray border for some contrast */
+    padding: 2px;               /* Padding inside the line edit */
+    selection-background-color: #555555; /* Background color for selected text */
+    selection-color: #FFFFFF;   /* White text color for selected text */
+}
+
+/* Optionally, style the placeholder text if needed */
+CustomLineEdit::placeholder {
+    color: #757575; /* Light gray color for placeholder text */
+}
+QDMNodeContentWidget {
+    background-color: transparent;
+}
+
+
 QFrame,QDialog,QMainWindow{background:black}
 QSplitter,QMainWindow::separator{background:black}
-QStatusBar{background:#474747;color:#ccc}
 QTabWidget{border:0}
-QTabBar{background:#474747;color:#ccc}
+QTabBar{background:black;color:#ccc}
 QMdiArea QTabBar,QMdiArea QTabWidget,QMdiArea QTabWidget::pane,QMdiArea QTabWidget::tab-bar,QMdiArea QTabBar::tab{height:17px}
 QMdiArea QTabBar::tab:top:!selected,QMdiArea QTabBar::tab:top:selected,QMdiArea QTabBar::tab:top:!selected:hover{border-top-left-radius:4px;border-top-right-radius:4px;padding:2px 8px;padding-top:0;padding-bottom:3px;min-width:8ex;border:1px solid #333;border-bottom:0}
 QMdiArea QTabBar::tab:top:!selected,QMdiArea QTabBar::tab:top:!selected:hover{background:qlineargradient(x1 : 0,y1 : 0,x2 : 0,y2 : 1,stop : 0 #6d6d6d,stop : .1 #474747,stop : .89 #3f3f3f,stop : 1 #3f3f3f)}
 QMdiArea QTabBar::tab:top:selected{background:qlineargradient(x1 : 0,y1 : 0,x2 : 0,y2 : 1,stop : 0 #878787,stop : .1 #545454,stop : .89 #474747,stop : 1 #474747)}
 QMdiArea QTabBar::tab:top:!selected:hover{background:qlineargradient(x1 : 0,y1 : 0,x2 : 0,y2 : 1,stop : 0 #727272,stop : .1 #4c4c4c,stop : .89 #444,stop : 1 #444)}
-QMdiArea QTabBar QToolButton{background:qlineargradient(x1 : 0,y1 : 0,x2 : 0,y2 : 1,stop : 0 #878787,stop : .1 #616161,stop : .89 #4f4f4f,stop : 1 #4f4f4f);border:1px solid #333;border-radius:0}
+QMdiArea QTabBar QToolButton{background:black;border:1px solid #333;border-radius:0}
 QMdiArea QTabBar QToolButton::left-arrow{image:url(":icons/small_arrow_left-light.png")}
 QMdiArea QTabBar QToolButton::right-arrow{image:url(":icons/small_arrow_right-light.png")}
-QMdiArea QTabBar::close-button:selected{image:url(":icons/tab_close_btn.png");subcontrol-origin:border;subcontrol-position:right bottom}
-QMdiArea QTabBar::close-button:!selected{image:url(":icons/tab_close_nonselected_btn.png")}
+
 QTabBar::tab:selected,QTabBar::tab:hover{color:#eee}
 QDockWidget{color:#ddd;font-weight:bold;titlebar-close-icon:url(":icons/docktitle-close-btn-light.png");titlebar-normal-icon:url(":icons/docktitle-normal-btn-light.png")}
 QDockWidget{color:#ddd;font-weight:bold;titlebar-close-icon:url(":icons/docktitle-close-btn-light.png");titlebar-normal-icon:url(":icons/docktitle-normal-btn-light.png")}
@@ -33,7 +77,7 @@ QListView{background-color:#555;alternate-background-color:#434343}
 QListView::item:hover{background:#6e6e6e}
 QListView::item::active:hover{color:#fff}
 QListView::item:selected,QListView::item::active:selected{color:#fff;background:qlineargradient(x1 : 0,y1 : 0,x2 : 0,y2 : 1,stop : 0 #4f9eee,stop : 1 #2084ea);border:0}
-QPushButton{color:#e6e6e6;background:#555;border-color:#141414}
+QPushButton{color:#e6e6e6;background:black;border-color:#141414}
 QLabel{color:#e6e6e6}
 
 QLineEdit{border:1px solid #3a3a3a;border-radius:2px;padding:1px 2px}
@@ -47,7 +91,6 @@ QTextEdit {
 }
 QDMNodeContentWidget{background:transparent;}
 QDMNodeContentWidget QFrame{background:transparent}
-QDMNodeContentWidget QLabel{color:#e0e0e0}
 QGraphicsView{selection-background-color:#fff}
 QComboBox {
     border: 1px solid gray;
@@ -81,7 +124,7 @@ QTabWidget::tab-bar {
 }
 
 QTabBar::tab {
-    background: #6d6d6d;
+    background: black;
     border: 1px solid #3a3a3a;
     border-bottom-color: #474747; /* same as the pane color */
     padding: 5px;
@@ -113,7 +156,7 @@ QToolBar::handle {  /* Styling the handle used to move/dock the toolbar */
 }
 
 QToolBar QPushButton, QToolBar QToolButton {  /* Both QPushButton and QToolButton can exist on a toolbar */
-    background-color: #555;  /* Button background */
+    background-color: black;  /* Button background */
     border: 1px solid #3a3a3a;
     border-radius: 4px;      /* Rounded corners */
     padding: 5px 10px;       /* Padding around the text/icon */
