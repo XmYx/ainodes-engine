@@ -361,8 +361,8 @@ class AiNode(Node):
 
             x = 0
             for port in ports:
-
-                if len(result) >= x:
+                # print(len(result), x)
+                if len(result) - 1 >= x:
 
                     if result[x] is not None:
                         self.markDirty(False)

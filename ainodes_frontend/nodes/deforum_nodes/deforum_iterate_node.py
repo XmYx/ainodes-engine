@@ -73,7 +73,7 @@ class DeforumIterateNode(AiNode):
         self.seeds = []
         self.args = None
         self.root = None
-        self.content.frame_slider.valueChanged.connect(self.set_frame)
+        self.content.frame_slider.slider.valueChanged.connect(self.set_frame)
 
     def reset_iteration(self):
         self.frame_index = 0
