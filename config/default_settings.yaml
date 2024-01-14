@@ -1,5 +1,5 @@
 opengl: false
-use_exec: false
+use_exec: true
 theme: dark
 checkpoints: models/checkpoints
 controlnet: models/controlnet
