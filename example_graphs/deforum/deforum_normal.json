@@ -47,44 +47,64 @@
             "content": {
                 "width": 1024,
                 "width_visible": true,
+                "width_converted": false,
                 "height": 1024,
                 "height_visible": true,
+                "height_converted": false,
                 "seed": "-1",
                 "seed_visible": true,
+                "seed_converted": false,
                 "sampler": "euler_ancestral",
                 "sampler_visible": true,
+                "sampler_converted": false,
                 "steps": 25,
                 "steps_visible": true,
+                "steps_converted": false,
                 "scale": 7,
                 "scale_visible": true,
+                "scale_converted": false,
                 "n_batch": 1,
                 "n_batch_visible": true,
+                "n_batch_converted": false,
                 "batch_name": "Deforum_{timestring}",
                 "batch_name_visible": true,
+                "batch_name_converted": false,
                 "seed_behavior": "random",
                 "seed_behavior_visible": true,
+                "seed_behavior_converted": false,
                 "seed_iter_N": 1,
                 "seed_iter_N_visible": true,
+                "seed_iter_N_converted": false,
                 "outdir": "output/deforum",
                 "outdir_visible": true,
+                "outdir_converted": false,
                 "strength": 0.0,
                 "strength_visible": true,
+                "strength_converted": false,
                 "save_settings": "True",
                 "save_settings_visible": true,
+                "save_settings_converted": false,
                 "save_sample_per_step": "False",
                 "save_sample_per_step_visible": true,
+                "save_sample_per_step_converted": false,
                 "prompt_weighting": "False",
                 "prompt_weighting_visible": true,
+                "prompt_weighting_converted": false,
                 "normalize_prompt_weights": "True",
                 "normalize_prompt_weights_visible": true,
+                "normalize_prompt_weights_converted": false,
                 "log_weighted_subprompts": "False",
                 "log_weighted_subprompts_visible": true,
+                "log_weighted_subprompts_converted": false,
                 "prompt": "",
                 "prompt_visible": true,
+                "prompt_converted": false,
                 "timestring": "",
                 "timestring_visible": true,
+                "timestring_converted": false,
                 "seed_internal": "-1",
-                "seed_internal_visible": true
+                "seed_internal_visible": true,
+                "seed_internal_converted": false
             },
             "op_code": 196,
             "content_label_objname": "deforum_base_params_node"
@@ -245,7 +265,8 @@
             ],
             "content": {
                 "Blend Method": "linear",
-                "Blend Method_visible": true
+                "Blend Method_visible": true,
+                "Blend Method_converted": false
             },
             "op_code": 212,
             "content_label_objname": "deforum_sdcond_node"
@@ -349,10 +370,13 @@
             "content": {
                 "Model:": "/protovisionXLHighFidelity3D_release0620Bakedvae.safetensors",
                 "Model:_visible": true,
+                "Model:_converted": false,
                 "Vae": "default",
                 "Vae_visible": true,
+                "Vae_converted": false,
                 "Force Reload": "False",
-                "Force Reload_visible": true
+                "Force Reload_visible": true,
+                "Force Reload_converted": false
             },
             "op_code": 225,
             "content_label_objname": "torch_loader_node"
@@ -457,36 +481,52 @@
             "content": {
                 "Scheduler:": "normal",
                 "Scheduler:_visible": true,
+                "Scheduler:_converted": false,
                 "Sampler:": "euler",
                 "Sampler:_visible": true,
+                "Sampler:_converted": false,
                 "Seed:": "",
                 "Seed:_visible": true,
+                "Seed:_converted": false,
                 "Steps:": 10,
                 "Steps:_visible": true,
+                "Steps:_converted": false,
                 "Start Step:": 0,
                 "Start Step:_visible": true,
+                "Start Step:_converted": false,
                 "Last Step:": 5,
                 "Last Step:_visible": true,
+                "Last Step:_converted": false,
                 "Stop Sampling Early": "False",
                 "Stop Sampling Early_visible": true,
+                "Stop Sampling Early_converted": false,
                 "Force full denoise": "True",
                 "Force full denoise_visible": true,
+                "Force full denoise_converted": false,
                 "Preview Type": "quick-rgb",
                 "Preview Type_visible": true,
+                "Preview Type_converted": false,
                 "Show Tensor Preview": "True",
                 "Show Tensor Preview_visible": true,
+                "Show Tensor Preview_converted": false,
                 "Disable noise generation": "False",
                 "Disable noise generation_visible": true,
+                "Disable noise generation_converted": false,
                 "Iterate seed": "False",
                 "Iterate seed_visible": true,
+                "Iterate seed_converted": false,
                 "Use latent from loop": "False",
                 "Use latent from loop_visible": true,
+                "Use latent from loop_converted": false,
                 "Use float32 for decode/encode": "False",
                 "Use float32 for decode/encode_visible": true,
+                "Use float32 for decode/encode_converted": false,
                 "Denoise:": 1.0,
                 "Denoise:_visible": true,
+                "Denoise:_converted": false,
                 "Guidance Scale:": 7.5,
                 "Guidance Scale:_visible": true,
+                "Guidance Scale:_converted": false,
                 "_visible": true,
                 "progress_visible": true
             },
@@ -537,16 +577,22 @@
             "content": {
                 "animation_mode": "3D",
                 "animation_mode_visible": true,
+                "animation_mode_converted": false,
                 "max_frames": 120,
                 "max_frames_visible": true,
+                "max_frames_converted": false,
                 "border": "wrap",
                 "border_visible": true,
+                "border_converted": false,
                 "resume_from_timestring": "False",
                 "resume_from_timestring_visible": true,
+                "resume_from_timestring_converted": false,
                 "resume_timestring": "20230129210106",
                 "resume_timestring_visible": true,
+                "resume_timestring_converted": false,
                 "use_looper": "False",
-                "use_looper_visible": true
+                "use_looper_visible": true,
+                "use_looper_converted": false
             },
             "op_code": 201,
             "content_label_objname": "deforum_anim_params_node"
@@ -554,8 +600,8 @@
         {
             "id": 140187922531760,
             "title": "Deforum Add Noise",
-            "pos_x": 2892.4218749999986,
-            "pos_y": -340.703125,
+            "pos_x": 2931.171874999998,
+            "pos_y": -14.453125,
             "inputs": [
                 {
                     "id": 140187922530416,
@@ -615,8 +661,8 @@
         {
             "id": 140187920778864,
             "title": "Deforum Frame Warp",
-            "pos_x": 2861.3281249999995,
-            "pos_y": -109.06250000000003,
+            "pos_x": 2882.578125,
+            "pos_y": -309.0625,
             "inputs": [
                 {
                     "id": 140187920777712,
@@ -702,8 +748,8 @@
         {
             "id": 140187922538240,
             "title": "Deforum ColorMatch Node",
-            "pos_x": 1566.4062500000005,
-            "pos_y": -698.5781249999997,
+            "pos_x": 1668.3593750000007,
+            "pos_y": -703.2656249999997,
             "inputs": [
                 {
                     "id": 140187922537088,
@@ -821,14 +867,19 @@
                 "_visible": true,
                 "FPS": 24,
                 "FPS_visible": true,
+                "FPS_converted": false,
                 "Custom save directory": "",
                 "Custom save directory_visible": true,
+                "Custom save directory_converted": false,
                 "Autosave": "False",
                 "Autosave_visible": true,
+                "Autosave_converted": false,
                 "Embed Node graph in PNG": "False",
                 "Embed Node graph in PNG_visible": true,
+                "Embed Node graph in PNG_converted": false,
                 "Copy to Clipboard": "False",
-                "Copy to Clipboard_visible": true
+                "Copy to Clipboard_visible": true,
+                "Copy to Clipboard_converted": false
             },
             "op_code": 190,
             "content_label_objname": "image_output_node"
@@ -836,8 +887,8 @@
         {
             "id": 140187954355056,
             "title": "Video Save",
-            "pos_x": 2404.94375,
-            "pos_y": 0.0968750000001819,
+            "pos_x": 2437.4437500000004,
+            "pos_y": -24.903124999999818,
             "inputs": [
                 {
                     "id": 140187951481520,
@@ -877,18 +928,25 @@
             "content": {
                 "Save Format": "mp4_ffmpeg",
                 "Save Format_visible": true,
+                "Save Format_converted": false,
                 "Width": 512,
                 "Width_visible": true,
+                "Width_converted": false,
                 "Height": 512,
                 "Height_visible": true,
+                "Height_converted": false,
                 "FPS": 12,
                 "FPS_visible": true,
+                "FPS_converted": false,
                 "Dump at every:": 0,
                 "Dump at every:_visible": true,
+                "Dump at every:_converted": false,
                 "Audio Path:": "",
                 "Audio Path:_visible": true,
+                "Audio Path:_converted": false,
                 "Keep Buffer": "False",
                 "Keep Buffer_visible": true,
+                "Keep Buffer_converted": false,
                 "_visible": true
             },
             "op_code": 193,
@@ -1030,14 +1088,19 @@
             "content": {
                 "color_coherence": "Image",
                 "color_coherence_visible": true,
+                "color_coherence_converted": false,
                 "color_coherence_image_path": "",
                 "color_coherence_image_path_visible": true,
+                "color_coherence_image_path_converted": false,
                 "color_coherence_video_every_N_frames": 1,
                 "color_coherence_video_every_N_frames_visible": true,
+                "color_coherence_video_every_N_frames_converted": false,
                 "color_force_grayscale": "False",
                 "color_force_grayscale_visible": true,
+                "color_force_grayscale_converted": false,
                 "legacy_colormatch": "False",
-                "legacy_colormatch_visible": true
+                "legacy_colormatch_visible": true,
+                "legacy_colormatch_converted": false
             },
             "op_code": 203,
             "content_label_objname": "deforum_color_params_node"
@@ -1086,24 +1149,34 @@
             "content": {
                 "noise_schedule": "0: (0.065)",
                 "noise_schedule_visible": true,
+                "noise_schedule_converted": false,
                 "strength_schedule": "0: (0.45)",
                 "strength_schedule_visible": true,
+                "strength_schedule_converted": false,
                 "contrast_schedule": "0: (1.0)",
                 "contrast_schedule_visible": true,
+                "contrast_schedule_converted": false,
                 "cfg_scale_schedule": "0: (7)",
                 "cfg_scale_schedule_visible": true,
+                "cfg_scale_schedule_converted": false,
                 "enable_steps_scheduling": "False",
                 "enable_steps_scheduling_visible": true,
+                "enable_steps_scheduling_converted": false,
                 "steps_schedule": "0: (25)",
                 "steps_schedule_visible": true,
+                "steps_schedule_converted": false,
                 "enable_ddim_eta_scheduling": "False",
                 "enable_ddim_eta_scheduling_visible": true,
+                "enable_ddim_eta_scheduling_converted": false,
                 "ddim_eta_schedule": "0:(0)",
                 "ddim_eta_schedule_visible": true,
+                "ddim_eta_schedule_converted": false,
                 "enable_ancestral_eta_scheduling": "False",
                 "enable_ancestral_eta_scheduling_visible": true,
+                "enable_ancestral_eta_scheduling_converted": false,
                 "ancestral_eta_schedule": "0:(1)",
-                "ancestral_eta_schedule_visible": true
+                "ancestral_eta_schedule_visible": true,
+                "ancestral_eta_schedule_converted": false
             },
             "op_code": 206,
             "content_label_objname": "deforum_diffusion_params_node"
@@ -1152,24 +1225,34 @@
             "content": {
                 "angle": "0:(0)",
                 "angle_visible": true,
+                "angle_converted": false,
                 "zoom": "0:(1.0025+0.002*sin(1.25*3.14*t/30))",
                 "zoom_visible": true,
+                "zoom_converted": false,
                 "translation_x": "0:(0)",
                 "translation_x_visible": true,
+                "translation_x_converted": false,
                 "translation_y": "0:(0)",
                 "translation_y_visible": true,
+                "translation_y_converted": false,
                 "translation_z": "0:(1.75)",
                 "translation_z_visible": true,
+                "translation_z_converted": false,
                 "transform_center_x": "0:(0.5)",
                 "transform_center_x_visible": true,
+                "transform_center_x_converted": false,
                 "transform_center_y": "0:(0.5)",
                 "transform_center_y_visible": true,
+                "transform_center_y_converted": false,
                 "rotation_3d_x": "0:(0)",
                 "rotation_3d_x_visible": true,
+                "rotation_3d_x_converted": false,
                 "rotation_3d_y": "0:(0)",
                 "rotation_3d_y_visible": true,
+                "rotation_3d_y_converted": false,
                 "rotation_3d_z": "0:(0)",
-                "rotation_3d_z_visible": true
+                "rotation_3d_z_visible": true,
+                "rotation_3d_z_converted": false
             },
             "op_code": 202,
             "content_label_objname": "deforum_translation_node"
@@ -1285,12 +1368,6 @@
             "end": 140187922531088
         },
         {
-            "id": 140187922036192,
-            "edge_type": 2,
-            "start": 140187920787216,
-            "end": 140187922531232
-        },
-        {
             "id": 140187920777424,
             "edge_type": 2,
             "start": 140186172856816,
@@ -1301,12 +1378,6 @@
             "edge_type": 2,
             "start": 140186172856816,
             "end": 140187920777712
-        },
-        {
-            "id": 140187922532096,
-            "edge_type": 2,
-            "start": 140187920784336,
-            "end": 140187922534640
         },
         {
             "id": 140187951493520,
@@ -1325,30 +1396,6 @@
             "edge_type": 2,
             "start": 140187920787168,
             "end": 140187922545200
-        },
-        {
-            "id": 140187920777904,
-            "edge_type": 2,
-            "start": 140187951482432,
-            "end": 140187922537328
-        },
-        {
-            "id": 140187951487760,
-            "edge_type": 2,
-            "start": 140187922544912,
-            "end": 140187922532144
-        },
-        {
-            "id": 140187951488960,
-            "edge_type": 2,
-            "start": 140187922532192,
-            "end": 140187951485024
-        },
-        {
-            "id": 140187951489632,
-            "edge_type": 2,
-            "start": 140187951484928,
-            "end": 140187922532048
         },
         {
             "id": 140187951484784,
@@ -1427,6 +1474,42 @@
             "edge_type": 2,
             "start": 140187920780640,
             "end": 140186172856816
+        },
+        {
+            "id": 139931133716768,
+            "edge_type": 2,
+            "start": 140187922534976,
+            "end": 140187920784336
+        },
+        {
+            "id": 139932391614032,
+            "edge_type": 2,
+            "start": 140187922532192,
+            "end": 140187922531232
+        },
+        {
+            "id": 139932391622592,
+            "edge_type": 2,
+            "start": 140187922534640,
+            "end": 140187951485024
+        },
+        {
+            "id": 139932391614608,
+            "edge_type": 2,
+            "start": 140187951482432,
+            "end": 140187922532144
+        },
+        {
+            "id": 139932391624176,
+            "edge_type": 2,
+            "start": 140187922532048,
+            "end": 140187922537328
+        },
+        {
+            "id": 139932391616720,
+            "edge_type": 2,
+            "start": 140187922544912,
+            "end": 140187951484928
         }
     ]
 }
