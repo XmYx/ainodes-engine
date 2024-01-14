@@ -25,6 +25,7 @@ from ainodes_frontend.base.node_config import CALC_NODES, import_nodes_from_file
     get_class_from_content_label_objname, LISTBOX_MIMETYPE, get_class_from_opcode
 from ainodes_frontend.base.node_sub_window import CalculatorSubWindow
 from ainodes_frontend.base.settings import save_settings, save_error_log
+from ainodes_frontend.base.theme_settings import ThemePreferencesDialog
 from ainodes_frontend.base.webview_widget import BrowserWidget
 from ainodes_frontend.base.worker import Worker
 from ainodes_frontend.base.yaml_editor import YamlEditorWidget
@@ -988,7 +989,9 @@ class CalculatorWindow(NodeEditorWindow):
         super().createActions()
         self.actNode = QAction('&Add Node', self, shortcut='Ctrl+L', statusTip="Open new node", triggered=self.onNodeOpen)
         self.actNodePacks = QAction('&Node Packages', self, shortcut='Ctrl+K', statusTip="Download Nodes", triggered=self.show_github_repositories)
-        self.actShowSettingsEditor = QAction('&Settings Editor', self, shortcut='Ctrl+J', statusTip="Open Settings", triggered=self.showSettingsEditor)
+
+        self.actShowSettingsEditor = QAction('&Settings', self, shortcut='Ctrl+J', statusTip="Open Settings", triggered=self.showSettingsEditor)
+        self.actShowThemeEditor = QAction('&Themes', self, statusTip="Set Theme", triggered=self.showThemeEditor)
 
         self.actClose = QAction("Cl&ose", self, statusTip="Close the active window", triggered=self.mdiArea.closeActiveSubWindow)
         self.actCloseAll = QAction("Close &All", self, statusTip="Close all the windows", triggered=self.mdiArea.closeAllSubWindows)
@@ -1020,6 +1023,10 @@ class CalculatorWindow(NodeEditorWindow):
 
         self.yaml_editor.load_yaml(settings_path)
         self.yaml_editor.show()
+
+    def showThemeEditor(self):
+        self.theme_editor = ThemePreferencesDialog()
+        self.theme_editor.show()
     def get_last_config(self):
         """
         Retrieve the file path from last_config.yaml.
@@ -1230,6 +1237,7 @@ class CalculatorWindow(NodeEditorWindow):
         self.fileMenu.addAction(self.actNode)
         self.fileMenu.addAction(self.actNodePacks)
         self.fileMenu.addAction(self.actShowSettingsEditor)
+        self.fileMenu.addAction(self.actShowThemeEditor)
         # Get the index of the action in the fileMenu
         action_index = self.fileMenu.actions().index(self.actNode)
 
