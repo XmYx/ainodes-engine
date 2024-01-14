@@ -19,6 +19,8 @@ OP_NODE_DEFORUM_PROMPT = get_next_opcode()
 
 class DeforumPromptWidget(QDMNodeContentWidget):
     def initUI(self):
+        from ainodes_frontend import singleton as gs
+        self.stylesheet = load_stylesheet(os.path.join("ainodes_frontend", gs.qss))
         self.createUI()
 
     def createUI(self):
@@ -46,9 +48,8 @@ class DeforumPromptWidget(QDMNodeContentWidget):
 
         textedit = QtWidgets.QTextEdit()
         row_layout.addWidget(textedit)
-        from ainodes_frontend import singleton as gs
-        stylesheet = load_stylesheet(os.path.join("ainodes_frontend", gs.qss))
-        textedit.setStyleSheet(stylesheet)
+
+        textedit.setStyleSheet(self.stylesheet)
 
         removeButton = QtWidgets.QPushButton("Remove")
         removeButton.clicked.connect(lambda: self.remove_row(row_widget))
@@ -63,8 +64,8 @@ class DeforumPromptWidget(QDMNodeContentWidget):
 
     def deserialize(self, data, hashmap={}, restore_id:bool=True):
         #self.clear_rows()
-        from ainodes_frontend import singleton as gs
-        stylesheet = load_stylesheet(os.path.join("ainodes_frontend", gs.qss))
+        # from ainodes_frontend import singleton as gs
+        # stylesheet = load_stylesheet(os.path.join("ainodes_frontend", gs.qss))
 
         for value, text in data.items():
             row_widget = QtWidgets.QWidget()
@@ -77,7 +78,7 @@ class DeforumPromptWidget(QDMNodeContentWidget):
             textedit = QtWidgets.QTextEdit()
 
 
-            textedit.setStyleSheet(stylesheet)
+            # textedit.setStyleSheet(stylesheet)
 
             textedit.setPlainText(text.replace("\"", ""))
             row_layout.addWidget(textedit)

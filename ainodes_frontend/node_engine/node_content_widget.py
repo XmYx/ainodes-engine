@@ -15,64 +15,105 @@ from qtpy.QtWidgets import QWidget, QLabel, QVBoxLayout, QTextEdit
 from ainodes_frontend.node_engine.node_serializable import Serializable
 from ainodes_frontend import singleton as gs
 
-
-class CustomSlider(QtWidgets.QSlider):
-
+#
+# class CustomSlider(QtWidgets.QSlider):
+#
+#     def __init__(self, *args, **kwargs):
+#         super(CustomSlider, self).__init__(*args, **kwargs)
+#         self.setOrientation(QtCore.Qt.Horizontal)
+#
+#         # Variables to store the min and max labels
+#         self.min_label = QtWidgets.QLabel(str(self.minimum()))
+#         self.max_label = QtWidgets.QLabel(str(self.maximum()))
+#
+#         # Slider layout
+#         self.layout = QtWidgets.QVBoxLayout(self)
+#
+#         label_layout = QtWidgets.QHBoxLayout()
+#         # label_layout.addWidget(self.min_label)
+#         # label_layout.addStretch(5)
+#         # label_layout.addWidget(self.max_label)
+#
+#         self.layout.addLayout(label_layout)
+#         self.layout.addWidget(self, alignment=QtCore.Qt.AlignCenter)  # Center the slider in the layout
+#
+#         # Update the handle label on value change
+#         self.valueChanged.connect(self.update_handle_label)
+#
+#     def setMinimum(self, value):
+#         super(CustomSlider, self).setMinimum(value)
+#         self.min_label.setText(str(value))
+#
+#     def setMaximum(self, value):
+#         super(CustomSlider, self).setMaximum(value)
+#         self.max_label.setText(str(value))
+#
+#     def update_handle_label(self, value):
+#         # Adjust the position of the handle label based on the current value
+#         handle_width = 30  # Adjust as needed
+#         handle_x = int(self.width() * (value - self.minimum()) / (self.maximum() - self.minimum()) - handle_width / 2)
+#         # Adjust the Y coordinate to position the text in the middle of the slider
+#         text_height = self.fontMetrics().height()
+#         text_width = self.fontMetrics().averageCharWidth()
+#         #print(len(str(value)))
+#
+#         handle_label_pos = QtCore.QPoint(handle_x + text_width, int((self.height() + text_height) / 2) - 3)
+#
+#         # Create a painter to draw the label on the slider
+#         # painter = QtGui.QPainter()
+#         # painter.begin(self)
+#         # painter.setBrush(QtGui.QColor(70, 70, 70))  # Dark grey background
+#         # painter.drawRect(handle_x, 0, handle_width, self.height())
+#         # painter.setPen(QtGui.QColor(255, 255, 255))  # White text
+#         # painter.drawText(handle_label_pos, str(value))
+#         # painter.end()
+#
+#     def paintEvent(self, event):
+#         # Paint the default slider
+#         super(CustomSlider, self).paintEvent(event)
+#         # Then paint the handle label
+#         self.update_handle_label(self.value())
+class CustomSlider(QtWidgets.QWidget):
     def __init__(self, *args, **kwargs):
-        super(CustomSlider, self).__init__(*args, **kwargs)
-        self.setOrientation(QtCore.Qt.Horizontal)
+        super().__init__(*args, **kwargs)
 
-        # Variables to store the min and max labels
-        self.min_label = QtWidgets.QLabel(str(self.minimum()))
-        self.max_label = QtWidgets.QLabel(str(self.maximum()))
+        self.slider = QtWidgets.QSlider(QtCore.Qt.Orientation.Horizontal)
+        self.min_label = QtWidgets.QLabel(str(self.slider.minimum()))
+        self.max_label = QtWidgets.QLabel(str(self.slider.maximum()))
 
-        # Slider layout
-        self.layout = QtWidgets.QVBoxLayout(self)
+        # Main layout for this widget
+        main_layout = QtWidgets.QVBoxLayout(self)
 
+        # Layout for min and max labels
         label_layout = QtWidgets.QHBoxLayout()
-        # label_layout.addWidget(self.min_label)
-        # label_layout.addStretch(5)
-        # label_layout.addWidget(self.max_label)
+        label_layout.addWidget(self.min_label)
+        label_layout.addStretch()
+        label_layout.addWidget(self.max_label)
 
-        self.layout.addLayout(label_layout)
-        self.layout.addWidget(self, alignment=QtCore.Qt.AlignCenter)  # Center the slider in the layout
+        main_layout.addLayout(label_layout)
+        main_layout.addWidget(self.slider)
 
-        # Update the handle label on value change
-        self.valueChanged.connect(self.update_handle_label)
+        self.slider.valueChanged.connect(self.update_handle_label)
 
     def setMinimum(self, value):
-        super(CustomSlider, self).setMinimum(value)
+        self.slider.setMinimum(value)
         self.min_label.setText(str(value))
 
     def setMaximum(self, value):
-        super(CustomSlider, self).setMaximum(value)
+        self.slider.setMaximum(value)
         self.max_label.setText(str(value))
 
     def update_handle_label(self, value):
-        # Adjust the position of the handle label based on the current value
-        handle_width = 30  # Adjust as needed
-        handle_x = int(self.width() * (value - self.minimum()) / (self.maximum() - self.minimum()) - handle_width / 2)
-        # Adjust the Y coordinate to position the text in the middle of the slider
-        text_height = self.fontMetrics().height()
-        text_width = self.fontMetrics().averageCharWidth()
-        #print(len(str(value)))
-
-        handle_label_pos = QtCore.QPoint(handle_x + text_width, int((self.height() + text_height) / 2) - 3)
-
-        # Create a painter to draw the label on the slider
-        # painter = QtGui.QPainter()
-        # painter.begin(self)
-        # painter.setBrush(QtGui.QColor(70, 70, 70))  # Dark grey background
-        # painter.drawRect(handle_x, 0, handle_width, self.height())
-        # painter.setPen(QtGui.QColor(255, 255, 255))  # White text
-        # painter.drawText(handle_label_pos, str(value))
-        # painter.end()
+        self.update()  # This will trigger a repaint
 
     def paintEvent(self, event):
         # Paint the default slider
         super(CustomSlider, self).paintEvent(event)
         # Then paint the handle label
-        self.update_handle_label(self.value())
+        self.update_handle_label(self.slider.value())
+
+    def setValue(self, value):
+        self.slider.setValue(value)
 class CustomSpinBox(QtWidgets.QSpinBox):
     set_signal = QtCore.Signal(int)
     def __init__(self, *args, **kwargs):
@@ -531,11 +572,11 @@ class QDMNodeContentWidget(QWidget, Serializable):
             QtWidgets.QSpinBox: A spin box widget.
         """
         slider = CustomSlider()
-        slider.setOrientation(QtCore.Qt.Horizontal)
+        slider.slider.setOrientation(QtCore.Qt.Horizontal)
         slider.setMinimum(min_val)
         slider.setMaximum(max_val)
-        slider.setValue(default_val)
-        slider.setSingleStep(step)
+        slider.slider.setValue(default_val)
+        slider.slider.setSingleStep(step)
         slider.setObjectName(label_text)
         if object_name:
             slider.setObjectName(object_name)

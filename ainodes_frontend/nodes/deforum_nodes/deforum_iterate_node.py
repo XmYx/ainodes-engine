@@ -43,7 +43,7 @@ class DeforumIterateWidget(QDMNodeContentWidget):
     def initUI(self):
         self.reset_iteration = QtWidgets.QPushButton("Reset Frame Counter")
         self.frame_counter = self.create_label("Current Frame: 0")
-        self.create_slider("Timeline", min_val=0, max_val=500, default_val=0, step=1, spawn="frame_slider")
+        self.frame_slider = self.create_slider("Timeline", min_val=0, max_val=500, default_val=0, step=1, spawn=None)
         self.create_button_layout([self.reset_iteration])
         self.create_main_layout(grid=1)
 

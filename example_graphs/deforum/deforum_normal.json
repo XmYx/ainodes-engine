@@ -45,27 +45,7 @@
                 }
             ],
             "content": {
-                "Save Format": "mp4_ffmpeg",
-                "Save Format_visible": true,
-                "Save Format_converted": false,
-                "Width": 1024,
-                "Width_visible": true,
-                "Width_converted": false,
-                "Height": 1024,
-                "Height_visible": true,
-                "Height_converted": false,
-                "FPS": 24,
-                "FPS_visible": true,
-                "FPS_converted": false,
-                "Dump at every:": 0,
-                "Dump at every:_visible": true,
-                "Dump at every:_converted": false,
-                "Audio Path:": "",
-                "Audio Path:_visible": true,
-                "Audio Path:_converted": false,
-                "Keep Buffer": "False",
-                "Keep Buffer_visible": true,
-                "Keep Buffer_converted": false,
+                "": "False",
                 "_visible": true
             },
             "op_code": 193,
@@ -113,36 +93,8 @@
                 }
             ],
             "content": {
-                "angle_value_lineedit": "0:(0)",
-                "angle_value_lineedit_visible": true,
-                "angle_value_lineedit_converted": false,
-                "zoom_value_lineedit": "0:(1.0025+0.002*sin(1.25*3.14*t/30))",
-                "zoom_value_lineedit_visible": true,
-                "zoom_value_lineedit_converted": false,
-                "translation_x_value_lineedit": "0:(0)",
-                "translation_x_value_lineedit_visible": true,
-                "translation_x_value_lineedit_converted": false,
-                "translation_y_value_lineedit": "0:(0)",
-                "translation_y_value_lineedit_visible": true,
-                "translation_y_value_lineedit_converted": false,
-                "translation_z_value_lineedit": "0:(1.75)",
-                "translation_z_value_lineedit_visible": true,
-                "translation_z_value_lineedit_converted": false,
-                "transform_center_x_value_lineedit": "0:(0.5)",
-                "transform_center_x_value_lineedit_visible": true,
-                "transform_center_x_value_lineedit_converted": false,
-                "transform_center_y_value_lineedit": "0:(0.5)",
-                "transform_center_y_value_lineedit_visible": true,
-                "transform_center_y_value_lineedit_converted": false,
-                "rotation_3d_x_value_lineedit": "0:(0)",
-                "rotation_3d_x_value_lineedit_visible": true,
-                "rotation_3d_x_value_lineedit_converted": false,
-                "rotation_3d_y_value_lineedit": "0:(0)",
-                "rotation_3d_y_value_lineedit_visible": true,
-                "rotation_3d_y_value_lineedit_converted": false,
-                "rotation_3d_z_value_lineedit": "0:(0)",
-                "rotation_3d_z_value_lineedit_visible": true,
-                "rotation_3d_z_value_lineedit_converted": false
+                "": "0:(0)",
+                "_visible": true
             },
             "op_code": 202,
             "content_label_objname": "deforum_translation_node"
@@ -189,66 +141,8 @@
                 }
             ],
             "content": {
-                "width": 1024,
-                "width_visible": true,
-                "width_converted": false,
-                "height": 1024,
-                "height_visible": true,
-                "height_converted": false,
-                "seed_value_lineedit": "-1",
-                "seed_value_lineedit_visible": true,
-                "seed_value_lineedit_converted": false,
-                "sampler_value_lineedit": "euler_ancestral",
-                "sampler_value_lineedit_visible": true,
-                "sampler_value_lineedit_converted": false,
-                "steps": 16,
-                "steps_visible": true,
-                "steps_converted": false,
-                "scale": 7,
-                "scale_visible": true,
-                "scale_converted": false,
-                "n_batch": 1,
-                "n_batch_visible": true,
-                "n_batch_converted": false,
-                "batch_name_value_lineedit": "Deforum_{timestring}",
-                "batch_name_value_lineedit_visible": true,
-                "batch_name_value_lineedit_converted": false,
-                "seed_behavior_value_combobox": "random",
-                "seed_behavior_value_combobox_visible": true,
-                "seed_behavior_value_combobox_converted": false,
-                "seed_iter_N": 1,
-                "seed_iter_N_visible": true,
-                "seed_iter_N_converted": false,
-                "outdir_value_lineedit": "output/deforum",
-                "outdir_value_lineedit_visible": true,
-                "outdir_value_lineedit_converted": false,
-                "strength": 0.0,
-                "strength_visible": true,
-                "strength_converted": false,
-                "save_settings_value_checkbox": "True",
-                "save_settings_value_checkbox_visible": true,
-                "save_settings_value_checkbox_converted": false,
-                "save_sample_per_step_value_checkbox": "False",
-                "save_sample_per_step_value_checkbox_visible": true,
-                "save_sample_per_step_value_checkbox_converted": false,
-                "prompt_weighting_value_checkbox": "False",
-                "prompt_weighting_value_checkbox_visible": true,
-                "prompt_weighting_value_checkbox_converted": false,
-                "normalize_prompt_weights_value_checkbox": "True",
-                "normalize_prompt_weights_value_checkbox_visible": true,
-                "normalize_prompt_weights_value_checkbox_converted": false,
-                "log_weighted_subprompts_value_checkbox": "False",
-                "log_weighted_subprompts_value_checkbox_visible": true,
-                "log_weighted_subprompts_value_checkbox_converted": false,
-                "prompt_value_lineedit": "",
-                "prompt_value_lineedit_visible": true,
-                "prompt_value_lineedit_converted": false,
-                "timestring_value_lineedit": "",
-                "timestring_value_lineedit_visible": true,
-                "timestring_value_lineedit_converted": false,
-                "seed_internal_value_lineedit": "-1",
-                "seed_internal_value_lineedit_visible": true,
-                "seed_internal_value_lineedit_converted": false
+                "": "-1",
+                "_visible": true
             },
             "op_code": 196,
             "content_label_objname": "deforum_base_params_node"
@@ -395,24 +289,8 @@
                 }
             ],
             "content": {
-                "animation_mode_value_combobox": "3D",
-                "animation_mode_value_combobox_visible": true,
-                "animation_mode_value_combobox_converted": false,
-                "max_frames": 500,
-                "max_frames_visible": true,
-                "max_frames_converted": false,
-                "border_value_combobox": "wrap",
-                "border_value_combobox_visible": true,
-                "border_value_combobox_converted": false,
-                "resume_from_timestring_value_checkbox": "False",
-                "resume_from_timestring_value_checkbox_visible": true,
-                "resume_from_timestring_value_checkbox_converted": false,
-                "resume_timestring_value_lineedit": "20230129210106",
-                "resume_timestring_value_lineedit_visible": true,
-                "resume_timestring_value_lineedit_converted": false,
-                "use_looper_value_checkbox": "False",
-                "use_looper_value_checkbox_visible": true,
-                "use_looper_value_checkbox_converted": false
+                "": "False",
+                "_visible": true
             },
             "op_code": 201,
             "content_label_objname": "deforum_anim_params_node"
@@ -483,11 +361,8 @@
                 }
             ],
             "content": {
-                "Current Frame: 0_visible": true,
-                "Timeline": 0,
-                "Timeline_visible": true,
-                "Timeline_converted": false,
-                "_visible": true
+                "_visible": true,
+                "": 0
             },
             "op_code": 210,
             "content_label_objname": "deforum_iterate_node"
@@ -652,17 +527,10 @@
                 }
             ],
             "content": {
-                "Model:": "protovisionXLHighFidelity3D_release0620Bakedvae.safetensors",
-                "Model:_visible": true,
-                "Model:_converted": false,
-                "Vae": "default",
-                "Vae_visible": true,
-                "Vae_converted": false,
-                "Force Reload": "False",
-                "Force Reload_visible": true,
-                "Force Reload_converted": false
+                "": "False",
+                "_visible": true
             },
-            "op_code": 226,
+            "op_code": 225,
             "content_label_objname": "torch_loader_node"
         },
         {
@@ -747,9 +615,8 @@
                 }
             ],
             "content": {
-                "Blend Method": "gaussian",
-                "Blend Method_visible": true,
-                "Blend Method_converted": false
+                "": "linear",
+                "_visible": true
             },
             "op_code": 212,
             "content_label_objname": "deforum_sdcond_node"
@@ -852,58 +719,11 @@
                 }
             ],
             "content": {
-                "Scheduler:": "karras",
-                "Scheduler:_visible": true,
-                "Scheduler:_converted": false,
-                "Sampler:": "dpmpp_2m_sde",
-                "Sampler:_visible": true,
-                "Sampler:_converted": false,
-                "Seed:": "",
-                "Seed:_visible": true,
-                "Seed:_converted": false,
-                "Steps:": 13,
-                "Steps:_visible": true,
-                "Steps:_converted": false,
-                "Start Step:": 0,
-                "Start Step:_visible": true,
-                "Start Step:_converted": false,
-                "Last Step:": 5,
-                "Last Step:_visible": true,
-                "Last Step:_converted": false,
-                "Stop Sampling Early": "False",
-                "Stop Sampling Early_visible": true,
-                "Stop Sampling Early_converted": false,
-                "Force full denoise": "True",
-                "Force full denoise_visible": true,
-                "Force full denoise_converted": false,
-                "Preview Type": "quick-rgb",
-                "Preview Type_visible": true,
-                "Preview Type_converted": false,
-                "Show Tensor Preview": "False",
-                "Show Tensor Preview_visible": true,
-                "Show Tensor Preview_converted": false,
-                "Disable noise generation": "False",
-                "Disable noise generation_visible": true,
-                "Disable noise generation_converted": false,
-                "Iterate seed": "False",
-                "Iterate seed_visible": true,
-                "Iterate seed_converted": false,
-                "Use latent from loop": "False",
-                "Use latent from loop_visible": true,
-                "Use latent from loop_converted": false,
-                "Use float32 for decode/encode": "False",
-                "Use float32 for decode/encode_visible": true,
-                "Use float32 for decode/encode_converted": false,
-                "Denoise:": 1.0,
-                "Denoise:_visible": true,
-                "Denoise:_converted": false,
-                "Guidance Scale:": 7.5,
-                "Guidance Scale:_visible": true,
-                "Guidance Scale:_converted": false,
+                "": 7.5,
                 "_visible": true,
                 "progress_visible": true
             },
-            "op_code": 217,
+            "op_code": 216,
             "content_label_objname": "K_sampling_node"
         },
         {
@@ -948,36 +768,8 @@
                 }
             ],
             "content": {
-                "noise_schedule_value_lineedit": "0: (0.065)",
-                "noise_schedule_value_lineedit_visible": true,
-                "noise_schedule_value_lineedit_converted": false,
-                "strength_schedule_value_lineedit": "0: (0.50)",
-                "strength_schedule_value_lineedit_visible": true,
-                "strength_schedule_value_lineedit_converted": false,
-                "contrast_schedule_value_lineedit": "0: (1.0)",
-                "contrast_schedule_value_lineedit_visible": true,
-                "contrast_schedule_value_lineedit_converted": false,
-                "cfg_scale_schedule_value_lineedit": "0: (7)",
-                "cfg_scale_schedule_value_lineedit_visible": true,
-                "cfg_scale_schedule_value_lineedit_converted": false,
-                "enable_steps_scheduling_value_checkbox": "False",
-                "enable_steps_scheduling_value_checkbox_visible": true,
-                "enable_steps_scheduling_value_checkbox_converted": false,
-                "steps_schedule_value_lineedit": "0: (25)",
-                "steps_schedule_value_lineedit_visible": true,
-                "steps_schedule_value_lineedit_converted": false,
-                "enable_ddim_eta_scheduling_value_checkbox": "False",
-                "enable_ddim_eta_scheduling_value_checkbox_visible": true,
-                "enable_ddim_eta_scheduling_value_checkbox_converted": false,
-                "ddim_eta_schedule_value_lineedit": "0:(0)",
-                "ddim_eta_schedule_value_lineedit_visible": true,
-                "ddim_eta_schedule_value_lineedit_converted": false,
-                "enable_ancestral_eta_scheduling_value_checkbox": "False",
-                "enable_ancestral_eta_scheduling_value_checkbox_visible": true,
-                "enable_ancestral_eta_scheduling_value_checkbox_converted": false,
-                "ancestral_eta_schedule_value_lineedit": "0:(1)",
-                "ancestral_eta_schedule_value_lineedit_visible": true,
-                "ancestral_eta_schedule_value_lineedit_converted": false
+                "": "0:(1)",
+                "_visible": true
             },
             "op_code": 206,
             "content_label_objname": "deforum_diffusion_params_node"
@@ -1041,21 +833,7 @@
             ],
             "content": {
                 "_visible": true,
-                "FPS": 24,
-                "FPS_visible": true,
-                "FPS_converted": false,
-                "Custom save directory": "",
-                "Custom save directory_visible": true,
-                "Custom save directory_converted": false,
-                "Autosave": "True",
-                "Autosave_visible": true,
-                "Autosave_converted": false,
-                "Embed Node graph in PNG": "False",
-                "Embed Node graph in PNG_visible": true,
-                "Embed Node graph in PNG_converted": false,
-                "Copy to Clipboard": "False",
-                "Copy to Clipboard_visible": true,
-                "Copy to Clipboard_converted": false
+                "": "False"
             },
             "op_code": 190,
             "content_label_objname": "image_output_node"
@@ -1102,21 +880,8 @@
                 }
             ],
             "content": {
-                "color_coherence_value_combobox": "Image",
-                "color_coherence_value_combobox_visible": true,
-                "color_coherence_value_combobox_converted": false,
-                "color_coherence_image_path_value_lineedit": "",
-                "color_coherence_image_path_value_lineedit_visible": true,
-                "color_coherence_image_path_value_lineedit_converted": false,
-                "color_coherence_video_every_N_frames": 1,
-                "color_coherence_video_every_N_frames_visible": true,
-                "color_coherence_video_every_N_frames_converted": false,
-                "color_force_grayscale_value_checkbox": "False",
-                "color_force_grayscale_value_checkbox_visible": true,
-                "color_force_grayscale_value_checkbox_converted": false,
-                "legacy_colormatch_value_checkbox": "False",
-                "legacy_colormatch_value_checkbox_visible": true,
-                "legacy_colormatch_value_checkbox_converted": false
+                "": "False",
+                "_visible": true
             },
             "op_code": 203,
             "content_label_objname": "deforum_color_params_node"
@@ -1171,7 +936,7 @@
                 }
             ],
             "content": {},
-            "op_code": 219,
+            "op_code": 218,
             "content_label_objname": "vae_encode_node"
         },
         {
@@ -1216,24 +981,8 @@
                 }
             ],
             "content": {
-                "use_depth_warping_value_checkbox": "True",
-                "use_depth_warping_value_checkbox_visible": true,
-                "use_depth_warping_value_checkbox_converted": false,
-                "depth_algorithm_value_combobox": "Zoe",
-                "depth_algorithm_value_combobox_visible": true,
-                "depth_algorithm_value_combobox_converted": false,
-                "midas_weight": 0.8,
-                "midas_weight_visible": true,
-                "midas_weight_converted": false,
-                "padding_mode_value_combobox": "border",
-                "padding_mode_value_combobox_visible": true,
-                "padding_mode_value_combobox_converted": false,
-                "sampling_mode_value_combobox": "bicubic",
-                "sampling_mode_value_combobox_visible": true,
-                "sampling_mode_value_combobox_converted": false,
-                "save_depth_maps_value_checkbox": "False",
-                "save_depth_maps_value_checkbox_visible": true,
-                "save_depth_maps_value_checkbox_converted": false
+                "": "False",
+                "_visible": true
             },
             "op_code": 204,
             "content_label_objname": "deforum_depth_params_node"
@@ -1320,7 +1069,7 @@
                 }
             ],
             "content": {
-                "..._visible": true
+                "_visible": true
             },
             "op_code": 214,
             "content_label_objname": "deforum_framewarp_node"
@@ -1384,24 +1133,55 @@
             ],
             "content": {
                 "_visible": true,
-                "FPS": 24,
-                "FPS_visible": true,
-                "FPS_converted": false,
-                "Custom save directory": "",
-                "Custom save directory_visible": true,
-                "Custom save directory_converted": false,
-                "Autosave": "True",
-                "Autosave_visible": true,
-                "Autosave_converted": false,
-                "Embed Node graph in PNG": "False",
-                "Embed Node graph in PNG_visible": true,
-                "Embed Node graph in PNG_converted": false,
-                "Copy to Clipboard": "False",
-                "Copy to Clipboard_visible": true,
-                "Copy to Clipboard_converted": false
+                "": "False"
             },
             "op_code": 190,
             "content_label_objname": "image_output_node"
+        },
+        {
+            "id": 140572657049104,
+            "title": "Deforum - Exec Chain",
+            "pos_x": -1242.1874999999998,
+            "pos_y": -796.8749999999998,
+            "inputs": [
+                {
+                    "id": 140564935473472,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 6,
+                    "name": "DATA"
+                },
+                {
+                    "id": 140564935472752,
+                    "index": 1,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 1,
+                    "name": "EXEC"
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 140564935473376,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 6,
+                    "socket_type": 1,
+                    "name": "EXEC"
+                },
+                {
+                    "id": 140564935473616,
+                    "index": 1,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 1,
+                    "name": "FINAL EXEC"
+                }
+            ],
+            "content": {},
+            "op_code": 211,
+            "content_label_objname": "deforum_exec_chain_node"
         }
     ],
     "edges": [

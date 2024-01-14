@@ -168,8 +168,8 @@ class ImagePreviewNode(AiNode):
 
                 print("Saving Image", filename)
                 if image.shape[0] > 1:
-                    print("Only saving last image")
-                    self.save_image(image[-1].unsqueeze(0).detach(), filename)
+                    print("Multiple image, skipping saving for DEBUG purposes")
+                    #self.save_image(image[-1].unsqueeze(0).detach(), filename)
                 else:
                     self.save_image(image.detach(), filename)
             return [image]
@@ -185,7 +185,7 @@ class ImagePreviewNode(AiNode):
 
     def save_image(self, pixmap, filename=None):
         try:
-            image = tensor2pil(pixmap)
+            image = tensor2pil(pixmap.detach().cpu().clone())
             timestamp = datetime.datetime.now().strftime('%Y%m%d_%H%M%S%f')
             os.makedirs(os.path.join(gs.prefs.output, "stills"), exist_ok=True)
             filename = f"{gs.prefs.output}/stills/{timestamp}.png" if filename == None else filename

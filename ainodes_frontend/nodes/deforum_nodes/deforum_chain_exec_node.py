@@ -22,7 +22,7 @@ class DeforumExecChainNode(AiNode):
     content_label_objname = "deforum_exec_chain_node"
     category = "base/deforum"
     NodeContent_class = DeforumExecChainWidget
-    dim = (340, 100)
+    dim = (340, 150)
     output_data_ports = [0]
     mark_dirty = True
     custom_output_socket_name = ["EXEC", "FINAL EXEC"]
