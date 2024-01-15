@@ -317,50 +317,49 @@ class KSamplerNode(AiNode):
                 self.content.preview_signal.emit(tensors)
     def handle_preview(self, tensors):
 
-
-
-        if self.preview_mode == "quick-rgb":
-            with torch.inference_mode():
-                latent_image = tensors[0].permute(1, 2, 0).half() @ self.latent_rgb_factors
-
-            latents_ubyte = (((latent_image + 1) / 2)
-                             .clamp(0, 1)  # change scale from -1..1 to 0..1
-                             .mul(0xFF)  # to 0..255
-                             .byte())
-
-            np_frame = latents_ubyte.cpu().numpy()
-            # Convert numpy array to QImage
-            h, w, c = np_frame.shape
-            latent_image = QImage(np_frame.data, w, h, c * w, QImage.Format.Format_RGB888)
-
-            # Convert QImage to QPixmap
-            pixmap = QPixmap.fromImage(latent_image)
-
-            scaled_size = pixmap.size() * 8
-            pixmap = pixmap.scaled(scaled_size, QtCore.Qt.AspectRatioMode.KeepAspectRatio,
-                                   QtCore.Qt.TransformationMode.SmoothTransformation)
-
-        elif self.preview_mode == "taesd":
-            x_sample = self.taesd.decode(tensors)[0].detach()
-            x_sample = x_sample.sub(0.5).mul(2)
-
-            x_sample = torch.clamp((x_sample + 1.0) / 2.0, min=0.0, max=1.0)
-            x_sample = 255. * np.moveaxis(x_sample.cpu().numpy(), 0, 2)
-            h, w, c = x_sample.shape
-            np_frame = x_sample.astype(np.uint8)
-            byte_data = np_frame.tobytes()
-            image = QtGui.QImage(byte_data, w, h, c * w, QtGui.QImage.Format.Format_RGB888)
-            pixmap = QtGui.QPixmap.fromImage(image)
-
-
         if len(self.getOutputs(0)) > 0:
-            nodes = self.getOutputs(0)
-            for node in nodes:
-                if isinstance(node, ImagePreviewNode):
-                    node.content.preview_signal.emit(pixmap)
-                # if isinstance(node, VideoOutputNode):
-                #     frame = np.array(np_frame)
-                #     node.content.video.add_frame(frame, dump=node.content.dump_at.value())
+            with torch.inference_mode():
+
+                if self.preview_mode == "quick-rgb":
+                    with torch.inference_mode():
+                        latent_image = tensors[0].permute(1, 2, 0).half() @ self.latent_rgb_factors
+
+                    latents_ubyte = (((latent_image + 1) / 2)
+                                     .clamp(0, 1)  # change scale from -1..1 to 0..1
+                                     .mul(0xFF)  # to 0..255
+                                     .byte())
+
+                    np_frame = latents_ubyte.cpu().numpy()
+                    # Convert numpy array to QImage
+                    h, w, c = np_frame.shape
+                    latent_image = QImage(np_frame.data, w, h, c * w, QImage.Format.Format_RGB888)
+
+                    # Convert QImage to QPixmap
+                    pixmap = QPixmap.fromImage(latent_image)
+
+                    scaled_size = pixmap.size() * 8
+                    pixmap = pixmap.scaled(scaled_size, QtCore.Qt.AspectRatioMode.KeepAspectRatio,
+                                           QtCore.Qt.TransformationMode.SmoothTransformation)
+
+                elif self.preview_mode == "taesd":
+                    x_sample = self.taesd.decode(tensors)[0].detach()
+                    #x_sample = x_sample.sub(0.5).mul(2)
+
+                    x_sample = torch.clamp((x_sample + 1.0) / 2.0, min=0.0, max=1.0)
+                    x_sample = 255. * np.moveaxis(x_sample.cpu().numpy(), 0, 2)
+                    h, w, c = x_sample.shape
+                    np_frame = x_sample.astype(np.uint8)
+                    byte_data = np_frame.tobytes()
+                    image = QtGui.QImage(byte_data, w, h, c * w, QtGui.QImage.Format.Format_RGB888)
+                    pixmap = QtGui.QPixmap.fromImage(image)
+
+
+                nodes = self.getOutputs(0)
+                for node in nodes:
+                    if isinstance(node, ImagePreviewNode):
+                        node.content.preview_signal.emit(pixmap)
+
+
 
 
     def setSeed(self):
