@@ -341,7 +341,7 @@ class KSamplerNode(AiNode):
                                    QtCore.Qt.TransformationMode.SmoothTransformation)
 
         elif self.preview_mode == "taesd":
-            x_sample = self.taesd.decoder(tensors)[0].detach()
+            x_sample = self.taesd.decode(tensors)[0].detach()
             x_sample = x_sample.sub(0.5).mul(2)
 
             x_sample = torch.clamp((x_sample + 1.0) / 2.0, min=0.0, max=1.0)
