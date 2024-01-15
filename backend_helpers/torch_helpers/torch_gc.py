@@ -2,22 +2,23 @@ try:
     import gc
     import torch
 
-    def torch_gc():
+    def torch_gc(full=False):
         """Performs garbage collection for both Python and PyTorch CUDA tensors.
 
         This function collects Python garbage and clears the PyTorch CUDA cache
         and IPC (Inter-Process Communication) resources.
         """
 
-        from comfy import model_management as mg
+        if full:
+            from comfy import model_management as mg
 
-        for model in mg.current_loaded_models:
-            if hasattr(model, "model"):
-                if hasattr(model.model, "to"):
-                    model.model.to("cpu")
-                if hasattr(model.model, "model"):
-                    model.model.model.to("cpu")
-        mg.current_loaded_models.clear()
+            for model in mg.current_loaded_models:
+                if hasattr(model, "model"):
+                    if hasattr(model.model, "to"):
+                        model.model.to("cpu")
+                    if hasattr(model.model, "model"):
+                        model.model.model.to("cpu")
+            mg.current_loaded_models.clear()
 
         gc.collect()  # Collect Python garbage
         torch.cuda.empty_cache()  # Clear PyTorch CUDA cache

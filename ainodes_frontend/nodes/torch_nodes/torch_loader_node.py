@@ -180,7 +180,7 @@ def load_checkpoint_guess_config(ckpt_path, output_vae=True, output_clip=True, o
         gs.models[ckpt_path]["vae"].first_stage_model.bfloat16().cpu()
         gs.models[ckpt_path]["clip"].cond_stage_model.half().cpu()
         gs.models[ckpt_path]["model"].model.half().cpu()
-    torch_gc()
+    #torch_gc()
     return
 
 
@@ -289,7 +289,7 @@ class TorchLoaderNode(AiNode):
         self.clip = None
         self.vae = None
 
-        torch_gc()
+        torch_gc(full=True)
 
     def setOutput(self, index, value):
         """
@@ -337,13 +337,13 @@ class TorchLoaderNode(AiNode):
             # gs.models[model_name]["model"], gs.models[model_name]["clip"], gs.models[model_name]["vae"], _ = load_checkpoint_guess_config(os.path.join(gs.prefs.checkpoints, model_name))
             load_checkpoint_guess_config(model_name)
             self.loaded_sd = model_name
-
+            torch_gc(full=True)
             self.scene.getView().parent().window().update_models_signal.emit()
 
         else:
             self.loaded_sd = model_name
 
-            torch_gc()
+            #torch_gc()
         if self.content.vae_dropdown.currentText() != 'default':
             model = self.content.vae_dropdown.currentText()
             gs.models[self.loaded_sd]["vae"] = self.load_vae(model)
@@ -368,6 +368,8 @@ class TorchLoaderNode(AiNode):
         vae = VAE(sd=sd)
         vae.first_stage_model.bfloat16().cuda()
         print("VAE Loaded", file)
+        del sd
+        torch_gc()
         return vae
         # if self.loaded_sd != model_name or self.content.force_reload.isChecked() == True:
         #     self.clean_sd()

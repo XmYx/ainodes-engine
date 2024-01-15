@@ -1440,7 +1440,7 @@ class CalculatorWindow(NodeEditorWindow):
         #del model_management.LoadedModel
         #model_management.LoadedModel = None
         del gs.models[name]
-        torch_gc()
+        #torch_gc()
         self.updateDockContents()  # Update the contents after unloading
 
     def createStatusBar(self):

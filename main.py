@@ -18,8 +18,12 @@ print(f"Start aiNodes, please wait. {start_time}")
 
 import os
 os.environ["QT_API"] = "pyqt6"
-os.environ["FORCE_QT_API"] = "1"
-os.environ["QTWEBENGINE_CHROMIUM_FLAGS"] = "--disable-gpu"
+# os.environ["FORCE_QT_API"] = "1"
+# os.environ["QTWEBENGINE_CHROMIUM_FLAGS"] = "--disable-gpu"
+
+import logging
+import os
+logging.basicConfig(level='ERROR')
 
 import platform
 import sys

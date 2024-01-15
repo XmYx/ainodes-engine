@@ -253,7 +253,8 @@ class KSamplerNode(AiNode):
                                      last_step=last_step,
                                      force_full_denoise=force_full_denoise)
 
-            if gs.vram_state == "low":
+            if gs.vram_state in ["low", "medium"]:
+                print("force offloading Unet")
                 offload_to_device(unet, "cpu")
                                      # callback=self.callback)
 
@@ -274,7 +275,7 @@ class KSamplerNode(AiNode):
             #             if isinstance(node, ImagePreviewNode):
             #                 node.content.preview_signal.emit(tensor_image_to_pixmap(x_sample))
             latent_preview.set_callback(None)
-
+            torch_gc(full=False)
             return [x_sample, {"samples": return_samples}]
         else:
             latent_preview.set_callback(None)
@@ -299,11 +300,11 @@ class KSamplerNode(AiNode):
         tile_y = 64
         overlap = 16
         #vae.first_stage_model.cuda()
-        if "windows" not in platform.platform().lower():
-            sample = sample.half()
-        else:
-            print("SAMPLE IS FULL")
-            sample = sample.float()
+        # if "windows" not in platform.platform().lower():
+        #     sample = sample.half()
+        # else:
+        #     print("SAMPLE IS FULL")
+        #     sample = sample.float()
         decoded = vae.decode_tiled_(sample, tile_x, tile_y, overlap).movedim(1,-1)
         return decoded
 
@@ -547,10 +548,10 @@ class KSampler:
         model.model.to(gs.device)
 
         sample, model_wrap = sample_k(model.model, noise, positive, negative, cfg, self.device, sampler, sigmas, self.model_options, latent_image=latent_image, denoise_mask=denoise_mask, callback=callback, disable_pbar=disable_pbar, seed=seed)
-        model_wrap.inner_model.to("cpu")
-        model_wrap.to('cpu')
+        # model_wrap.inner_model.to("cpu")
+        # model_wrap.to('cpu')
         del model_wrap
-        torch_gc()
+        #
 
         return sample
 

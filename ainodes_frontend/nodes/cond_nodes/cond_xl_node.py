@@ -86,24 +86,14 @@ class ConditioningXLWidget(QDMNodeContentWidget):
         self.create_widgets()
         self.create_main_layout(grid=1)
     def create_widgets(self):
-        # self.create_text_edit("Prompt", spawn="prompt")
-
-
-
-
-
-        # # self.create_text_edit("prompt")
         self.create_text_edit("Prompt", placeholder="Linguistic Prompt (XL)", spawn='prompt_g')
-
         self.create_text_edit("Prompt 2", placeholder="Clasic Prompt", spawn='prompt_l')
-
         self.width_val = self.create_spin_box("Height", min_val=256, max_val=4096, default_val=1024)
         self.height_val = self.create_spin_box("Height", min_val=256, max_val=4096, default_val=1024)
         self.crop_w = self.create_spin_box("Crop Width", min_val=0, max_val=4096, default_val=0)
         self.crop_h = self.create_spin_box("Crop Height", min_val=0, max_val=4096, default_val=0)
         self.target_width = self.create_spin_box("Target Width", min_val=256, max_val=4096, default_val=1024)
         self.target_height = self.create_spin_box("Target Height", min_val=256, max_val=4096, default_val=1024)
-
         self.skip = self.create_spin_box("Clip Skip", min_val=-11, max_val=0, default_val=-1)
         self.embed_checkbox = self.create_check_box("Use embeds")
         self.button = QtWidgets.QPushButton("Get Conditioning")
