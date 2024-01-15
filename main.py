@@ -49,6 +49,27 @@ from ainodes_frontend.base.args import get_args
 from ainodes_frontend.base.import_utils import update_all_nodes_req, import_nodes_from_subdirectories, \
     set_application_attributes
 
+
+def update_deforum():
+    # Save the current directory
+    original_directory = os.getcwd()
+
+    try:
+        # Change to the desired directory
+        os.chdir("src/deforum")
+
+        # Execute git pull
+        result = subprocess.run(["git", "pull"], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+        # Print the output from git pull
+        print("Output:", result.stdout.decode())
+        print("Error:", result.stderr.decode())
+    except Exception as e:
+        print("An error occurred:", e)
+    finally:
+        # Change back to the original directory
+        os.chdir(original_directory)
+
 # Set environment variable QT_API to use PySide6
 # Install Triton if running on Linux
 # if "Linux" in platform.platform():
@@ -370,6 +391,7 @@ if __name__ == "__main__":
     splash.show()
 
     sys.stdout = CustomOutputStream(splash.append_text)
+    update_deforum()
     from deforum.generators.comfy_utils import ensure_comfy
     ensure_comfy('src/ComfyUI')
     hijack_comfy_paths()
