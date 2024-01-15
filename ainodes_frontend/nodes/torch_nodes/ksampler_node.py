@@ -262,7 +262,7 @@ class KSamplerNode(AiNode):
 
                 # if gs.vram_state in ["low", "medium"]:
                 offload_to_device(vae, gs.device)
-                x_sample = self.decode_sample(sample[0]["samples"], vae).detach().cpu()
+                x_sample = self.decode_sample(sample[0]["samples"], vae)#.detach().cpu()
                 if gs.vram_state in ["low", "medium"]:
                     offload_to_device(vae, 'cpu')
             else:
@@ -305,8 +305,8 @@ class KSamplerNode(AiNode):
         # else:
         #     print("SAMPLE IS FULL")
         #     sample = sample.float()
-        decoded = vae.decode_tiled_(sample, tile_x, tile_y, overlap).movedim(1,-1)
-        return decoded
+        decoded = vae.decode_tiled_(sample.bfloat16(), tile_x, tile_y, overlap).movedim(1,-1)
+        return decoded.half()
 
     #k_callback = lambda x: callback(x["i"], x["denoised"], x["x"], total_steps)
     def callback(self, i, tensors, *args, **kwargs):
@@ -477,7 +477,7 @@ def sample_k(model, noise, positive, negative, cfg, device, sampler, sigmas, mod
 
     samples = sampler.sample(model_wrap, sigmas, extra_args, callback, noise, latent_image, denoise_mask, disable_pbar)
     #return samples
-    sample = model.process_latent_out(samples.to(torch.float32))
+    sample = model.process_latent_out(samples.to(torch.bfloat16))
 
     return sample, model_wrap
 
@@ -547,10 +547,10 @@ class KSampler:
 
         model.model.to(gs.device)
 
-        sample, model_wrap = sample_k(model.model, noise, positive, negative, cfg, self.device, sampler, sigmas, self.model_options, latent_image=latent_image, denoise_mask=denoise_mask, callback=callback, disable_pbar=disable_pbar, seed=seed)
+        sample, _ = sample_k(model.model, noise, positive, negative, cfg, self.device, sampler, sigmas, self.model_options, latent_image=latent_image, denoise_mask=denoise_mask, callback=callback, disable_pbar=disable_pbar, seed=seed)
         # model_wrap.inner_model.to("cpu")
         # model_wrap.to('cpu')
-        del model_wrap
+        #del model_wrap
         #
 
         return sample

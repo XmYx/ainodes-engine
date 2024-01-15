@@ -6,7 +6,7 @@ import torch
 from ainodes_frontend.base import register_node, get_next_opcode
 from ainodes_frontend.base import AiNode, CalcGraphicsNode
 from ainodes_frontend.node_engine.node_content_widget import QDMNodeContentWidget
-
+from ainodes_frontend import singleton as gs
 
 OP_NODE_TINYVAE = get_next_opcode()
 
@@ -50,16 +50,16 @@ class TinyVAEDecode(AiNode):
                 if not self.vae or self.version != self.content.is_xl.isChecked():
                     vae_version = "madebyollin/taesdxl" if self.content.is_xl.isChecked() else "madebyollin/taesd"
                     print("Loading TinyVAE: ", vae_version)
-                    self.vae = AutoencoderTiny.from_pretrained(vae_version, torch_dtype=torch.float16).to("cuda")
+                    self.vae = AutoencoderTiny.from_pretrained(vae_version, torch_dtype=torch.bfloat16).to("cuda")
                     self.version = self.content.is_xl.isChecked()
                     self.vae_scale_factor = 2 ** (len(self.vae.config.block_out_channels) - 1)
             else:
                 self.vae = vae
 
             if latent is not None:
-                latent = latent["samples"].to("cuda").half() / self.vae_scale_factor
+                latent = latent["samples"].bfloat16().to(gs.device) / self.vae_scale_factor
                 decoded = self.vae.decode(latent)
-                return [self.vae, (decoded.sample.permute(0, 2, 3, 1) / 2 + 0.5).clamp(0, 1)]
+                return [self.vae, (decoded.sample.permute(0, 2, 3, 1) / 2 + 0.5).clamp(0, 1).half()]
             else:
                 return [self.vae, None]
     def remove(self):
