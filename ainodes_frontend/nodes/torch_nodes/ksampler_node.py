@@ -1,19 +1,9 @@
-import copy
 import os
-import platform
-import random
 import secrets
-import sys
-
 import numpy as np
 from PyQt6.QtGui import QImage
-from einops import rearrange
-
-#from ..ainodes_backend import tensor_image_to_pixmap, get_torch_device, common_ksampler
-
 import torch
-from PIL import Image
-#from PIL.ImageQt import ImageQt, QImage
+
 from qtpy import QtWidgets, QtCore, QtGui
 from qtpy.QtGui import QPixmap
 
@@ -22,17 +12,12 @@ from ainodes_frontend.base import register_node, get_next_opcode, handle_ainodes
 from ainodes_frontend.base import AiNode, CalcGraphicsNode
 from ainodes_frontend.node_engine.node_content_widget import QDMNodeContentWidget
 
-from queue import Queue
-
 from backend_helpers.cnet_preprocessors import poorman_wget
 from backend_helpers.torch_helpers.torch_gc import torch_gc
 from backend_helpers.torch_helpers.vram_management import offload_to_device
 from main import get_torch_device
 from ..image_nodes.image_preview_node import ImagePreviewNode
-from ...base.qimage_ops import tensor_image_to_pixmap
 from ...comfy_fns.adapter_nodes.was_adapter_node import latent_preview
-
-#from ..video_nodes.video_save_node import VideoOutputNode
 
 OP_NODE_K_SAMPLER = get_next_opcode()
 
@@ -103,15 +88,7 @@ class KSamplerNode(AiNode):
         self.taesd = None
         self.decoder_version = ""
         self.last_seed = None
-    #     # Create a worker object
-    # def initInnerClasses(self):
-    #     self.content = KSamplerWidget(self)
-    #     self.grNode = CalcGraphicsNode(self)
-    #     self.grNode.icon = self.icon
-    #     self.grNode.thumbnail = QtGui.QImage(self.grNode.icon).scaled(64, 64, QtCore.Qt.KeepAspectRatio)
-    #     self.progress_value = 0
-    #     self.content.eval_signal.connect(self.evalImplementation_thread)
-    #     self.content.button.clicked.connect(self.evalImplementation)
+        enable_misc_optimizations()
 
 
     def set_rgb_factor(self, type="classic"):
@@ -197,7 +174,6 @@ class KSamplerNode(AiNode):
             start_step = 0
 
             last_step = int((1 - denoise) * steps) + 1 if denoise != 1.0 else steps
-            # print("Generating using override seed: [", seed, "]", denoise)
 
         if data is not None:
             denoise = data.get("strength", denoise)
@@ -211,7 +187,6 @@ class KSamplerNode(AiNode):
             last_step = int((1 - denoise) * steps) + 1 if denoise != 1.0 else steps
 
             start_step = 0
-            # print(f"Using strength from data: {denoise}")
         if cond is not None:
             self.last_step = steps if self.content.stop_early.isChecked() == False else self.content.last_step.value()
             short_steps = self.last_step - self.content.start_step.value()
@@ -232,7 +207,7 @@ class KSamplerNode(AiNode):
                     poorman_wget(url, tae_path)
                 from comfy.taesd.taesd import TAESD
                 if self.decoder_version != taesd_decoder_version or self.taesd == None:
-                    self.taesd = TAESD(encoder_path=None, decoder_path=tae_path).to("cuda")
+                    self.taesd = TAESD(encoder_path=None, decoder_path=tae_path).half().to("cuda")
                 else:
                     print(f"TAESD enabled, but {gs.prefs.vae}/{taesd_decoder_version} was not found, switching to simple RGB Preview")
                     self.preview_mode = "quick-rgb"
@@ -257,6 +232,27 @@ class KSamplerNode(AiNode):
                                      last_step=last_step,
                                      force_full_denoise=force_full_denoise)
 
+            # from nodes import common_ksampler as ksampler
+            # import comfy.sample
+            #
+            # comfy.sample.prepare_sampling = prepare_sampling_ainodes
+            #
+            # sample = ksampler(model=unet,
+            #                  seed=seed,
+            #                  steps=steps,
+            #                  cfg=cfg,
+            #                  sampler_name=sampler_name,
+            #                  scheduler=scheduler,
+            #                  positive=cond,
+            #                  negative=n_cond,
+            #                  latent=latent,
+            #                  denoise=denoise,
+            #                  disable_noise=self.content.disable_noise.isChecked(),
+            #                  start_step=start_step,
+            #                  last_step=last_step,
+            #                  force_full_denoise=force_full_denoise)
+
+
             if gs.vram_state in ["low", "medium"]:
                 print("force offloading Unet")
                 offload_to_device(unet, "cpu")
@@ -272,12 +268,7 @@ class KSamplerNode(AiNode):
             else:
                 x_sample = None
             return_samples = sample[0]["samples"].detach().cpu()
-            # if self.content.tensor_preview.isChecked():
-            #     if len(self.getOutputs(2)) > 0:
-            #         nodes = self.getOutputs(0)
-            #         for node in nodes:
-            #             if isinstance(node, ImagePreviewNode):
-            #                 node.content.preview_signal.emit(tensor_image_to_pixmap(x_sample))
+
             latent_preview.set_callback(None)
             torch_gc(full=False)
             return [x_sample, {"samples": return_samples}]
@@ -295,32 +286,22 @@ class KSamplerNode(AiNode):
             vae.first_stage_model.bfloat16()
             samples = samples.to(gs.device)
             samples = samples.to(torch.bfloat16)
-
-
         output = vae.decode_tiled_(samples, tile_x, tile_y, overlap)
         return output.movedim(1,-1)
     def decode_sample(self, sample, vae):
         tile_x = 64
         tile_y = 64
         overlap = 16
-        #vae.first_stage_model.cuda()
-        # if "windows" not in platform.platform().lower():
-        #     sample = sample.half()
-        # else:
-        #     print("SAMPLE IS FULL")
-        #     sample = sample.float()
         decoded = vae.decode_tiled_(sample.bfloat16(), tile_x, tile_y, overlap).movedim(1,-1)
         return decoded.half()
 
     #k_callback = lambda x: callback(x["i"], x["denoised"], x["x"], total_steps)
     def callback(self, i, tensors, *args, **kwargs):
-        # i = tensors["i"]
         self.content.progress_signal.emit(self.single_step)
         if self.content.tensor_preview.isChecked():
             if i < self.last_step - 2:
                 self.content.preview_signal.emit(tensors)
     def handle_preview(self, tensors):
-
         if len(self.getOutputs(0)) > 0:
             with torch.inference_mode():
 
@@ -346,12 +327,12 @@ class KSamplerNode(AiNode):
                                            QtCore.Qt.TransformationMode.SmoothTransformation)
 
                 elif self.preview_mode == "taesd":
-                    x_sample = self.taesd.decode(tensors)[0].detach()
+                    prev_sample = self.taesd.decode(tensors.half())[0]
                     #x_sample = x_sample.sub(0.5).mul(2)
-                    x_sample = torch.clamp((x_sample + 1.0) / 2.0, min=0.0, max=1.0)
-                    x_sample = 255. * np.moveaxis(x_sample.cpu().numpy(), 0, 2)
-                    h, w, c = x_sample.shape
-                    np_frame = x_sample.astype(np.uint8)
+                    prev_sample = torch.clamp((prev_sample + 1.0) / 2.0, min=0.0, max=1.0)
+                    prev_sample = 255. * np.moveaxis(prev_sample.cpu().numpy(), 0, 2)
+                    h, w, c = prev_sample.shape
+                    np_frame = prev_sample.astype(np.uint8)
                     byte_data = np_frame.tobytes()
                     image = QtGui.QImage(byte_data, w, h, c * w, QtGui.QImage.Format.Format_RGB888)
                     pixmap = QtGui.QPixmap.fromImage(image)
@@ -377,10 +358,6 @@ class KSamplerNode(AiNode):
         c = []
         for t in conditioning:
             n = [t[0], t[1].copy()]
-
-            #c_net.control_model.control_start = n[1]["control_start"]
-            #c_net.control_model.control_stop = n[1]["control_stop"]
-            #c_net.control_model.control_model_name = n[1]["control_model_name"]
             c_net.set_cond_hint(t[1]['control_hint'], t[1]['control_strength'])
             if 'control' in t[1]:
                 #print("AND SETTING UP MULTICONTROL")
@@ -416,6 +393,27 @@ def enable_misc_optimizations():
         print("CUDA Matmul fp16/bf16 Reduced Precision Reduction Expected Value Mismatch")
 
 
+# def prepare_sampling_ainodes(model, noise_shape, positive, negative, noise_mask):
+#     print("aiNodes preparing sampling")
+#     from comfy.sample import convert_cond, prepare_mask, get_additional_models
+#     import comfy
+#     device = gs.device
+#     positive = convert_cond(positive)
+#     negative = convert_cond(negative)
+#
+#     if noise_mask is not None:
+#         noise_mask = prepare_mask(noise_mask, noise_shape, device)
+#
+#     real_model = None
+#     models, inference_memory = get_additional_models(positive, negative, model.model_dtype())
+#     #comfy.model_management.load_models_gpu([model] + models, model.memory_required([noise_shape[0] * 2] + list(noise_shape[1:])) + inference_memory)
+#
+#
+#
+#
+#     return real_model, positive, negative, noise_mask, models
+
+
 def prepare_sampling(model, noise_shape, positive, negative, noise_mask):
     from comfy.sample import convert_cond, prepare_mask, get_additional_models
     import comfy
@@ -430,8 +428,18 @@ def prepare_sampling(model, noise_shape, positive, negative, noise_mask):
     #_, inference_memory = get_additional_models(positive, negative, model.model_dtype())
     # comfy.model_management.load_models_gpu([model] + models, model.memory_required([noise_shape[0] * 2] + list(noise_shape[1:])) + inference_memory)
     #real_model = model.model
+    patch_model_to = gs.device
 
-    return positive, negative, noise_mask
+    model.model_patches_to(gs.device)
+    model.model_patches_to(torch.float16)
+
+    try:
+        real_model = model.patch_model(device_to=patch_model_to) #TODO: do something with loras and offloading to CPU
+    except Exception as e:
+        model.unpatch_model('cpu')
+        real_model = model.model
+
+    return real_model, positive, negative, noise_mask
 
 
 def sample_k(model, noise, positive, negative, cfg, device, sampler, sigmas, model_options={}, latent_image=None, denoise_mask=None, callback=None, disable_pbar=False, seed=None):
@@ -538,9 +546,9 @@ class KSampler:
         from comfy.samplers import sampler_object
         sampler = sampler_object(self.sampler)
 
-        model.model.to(gs.device)
+        model.to(gs.device)
 
-        sample, _ = sample_k(model.model, noise, positive, negative, cfg, self.device, sampler, sigmas, self.model_options, latent_image=latent_image, denoise_mask=denoise_mask, callback=callback, disable_pbar=disable_pbar, seed=seed)
+        sample, _ = sample_k(model, noise, positive, negative, cfg, self.device, sampler, sigmas, self.model_options, latent_image=latent_image, denoise_mask=denoise_mask, callback=callback, disable_pbar=disable_pbar, seed=seed)
         # model_wrap.inner_model.to("cpu")
         # model_wrap.to('cpu')
         #del model_wrap
@@ -584,15 +592,16 @@ def common_ksampler(model, seed, steps, cfg, sampler_name, scheduler, positive, 
     # samples = sample(model, noise, steps, cfg, sampler_name, scheduler, positive, negative, latent_image,
     #                               denoise=denoise, disable_noise=disable_noise, start_step=start_step, last_step=last_step,
     #                               force_full_denoise=force_full_denoise, noise_mask=noise_mask, callback=callback, disable_pbar=disable_pbar, seed=seed)
-    positive_copy, negative_copy, noise_mask = prepare_sampling(model, noise.shape, positive, negative, noise_mask)
+    real_model, positive_copy, negative_copy, noise_mask = prepare_sampling(model, noise.shape, positive, negative, noise_mask)
 
     noise = noise.to(gs.device)
     latent_image = latent_image.to(gs.device)
 
-    sampler = KSampler(model.model, steps=steps, device=gs.device, sampler=sampler_name, scheduler=scheduler, denoise=denoise, model_options=model.model_options)
+    sampler = KSampler(real_model, steps=steps, device=gs.device, sampler=sampler_name, scheduler=scheduler, denoise=denoise, model_options=model.model_options)
 
-    samples = sampler.sample(model, noise, positive_copy, negative_copy, cfg=cfg, latent_image=latent_image, start_step=start_step, last_step=last_step, force_full_denoise=force_full_denoise, denoise_mask=noise_mask, sigmas=None, callback=callback, disable_pbar=disable_pbar, seed=seed)
-
+    samples = sampler.sample(real_model, noise, positive_copy, negative_copy, cfg=cfg, latent_image=latent_image, start_step=start_step, last_step=last_step, force_full_denoise=force_full_denoise, denoise_mask=noise_mask, sigmas=None, callback=callback, disable_pbar=disable_pbar, seed=seed)
+    real_model.to("cpu")
+    del real_model
     out = {}#latent.copy()
     out["samples"] = samples
     return (out, )
