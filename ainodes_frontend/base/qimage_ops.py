@@ -51,7 +51,8 @@ def pixmap_to_tensor(pixmap, return_pil=False):
 
 def tensor2pil(image):
     if image is not None:
-        return Image.fromarray(np.clip(255. * image.detach().cpu().numpy().squeeze(), 0, 255).astype(np.uint8))
+        with torch.inference_mode():
+            return Image.fromarray(np.clip(255. * image.detach().cpu().numpy().squeeze(), 0, 255).astype(np.uint8))
     else:
         return None
 
