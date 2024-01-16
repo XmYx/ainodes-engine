@@ -24,6 +24,7 @@ from ainodes_frontend.node_engine.node_content_widget import QDMNodeContentWidge
 
 from queue import Queue
 
+from backend_helpers.cnet_preprocessors import poorman_wget
 from backend_helpers.torch_helpers.torch_gc import torch_gc
 from backend_helpers.torch_helpers.vram_management import offload_to_device
 from main import get_torch_device
@@ -224,14 +225,17 @@ class KSamplerNode(AiNode):
             self.set_rgb_factor(self.model_version)
             self.preview_mode = self.content.preview_type.currentText()
             taesd_decoder_version = "taesd_decoder.pth" if self.model_version == "classic" else "taesdxl_decoder.pth"
-            if self.preview_mode == "taesd" and os.path.isfile(f"models/vae/{taesd_decoder_version}"):
+            tae_path = os.path.join(gs.prefs.vae, taesd_decoder_version)
+            url = f'https://github.com/madebyollin/taesd/raw/main/{taesd_decoder_version}'
+            if self.preview_mode == "taesd":
+                if not os.path.isfile(tae_path):
+                    poorman_wget(url, tae_path)
                 from comfy.taesd.taesd import TAESD
                 if self.decoder_version != taesd_decoder_version or self.taesd == None:
-                    self.taesd = TAESD(encoder_path=None, decoder_path=f"models/vae/{taesd_decoder_version}").to("cuda")
+                    self.taesd = TAESD(encoder_path=None, decoder_path=tae_path).to("cuda")
                 else:
-                    print(f"TAESD enabled, but models/vae/{taesd_decoder_version} was not found, switching to simple RGB Preview")
+                    print(f"TAESD enabled, but {gs.prefs.vae}/{taesd_decoder_version} was not found, switching to simple RGB Preview")
                     self.preview_mode = "quick-rgb"
-
             print(f"[ SEED: {seed} LAST STEP:{last_step} DENOISE:{denoise}]")
             self.last_seed = seed
             if gs.vram_state in ["low", "medium"]:
@@ -344,7 +348,6 @@ class KSamplerNode(AiNode):
                 elif self.preview_mode == "taesd":
                     x_sample = self.taesd.decode(tensors)[0].detach()
                     #x_sample = x_sample.sub(0.5).mul(2)
-
                     x_sample = torch.clamp((x_sample + 1.0) / 2.0, min=0.0, max=1.0)
                     x_sample = 255. * np.moveaxis(x_sample.cpu().numpy(), 0, 2)
                     h, w, c = x_sample.shape
@@ -352,15 +355,11 @@ class KSamplerNode(AiNode):
                     byte_data = np_frame.tobytes()
                     image = QtGui.QImage(byte_data, w, h, c * w, QtGui.QImage.Format.Format_RGB888)
                     pixmap = QtGui.QPixmap.fromImage(image)
-
-
                 nodes = self.getOutputs(0)
                 for node in nodes:
                     if isinstance(node, ImagePreviewNode):
                         node.content.preview_signal.emit(pixmap)
-
-
-
+                        break
 
     def setSeed(self):
         if self.last_seed:
@@ -375,14 +374,9 @@ class KSamplerNode(AiNode):
             self.content.progress_bar.setValue(100)
     def apply_control_net(self, conditioning, c_net, progress_callback=None):
         cnet_string = 'controlnet'
-
-
         c = []
         for t in conditioning:
             n = [t[0], t[1].copy()]
-
-
-
 
             #c_net.control_model.control_start = n[1]["control_start"]
             #c_net.control_model.control_stop = n[1]["control_stop"]
@@ -598,10 +592,6 @@ def common_ksampler(model, seed, steps, cfg, sampler_name, scheduler, positive, 
     sampler = KSampler(model.model, steps=steps, device=gs.device, sampler=sampler_name, scheduler=scheduler, denoise=denoise, model_options=model.model_options)
 
     samples = sampler.sample(model, noise, positive_copy, negative_copy, cfg=cfg, latent_image=latent_image, start_step=start_step, last_step=last_step, force_full_denoise=force_full_denoise, denoise_mask=noise_mask, sigmas=None, callback=callback, disable_pbar=disable_pbar, seed=seed)
-
-
-
-
 
     out = {}#latent.copy()
     out["samples"] = samples
