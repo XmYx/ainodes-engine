@@ -58,7 +58,7 @@ def replace_fn(instance, new_function):
     # Replace the 'encode' method
     instance.encode = bound_function
 
-def load_checkpoint_guess_config(ckpt_path, output_vae=True, output_clip=True, output_clipvision=False, embedding_directory=None, output_model=True):
+def load_checkpoint_guess_config(ckpt_path, output_vae=True, output_clip=True, output_clipvision=False, embedding_directory=None, output_model=True, *args, **kwargs):
     import comfy
     import torch
     from comfy import model_management
@@ -86,7 +86,7 @@ def load_checkpoint_guess_config(ckpt_path, output_vae=True, output_clip=True, o
         pass
 
     model_config = model_detection.model_config_from_unet(sd, "model.diffusion_model.", unet_dtype)
-    model_config.set_manual_cast(manual_cast_dtype)
+    model_config.set_inference_dtype(unet_dtype, manual_cast_dtype)
 
     if model_config is None:
         raise RuntimeError("ERROR: Could not detect model type of: {}".format(load_path))
@@ -100,6 +100,7 @@ def load_checkpoint_guess_config(ckpt_path, output_vae=True, output_clip=True, o
         offload_device = model_management.unet_offload_device()
         model = model_config.get_model(sd, "model.diffusion_model.", device=torch.device("cpu"))
         model.load_model_weights(sd, "model.diffusion_model.")
+        model.to(manual_cast_dtype)
 
     if output_vae:
         vae_sd = comfy.utils.state_dict_prefix_replace(sd, {"first_stage_model.": ""}, filter_keys=True)
@@ -110,14 +111,30 @@ def load_checkpoint_guess_config(ckpt_path, output_vae=True, output_clip=True, o
         # gs.models[ckpt_path]["vae"].vae_dtype = torch.bfloat16
 
 
+    # if output_clip:
+    #     w = WeightsLoader()
+    #     clip_target = model_config.clip_target()
+    #     if clip_target is not None:
+    #         gs.models[ckpt_path]["clip"] = CLIP(clip_target, embedding_directory=embedding_directory)
+    #         w.cond_stage_model = gs.models[ckpt_path]["clip"].cond_stage_model
+    #         sd = model_config.process_clip_state_dict(sd)
+    #         load_model_weights(w, sd)
+
     if output_clip:
-        w = WeightsLoader()
         clip_target = model_config.clip_target()
         if clip_target is not None:
-            gs.models[ckpt_path]["clip"] = CLIP(clip_target, embedding_directory=embedding_directory)
-            w.cond_stage_model = gs.models[ckpt_path]["clip"].cond_stage_model
-            sd = model_config.process_clip_state_dict(sd)
-            load_model_weights(w, sd)
+            clip_sd = model_config.process_clip_state_dict(sd)
+            if len(clip_sd) > 0:
+                gs.models[ckpt_path]["clip"] = CLIP(clip_target, embedding_directory=embedding_directory)
+                m, u = gs.models[ckpt_path]["clip"].load_sd(clip_sd, full_model=True)
+                if len(m) > 0:
+                    print("clip missing:", m)
+
+                if len(u) > 0:
+                    print("clip unexpected:", u)
+            else:
+                print("no CLIP/text encoder weights in checkpoint, the text encoder model will not be loaded.")
+
 
     left_over = sd.keys()
     if len(left_over) > 0:
@@ -130,7 +147,7 @@ def load_checkpoint_guess_config(ckpt_path, output_vae=True, output_clip=True, o
         #     model_management.load_model_gpu(model_patcher)
     del sd
     del vae_sd
-    del w
+    # del w
     del model
     torch_gc()
 
@@ -172,14 +189,14 @@ def load_checkpoint_guess_config(ckpt_path, output_vae=True, output_clip=True, o
     #gs.models[ckpt_path]["vae"].encode = replace_fn(gs.models[ckpt_path]["vae"], encode)
     gs.models[ckpt_path]["model"].load_model = load_model
 
-    if gs.vram_state != "low":
-        gs.models[ckpt_path]["vae"].first_stage_model.bfloat16().cuda()
-        gs.models[ckpt_path]["clip"].cond_stage_model.half().cuda()
-        gs.models[ckpt_path]["model"].model.half().cuda()
-    else:
-        gs.models[ckpt_path]["vae"].first_stage_model.bfloat16().cpu()
-        gs.models[ckpt_path]["clip"].cond_stage_model.half().cpu()
-        gs.models[ckpt_path]["model"].model.half().cpu()
+    # if gs.vram_state != "low":
+    #     gs.models[ckpt_path]["vae"].first_stage_model.bfloat16().cuda()
+    #     gs.models[ckpt_path]["clip"].cond_stage_model.half().cuda()
+    #     gs.models[ckpt_path]["model"].model.half().cuda()
+    # else:
+    gs.models[ckpt_path]["vae"].first_stage_model.bfloat16().cpu()
+    gs.models[ckpt_path]["clip"].cond_stage_model.half().cpu()
+    gs.models[ckpt_path]["model"].model.half().cpu()
     #torch_gc()
     return
 
@@ -367,6 +384,7 @@ class TorchLoaderNode(AiNode):
         sd = comfy.utils.load_torch_file(path)
         vae = VAE(sd=sd)
         vae.first_stage_model.bfloat16().cuda()
+        vae.vae_dtype = torch.bfloat16
         print("VAE Loaded", file)
         del sd
         torch_gc()
