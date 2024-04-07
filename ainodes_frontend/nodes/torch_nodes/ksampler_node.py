@@ -216,7 +216,7 @@ class KSamplerNode(AiNode):
             if gs.vram_state in ["low", "medium"]:
                 offload_to_device(vae, "cpu")
             offload_to_device(unet, gs.device)
-
+            from nodes import common_ksampler
             sample = common_ksampler(model=unet,
                                      seed=seed,
                                      steps=steps,
@@ -489,6 +489,8 @@ class KSampler:
 
     SCHEDULERS = SCHEDULER_NAMES
     SAMPLERS = SAMPLER_NAMES
+    DISCARD_PENULTIMATE_SIGMA_SAMPLERS = set(('dpm_2', 'dpm_2_ancestral', 'uni_pc', 'uni_pc_bh2'))
+
 
     def __init__(self, model, steps, device, sampler=None, scheduler=None, denoise=None, model_options={}):
         #self.model = model
@@ -503,28 +505,35 @@ class KSampler:
         self.denoise = denoise
         self.model_options = model_options
 
-    def calculate_sigmas(self, steps, model):
+    # def calculate_sigmas(self, steps, model):
+    #     sigmas = None
+    #     from comfy.samplers import calculate_sigmas_scheduler
+    #     discard_penultimate_sigma = False
+    #     if self.sampler in ['dpm_2', 'dpm_2_ancestral', 'uni_pc', 'uni_pc_bh2']:
+    #         steps += 1
+    #         discard_penultimate_sigma = True
+    #
+    #     sigmas = calculate_sigmas_scheduler(model, self.scheduler, steps)
+    #
+    #     if discard_penultimate_sigma:
+    #         sigmas = torch.cat([sigmas[:-2], sigmas[-1:]])
+    #     return sigmas
+
+    def set_steps(self, steps, model, denoise=None):
+        from comfy.samplers import calculate_sigmas
         sigmas = None
-        from comfy.samplers import calculate_sigmas_scheduler
+
         discard_penultimate_sigma = False
-        if self.sampler in ['dpm_2', 'dpm_2_ancestral', 'uni_pc', 'uni_pc_bh2']:
+        if self.sampler in self.DISCARD_PENULTIMATE_SIGMA_SAMPLERS:
             steps += 1
             discard_penultimate_sigma = True
 
-        sigmas = calculate_sigmas_scheduler(model, self.scheduler, steps)
+        sigmas = calculate_sigmas(model.get_model_object("model_sampling"), self.scheduler, steps)
 
         if discard_penultimate_sigma:
             sigmas = torch.cat([sigmas[:-2], sigmas[-1:]])
-        return sigmas
-
-    def set_steps(self, steps, model, denoise=None):
+        self.sigmas = sigmas
         self.steps = steps
-        if denoise is None or denoise > 0.9999:
-            self.sigmas = self.calculate_sigmas(steps, model).to(self.device)
-        else:
-            new_steps = int(steps/denoise)
-            sigmas = self.calculate_sigmas(new_steps, model).to(self.device)
-            self.sigmas = sigmas[-(steps + 1):]
 
     def sample(self, model, noise, positive, negative, cfg, latent_image=None, start_step=None, last_step=None, force_full_denoise=False, denoise_mask=None, sigmas=None, callback=None, disable_pbar=False, seed=None):
         if sigmas is None:
@@ -574,34 +583,54 @@ class KSampler:
 #
 #     return samples
 
-def common_ksampler(model, seed, steps, cfg, sampler_name, scheduler, positive, negative, latent, denoise=1.0, disable_noise=False, start_step=None, last_step=None, force_full_denoise=False):
-    import comfy
-    latent_image = latent["samples"]
-    if disable_noise:
-        noise = torch.zeros(latent_image.size(), dtype=latent_image.dtype, layout=latent_image.layout, device="cpu")
-    else:
-        batch_inds = latent["batch_index"] if "batch_index" in latent else None
-        noise = comfy.sample.prepare_noise(latent_image, seed, batch_inds)
-
-    noise_mask = None
-    if "noise_mask" in latent:
-        noise_mask = latent["noise_mask"]
-
-    callback = latent_preview.prepare_callback(model, steps)
-    disable_pbar = not comfy.utils.PROGRESS_BAR_ENABLED
-    # samples = sample(model, noise, steps, cfg, sampler_name, scheduler, positive, negative, latent_image,
-    #                               denoise=denoise, disable_noise=disable_noise, start_step=start_step, last_step=last_step,
-    #                               force_full_denoise=force_full_denoise, noise_mask=noise_mask, callback=callback, disable_pbar=disable_pbar, seed=seed)
-    real_model, positive_copy, negative_copy, noise_mask = prepare_sampling(model, noise.shape, positive, negative, noise_mask)
-
-    noise = noise.to(gs.device)
-    latent_image = latent_image.to(gs.device)
-
-    sampler = KSampler(real_model, steps=steps, device=gs.device, sampler=sampler_name, scheduler=scheduler, denoise=denoise, model_options=model.model_options)
-
-    samples = sampler.sample(real_model, noise, positive_copy, negative_copy, cfg=cfg, latent_image=latent_image, start_step=start_step, last_step=last_step, force_full_denoise=force_full_denoise, denoise_mask=noise_mask, sigmas=None, callback=callback, disable_pbar=disable_pbar, seed=seed)
-    real_model.to("cpu")
-    del real_model
-    out = {}#latent.copy()
-    out["samples"] = samples
-    return (out, )
+# def common_ksampler(model, seed, steps, cfg, sampler_name, scheduler, positive, negative, latent, denoise=1.0, disable_noise=False, start_step=None, last_step=None, force_full_denoise=False):
+#     import comfy
+#     latent_image = latent["samples"]
+#     if disable_noise:
+#         noise = torch.zeros(latent_image.size(), dtype=latent_image.dtype, layout=latent_image.layout, device="cpu")
+#     else:
+#         batch_inds = latent["batch_index"] if "batch_index" in latent else None
+#         noise = comfy.sample.prepare_noise(latent_image, seed, batch_inds)
+#
+#     noise_mask = None
+#     if "noise_mask" in latent:
+#         noise_mask = latent["noise_mask"]
+#
+#     callback = latent_preview.prepare_callback(model, steps)
+#     disable_pbar = not comfy.utils.PROGRESS_BAR_ENABLED
+#     # samples = sample(model, noise, steps, cfg, sampler_name, scheduler, positive, negative, latent_image,
+#     #                               denoise=denoise, disable_noise=disable_noise, start_step=start_step, last_step=last_step,
+#     #                               force_full_denoise=force_full_denoise, noise_mask=noise_mask, callback=callback, disable_pbar=disable_pbar, seed=seed)
+#     #real_model, positive_copy, negative_copy, noise_mask = prepare_sampling(model, noise.shape, positive, negative, noise_mask)
+#
+#     noise = noise.to(gs.device)
+#     latent_image = latent_image.to(gs.device)
+#
+#     sampler = KSampler(model, steps=steps, device=gs.device, sampler=sampler_name, scheduler=scheduler, denoise=denoise, model_options=model.model_options)
+#
+#     samples = sampler.sample(model, noise, positive, negative, cfg=cfg, latent_image=latent_image, start_step=start_step, last_step=last_step, force_full_denoise=force_full_denoise, denoise_mask=noise_mask, sigmas=None, callback=callback, disable_pbar=disable_pbar, seed=seed)
+#     out = {}#latent.copy()
+#     out["samples"] = samples
+#     return (out, )
+#
+#
+# def common_ksampler(model, seed, steps, cfg, sampler_name, scheduler, positive, negative, latent, denoise=1.0, disable_noise=False, start_step=None, last_step=None, force_full_denoise=False):
+#     latent_image = latent["samples"]
+#     if disable_noise:
+#         noise = torch.zeros(latent_image.size(), dtype=latent_image.dtype, layout=latent_image.layout, device="cpu")
+#     else:
+#         batch_inds = latent["batch_index"] if "batch_index" in latent else None
+#         noise = comfy.sample.prepare_noise(latent_image, seed, batch_inds)
+#
+#     noise_mask = None
+#     if "noise_mask" in latent:
+#         noise_mask = latent["noise_mask"]
+#
+#     callback = latent_preview.prepare_callback(model, steps)
+#     disable_pbar = not comfy.utils.PROGRESS_BAR_ENABLED
+#     samples = comfy.sample.sample(model, noise, steps, cfg, sampler_name, scheduler, positive, negative, latent_image,
+#                                   denoise=denoise, disable_noise=disable_noise, start_step=start_step, last_step=last_step,
+#                                   force_full_denoise=force_full_denoise, noise_mask=noise_mask, callback=callback, disable_pbar=disable_pbar, seed=seed)
+#     out = latent.copy()
+#     out["samples"] = samples
+#     return (out, )
