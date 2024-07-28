@@ -1,9 +1,12 @@
 import platform
 
 import torch
-from sfast.compilers.diffusion_pipeline_compiler import CompilationConfig
+try:
+    from sfast.compilers.diffusion_pipeline_compiler import CompilationConfig
+    from backend_helpers.sfast_helpers.sfast_compiler import build_lazy_trace_module
 
-from backend_helpers.sfast_helpers.sfast_compiler import build_lazy_trace_module
+except:
+    pass
 import os
 from qtpy import QtCore, QtGui
 from qtpy import QtWidgets
