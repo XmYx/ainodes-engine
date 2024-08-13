@@ -1,2 +1,0 @@
-XmYx/deforum-studio -b main deforum
-comfyanonymous/ComfyUI -b main ComfyUI

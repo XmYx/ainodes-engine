@@ -1,40 +1,7 @@
-import datetime
-import sys
-
-from PyQt5.QtCore import pyqtSignal
-
-from mm_test import ModelManagerListWidget
-from modules.flux_core import model_manager
-
-from modules import cli_args
-
-cli_args.args.fp8_e5m2_text_enc = True
-cli_args.args.fp8_e5m2_unet = True
-cli_args.args.fp16_unet = False
-cli_args.args.fp16_vae = True
-cli_args.args.highvram = True
-cli_args.args.dont_upcast_attention = True
-from qtpy import QtWidgets
-
-from node_core.console import NodesConsole, StreamRedirect
-
-start_time = datetime.datetime.now()
-print(f"Start aiNodes, please wait. {start_time}")
-from qtpy.QtWidgets import QApplication, QLabel
-
-# sys.path.extend(['src/pyqt-node-editor'])
-sys.path.extend(['src/ainodes'])
-#
-from qtpy.QtCore import Qt, QSignalBlocker
-from qtpy.QtGui import QCloseEvent
-from qtpy.QtWidgets import QApplication, QMainWindow, QLabel, QAction, QPlainTextEdit, QInputDialog, QSizePolicy, \
-    QComboBox, QWidgetAction, QToolBar, QTableWidget
-import PyQtAds as QtAds
-
 import os
-from qtpy.QtGui import QIcon, QKeySequence
-from qtpy.QtWidgets import QMdiArea, QWidget, QDockWidget, QAction, QMessageBox, QFileDialog
-from qtpy.QtCore import Qt, QSignalMapper
+from PyQt5.QtGui import QIcon, QKeySequence
+from PyQt5.QtWidgets import QMdiArea, QWidget, QDockWidget, QAction, QMessageBox, QFileDialog
+from PyQt5.QtCore import Qt, QSignalMapper
 
 from nodeeditor.utils import loadStylesheets
 from nodeeditor.node_editor_window import NodeEditorWindow
@@ -63,7 +30,7 @@ DEBUG = False
 
 
 class CalculatorWindow(NodeEditorWindow):
-    refresh_nodes_signal = pyqtSignal()
+
     def initUI(self):
         self.name_company = 'Blenderfreak'
         self.name_product = 'Calculator NodeEditor'
@@ -79,10 +46,7 @@ class CalculatorWindow(NodeEditorWindow):
         if DEBUG:
             print("Registered nodes:")
             pp(NODE_CLASSES)
-        QtAds.CDockManager.setConfigFlag(QtAds.CDockManager.OpaqueSplitterResize, True)
-        QtAds.CDockManager.setConfigFlag(QtAds.CDockManager.XmlCompressionEnabled, False)
-        QtAds.CDockManager.setConfigFlag(QtAds.CDockManager.FocusHighlighting, True)
-        self.dock_manager = QtAds.CDockManager(self)
+
 
         self.mdiArea = QMdiArea()
         self.mdiArea.setHorizontalScrollBarPolicy(Qt.ScrollBarAsNeeded)
@@ -91,15 +55,11 @@ class CalculatorWindow(NodeEditorWindow):
         self.mdiArea.setDocumentMode(True)
         self.mdiArea.setTabsClosable(True)
         self.mdiArea.setTabsMovable(True)
-        #self.setCentralWidget(self.mdiArea)
-        central_dock_widget = QtAds.CDockWidget("CentralWidget")
-        central_dock_widget.setWidget(self.mdiArea)
-        central_dock_area = self.dock_manager.setCentralWidget(central_dock_widget)
-        central_dock_area.setAllowedAreas(QtAds.DockWidgetArea.OuterDockAreas)
+        self.setCentralWidget(self.mdiArea)
+
         self.mdiArea.subWindowActivated.connect(self.updateMenus)
         self.windowMapper = QSignalMapper(self)
         self.windowMapper.mapped[QWidget].connect(self.setActiveSubWindow)
-        self.setup_model_manager()
 
         self.createNodesDock()
 
@@ -111,78 +71,8 @@ class CalculatorWindow(NodeEditorWindow):
 
         self.readSettings()
 
-        self.setWindowTitle("aiNodes 2.0")
-        self.create_console_widget()
-        self.create_perspective_ui()
-    def setup_model_manager(self):
+        self.setWindowTitle("Calculator NodeEditor Example")
 
-        # model_manager.load_model(
-        #     (
-        #         '/home/mix/Playground/ComfyUI/models/clip/clip_l.safetensors',
-        #         '/home/mix/Playground/ComfyUI/models/clip/t5xxl_fp8_e4m3fn.safetensors'
-        #     ),
-        #     '/home/mix/Playground/ComfyUI/models/vae/flux-ae.safetensors',
-        #     '/home/mix/Playground/ComfyUI/models/unet/flux1-dev.safetensors'
-        # )
-        model_manager_list = ModelManagerListWidget(model_manager)
-        model_manager.refresh_list = model_manager_list.refresh_list_signal
-        model_manager.refresh_nodes = self.refresh_nodes_signal
-        self.model_manager_dock = QtAds.CDockWidget("Console")
-        self.model_manager_dock.setWidget(model_manager_list)
-        self.model_manager_dock.setMinimumSizeHintMode(QtAds.CDockWidget.MinimumSizeHintFromDockWidget)
-        self.model_manager_dock.setWindowTitle("Console")
-        self.dock_manager.addDockWidget(QtAds.DockWidgetArea.LeftDockWidgetArea, self.model_manager_dock)
-
-        # model_manager_list.show()
-    def create_perspective_ui(self):
-        save_perspective_action = QAction("Create Perspective", self)
-        save_perspective_action.triggered.connect(self.save_perspective)
-        perspective_list_action = QWidgetAction(self)
-        self.perspective_combobox = QComboBox(self)
-        self.perspective_combobox.setSizeAdjustPolicy(QComboBox.AdjustToContents)
-        self.perspective_combobox.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
-        self.perspective_combobox.textActivated.connect(self.dock_manager.openPerspective)
-        perspective_list_action.setDefaultWidget(self.perspective_combobox)
-        self.toolBar = QToolBar("toolBar", self)
-        self.toolBar.addSeparator()
-        self.toolBar.addAction(perspective_list_action)
-        self.toolBar.addAction(save_perspective_action)
-
-        self.addToolBar(Qt.TopToolBarArea, self.toolBar)
-        self.toolBar.setMovable(True)
-
-    def create_console_widget(self):
-        # Create a text widget for stdout and stderr
-        self.text_widget = NodesConsole()
-        # Set up the StreamRedirect objects
-        self.stdout_redirect = StreamRedirect()
-        self.stderr_redirect = StreamRedirect()
-        self.stdout_redirect.text_written.connect(self.text_widget.write)
-        self.stderr_redirect.text_written.connect(self.text_widget.write)
-        sys.stdout = self.stdout_redirect
-        sys.stderr = self.stderr_redirect
-
-        self.console = QtAds.CDockWidget("Console")
-        self.console.setWidget(self.text_widget)
-        self.console.setMinimumSizeHintMode(QtAds.CDockWidget.MinimumSizeHintFromDockWidget)
-        self.console.setWindowTitle("Console")
-        self.dock_manager.addDockWidget(QtAds.DockWidgetArea.LeftDockWidgetArea, self.console)
-
-        # widget = QtWidgets.QWidget()
-        # layout = QtWidgets.QHBoxLayout(widget)
-        # layout.setContentsMargins(5,5,5,5)
-        # layout.addWidget(self.text_widget)
-        #self.addDockWidget(Qt.LeftDockWidgetArea, self.console)
-    def save_perspective(self):
-        perspective_name, ok = QInputDialog.getText(self, "Save Perspective", "Enter Unique name:")
-        if not ok or not perspective_name:
-            return
-
-        self.dock_manager.addPerspective(perspective_name)
-        blocker = QSignalBlocker(self.perspective_combobox)
-        self.perspective_combobox.clear()
-        self.perspective_combobox.addItems(self.dock_manager.perspectiveNames())
-        self.perspective_combobox.setCurrentText(perspective_name)
     def closeEvent(self, event):
         self.mdiArea.closeAllSubWindows()
         if self.mdiArea.currentSubWindow():
@@ -250,7 +140,7 @@ class CalculatorWindow(NodeEditorWindow):
     def about(self):
         QMessageBox.about(self, "About Calculator NodeEditor Example",
                 "The <b>Calculator NodeEditor</b> example demonstrates how to write multiple "
-                "document interface applications using qtpy and NodeEditor. For more information visit: "
+                "document interface applications using PyQt5 and NodeEditor. For more information visit: "
                 "<a href='https://www.blenderfreak.com/'>www.BlenderFreak.com</a>")
 
     def createMenus(self):
@@ -308,7 +198,7 @@ class CalculatorWindow(NodeEditorWindow):
         toolbar_nodes = self.windowMenu.addAction("Nodes Toolbar")
         toolbar_nodes.setCheckable(True)
         toolbar_nodes.triggered.connect(self.onWindowNodesToolbar)
-        #toolbar_nodes.setChecked(self.nodesDock.isVisible())
+        toolbar_nodes.setChecked(self.nodesDock.isVisible())
 
         self.windowMenu.addSeparator()
 
@@ -348,17 +238,13 @@ class CalculatorWindow(NodeEditorWindow):
         pass
 
     def createNodesDock(self):
-        self.nodesListWidget = QDMDragListbox(self)
+        self.nodesListWidget = QDMDragListbox()
 
-        self.nodesDock = QtAds.CDockWidget("Table 1")
+        self.nodesDock = QDockWidget("Nodes")
         self.nodesDock.setWidget(self.nodesListWidget)
-        self.nodesDock.setMinimumSizeHintMode(QtAds.CDockWidget.MinimumSizeHintFromDockWidget)
-        self.nodesDock.resize(250, 150)
-        self.nodesDock.setMinimumSize(200, 150)
+        self.nodesDock.setFloating(False)
 
-        self.dock_manager.addDockWidget(QtAds.DockWidgetArea.LeftDockWidgetArea, self.nodesDock)
-        
-        self.refresh_nodes_signal.connect(self.nodesListWidget.addMyItems)
+        self.addDockWidget(Qt.RightDockWidgetArea, self.nodesDock)
 
     def createStatusBar(self):
         self.statusBar().showMessage("Ready")
@@ -393,17 +279,3 @@ class CalculatorWindow(NodeEditorWindow):
     def setActiveSubWindow(self, window):
         if window:
             self.mdiArea.setActiveSubWindow(window)
-
-if __name__ == '__main__':
-    app = QApplication(sys.argv)
-    # print(QStyleFactory.keys())
-    #
-    # app.setStyle('Fusion')
-    # qdarktheme.setup_theme()
-
-    wnd = CalculatorWindow()
-    wnd.show()
-
-    end_time = datetime.datetime.now()
-    print(f"Initialization took: {end_time - start_time}")
-    sys.exit(app.exec_())
