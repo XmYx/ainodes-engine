@@ -1,466 +1,528 @@
-"""ainodes-engine main"""
-#!/usr/bin/env python3
 import datetime
+import re
+import sys
+sys.path.extend(['src/ainodes'])
+sys.path.extend(['src/flux-fp8-api'])
 
-import torch
-import yaml
-from PyQt6.QtCore import QFile
-from PyQt6.QtWidgets import QTextEdit
-from qtpy.QtWidgets import QProgressBar
+from PyQt5.QtGui import QSurfaceFormat, QOpenGLContext
+# Enable OpenGL globally
+def enable_opengl():
+    fmt = QSurfaceFormat()
+    fmt.setRenderableType(QSurfaceFormat.OpenGL)
+    fmt.setProfile(QSurfaceFormat.CoreProfile)
+    fmt.setVersion(3, 3)  # Requesting OpenGL 3.3
+    QSurfaceFormat.setDefaultFormat(fmt)
 
-from qtpy.QtCore import QPropertyAnimation, QEasingCurve
-import os, sys
-sys.path.append(os.getcwd())
-from ainodes_frontend.base.settings import Settings, save_settings, load_settings
+# Call the function to enable OpenGL
+enable_opengl()
+
+from PyQt5.QtCore import pyqtSignal, QSettings
+
+# from mm_test import ModelManagerListWidget
+# from modules.flux_core import model_manager
+#
+# from modules import cli_args
+
+# cli_args.args.fp8_e5m2_text_enc = True
+# # cli_args.args.fp8_e5m2_unet = True
+# cli_args.args.fp16_unet = True
+# cli_args.args.fp16_vae = True
+# cli_args.args.highvram = True
+# cli_args.args.dont_upcast_attention = False
+from PyQt5 import QtWidgets
+
+from node_core.console import NodesConsole, StreamRedirect
 
 start_time = datetime.datetime.now()
 print(f"Start aiNodes, please wait. {start_time}")
+from PyQt5.QtWidgets import QApplication, QLabel, QHBoxLayout, QSlider
+
+# sys.path.extend(['src/pyqt-node-editor'])
+
+#
+from PyQt5.QtCore import Qt, QSignalBlocker
+from PyQt5.QtGui import QCloseEvent
+from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel, QAction, QPlainTextEdit, QInputDialog, QSizePolicy, \
+    QComboBox, QWidgetAction, QToolBar, QTableWidget
+import PyQtAds as QtAds
 
 import os
-os.environ["QT_API"] = "pyqt6"
-# os.environ["FORCE_QT_API"] = "1"
-# os.environ["QTWEBENGINE_CHROMIUM_FLAGS"] = "--disable-gpu"
+from PyQt5.QtGui import QIcon, QKeySequence
+from PyQt5.QtWidgets import QMdiArea, QWidget, QDockWidget, QAction, QMessageBox, QFileDialog
+from PyQt5.QtCore import Qt, QSignalMapper
 
-import logging
-import os
-logging.basicConfig(level='ERROR')
+from nodeeditor.utils import loadStylesheets
+from nodeeditor.node_editor_window import NodeEditorWindow
+from node_core.calc_sub_window import CalculatorSubWindow
+from node_core.calc_drag_listbox import QDMDragListbox
+from nodeeditor.utils import dumpException, pp
+from node_core.node_register import NODE_CLASSES
 
-import platform
-import sys
+# Enabling edge validators
+from nodeeditor.node_edge import Edge
+from nodeeditor.node_edge_validators import (
+    edge_validator_debug,
+    edge_cannot_connect_two_outputs_or_two_inputs,
+    edge_cannot_connect_input_and_output_of_same_node
+)
+Edge.registerEdgeValidator(edge_validator_debug)
+Edge.registerEdgeValidator(edge_cannot_connect_two_outputs_or_two_inputs)
+Edge.registerEdgeValidator(edge_cannot_connect_input_and_output_of_same_node)
 
-from qtpy.QtCore import Qt
-from qtpy.QtWidgets import QSplashScreen, QApplication
+# images for the dark skin
+# import examples.example_calculator.qss.nodeeditor_dark_resources
 
-
-
-
-from qtpy import QtCore, QtGui
-try:
-    import tqdm
-except:
-    import subprocess
-    subprocess.check_call(["pip", "install", "tqdm"])
-    import tqdm
-
-
-from ainodes_frontend import singleton as gs
-from ainodes_frontend.node_engine.utils import loadStylesheets
-from ainodes_frontend.base.args import get_args
-from ainodes_frontend.base.import_utils import update_all_nodes_req, import_nodes_from_subdirectories, \
-    set_application_attributes
+DEBUG = False
 
 
-def update_deforum():
-    # Save the current directory
-    original_directory = os.getcwd()
+class CalculatorWindow(NodeEditorWindow):
+    refresh_nodes_signal = pyqtSignal()
+    def initUI(self):
+        self.default_font_size = self.font().pointSizeF()
+        # Load and store the original stylesheet
+        with open('qss/nodeeditor-dark.qss', 'r') as file:
+            self.original_qss = file.read()
+            self.setStyleSheet(self.original_qss)
 
-    try:
-        # Change to the desired directory
-        os.chdir("src/deforum")
 
-        # Execute git pull
-        result = subprocess.run(["git", "pull"], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
-        # Print the output from git pull
-        print("Output:", result.stdout.decode())
-        print("Error:", result.stderr.decode())
-    except Exception as e:
-        print("An error occurred:", e)
-    finally:
-        # Change back to the original directory
-        os.chdir(original_directory)
+        self.init_scale_slider()
+        self.name_company = 'Blenderfreak'
+        self.name_product = 'Calculator NodeEditor'
 
-# Set environment variable QT_API to use PySide6
-# Install Triton if running on Linux
-# if "Linux" in platform.platform():
-#     import subprocess
-#     subprocess.check_call(["pip", "install", "triton==2.0.0"])
-if "linux" in platform.platform().lower():
+        self.stylesheet_filename = os.path.join(os.path.dirname(__file__), "qss/nodeeditor-dark-linux.qss")
+        loadStylesheets(
+            os.path.join(os.path.dirname(__file__), "qss/nodeeditor-dark-linux.qss"),
+            self.stylesheet_filename
+        )
 
-    try:
+        self.empty_icon = QIcon(".")
+
+        if DEBUG:
+            print("Registered nodes:")
+            pp(NODE_CLASSES)
+        QtAds.CDockManager.setConfigFlag(QtAds.CDockManager.OpaqueSplitterResize, True)
+        QtAds.CDockManager.setConfigFlag(QtAds.CDockManager.XmlCompressionEnabled, False)
+        QtAds.CDockManager.setConfigFlag(QtAds.CDockManager.FocusHighlighting, True)
+        self.dock_manager = QtAds.CDockManager(self)
+
+        self.mdiArea = QMdiArea()
+        self.mdiArea.setHorizontalScrollBarPolicy(Qt.ScrollBarAsNeeded)
+        self.mdiArea.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
+        self.mdiArea.setViewMode(QMdiArea.TabbedView)
+        self.mdiArea.setDocumentMode(True)
+        self.mdiArea.setTabsClosable(True)
+        self.mdiArea.setTabsMovable(True)
+        #self.setCentralWidget(self.mdiArea)
+        central_dock_widget = QtAds.CDockWidget("CentralWidget")
+        central_dock_widget.setWidget(self.mdiArea)
+        central_dock_area = self.dock_manager.setCentralWidget(central_dock_widget)
+        central_dock_area.setAllowedAreas(QtAds.DockWidgetArea.OuterDockAreas)
+        self.mdiArea.subWindowActivated.connect(self.updateMenus)
+        self.windowMapper = QSignalMapper(self)
+        self.windowMapper.mapped[QWidget].connect(self.setActiveSubWindow)
+        self.setup_model_manager()
+
+        self.createNodesDock()
+
+        self.createActions()
+        self.createMenus()
+        self.createToolBars()
+        self.createStatusBar()
+        self.updateMenus()
+
+        self.readSettings()
+        self.setWindowTitle("aiNodes 2.0")
+        self.create_console_widget()
+        self.create_perspective_ui()
+        # self.save_last_perspective()
+        self.load_last_perspective()
+    def scale_stylesheet(self, qss, scale_factor):
+        # Regular expression to find numeric values in the QSS
+        pattern = re.compile(r'(\d+)(px|pt)?')
+
+        def replace_func(match):
+            value = int(match.group(1))
+            unit = match.group(2) or ''
+            scaled_value = int(value * scale_factor)
+            return f'{scaled_value}{unit}'
+
+        scaled_qss = pattern.sub(replace_func, qss)
+        return scaled_qss
+    def update_scaling(self, value):
+        scale_factor = value / 100.0
+
+        # Update the application font
+        font = self.font()
+        font.setPointSizeF(self.default_font_size * scale_factor)
+        self.setFont(font)
+
+        # Optionally, update the stylesheet with new scaling
+        scaled_qss = self.scale_stylesheet(self.original_qss, scale_factor)
+        self.setStyleSheet(scaled_qss)
+
+    def init_scale_slider(self):
+        # Create a widget to hold the slider and label
+        scale_widget = QWidget()
+        scale_layout = QHBoxLayout()
+        scale_widget.setLayout(scale_layout)
+
+        # Create a label for the slider
+        self.scale_label = QLabel('Scale:')
+        scale_layout.addWidget(self.scale_label)
+
+        # Create the slider
+        self.scale_slider = QSlider(Qt.Horizontal)
+        self.scale_slider.setMinimum(50)   # 50%
+        self.scale_slider.setMaximum(200)  # 200%
+        self.scale_slider.setValue(100)    # Default 100%
+        self.scale_slider.setTickInterval(10)
+        self.scale_slider.setTickPosition(QSlider.TicksBelow)
+        scale_layout.addWidget(self.scale_slider)
+
+        # Add the scale widget to the status bar or main layout
+        self.statusBar().addPermanentWidget(scale_widget)
+
+        # Connect the slider to the scaling function
+        self.scale_slider.valueChanged.connect(self.update_scaling)
+
+    def setup_model_manager(self):
+
+        # model_manager.load_model(
+        #     (
+        #         '/home/mix/Playground/ComfyUI/models/clip/clip_l.safetensors',
+        #         '/home/mix/Playground/ComfyUI/models/clip/t5xxl_fp8_e4m3fn.safetensors'
+        #     ),
+        #     '/home/mix/Playground/ComfyUI/models/vae/flux-ae.safetensors',
+        #     '/home/mix/Playground/ComfyUI/models/unet/flux1-dev.safetensors'
+        # )
+        # model_manager_list = ModelManagerListWidget(model_manager)
+        # model_manager.refresh_list = model_manager_list.refresh_list_signal
+        # model_manager.refresh_nodes = self.refresh_nodes_signal
+        # self.model_manager_dock = QtAds.CDockWidget("Console")
+        # self.model_manager_dock.setWidget(model_manager_list)
+        # self.model_manager_dock.setMinimumSizeHintMode(QtAds.CDockWidget.MinimumSizeHintFromDockWidget)
+        # self.model_manager_dock.setWindowTitle("Console")
+        # self.dock_manager.addDockWidget(QtAds.DockWidgetArea.LeftDockWidgetArea, self.model_manager_dock)
+
+        pass
+
+        # model_manager_list.show()
+    def create_perspective_ui(self):
+        save_perspective_action = QAction("Create Perspective", self)
+        save_perspective_action.triggered.connect(self.save_perspective)
+        perspective_list_action = QWidgetAction(self)
+        self.perspective_combobox = QComboBox(self)
+        self.perspective_combobox.setSizeAdjustPolicy(QComboBox.AdjustToContents)
+        self.perspective_combobox.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
+        self.perspective_combobox.textActivated.connect(self.dock_manager.openPerspective)
+        perspective_list_action.setDefaultWidget(self.perspective_combobox)
+        self.toolBar = QToolBar("toolBar", self)
+        self.toolBar.addSeparator()
+        self.toolBar.addAction(perspective_list_action)
+        self.toolBar.addAction(save_perspective_action)
+
+        self.addToolBar(Qt.TopToolBarArea, self.toolBar)
+        self.toolBar.setMovable(True)
+
+    def create_console_widget(self):
+        # Create a text widget for stdout and stderr
+        self.text_widget = NodesConsole()
+        # Set up the StreamRedirect objects
+        self.stdout_redirect = StreamRedirect()
+        self.stderr_redirect = StreamRedirect()
+        self.stdout_redirect.text_written.connect(self.text_widget.write)
+        self.stderr_redirect.text_written.connect(self.text_widget.write)
+        sys.stdout = self.stdout_redirect
+        sys.stderr = self.stderr_redirect
+
+        self.console = QtAds.CDockWidget("Console")
+        self.console.setWidget(self.text_widget)
+        self.console.setMinimumSizeHintMode(QtAds.CDockWidget.MinimumSizeHintFromDockWidget)
+        self.console.setWindowTitle("Console")
+        self.dock_manager.addDockWidget(QtAds.DockWidgetArea.LeftDockWidgetArea, self.console)
+
+        # widget = QtWidgets.QWidget()
+        # layout = QtWidgets.QHBoxLayout(widget)
+        # layout.setContentsMargins(5,5,5,5)
+        # layout.addWidget(self.text_widget)
+        #self.addDockWidget(Qt.LeftDockWidgetArea, self.console)
+    def save_perspective(self):
+        perspective_name, ok = QInputDialog.getText(self, "Save Perspective", "Enter Unique name:")
+        if not ok or not perspective_name:
+            return
+
+        self.dock_manager.addPerspective(perspective_name)
+        blocker = QSignalBlocker(self.perspective_combobox)
+        self.perspective_combobox.clear()
+        self.perspective_combobox.addItems(self.dock_manager.perspectiveNames())
+        self.perspective_combobox.setCurrentText(perspective_name)
+    def closeEvent(self, event):
+        self.save_last_perspective()
+
+        self.mdiArea.closeAllSubWindows()
+        if self.mdiArea.currentSubWindow():
+            event.ignore()
+        else:
+            self.writeSettings()
+            event.accept()
+            # hacky fix for PyQt 5.14.x
+            import sys
+            sys.exit(0)
+
+    def load_last_perspective(self):
+        settings = QSettings("Settings.ini", QSettings.IniFormat)
+        self.dock_manager.loadPerspectives(settings)
+        self.perspective_combobox.addItems(self.dock_manager.perspectiveNames())
+
+        # self.perspective_combo_box.clear()
+        # self.perspective_combo_box.addItems(self.dock_manager.perspectiveNames())
+        # Automatically select the "last_perspective" if it exists
+        if "last_perspective" in self.dock_manager.perspectiveNames():
+        #     self.perspective_combobox.setCurrentText("last_perspective")
+            self.dock_manager.openPerspective("last_perspective")
+
+    def save_last_perspective(self):
+        perspective_name = "last_perspective"
+        self.dock_manager.addPerspective(perspective_name)
+        settings = QSettings("Settings.ini", QSettings.IniFormat)
+        self.dock_manager.savePerspectives(settings)
+
+        # perspective_data = self.dock_manager.saveState().toJson().data().decode()
+        # workspace_dir = os.path.join(os.path.dirname(__file__), "workspaces")
+        # os.makedirs(workspace_dir, exist_ok=True)
+        # perspective_file = os.path.join(workspace_dir, "last_perspective.json")
+        # with open(perspective_file, "w") as f:
+        #     f.write(perspective_data)
+
+    def createActions(self):
+        super().createActions()
+
+        self.actClose = QAction("Cl&ose", self, statusTip="Close the active window", triggered=self.mdiArea.closeActiveSubWindow)
+        self.actCloseAll = QAction("Close &All", self, statusTip="Close all the windows", triggered=self.mdiArea.closeAllSubWindows)
+        self.actTile = QAction("&Tile", self, statusTip="Tile the windows", triggered=self.mdiArea.tileSubWindows)
+        self.actCascade = QAction("&Cascade", self, statusTip="Cascade the windows", triggered=self.mdiArea.cascadeSubWindows)
+        self.actNext = QAction("Ne&xt", self, shortcut=QKeySequence.NextChild, statusTip="Move the focus to the next window", triggered=self.mdiArea.activateNextSubWindow)
+        self.actPrevious = QAction("Pre&vious", self, shortcut=QKeySequence.PreviousChild, statusTip="Move the focus to the previous window", triggered=self.mdiArea.activatePreviousSubWindow)
+
+        self.actSeparator = QAction(self)
+        self.actSeparator.setSeparator(True)
+
+        self.actAbout = QAction("&About", self, statusTip="Show the application's About box", triggered=self.about)
+
+    def getCurrentNodeEditorWidget(self):
+        """ we're returning NodeEditorWidget here... """
+        activeSubWindow = self.mdiArea.activeSubWindow()
+        if activeSubWindow:
+            return activeSubWindow.widget()
+        return None
+
+    def onFileNew(self):
         try:
-            from gi.repository import Gtk
-        except:
-            subprocess.check_call(["pip", "install", "pygobject"])
-            from gi.repository import Gtk
+            subwnd = self.createMdiChild()
+            subwnd.widget().fileNew()
+            subwnd.show()
+        except Exception as e: dumpException(e)
 
-        # Get the current GTK settings
-        settings = Gtk.Settings.get_default()
-        gtk_theme = settings.get_property("gtk-theme-name")
-        # Check the GTK theme
-        if gtk_theme.endswith("dark"):
-            qss_file = "ainodes_frontend/qss/nodeeditor-dark-linux.qss"
+
+    def onFileOpen(self):
+        fnames, filter = QFileDialog.getOpenFileNames(self, 'Open graph from file', self.getFileDialogDirectory(), self.getFileDialogFilter())
+
+        try:
+            for fname in fnames:
+                if fname:
+                    existing = self.findMdiChild(fname)
+                    if existing:
+                        self.mdiArea.setActiveSubWindow(existing)
+                    else:
+                        # we need to create new subWindow and open the file
+                        nodeeditor = CalculatorSubWindow()
+                        if nodeeditor.fileLoad(fname):
+                            self.statusBar().showMessage("File %s loaded" % fname, 5000)
+                            nodeeditor.setTitle()
+                            subwnd = self.createMdiChild(nodeeditor)
+                            subwnd.show()
+                        else:
+                            nodeeditor.close()
+        except Exception as e: dumpException(e)
+
+
+    def about(self):
+        QMessageBox.about(self, "About Calculator NodeEditor Example",
+                "The <b>Calculator NodeEditor</b> example demonstrates how to write multiple "
+                "document interface applications using qtpy and NodeEditor. For more information visit: "
+                "<a href='https://www.blenderfreak.com/'>www.BlenderFreak.com</a>")
+
+    def createMenus(self):
+        super().createMenus()
+
+        self.windowMenu = self.menuBar().addMenu("&Window")
+        self.updateWindowMenu()
+        self.windowMenu.aboutToShow.connect(self.updateWindowMenu)
+
+        self.menuBar().addSeparator()
+
+        self.helpMenu = self.menuBar().addMenu("&Help")
+        self.helpMenu.addAction(self.actAbout)
+
+        self.editMenu.aboutToShow.connect(self.updateEditMenu)
+
+    def updateMenus(self):
+        # print("update Menus")
+        active = self.getCurrentNodeEditorWidget()
+        hasMdiChild = (active is not None)
+
+        self.actSave.setEnabled(hasMdiChild)
+        self.actSaveAs.setEnabled(hasMdiChild)
+        self.actClose.setEnabled(hasMdiChild)
+        self.actCloseAll.setEnabled(hasMdiChild)
+        self.actTile.setEnabled(hasMdiChild)
+        self.actCascade.setEnabled(hasMdiChild)
+        self.actNext.setEnabled(hasMdiChild)
+        self.actPrevious.setEnabled(hasMdiChild)
+        self.actSeparator.setVisible(hasMdiChild)
+
+        self.updateEditMenu()
+
+    def updateEditMenu(self):
+        try:
+            # print("update Edit Menu")
+            active = self.getCurrentNodeEditorWidget()
+            hasMdiChild = (active is not None)
+
+            self.actPaste.setEnabled(hasMdiChild)
+
+            self.actCut.setEnabled(hasMdiChild and active.hasSelectedItems())
+            self.actCopy.setEnabled(hasMdiChild and active.hasSelectedItems())
+            self.actDelete.setEnabled(hasMdiChild and active.hasSelectedItems())
+
+            self.actUndo.setEnabled(hasMdiChild and active.canUndo())
+            self.actRedo.setEnabled(hasMdiChild and active.canRedo())
+        except Exception as e: dumpException(e)
+
+
+
+    def updateWindowMenu(self):
+        self.windowMenu.clear()
+
+        toolbar_nodes = self.windowMenu.addAction("Nodes Toolbar")
+        toolbar_nodes.setCheckable(True)
+        toolbar_nodes.triggered.connect(self.onWindowNodesToolbar)
+        #toolbar_nodes.setChecked(self.nodesDock.isVisible())
+
+        self.windowMenu.addSeparator()
+
+        self.windowMenu.addAction(self.actClose)
+        self.windowMenu.addAction(self.actCloseAll)
+        self.windowMenu.addSeparator()
+        self.windowMenu.addAction(self.actTile)
+        self.windowMenu.addAction(self.actCascade)
+        self.windowMenu.addSeparator()
+        self.windowMenu.addAction(self.actNext)
+        self.windowMenu.addAction(self.actPrevious)
+        self.windowMenu.addAction(self.actSeparator)
+
+        windows = self.mdiArea.subWindowList()
+        self.actSeparator.setVisible(len(windows) != 0)
+
+        for i, window in enumerate(windows):
+            child = window.widget()
+
+            text = "%d %s" % (i + 1, child.getUserFriendlyFilename())
+            if i < 9:
+                text = '&' + text
+
+            action = self.windowMenu.addAction(text)
+            action.setCheckable(True)
+            action.setChecked(child is self.getCurrentNodeEditorWidget())
+            action.triggered.connect(self.windowMapper.map)
+            self.windowMapper.setMapping(action, window)
+
+    def onWindowNodesToolbar(self):
+        if self.nodesDock.isVisible():
+            self.nodesDock.hide()
         else:
-            qss_file = "ainodes_frontend/qss/nodeeditor.qss"
-    except:
-        gs.qss = "qss/nodeeditor-dark-linux.qss"
-elif "Windows" in platform.platform():
+            self.nodesDock.show()
 
-    settings = QtCore.QSettings('HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize',
-                         QtCore.QSettings.Format.NativeFormat)
-    theme = settings.value('AppsUseLightTheme')
-    if theme == 0:
-        gs.qss = "qss/nodeeditor-dark.qss"
-    else:
-        gs.qss = "qss/nodeeditor.qss"
-    import ctypes
-    myappid = u'mycompany.myproduct.subproduct.version'  # arbitrary string
-    ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
-else:
-    gs.qss = "qss/nodeeditor-dark.qss"
+    def createToolBars(self):
+        pass
 
-print("QSS SET", gs.qss)
+    def createNodesDock(self):
+        self.nodesListWidget = QDMDragListbox(self)
 
+        self.nodesDock = QtAds.CDockWidget("Table 1")
+        self.nodesDock.setWidget(self.nodesListWidget)
+        self.nodesDock.setMinimumSizeHintMode(QtAds.CDockWidget.MinimumSizeHintFromDockWidget)
+        self.nodesDock.resize(250, 150)
+        self.nodesDock.setMinimumSize(200, 150)
 
-import subprocess
-import os
+        self.dock_manager.addDockWidget(QtAds.DockWidgetArea.LeftDockWidgetArea, self.nodesDock)
+        
+        self.refresh_nodes_signal.connect(self.nodesListWidget.addMyItems)
 
-def clone_and_install(repo_url, install_directory='src'):
-    # Save the current working directory
-    original_dir = os.getcwd()
+    def createStatusBar(self):
+        self.statusBar().showMessage("Ready")
 
-    try:
-        # Clone the repository
-        if not os.path.exists(install_directory):
-            os.makedirs(install_directory)
+    def createMdiChild(self, child_widget=None):
+        nodeeditor = child_widget if child_widget is not None else CalculatorSubWindow()
+        subwnd = self.mdiArea.addSubWindow(nodeeditor)
+        subwnd.setWindowIcon(self.empty_icon)
+        # nodeeditor.scene.addItemSelectedListener(self.updateEditMenu)
+        # nodeeditor.scene.addItemsDeselectedListener(self.updateEditMenu)
+        nodeeditor.scene.history.addHistoryModifiedListener(self.updateEditMenu)
+        nodeeditor.addCloseEventListener(self.onSubWndClose)
+        return subwnd
 
-        repo_name = repo_url.split('/')[-1]
-        clone_path = os.path.join(install_directory, "deforum")
+    def onSubWndClose(self, widget, event):
+        existing = self.findMdiChild(widget.filename)
+        self.mdiArea.setActiveSubWindow(existing)
 
-        if not os.path.exists(clone_path):
-            print(f"Cloning {repo_url} into {clone_path}...")
-            subprocess.run(["git", "clone", repo_url, clone_path], check=True)
+        if self.maybeSave():
+            event.accept()
         else:
-            print(f"Repository already cloned at {clone_path}")
+            event.ignore()
 
-        # Change directory to the cloned repository
-        os.chdir(clone_path)
 
-        # Install using pip
-        print("Installing the package...")
-        subprocess.run(["pip", "install", "-e", "."], check=True)
+    def findMdiChild(self, filename):
+        for window in self.mdiArea.subWindowList():
+            if window.widget().filename == filename:
+                return window
+        return None
 
-        print("Installation completed.")
-    finally:
-        # Change back to the original directory
-        os.chdir(original_dir)
-        print("Returned to the original directory.")
 
-# URL of the repository
-repo_url = "https://github.com/XmYx/deforum-studio"
-#clone_and_install(repo_url)
+    def setActiveSubWindow(self, window):
+        if window:
+            self.mdiArea.setActiveSubWindow(window)
 
+if __name__ == '__main__':
 
-def append_subfolders_to_syspath(base_path):
-    """
-    Append all first-level subfolders of the given base_path to sys.path.
+    from tests.qss_editor_window import MyApplication, QSSLiveEditor
 
-    :param base_path: The path of the base folder.
-    """
-    for name in os.listdir(base_path):
-        full_path = os.path.join(base_path, name)
-        if os.path.isdir(full_path):
-            print("Addint", full_path, "to path")
-            sys.path.append(full_path)
+    app = MyApplication(sys.argv)
 
-# Assuming 'src' is in the current directory
-#append_subfolders_to_syspath('src')
+    #Add QSS Debugger
+    qss_debugger = QSSLiveEditor(app, 'qss/nodeeditor-dark.qss')
 
-# import torch, platform
+    # print(QStyleFactory.keys())
+    #
+    # app.setStyle('Fusion')
+    # qdarktheme.setup_theme()
 
-def get_torch_device():
-    if "macOS" in platform.platform():
-        if torch.backends.mps.is_available():
-            return torch.device("mps")
-        else:
-            return torch.device("cpu")
-    else:
-        if torch.cuda.is_available():
-            return torch.device(torch.cuda.current_device())
-        else:
-            return torch.device("cpu")
 
-def hijack_comfy_paths():
+    wnd = CalculatorWindow()
 
-    import folder_paths
+    wnd.stylesheet_filename = os.path.join(os.path.dirname(__file__), 'qss/nodeeditor-dark-linux.qss')
 
-    supported_pt_extensions = set(['.ckpt', '.pt', '.bin', '.pth', '.safetensors'])
-
-    #folder_names_and_paths = {}
-
-    base_path = os.path.dirname(os.path.realpath(__file__))
-    models_dir = os.path.join(base_path, "models")
-    folder_paths.folder_names_and_paths["checkpoints"] = ([os.path.join(models_dir, "checkpoints")], supported_pt_extensions)
-    folder_paths.folder_names_and_paths["configs"] = ([os.path.join(models_dir, "configs")], [".yaml"])
-
-    folder_paths.folder_names_and_paths["loras"] = ([os.path.join(models_dir, "loras")], supported_pt_extensions)
-    folder_paths.folder_names_and_paths["vae"] = ([os.path.join(models_dir, "vae")], supported_pt_extensions)
-    folder_paths.folder_names_and_paths["clip"] = ([os.path.join(models_dir, "clip")], supported_pt_extensions)
-    folder_paths.folder_names_and_paths["unet"] = ([os.path.join(models_dir, "unet")], supported_pt_extensions)
-    folder_paths.folder_names_and_paths["clip_vision"] = ([os.path.join(models_dir, "clip_vision")], supported_pt_extensions)
-    folder_paths.folder_names_and_paths["style_models"] = ([os.path.join(models_dir, "style_models")], supported_pt_extensions)
-    folder_paths.folder_names_and_paths["embeddings"] = ([os.path.join(models_dir, "embeddings")], supported_pt_extensions)
-    folder_paths.folder_names_and_paths["diffusers"] = ([os.path.join(models_dir, "diffusers")], ["folder"])
-    folder_paths.folder_names_and_paths["vae_approx"] = ([os.path.join(models_dir, "vae_approx")], supported_pt_extensions)
-
-    folder_paths.folder_names_and_paths["controlnet"] = (
-    [os.path.join(models_dir, "controlnet"), os.path.join(models_dir, "t2i_adapter")], supported_pt_extensions)
-    folder_paths.folder_names_and_paths["gligen"] = ([os.path.join(models_dir, "gligen")], supported_pt_extensions)
-
-    folder_paths.folder_names_and_paths["upscale_models"] = ([os.path.join(models_dir, "upscale_models")], supported_pt_extensions)
-
-    folder_paths.folder_names_and_paths["custom_nodes"] = ([os.path.join(base_path, "custom_nodes")], [])
-
-    folder_paths.folder_names_and_paths["hypernetworks"] = ([os.path.join(models_dir, "hypernetworks")], supported_pt_extensions)
-
-    folder_paths.folder_names_and_paths["classifiers"] = ([os.path.join(models_dir, "classifiers")], {""})
-
-    folder_paths.output_directory = os.path.join(os.path.dirname(os.path.realpath(__file__)), "output")
-    folder_paths.temp_directory = os.path.join(os.path.dirname(os.path.realpath(__file__)), "temp")
-    #folder_paths.input_directory = os.path.join(os.path.dirname(os.path.realpath(__file__)), "input")
-
-    folder_paths.filename_list_cache = {}
-
-    # from ainodes_frontend.base import modelmanagement_hijack
-    # import comfy.model_management
-    # comfy.model_management.unet_inital_load_device = modelmanagement_hijack.unet_inital_load_device
-
-
-if __name__ == "__main__":
-    from ainodes_frontend.base import settings
-
-    settings.init_globals()
-
-    gs.args = get_args()
-    gs.device = get_torch_device()
-
-
-
-
-    # Set environment variables for Hugging Face cache if not using local cache
-    if gs.args.local_hf:
-        print("Using HF Cache in app dir")
-        os.makedirs("hf_cache", exist_ok=True)
-        os.environ["HF_HOME"] = "hf_cache"
-
-    if gs.args.highdpi:
-        print("Setting up Hardware Accelerated GUI")
-        from qtpy.QtQuick import QSGRendererInterface
-
-        # Set up high-quality QSurfaceFormat object with OpenGL 3.3 and 8x antialiasing
-        qs_format = QtGui.QSurfaceFormat()
-        qs_format.setVersion(3, 3)
-        qs_format.setSamples(8)
-        qs_format.setProfile(QtGui.QSurfaceFormat.CoreProfile)
-        QtGui.QSurfaceFormat.setDefaultFormat(qs_format)
-        QtCore.QCoreApplication.setAttribute(QtCore.Qt.ApplicationAttribute.AA_ShareOpenGLContexts)
-
-    set_application_attributes(QApplication, gs.args)
-
-
-    # The main application
-    class Application(QApplication):
-
-        def __init__(self, args):
-            QApplication.__init__(self, args)
-            self.comfy_ui_process = None
-            #self.startComfyUI()
-
-        def startComfyUI(self):
-            # Start the ComfyUI subprocess
-            comfy_ui_path = os.path.join('src', 'deforum', 'src', 'ComfyUI', 'main.py')
-            if os.path.exists(comfy_ui_path):
-                self.comfy_ui_process = subprocess.Popen([sys.executable, comfy_ui_path, '--extra-model-paths-config', 'config/comfy_paths.yaml'])
-            else:
-                print(f"ComfyUI main.py not found at {comfy_ui_path}")
-
-        def cleanUp(self):
-            # Terminate the ComfyUI subprocess
-            if self.comfy_ui_process:
-                self.comfy_ui_process.terminate()
-                self.comfy_ui_process.wait()  # Wait for the process to terminate
-            print('Application closing')
-
-    # make app
-    ainodes_qapp = Application(sys.argv)
-    ainodes_qapp.aboutToQuit.connect(ainodes_qapp.cleanUp)
-
-    from ainodes_frontend.icon import icon
-
-    pixmap = QtGui.QPixmap()
-    pixmap.loadFromData(icon)
-    appIcon = QtGui.QIcon(pixmap)
-    ainodes_qapp.setWindowIcon(appIcon)
-
-    splash_pix = QtGui.QPixmap(
-        "ainodes_frontend/qss/icon.ico")  # Replace "splash.png" with the path to your splash screen image
-    from qtpy.QtCore import QRect
-    from qtpy.QtGui import QPainter
-
-
-    class CustomOutputStream:
-        def __init__(self, update_text_func):
-            self.update_text_func = update_text_func
-
-        def write(self, text):
-            self.update_text_func(text)
-
-        def flush(self):
-            pass  # This can be an empty method
-
-    class CustomSplashScreen(QSplashScreen):
-        def __init__(self, pixmap):
-            super(CustomSplashScreen, self).__init__(pixmap)
-            self.progressBar = QProgressBar(self)
-
-            custom_style = """
-            QProgressBar {
-                background-color: #3a3a3a;
-                border: 1px solid #2e2e2e;
-                border-radius: 4px;
-                text-align: center;
-                color: white;
-            }
-
-            QProgressBar::chunk {
-                background-color: #FF8C00;
-                border-radius: 2px;
-            }
-            """
-
-            self.progressBar.setStyleSheet(custom_style)
-
-            self.progressBar.setGeometry(10, pixmap.height() - 25, pixmap.width() - 20, 20)
-            self.progressBar.setValue(0)
-            # Initialize the text edit for displaying output
-            self.text_display = QTextEdit(self)
-            self.text_display.setGeometry(10, pixmap.height() - 100, pixmap.width() - 20,
-                                          75)  # Adjust geometry as needed
-            self.text_display.setReadOnly(True)
-            # Other initialization...
-
-        def append_text(self, text):
-            self.text_display.moveCursor(QtGui.QTextCursor.MoveOperation.End)
-            self.text_display.insertPlainText(text)
-            # Optionally, you can ensure the latest output is visible:
-            self.text_display.ensureCursorVisible()
-
-        def setProgress(self, value):
-            self.progressBar.setValue(value)
-            self.repaint()  # Ensures that the splash screen is redrawn
-
-        def drawContents(self, painter: QPainter):
-            super(CustomSplashScreen, self).drawContents(painter)
-
-            # Set the font for the text
-            font = painter.font()
-            font.setPointSize(14)
-            painter.setFont(font)
-
-            # Compute text position (almost bottom center)
-            text = "Loading aiNodes"
-            metrics = painter.fontMetrics()
-            text_width = metrics.width(text)
-            text_height = metrics.height()
-            from PyQt6.QtGui import QColor
-
-            text_x = int((self.width() - text_width) / 2)
-            text_y = int(self.height() - 2 * text_height) - 195  # Adjust this value as needed to position the text
-            # Draw the text background with 25% opacity
-            painter.setBrush(QColor(0, 0, 0, 64))  # RGBA: 25% opacity
-            painter.setPen(Qt.NoPen)  # No border
-            painter.drawRect(text_x - 5, text_y - 5, text_width + 10,
-                             text_height + 10)  # A little padding around the text
-
-            # Draw the text itself in white
-            painter.setPen(Qt.white)
-            painter.drawText(text_x, text_y + metrics.ascent(),
-                             text)  # metrics.ascent() is used to vertically align the text
-
-            rect = QRect(self.progressBar.geometry())
-            self.progressBar.render(painter, rect.topLeft())
-
-    res = ''
-    file = QFile(os.path.join(os.path.dirname(__file__), 'ainodes_frontend',gs.qss))
-    file.open(QFile.ReadOnly | QFile.Text)
-    stylesheet = file.readAll()
-    res += "\n" + str(stylesheet, encoding='utf-8')
-    ainodes_qapp.setApplicationName("aiNodes - Engine")
-    ainodes_qapp.setStyleSheet(res)
-    splash = CustomSplashScreen(splash_pix)
-    splash.show()
-
-    sys.stdout = CustomOutputStream(splash.append_text)
-    update_deforum()
-    from deforum.generators.comfy_utils import ensure_comfy
-    ensure_comfy('src/ComfyUI')
-    hijack_comfy_paths()
-    load_settings()
-    from ainodes_frontend.comfy_fns.adapter_nodes import was_adapter_node
-
-    base_folder = 'ainodes_frontend/nodes'
-    if gs.args.update:
-        print("Updating node requirements")
-        update_all_nodes_req()
-
-    total_steps = 0
-    current_step = 0
-    #print(os.path.join(base_folder, 'ainodes_frontend', 'nodes'))
-    if os.path.isdir('ainodes_frontend/nodes'):
-        valid_subdirectories = [folder for folder in os.listdir(os.path.join(base_folder))
-                                if "__pycache__" not in folder
-                                and "_nodes" in folder
-                                and os.path.isdir(os.path.join(base_folder, folder))]
-        print(valid_subdirectories)
-        total_steps += len(valid_subdirectories)
-
-        # if os.path.isdir(base_folder):
-        #     for folder in os.listdir(base_folder):
-        #         folder_path = os.path.join(base_folder, folder)
-        #         if "__pycache__" not in folder_path and "_nodes" in folder_path:
-        #             if os.path.isdir(folder_path):
-        #                 import_nodes_from_subdirectories(folder_path)
-        #if os.path.isdir(base_folder):
-        for folder in valid_subdirectories:
-            folder_path = os.path.join(base_folder, folder)
-            import_nodes_from_subdirectories(folder_path)
-            percentage_complete = int((current_step / total_steps) * 100)
-            splash.setProgress(percentage_complete)
-            current_step += 1
-
-    from ainodes_frontend.base import CalculatorWindow
-
-    wnd = CalculatorWindow(ainodes_qapp)
-    #wnd.stylesheet_filename = os.path.join(os.path.dirname(__file__), gs.qss)
-
-    # loadStylesheets(
-    #     wnd.stylesheet_filename,
-    #     wnd.stylesheet_filename
-    # )
+    loadStylesheets(
+        wnd.stylesheet_filename,
+        wnd.stylesheet_filename
+    )
 
     wnd.show()
 
-    #wnd.showFullScreen()
-    wnd.showMaximized()
-    wnd.fade_in_animation()
-    wnd.nodesListWidget.addMyItems()
-    wnd.onFileNew()
-
-    # def fade_out_animation():
-    splash.setProgress(100)
-    splash_fade_animation = QPropertyAnimation(splash, b"windowOpacity")
-    splash_fade_animation.setDuration(500)  # Set the duration of the animation in milliseconds
-    splash_fade_animation.setStartValue(1.0)  # Start with opacity 1.0 (fully visible)
-    splash_fade_animation.setEndValue(0.0)  # End with opacity 0.0 (transparent)
-    splash_fade_animation.setEasingCurve(QEasingCurve.Type.InOutQuad)  # Apply easing curve to the animation
-    splash_fade_animation.finished.connect(
-        lambda: splash.finish(wnd))  # Close the splash screen when animation finishes
-    splash_fade_animation.start()
+    #Show QSS Debugger
+    qss_debugger.show()
 
     end_time = datetime.datetime.now()
     print(f"Initialization took: {end_time - start_time}")
-    print("Theme set to:", gs.qss)
-    sys.exit(ainodes_qapp.exec())
-
-
-
+    sys.exit(app.exec_())

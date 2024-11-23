@@ -175,8 +175,6 @@ models/other
 
 .ignore/
 .tests/
-src/python/
-src/
 logs/
 installer_files/
 models/
