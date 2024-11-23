@@ -1,25 +1,28 @@
 # -*- coding: utf-8 -*-
 """
-A module containing Graphics representation of :class:`~nodeeditor.node_node.Node`
+A module containing Graphics representation of :class:`~nodeeditor.node_node.Node` with resizing functionality
 """
-from qtpy.QtWidgets import QGraphicsItem, QWidget, QGraphicsTextItem
-from qtpy.QtGui import QFont, QColor, QPen, QBrush, QPainterPath
-from qtpy.QtCore import Qt, QRectF
+from qtpy.QtWidgets import QGraphicsItem, QWidget, QGraphicsTextItem, QStyleOptionGraphicsItem
+from qtpy.QtGui import QFont, QColor, QPen, QBrush, QPainterPath, QCursor
+from qtpy.QtCore import Qt, QRectF, QPointF
+from enum import Enum
+
+
+class ResizeDirection(Enum):
+    NO_RESIZE = 0
+    TOP_LEFT = 1
+    TOP = 2
+    TOP_RIGHT = 3
+    RIGHT = 4
+    BOTTOM_RIGHT = 5
+    BOTTOM = 6
+    BOTTOM_LEFT = 7
+    LEFT = 8
 
 
 class QDMGraphicsNode(QGraphicsItem):
-    """Class describing Graphics representation of :class:`~nodeeditor.node_node.Node`"""
-    def __init__(self, node:'Node', parent:QWidget=None):
-        """
-        :param node: reference to :class:`~nodeeditor.node_node.Node`
-        :type node: :class:`~nodeeditor.node_node.Node`
-        :param parent: parent widget
-        :type parent: QWidget
-
-        :Instance Attributes:
-
-            - **node** - reference to :class:`~nodeeditor.node_node.Node`
-        """
+    """Class describing Graphics representation of :class:`~nodeeditor.node_node.Node` with resizing functionality"""
+    def __init__(self, node: 'Node', parent: QWidget = None):
         super().__init__(parent)
         self.node = node
 
@@ -31,6 +34,17 @@ class QDMGraphicsNode(QGraphicsItem):
         self.initSizes()
         self.initAssets()
         self.initUI()
+
+        self.setAcceptHoverEvents(True)
+        self.setFlag(QGraphicsItem.ItemSendsGeometryChanges, True)
+
+        # Resizing
+        self.resizing = False
+        self.resize_direction = ResizeDirection.NO_RESIZE
+        self.resize_start_pos = QPointF()
+        self.resize_handle_size = 10.0  # Size of the resize handle area
+        self.minimum_width = 80
+        self.minimum_height = 80
 
     @property
     def content(self):
@@ -69,7 +83,7 @@ class QDMGraphicsNode(QGraphicsItem):
         self.width = 180
         self.height = 240
         self.edge_roundness = 10.0
-        self.edge_padding = 10.0
+        self.edge_padding = 25.0
         self.title_height = 24
         self.title_horizontal_padding = 4.0
         self.title_vertical_padding = 4.0
@@ -105,20 +119,45 @@ class QDMGraphicsNode(QGraphicsItem):
         """
         self.setSelected(new_state)
         self._last_selected_state = new_state
-        if new_state: self.onSelected()
+        if new_state:
+            self.onSelected()
+
+    def mousePressEvent(self, event):
+        """Handle mouse press events for resizing"""
+        if event.button() == Qt.LeftButton:
+            self.resize_direction = self.checkResizeArea(event.pos())
+            if self.resize_direction != ResizeDirection.NO_RESIZE:
+                self.resizing = True
+                self.resize_start_pos = event.pos()
+                self._was_moved = False
+                event.accept()
+                return
+        super().mousePressEvent(event)
 
     def mouseMoveEvent(self, event):
-        """Overridden event to detect that we moved with this `Node`"""
+        """Handle mouse move events for moving and resizing"""
+        if self.resizing:
+            self.performResize(event.pos())
+            event.accept()
+            return
+
         super().mouseMoveEvent(event)
 
-        # optimize me! just update the selected nodes
+        # Optimize me! Just update the selected nodes
         for node in self.scene().scene.nodes:
             if node.grNode.isSelected():
                 node.updateConnectedEdges()
         self._was_moved = True
 
     def mouseReleaseEvent(self, event):
-        """Overriden event to handle when we moved, selected or deselected this `Node`"""
+        """Handle mouse release events"""
+        if self.resizing:
+            self.resizing = False
+            self.resize_direction = ResizeDirection.NO_RESIZE
+            self.node.scene.history.storeHistory("Node resized", setModified=True)
+            event.accept()
+            return
+
         super().mouseReleaseEvent(event)
 
         # handle when grNode moved
@@ -127,7 +166,7 @@ class QDMGraphicsNode(QGraphicsItem):
             self.node.scene.history.storeHistory("Node moved", setModified=True)
 
             self.node.scene.resetLastSelectedStates()
-            self.doSelect()     # also trigger itemSelected when node was moved
+            self.doSelect()  # also trigger itemSelected when node was moved
 
             # we need to store the last selected state, because moving does also select the nodes
             self.node.scene._last_selected_items = self.node.scene.getSelectedItems()
@@ -145,26 +184,135 @@ class QDMGraphicsNode(QGraphicsItem):
         """Overriden event for doubleclick. Resend to `Node::onDoubleClicked`"""
         self.node.onDoubleClicked(event)
 
-    def hoverEnterEvent(self, event: 'QGraphicsSceneHoverEvent') -> None:
-        """Handle hover effect"""
+    def hoverEnterEvent(self, event):
+        """Handle hover enter events"""
         self.hovered = True
         self.update()
 
-    def hoverLeaveEvent(self, event: 'QGraphicsSceneHoverEvent') -> None:
-        """Handle hover effect"""
+    def hoverLeaveEvent(self, event):
+        """Handle hover leave events"""
         self.hovered = False
         self.update()
 
+    def hoverMoveEvent(self, event):
+        """Handle hover move events for changing the cursor"""
+        if self.resizing:
+            return
+
+        direction = self.checkResizeArea(event.pos())
+        cursor = self.getCursorForResizeDirection(direction)
+        if cursor:
+            self.setCursor(cursor)
+        else:
+            self.setCursor(Qt.ArrowCursor)
+
+        super().hoverMoveEvent(event)
+
+    def checkResizeArea(self, pos):
+        """Check which resize area the mouse is in"""
+        x = pos.x()
+        y = pos.y()
+
+        left = x <= self.resize_handle_size
+        right = x >= self.width - self.resize_handle_size
+        top = y <= self.resize_handle_size
+        bottom = y >= self.height - self.resize_handle_size
+
+        if left and top:
+            return ResizeDirection.TOP_LEFT
+        elif right and top:
+            return ResizeDirection.TOP_RIGHT
+        elif left and bottom:
+            return ResizeDirection.BOTTOM_LEFT
+        elif right and bottom:
+            return ResizeDirection.BOTTOM_RIGHT
+        elif top:
+            return ResizeDirection.TOP
+        elif bottom:
+            return ResizeDirection.BOTTOM
+        elif left:
+            return ResizeDirection.LEFT
+        elif right:
+            return ResizeDirection.RIGHT
+        else:
+            return ResizeDirection.NO_RESIZE
+
+    def getCursorForResizeDirection(self, direction):
+        """Return the appropriate cursor for the resize direction"""
+        if direction == ResizeDirection.TOP_LEFT or direction == ResizeDirection.BOTTOM_RIGHT:
+            return Qt.SizeFDiagCursor
+        elif direction == ResizeDirection.TOP_RIGHT or direction == ResizeDirection.BOTTOM_LEFT:
+            return Qt.SizeBDiagCursor
+        elif direction == ResizeDirection.TOP or direction == ResizeDirection.BOTTOM:
+            return Qt.SizeVerCursor
+        elif direction == ResizeDirection.LEFT or direction == ResizeDirection.RIGHT:
+            return Qt.SizeHorCursor
+        else:
+            return None
+
+    def performResize(self, pos):
+        """Perform the resizing of the node based on mouse movement"""
+        delta = pos - self.resize_start_pos
+        dx = delta.x()
+        dy = delta.y()
+        old_rect = QRectF(0, 0, self.width, self.height)
+
+        if self.resize_direction == ResizeDirection.RIGHT or self.resize_direction == ResizeDirection.TOP_RIGHT or self.resize_direction == ResizeDirection.BOTTOM_RIGHT:
+            new_width = max(self.minimum_width, self.width + dx)
+            self.prepareGeometryChange()
+            self.width = new_width
+            self.update()
+            self.resize_start_pos.setX(pos.x())
+
+        if self.resize_direction == ResizeDirection.BOTTOM or self.resize_direction == ResizeDirection.BOTTOM_LEFT or self.resize_direction == ResizeDirection.BOTTOM_RIGHT:
+            new_height = max(self.minimum_height, self.height + dy)
+            self.prepareGeometryChange()
+            self.height = new_height
+            self.update()
+            self.resize_start_pos.setY(pos.y())
+
+        if self.resize_direction == ResizeDirection.LEFT or self.resize_direction == ResizeDirection.TOP_LEFT or self.resize_direction == ResizeDirection.BOTTOM_LEFT:
+            new_width = max(self.minimum_width, self.width - dx)
+            diff = self.width - new_width
+            self.prepareGeometryChange()
+            self.width = new_width
+            self.setPos(self.pos().x() + diff, self.pos().y())
+            self.update()
+            self.resize_start_pos.setX(pos.x())
+
+        if self.resize_direction == ResizeDirection.TOP or self.resize_direction == ResizeDirection.TOP_LEFT or self.resize_direction == ResizeDirection.TOP_RIGHT:
+            new_height = max(self.minimum_height, self.height - dy)
+            diff = self.height - new_height
+            self.prepareGeometryChange()
+            self.height = new_height
+            self.setPos(self.pos().x(), self.pos().y() + diff)
+            self.update()
+            self.resize_start_pos.setY(pos.y())
+
+        self.updateContent()
+        self.node.update_all_sockets()
+
+    def updateContent(self):
+        """Update the node's content after resizing"""
+        if self.content is not None:
+            self.content.setGeometry(
+                int(self.edge_padding),
+                int(self.title_height + self.edge_padding),
+                int(self.width - 4 * self.edge_padding),
+                int(self.height - 2 * self.edge_padding - self.title_height - 40)
+            )
+        self.title_item.setTextWidth(
+            self.width - 2 * self.title_horizontal_padding
+        )
 
     def boundingRect(self) -> QRectF:
-        """Defining Qt' bounding rectangle"""
+        """Defining Qt's bounding rectangle"""
         return QRectF(
             0,
             0,
             self.width,
             self.height
         ).normalized()
-
 
     def initTitle(self):
         """Set up the title Graphics representation: font, color, position, etc."""
@@ -174,25 +322,27 @@ class QDMGraphicsNode(QGraphicsItem):
         self.title_item.setFont(self._title_font)
         self.title_item.setPos(self.title_horizontal_padding, 0)
         self.title_item.setTextWidth(
-            self.width
-            - 2 * self.title_horizontal_padding
+            self.width - 2 * self.title_horizontal_padding
         )
 
     def initContent(self):
         """Set up the `grContent` - ``QGraphicsProxyWidget`` to have a container for `Graphics Content`"""
         if self.content is not None:
-            self.content.setGeometry(self.edge_padding, self.title_height + self.edge_padding,
-                                 self.width - 2 * self.edge_padding, self.height - 2 * self.edge_padding - self.title_height)
+            self.content.setGeometry(
+                self.edge_padding,
+                self.title_height + self.edge_padding,
+                self.width - 2 * self.edge_padding,
+                self.height - 2 * self.edge_padding - self.title_height
+            )
 
         # get the QGraphicsProxyWidget when inserted into the grScene
         self.grContent = self.node.scene.grScene.addWidget(self.content)
         self.grContent.node = self.node
         self.grContent.setParentItem(self)
 
-
-    def paint(self, painter, QStyleOptionGraphicsItem, widget=None):
-        """Painting the rounded rectanglar `Node`"""
-        # title
+    def paint(self, painter, option: QStyleOptionGraphicsItem, widget=None):
+        """Painting the rounded rectangular `Node`"""
+        # Title
         path_title = QPainterPath()
         path_title.setFillRule(Qt.WindingFill)
         path_title.addRoundedRect(0, 0, self.width, self.title_height, self.edge_roundness, self.edge_roundness)
@@ -202,8 +352,7 @@ class QDMGraphicsNode(QGraphicsItem):
         painter.setBrush(self._brush_title)
         painter.drawPath(path_title.simplified())
 
-
-        # content
+        # Content
         path_content = QPainterPath()
         path_content.setFillRule(Qt.WindingFill)
         path_content.addRoundedRect(0, self.title_height, self.width, self.height - self.title_height, self.edge_roundness, self.edge_roundness)
@@ -213,10 +362,9 @@ class QDMGraphicsNode(QGraphicsItem):
         painter.setBrush(self._brush_background)
         painter.drawPath(path_content.simplified())
 
-
-        # outline
+        # Outline
         path_outline = QPainterPath()
-        path_outline.addRoundedRect(-1, -1, self.width+2, self.height+2, self.edge_roundness, self.edge_roundness)
+        path_outline.addRoundedRect(-1, -1, self.width + 2, self.height + 2, self.edge_roundness, self.edge_roundness)
         painter.setBrush(Qt.NoBrush)
         if self.hovered:
             painter.setPen(self._pen_hovered)
@@ -226,3 +374,25 @@ class QDMGraphicsNode(QGraphicsItem):
         else:
             painter.setPen(self._pen_default if not self.isSelected() else self._pen_selected)
             painter.drawPath(path_outline.simplified())
+
+        # Resize Handles (optional visual representation)
+        if self.hovered or self.resizing:
+            painter.setPen(Qt.NoPen)
+            painter.setBrush(QBrush(QColor(255, 255, 255, 50)))
+            size = int(self.resize_handle_size)
+            # Top-left corner
+            painter.drawRect(0, 0, size, size)
+            # Top-right corner
+            painter.drawRect(int(self.width - size), 0, size, size)
+            # Bottom-left corner
+            painter.drawRect(0, int(self.height - size), size, size)
+            # Bottom-right corner
+            painter.drawRect(int(self.width - size), int(self.height - size), size, size)
+            # Left edge
+            painter.drawRect(0, size, size, int(self.height - 2 * size))
+            # Right edge
+            painter.drawRect(int(self.width - size), size, size, int(self.height - 2 * size))
+            # Top edge
+            painter.drawRect(size, 0, int(self.width - 2 * size), size)
+            # Bottom edge
+            painter.drawRect(size, int(self.height - size), int(self.width - 2 * size), size)
