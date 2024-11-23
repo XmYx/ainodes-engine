@@ -152,7 +152,7 @@ def parse_node_outputs(node_class):
     # Add output types to DATA_PORT_TYPES if not UI types
     for output_type in outputs:
         if output_type not in UI_TYPES and output_type not in DATA_PORT_TYPES:
-            DATA_PORT_TYPES.add(output_type)
+            DATA_PORT_TYPES.add(str(output_type))
     return outputs
 
 # Function to determine socket type based on data type
@@ -467,7 +467,19 @@ def register_comfy_nodes(comfy_path):
 
     # Import ComfyUI base nodes
     try:
+        import asyncio
+        import execution
         import nodes
+        import server
+
+        # Creating a new event loop and setting it as the default loop
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        # Creating an instance of PromptServer with the loop
+        server_instance = server.PromptServer(loop)
+        execution.PromptQueue(server_instance)
+        # Initializing custom nodes
+
     except ImportError as e:
         logging.error(f"Failed to import ComfyUI base nodes: {e}")
         sys.exit(1)
