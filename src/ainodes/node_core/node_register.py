@@ -253,11 +253,6 @@ class AiNode(Node):
     def getAllInputs(self):
         ser_content = self.content.serialize(exec=True) if isinstance(self.content, Serializable) else {}
         for input in self.inputs:
-
-            print("WILL GET DATA FOR", input)
-            print("WITH NAME", input.name.lower())
-            print("AND INDEX", input.index)
-
             ser_content[input.name.lower()] = self.getInputData(input.index)
         return ser_content
 
@@ -592,19 +587,14 @@ def parse_docstring(docstring, params):
 def register_node_now(class_reference, name=None):
     class_name = class_reference.content_label_objname
 
-    print("NAME", name, "CLASS NAME", class_name)
-
     if class_name in NODE_CLASSES:
         raise InvalidNodeRegistration(f"Duplicate node registration of '{class_name}'. There is already {NODE_CLASSES[class_name]}")
     if name and name in NODE_CLASSES:
         raise InvalidNodeRegistration(
             f"Duplicate node registration of '{name}'. There is already {NODE_CLASSES[name]}")
     if name:
-        print("REGISTERING", name)
         NODE_CLASSES[name] = class_reference
     else:
-        print("REGISTERING", class_name)
-
         NODE_CLASSES[class_name] = class_reference
 
 
@@ -669,7 +659,6 @@ def register_node():
                 'metadata': param_metadata,  # Store the additional metadata
                 'return_type': return_type
             }
-        print(original_class)
         if isinstance(original_class, type):
             if issubclass(original_class, Node):
                 register_node_now(original_class)
@@ -698,7 +687,6 @@ def parse_node(node_data, isclass):
             # self.create_main_layout(grid=True)
             if 'metadata' in node_data:
                 for param_name, meta in node_data['metadata'].items():
-                    print(param_name)
                     param_type = meta.get('type')
                     if param_type == str:
                         self.create_text_edit(param_name, meta.get('default', ''))
@@ -786,7 +774,6 @@ def parse_node(node_data, isclass):
 
             # Retrieve all input data
             dynamic_inputs = self.getAllInputs()
-            print("Dynamic inputs:", dynamic_inputs)
 
             # Prepare the arguments to call the original function
             call_args = []

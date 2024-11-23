@@ -457,9 +457,9 @@ def create_node(node_class, node_name, ui_inputs, port_inputs, outputs, category
     register_node_now(Node)
 
 # Main code to load nodes and create them
-def main():
+def register_comfy_nodes(comfy_path):
     # Set COMFYUI_PATH to the path where ComfyUI is installed
-    COMFYUI_PATH = 'src/ComfyUI'  # Replace with the actual path to ComfyUI
+    COMFYUI_PATH = comfy_path  # Replace with the actual path to ComfyUI
 
     # Add ComfyUI path to sys.path
     if COMFYUI_PATH not in sys.path:
@@ -488,5 +488,3 @@ def main():
             logging.warning(f"Failed to create node {node_name}: {e}")
             traceback.print_exc()
 
-# Run the main function
-main()

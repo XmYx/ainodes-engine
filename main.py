@@ -18,19 +18,6 @@ enable_opengl()
 
 from PyQt5.QtCore import pyqtSignal, QSettings
 
-# from mm_test import ModelManagerListWidget
-# from modules.flux_core import model_manager
-#
-# from modules import cli_args
-
-# cli_args.args.fp8_e5m2_text_enc = True
-# # cli_args.args.fp8_e5m2_unet = True
-# cli_args.args.fp16_unet = True
-# cli_args.args.fp16_vae = True
-# cli_args.args.highvram = True
-# cli_args.args.dont_upcast_attention = False
-from PyQt5 import QtWidgets
-
 from node_core.console import NodesConsole, StreamRedirect
 
 start_time = datetime.datetime.now()
@@ -57,7 +44,7 @@ from node_core.calc_sub_window import CalculatorSubWindow
 from node_core.calc_drag_listbox import QDMDragListbox
 from nodeeditor.utils import dumpException, pp
 from node_core.node_register import NODE_CLASSES
-
+from ainodes_core.settings_dialog import SettingsDialog
 # Enabling edge validators
 from nodeeditor.node_edge import Edge
 from nodeeditor.node_edge_validators import (
@@ -76,26 +63,36 @@ DEBUG = False
 
 
 class CalculatorWindow(NodeEditorWindow):
+
     refresh_nodes_signal = pyqtSignal()
+
     def initUI(self):
+
+        self.settings = QSettings("aiNodes", "Engine")  # Adjust these values
+        # Load ComfyUI nodes if path is set
+        comfyui_path = self.settings.value("comfyui_path", "")
+        if comfyui_path:
+            try:
+                from base_nodes.readapt_nodes.readapt import register_comfy_nodes
+                register_comfy_nodes(comfyui_path)
+            except:
+                pass
         self.default_font_size = self.font().pointSizeF()
         # Load and store the original stylesheet
         with open('qss/nodeeditor-dark.qss', 'r') as file:
             self.original_qss = file.read()
             self.setStyleSheet(self.original_qss)
 
-
-
         self.init_scale_slider()
-        self.name_company = 'Blenderfreak'
-        self.name_product = 'Calculator NodeEditor'
 
-        self.stylesheet_filename = os.path.join(os.path.dirname(__file__), "qss/nodeeditor-dark-linux.qss")
+        self.name_company = 'aiNodes'
+        self.name_product = 'Engine'
+
+        self.stylesheet_filename = os.path.join(os.path.dirname(__file__), "qss/nodeeditor-dark.qss")
         loadStylesheets(
-            os.path.join(os.path.dirname(__file__), "qss/nodeeditor-dark-linux.qss"),
+            os.path.join(os.path.dirname(__file__), "qss/nodeeditor-dark.qss"),
             self.stylesheet_filename
         )
-
         self.empty_icon = QIcon(".")
 
         if DEBUG:
@@ -149,6 +146,7 @@ class CalculatorWindow(NodeEditorWindow):
 
         scaled_qss = pattern.sub(replace_func, qss)
         return scaled_qss
+
     def update_scaling(self, value):
         scale_factor = value / 100.0
 
@@ -353,6 +351,31 @@ class CalculatorWindow(NodeEditorWindow):
                 "document interface applications using qtpy and NodeEditor. For more information visit: "
                 "<a href='https://www.blenderfreak.com/'>www.BlenderFreak.com</a>")
 
+    def open_settings_dialog(self):
+        settings_dialog = SettingsDialog(self)
+        if settings_dialog.exec_():
+            # Settings were saved; now attempt to register ComfyUI nodes
+            comfyui_path = settings_dialog.settings.value("comfyui_path", "")
+            if comfyui_path:
+                try:
+                    from base_nodes.readapt_nodes.readapt import register_comfy_nodes
+                    register_comfy_nodes(comfyui_path)
+                except:
+                    # Import failed, try to install requirements and retry
+                    import subprocess
+                    import sys
+                    import os
+
+                    requirements_file = os.path.join(comfyui_path, 'requirements.txt')
+                    if os.path.exists(requirements_file):
+                        try:
+                            # Install requirements
+                            subprocess.check_call([sys.executable, '-m', 'pip', 'install', '-r', requirements_file])
+                            # Retry the import after installing requirements
+                            from base_nodes.readapt_nodes.readapt import register_comfy_nodes
+                            register_comfy_nodes(comfyui_path)
+                        except:
+                            pass
     def createMenus(self):
         super().createMenus()
 
@@ -366,7 +389,9 @@ class CalculatorWindow(NodeEditorWindow):
         self.helpMenu.addAction(self.actAbout)
 
         self.editMenu.aboutToShow.connect(self.updateEditMenu)
-
+        self.actSettings = QAction("&Settings", self, statusTip="Open Settings", triggered=self.open_settings_dialog)
+        self.settingsMenu = self.menuBar().addMenu("&Settings")
+        self.settingsMenu.addAction(self.actSettings)
     def updateMenus(self):
         # print("update Menus")
         active = self.getCurrentNodeEditorWidget()
@@ -496,12 +521,12 @@ class CalculatorWindow(NodeEditorWindow):
 
 if __name__ == '__main__':
 
-    from tests.qss_editor_window import MyApplication, QSSLiveEditor
+    # from tests.qss_editor_window import MyApplication, QSSLiveEditor
 
-    app = MyApplication(sys.argv)
-
-    #Add QSS Debugger
-    qss_debugger = QSSLiveEditor(app, 'qss/nodeeditor-dark.qss')
+    app = QApplication(sys.argv)
+    #
+    # #Add QSS Debugger
+    # qss_debugger = QSSLiveEditor(app, 'qss/nodeeditor-dark.qss')
 
     # print(QStyleFactory.keys())
     #
@@ -511,7 +536,7 @@ if __name__ == '__main__':
 
     wnd = CalculatorWindow()
 
-    wnd.stylesheet_filename = os.path.join(os.path.dirname(__file__), 'qss/nodeeditor-dark-linux.qss')
+    wnd.stylesheet_filename = os.path.join(os.path.dirname(__file__), 'qss/nodeeditor-dark.qss')
 
     loadStylesheets(
         wnd.stylesheet_filename,
@@ -521,7 +546,7 @@ if __name__ == '__main__':
     wnd.show()
 
     #Show QSS Debugger
-    qss_debugger.show()
+    # qss_debugger.show()
 
     end_time = datetime.datetime.now()
     print(f"Initialization took: {end_time - start_time}")

@@ -1,0 +1,30 @@
+name: ainodes-refactor
+channels:
+  - conda-forge
+  - defaults
+  - nvidia
+  - pytorch
+dependencies:
+  - pyqt5-sip=12.12.2=py311hb755f60_5
+  - pyqtads=4.3.1=py311h62ff650_0
+  - python=3.11.9=hb806964_0_cpython
+  - python_abi=3.11=5_cp311
+  - qt-main=5.15.8=h320f8da_24
+  - qt5-advanced-docking-system=4.3.1=h0944072_0
+  - pytorch=2.5.1
+  - torchvision
+  - pip:
+      - cython==3.0.11
+      - numpy==1.26.3
+      - opencv-python-headless==4.10.0.84
+      - pillow==9.5.0
+      - pyqt-builder==1.16.4
+      - pyqt5==5.15.8
+      - pyqt5-qt5==5.15.14
+      - pyqtgraph==0.13.7
+      - pyturbojpeg==1.7.5
+      - pyyaml==6.0.2
+      - qscintilla==2.11
+      - qtpy==2.4.1
+      - tqdm==4.66.5
+      - pyflakes==3.2.0

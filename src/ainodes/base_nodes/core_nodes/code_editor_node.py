@@ -191,7 +191,7 @@ class VimNode(AiNode):
     help_text = "Code Editor Node\n\n" \
 
     def __init__(self, scene):
-        super().__init__(scene, self.op_title, inputs=[9,8,7,6,5,4,3,2,1], outputs=[9,8,7,6,5,4,3,2,1])
+        super().__init__(scene, inputs=[9,8,7,6,5,4,3,2,1], outputs=[9,8,7,6,5,4,3,2,1])
         self.interrupt = False
 
     def initInnerClasses(self):
