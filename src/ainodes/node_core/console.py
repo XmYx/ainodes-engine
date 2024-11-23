@@ -135,7 +135,8 @@ class StreamRedirect(QtCore.QObject):
         self.stderr_lock = threading.Lock()
         sys.stdout = self
         sys.stderr = self
-
+    def isatty(self):
+        return False
     def write(self, text):
         self.text_written.emit(text)
 
