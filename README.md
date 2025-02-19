@@ -9,12 +9,8 @@ We are thankful for many great functions adapted from ComfyUI, and various open-
   
 ## 💖 Support the project
   
-Please consider becoming a patron if you like this project. There are no benefits or restrictions, but it helps the process greatly.
+Please consider starring, or contributing to the project.
 Updates are frequent, and the more time I can spare on the project, the greater things can be implemented. Thank you for being here!
-
-<a href="https://www.patreon.com/deforum_ainodes" target="_blank">
-<img src="https://c5.patreon.com/external/logo/become_a_patron_button.png" alt="Become a Patron">
-</a>
 
 Your support is greatly appreciated!
 
