@@ -50,8 +50,16 @@ DEBUG_STATE = False
 #from qtpy.QtOpenGLWidgets import QOpenGLWidget
 
 class MiniMapView(QGraphicsView):
-    def __init__(self, scene):
+    """Overview of the whole graph.
+
+    Left-clicking or dragging inside it moves the main view to that part of
+    the scene, which is the "use the minimap for navigation" item on the
+    canvas-navigation tracker (issue #22).
+    """
+
+    def __init__(self, scene, main_view=None):
         super(MiniMapView, self).__init__(scene)
+        self.main_view = main_view
         self.setRenderHint(QtGui.QPainter.Antialiasing)
         self.setInteractive(True)
         self._is_panning = False
@@ -64,6 +72,13 @@ class MiniMapView(QGraphicsView):
         self.zoomRange = [7.5, 9]
 
 
+    def _jump_main_view(self, event):
+        if self.main_view is None:
+            return False
+        self.main_view.centerOn(self.mapToScene(event.pos()))
+        event.accept()
+        return True
+
     def mousePressEvent(self, event):
         if event.button() == Qt.MiddleButton:
             self._mouse_button_pressed = Qt.MiddleButton
@@ -71,10 +86,14 @@ class MiniMapView(QGraphicsView):
             self.setCursor(Qt.ClosedHandCursor)
             self._is_panning = True
             event.accept()
+        elif event.button() == Qt.LeftButton and self._jump_main_view(event):
+            self._mouse_button_pressed = Qt.LeftButton
         else:
             super(MiniMapView, self).mousePressEvent(event)
 
     def mouseMoveEvent(self, event):
+        if self._mouse_button_pressed == Qt.LeftButton and self._jump_main_view(event):
+            return
         if self._is_panning and self._mouse_button_pressed == Qt.MiddleButton:
             delta = event.pos() - self._last_mouse_pos
             self.horizontalScrollBar().setValue(self.horizontalScrollBar().value() - delta.x())
@@ -88,6 +107,10 @@ class MiniMapView(QGraphicsView):
         if event.button() == Qt.MiddleButton:
             self.setCursor(Qt.ArrowCursor)
             self._is_panning = False
+            self._mouse_button_pressed = None
+            event.accept()
+        elif event.button() == Qt.LeftButton and self._mouse_button_pressed == Qt.LeftButton:
+            self._mouse_button_pressed = None
             event.accept()
         else:
             super(MiniMapView, self).mouseReleaseEvent(event)
@@ -201,7 +224,7 @@ class QDMGraphicsView(QGraphicsView):
         self.setDragMode(QGraphicsView.RubberBandDrag)
 
         # Create the mini-map view
-        self.mini_map = MiniMapView(self.grScene)
+        self.mini_map = MiniMapView(self.grScene, main_view=self)
         self.mini_map.setParent(self)
         self.mini_map.setFixedSize(400, 300)  # Set the size as required
         self.mini_map.setVisible(False)
@@ -601,6 +624,8 @@ class QDMGraphicsView(QGraphicsView):
 
             if event.key() == Qt.Key_Space:
                 self.setDragMode(QGraphicsView.ScrollHandDrag)
+            if self.handleNavigationKey(event):
+                return
             pressed_sequence = QKeySequence(int(event.modifiers().value) | int(event.key()))
             if pressed_sequence == QKeySequence(gs.prefs.keybindings['help']['shortcut']):
                 self.infoBox.update_infobox()
@@ -635,6 +660,66 @@ class QDMGraphicsView(QGraphicsView):
             self.animation.setEasingCurve(QEasingCurve.Type.InOutQuad)
             self.animation.finished.connect(self.mini_map.show)
             self.animation.start()
+
+    def handleNavigationKey(self, event) -> bool:
+        """Arrow keys pan, +/- zoom, F frames the graph, Shift+F the selection.
+
+        Returns ``True`` when the key was consumed.
+        """
+        key = event.key()
+        modifiers = event.modifiers()
+        step = 240 if modifiers & Qt.ShiftModifier else 60
+
+        pans = {
+            Qt.Key_Left: (-step, 0),
+            Qt.Key_Right: (step, 0),
+            Qt.Key_Up: (0, -step),
+            Qt.Key_Down: (0, step),
+        }
+        if key in pans:
+            dx, dy = pans[key]
+            self.horizontalScrollBar().setValue(self.horizontalScrollBar().value() + dx)
+            self.verticalScrollBar().setValue(self.verticalScrollBar().value() + dy)
+            event.accept()
+            return True
+
+        if key in (Qt.Key_Plus, Qt.Key_Equal):
+            self.zoomBy(self.zoomInFactor)
+            event.accept()
+            return True
+        if key in (Qt.Key_Minus, Qt.Key_Underscore):
+            self.zoomBy(1 / self.zoomInFactor)
+            event.accept()
+            return True
+        if key == Qt.Key_F:
+            self.fitToContents(selection_only=bool(modifiers & Qt.ShiftModifier))
+            event.accept()
+            return True
+        return False
+
+    def zoomBy(self, factor):
+        self.scale(factor, factor)
+        self.zoom += self.zoomStep if factor > 1 else -self.zoomStep
+
+    def fitToContents(self, selection_only=False, margin=60):
+        """Frame the whole graph (or just the selection) in the viewport."""
+        items = self.grScene.selectedItems() if selection_only else None
+        if not items:
+            items = [item for item in self.grScene.items() if item.isVisible()]
+        rect = None
+        for item in items:
+            if item is self.cutline or item is self.infoBoxProxy:
+                continue
+            item_rect = item.sceneBoundingRect()
+            rect = item_rect if rect is None else rect.united(item_rect)
+        if rect is None or rect.isEmpty():
+            return False
+        rect = rect.adjusted(-margin, -margin, margin, margin)
+        self.fitInView(rect, Qt.KeepAspectRatio)
+        # keep self.zoom roughly in step with the transform so the wheel
+        # continues from where framing left off
+        self.zoom = self.transform().m11()
+        return True
 
     def resetZoomLevel(self):
         """Reset the zoom level to its default value."""

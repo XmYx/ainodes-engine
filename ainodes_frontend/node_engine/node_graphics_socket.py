@@ -31,6 +31,15 @@ colors  = [
 SOCKET_COLORS = [QColor(color) for color in colors]
 
 
+def _text_width(painter, text):
+    """Qt 6 removed ``QFontMetrics.width``; ``horizontalAdvance`` replaces it."""
+    metrics = painter.fontMetrics()
+    advance = getattr(metrics, "horizontalAdvance", None)
+    if advance is not None:
+        return int(advance(text))
+    return int(metrics.width(text))
+
+
 model_colors = {0:SOCKET_COLORS[9],
                 1:SOCKET_COLORS[10],
                 2:SOCKET_COLORS[11],
@@ -89,14 +98,29 @@ class QDMGraphicsSocket(QGraphicsItem):
 
         # determine socket color
         self._color_background = self.getSocketColor(self.socket_type)
-        self._color_outline = QColor("#FF000000")
-        self._color_highlight = QColor("#FF37A6FF")
+        from ainodes_frontend.base import theme
+
+        self._color_outline = theme.color("socket_outline")
+        self._color_highlight = theme.color("node_hovered")
 
         self._pen = QPen(self._color_outline)
         self._pen.setWidthF(self.outline_width)
         self._pen_highlight = QPen(self._color_highlight)
         self._pen_highlight.setWidthF(2.0)
         self._brush = QBrush(self._color_background)
+
+    def _label_colors(self):
+        """Socket label pill: the socket's own colour, with legible text.
+
+        It used to be hardcoded dark green on white for every socket type,
+        which said nothing about the type and was unreadable in light mode.
+        """
+        background = QColor(self._color_background)
+        background.setAlpha(235)
+        lightness = (background.red() * 299 + background.green() * 587 +
+                     background.blue() * 114) / 1000.0
+        text = QColor("#10121a") if lightness > 140 else QColor("#f4f4f6")
+        return background, text
 
     def paint(self, painter, QStyleOptionGraphicsItem, widget=None):
 
@@ -137,16 +161,14 @@ class QDMGraphicsSocket(QGraphicsItem):
         # print(painter.fontMetrics().width(f"{self.socket.name}"))
 
         text_width = 75
-        proposed_width = painter.fontMetrics().width(f"{self.socket.name}")
+        proposed_width = _text_width(painter, f"{self.socket.name}")
         if proposed_width > text_width:
             text_width = proposed_width
         text_height = -12
+        bg_color, text_color = self._label_colors()
         if self.socket.is_input:
             painter.drawEllipse(-self.radius - 15, -self.radius, 2 * self.radius, 2 * self.radius)
-            # Set the background color to dark green
-            bg_color = QtGui.QColor('darkgreen')
             painter.setBrush(bg_color)
-            text_color = QtGui.QColor('white')
             painter.setPen(text_color)
             # Define the position and size of the background rectangle
             rect = QtCore.QRectF(QtCore.QPointF(int(self.radius), int(-text_height / 2) + 3),
@@ -161,10 +183,7 @@ class QDMGraphicsSocket(QGraphicsItem):
             painter.setPen(self._pen if not self.isHighlighted else self._pen_highlight)
             painter.drawEllipse(-self.radius + 15, -self.radius, 2 * self.radius, 2 * self.radius)
 
-            # Set the background color to dark green
-            bg_color = QtGui.QColor('darkgreen')
             painter.setBrush(bg_color)
-            text_color = QtGui.QColor('white')
             painter.setPen(text_color)
             # Define the position and size of the background rectangle
             rect = QtCore.QRectF(QtCore.QPointF(int(self.radius - text_width - 20), int(-text_height / 2) + 3),

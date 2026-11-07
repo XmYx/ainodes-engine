@@ -1,491 +1,457 @@
-import gc
-import secrets
+"""Build an aiNodes node from a ComfyUI node class.
 
-import numpy as np
-from qtpy.QtCore import Signal, QObject
-from qtpy.QtWidgets import QSpinBox, QDoubleSpinBox, QComboBox
+The old version of this file reverse-engineered a node's ``__init__`` with a
+regex, lowercased every keyword argument, swallowed all exceptions, and called
+the node's function with the *aiNodes* node as ``self``.  It now goes through
+:mod:`comfy_schema` for the input/output description and :mod:`comfy_invoke`
+for the call, so V1 and V3 nodes, async functions and ``ui`` results all work
+and failures are reported instead of dropped.
+"""
+import gc
+import os
+import random
+import shutil
+
 from qtpy import QtCore
+from qtpy.QtCore import Signal
+from qtpy.QtWidgets import (QComboBox, QDoubleSpinBox, QFileDialog, QLineEdit,
+                            QPushButton, QSpinBox, QTextEdit, QCheckBox)
 
 from ainodes_frontend import singleton as gs
-if gs.torch_available:
-
-    import torch
-from PIL import Image
-from qtpy.QtWidgets import QTextEdit, QLineEdit
-
-#from ai_nodes.ainodes_engine_base_nodes.ainodes_backend import pixmap_to_tensor, tensor_image_to_pixmap
-if gs.torch_available:
-    loadBackup = torch.load
-
-#from . import install_all_comfy_nodes
-
-
-from ainodes_frontend.base import register_node, AiNode, register_node_now, get_next_opcode
+from ainodes_frontend.base import AiNode, get_next_opcode, register_node_now
+from ainodes_frontend.base import device
 from ainodes_frontend.node_engine.node_content_widget import QDMNodeContentWidget
 
+from .comfy_invoke import NodeExecutionBlocked, invoke
+from .comfy_schema import describe_node
 
-default_numeric = {"FLOAT":{"min":0.0,
-                     "max":100.0,
-                     "default":1.0,
-                     "step":0.01},
-            "INT":  {"min":-1,
-                     "max":100,
-                     "default":1,
-                     "step":1},
-            "NUMBER":{"min":-1,
-                     "max":1,
-                     "default":1,
-                     "step":1},
-            }
+INT_MIN = -2147483647
+INT_MAX = 2147483647
+
+SEED_CONTROLS = ["fixed", "increment", "decrement", "randomize"]
+
+#: Registered descriptions, keyed by the ComfyUI node key.
+REGISTERED = {}
+#: ``{node_key: reason}`` for everything that could not be adapted.
+FAILED = {}
 
 
-data_subtypes = ["STRING", "PROMPT", "NUMBER", "FLOAT"]
-
-def tensor2pil(image):
-    return Image.fromarray(np.clip(255. * image.cpu().numpy().squeeze(), 0, 255).astype(np.uint8))
-
-
-# PIL to Tensor
-def pil2tensor(image):
-    return torch.from_numpy(np.array(image).astype(np.float32) / 255.0).unsqueeze(0)
+def _as_int(value, default=0):
+    try:
+        return int(float(value))
+    except (TypeError, ValueError):
+        return default
 
 
-import inspect
-
-import inspect
-import re
-
-def extract_init_params(cls):
-    if not inspect.isclass(cls):
-        raise TypeError("Provided object is not a class")
-
-    init_method = cls.__init__
-    if not init_method:
-        return []
-
-    # Get the source code of the __init__ method
-    source = inspect.getsource(init_method)
-
-    # Regular expression to find attribute assignments
-    attr_pattern = re.compile(r"self\.(__(\w+))\s*=\s*(.*)")
-
-    # Find all matches in the source code
-    matches = attr_pattern.findall(source)
-
-    # Extract attribute names and values
-    attrs = {match[0]: match[2] for match in matches}
-
-    return attrs
-
-def set_attribute(instance, original_class_name, attr_name, attr_value):
-    # Check if the attribute name starts with an underscore (private attribute)
-    if attr_name.startswith('_'):
-        # Manually mangle the name to match Python's private variable naming scheme
-        mangled_name = f'_{original_class_name}{attr_name}'
-        setattr(instance, mangled_name, attr_value)
-    else:
-        # Set the attribute directly
-        setattr(instance, attr_name, attr_value)
-
-def instantiate_and_extract_attrs(class_to_instantiate):
-    # Create an instance of the class
-    instance = class_to_instantiate()
-
-    # Extract all attributes from the instance
-    attributes = instance.__dict__
-
-    return attributes
-
-def create_node(node_class, node_name, ui_inputs, inputs, input_names, outputs, output_names, category_input, fn=None):
+def _as_float(value, default=0.0):
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return default
 
 
+def _clamp_int(value):
+    return max(INT_MIN, min(INT_MAX, _as_int(value)))
 
-    class_name = node_name.replace(" ", "")
-    class_code = get_next_opcode()
 
-    # Create new Widget class
-    class Widget(QDMNodeContentWidget):
-        finished = Signal()
+def _input_dir():
+    try:
+        import folder_paths
 
-        def get_widget(self, widget_type):
-            widget_types = {"INT":self.create_spin_box,
-                            "FLOAT":self.create_double_spin_box,
-                            "STRING":self.create_line_edit,
-                            "MULTISTRING":self.create_text_edit
-                            }
-            if widget_type in widget_types:
-                return widget_types[widget_type], True
-            else:
-                return self.create_line_edit, False
+        return folder_paths.get_input_directory()
+    except Exception:
+        return os.path.abspath("input")
 
-        def create_widget(self, widget_name, widget_type, widget_params):
 
-            widget, known = self.get_widget(widget_type)
+class ComfyWidgetMixin:
+    """Widget construction shared by every adapted node's content widget."""
 
-            if known:
-                if widget_type in default_numeric.keys():
-                    numeric_defaults = default_numeric[widget_type]
-                    min_val = widget_params.get('min', numeric_defaults['min'])
-                    max_val = widget_params.get('max', numeric_defaults['max'])
-                    def_val = widget_params.get('default', numeric_defaults['default'])
-                    step_val = widget_params.get('step', numeric_defaults['step'])
-                    if widget_type == "INT":
-                        min_val = int(min_val)
-                        max_val = int(max_val)
-                        def_val = int(def_val)
-                        step_val = int(step_val)
-                    min_val = max(min_val, -2147483647)
-                    max_val = min(max_val, 2147483647)
+    def build_comfy_widget(self, spec):
+        """Create one Qt widget for a :class:`comfy_schema.ComfyInput`."""
+        name = spec.name
+        params = spec.params
+        label = params.get("label") or name
+        tooltip = params.get("tooltip") or ""
 
-                    setattr(self, widget_name,
-                            widget(label_text=widget_name, min_val=min_val, max_val=max_val, step=step_val,
-                                   default_val=def_val))
-                else:
-                    default = widget_params.get('default', 'default_placeholder')
-                    multiline = widget_params.get('multiline', False)
+        if spec.kind == "combo":
+            choices = [str(c) for c in spec.choices] or [""]
+            widget = self.create_combo_box(choices, label, accessible_name=name)
+            default = params.get("default")
+            if default is not None and str(default) in choices:
+                widget.setCurrentText(str(default))
+            if spec.wants_upload:
+                self._add_upload_button(name, widget)
+        elif spec.type_name == "BOOLEAN":
+            widget = self.create_check_box(label, checked=bool(params.get("default", False)),
+                                           accessible_name=name)
+        elif spec.type_name == "INT":
+            widget = self.create_spin_box(
+                label,
+                min_val=_clamp_int(params.get("min", INT_MIN)),
+                max_val=_clamp_int(params.get("max", INT_MAX)),
+                default_val=_clamp_int(params.get("default", 0)),
+                step=max(1, _as_int(params.get("step", 1), 1)),
+                accessible_name=name,
+            )
+        elif spec.type_name in ("FLOAT", "NUMBER"):
+            widget = self.create_double_spin_box(
+                label,
+                min_val=_as_float(params.get("min", -1e9), -1e9),
+                max_val=_as_float(params.get("max", 1e9), 1e9),
+                step=_as_float(params.get("step", 0.01), 0.01) or 0.01,
+                default_val=_as_float(params.get("default", 0.0)),
+                accessible_name=name,
+            )
+        elif params.get("multiline"):
+            widget = self.create_text_edit(label, default=str(params.get("default", "")))
+        else:
+            widget = self.create_line_edit(
+                label,
+                default=str(params.get("default", "")),
+                placeholder=str(params.get("placeholder", params.get("default", ""))),
+                accessible_name=name,
+            )
 
-                    if widget_type == 'PROMPT':
-                        multiline = True
-                        default = "Prompt"
+        if tooltip and hasattr(widget, "setToolTip"):
+            widget.setToolTip(str(tooltip))
+        setattr(self, name, widget)
 
-                    if multiline:
-                        setattr(self, widget_name, self.create_text_edit(widget_name, default=str(default)))
-                    else:
-                        setattr(self, widget_name,
-                                self.create_line_edit(widget_name, default=str(default), placeholder=str(default)))
-            else:
-                setattr(self, widget_name, widget)
+        if spec.wants_seed_control:
+            control = self.create_combo_box(SEED_CONTROLS, f"{label} control",
+                                            accessible_name=f"{name}_control")
+            setattr(self, f"{name}_control", control)
+        return widget
 
-            # Connect the created_widget's signal to mark_node_dirty
-            for created_widget in getattr(self, 'widget_list', []):
-                if isinstance(created_widget, (QSpinBox, QDoubleSpinBox)):
-                    created_widget.valueChanged.connect(self.mark_node_dirty)
-                elif isinstance(created_widget, (QLineEdit, QTextEdit)):
-                    created_widget.textChanged.connect(self.mark_node_dirty)
-                elif isinstance(created_widget, QComboBox):
-                    created_widget.currentIndexChanged.connect(self.mark_node_dirty)
+    def _add_upload_button(self, name, combo):
+        """A real file picker for ComfyUI's ``image_upload`` combos.
 
-        @QtCore.Slot()
-        def mark_node_dirty(self, value=None):
-            # print("marking")
+        In the browser this is an upload button that POSTs to ``/upload/image``;
+        here the file is copied straight into ComfyUI's input directory, which
+        has the same end result without needing a server.
+        """
+        button = QPushButton(f"Load {name}…")
+
+        def pick():
+            path, _ = QFileDialog.getOpenFileName(
+                self, f"Choose a file for '{name}'", "",
+                "Media (*.png *.jpg *.jpeg *.webp *.bmp *.gif *.avif *.mp4 *.webm "
+                "*.wav *.mp3 *.flac);;All files (*)",
+            )
+            if not path:
+                return
+            target_dir = _input_dir()
+            os.makedirs(target_dir, exist_ok=True)
+            target = os.path.join(target_dir, os.path.basename(path))
+            if os.path.abspath(path) != os.path.abspath(target):
+                shutil.copy2(path, target)
+            basename = os.path.basename(target)
+            if combo.findText(basename) < 0:
+                combo.addItem(basename)
+            combo.setCurrentText(basename)
+            if self.node is not None:
+                self.node.markDirty(True)
+
+        button.clicked.connect(pick)
+        self.create_button_layout([button])
+        setattr(self, f"{name}_upload_button", button)
+        return button
+
+    def read_comfy_values(self, specs):
+        """``{input_name: value}`` straight off the widgets."""
+        values = {}
+        for spec in specs:
+            widget = getattr(self, spec.name, None)
+            if widget is None:
+                continue
+            values[spec.name] = self.read_widget(widget, spec)
+        return values
+
+    @staticmethod
+    def read_widget(widget, spec=None):
+        if isinstance(widget, QCheckBox):
+            return widget.isChecked()
+        if isinstance(widget, QSpinBox):
+            return widget.value()
+        if isinstance(widget, QDoubleSpinBox):
+            return widget.value()
+        if isinstance(widget, QComboBox):
+            return widget.currentText()
+        if isinstance(widget, QTextEdit):
+            return widget.toPlainText()
+        if isinstance(widget, QLineEdit):
+            text = widget.text()
+            if spec is not None and spec.type_name == "INT":
+                return _as_int(text)
+            if spec is not None and spec.type_name in ("FLOAT", "NUMBER"):
+                return _as_float(text)
+            return text
+        getter = getattr(widget, "value", None)
+        return getter() if callable(getter) else None
+
+    @QtCore.Slot()
+    def mark_node_dirty(self, value=None):
+        if self.node is not None:
             self.node.markDirty(True)
 
+
+def create_node(desc, js_extra=None):
+    """Register an aiNodes node class for ``desc`` and return it."""
+    js_extra = list(js_extra or [])
+    node_op_code = get_next_opcode()
+    class_name = "".join(ch for ch in desc.title.title() if ch.isalnum()) or f"Comfy{node_op_code}"
+    widget_specs = desc.widgets
+
+    input_sockets, input_names = desc.socket_inputs()
+    output_sockets, output_names = desc.socket_outputs()
+
+    node_help = desc.description or (
+        f"{desc.title} - adapted from the ComfyUI node '{desc.key}'.\n"
+        f"Category: {desc.category}"
+    )
+    if js_extra:
+        node_help += ("\n\nWidgets declared in this pack's JavaScript and offered "
+                      "here as plain fields: "
+                      + ", ".join(w["name"] for w in js_extra))
+
+    class Widget(QDMNodeContentWidget, ComfyWidgetMixin):
+        finished = Signal()
+
         def initUI(self):
-            for item in ui_inputs:
-                #print(item)
-                tp = item[1][0]
-                if type(tp) == str:
-                    # source = item[1]
-                    name = item[0]
-                    widget_type = item[1][0]
-                    widget_params = item[1][1]
-                    self.create_widget(name, widget_type, widget_params)
-                elif type(tp) == list:
-                    combobox_name = item[0]
-                    combobox_items = item[1][0]
-                    setattr(self, combobox_name,
-                            self.create_combo_box(combobox_items, combobox_name, accessible_name=combobox_name))
-                else:
-                    pass
-                    #print("OTHER ITEM", type(tp), item)
-
+            for spec in widget_specs:
+                try:
+                    self.build_comfy_widget(spec)
+                except Exception as exc:  # one bad widget must not kill the node
+                    print(f"[comfy] {desc.key}: could not build widget "
+                          f"'{spec.name}' ({exc})")
+            for extra in js_extra:
+                self._build_js_widget(extra)
             self.create_main_layout(grid=1)
+            self._connect_dirty_signals()
 
+        def _build_js_widget(self, extra):
+            name = extra["name"]
+            if getattr(self, name, None) is not None:
+                return
+            label = f"{name} (js)"
+            if extra["type"] == "INT":
+                widget = self.create_spin_box(label, INT_MIN, INT_MAX, 0, 1,
+                                              accessible_name=name)
+            elif extra["type"] == "FLOAT":
+                widget = self.create_double_spin_box(label, -1e9, 1e9, 0.01, 0.0,
+                                                     accessible_name=name)
+            elif extra["type"] == "BOOLEAN":
+                widget = self.create_check_box(label, accessible_name=name)
+            else:
+                widget = self.create_line_edit(label, accessible_name=name)
+            widget.setToolTip(
+                f"'{name}' is added by {extra['pack']} in {extra['source']}.\n"
+                "aiNodes offers it as a plain field; the JavaScript behaviour "
+                "behind it is not reimplemented."
+            )
+            setattr(self, name, widget)
 
-    # Create new Node class
-    class Node(AiNode, node_class):
+        def _connect_dirty_signals(self):
+            for widget in getattr(self, "widget_list", []):
+                if isinstance(widget, (QSpinBox, QDoubleSpinBox)):
+                    widget.valueChanged.connect(self.mark_node_dirty)
+                elif isinstance(widget, (QLineEdit, QTextEdit)):
+                    widget.textChanged.connect(self.mark_node_dirty)
+                elif isinstance(widget, QComboBox):
+                    widget.currentIndexChanged.connect(self.mark_node_dirty)
+                elif isinstance(widget, QCheckBox):
+                    widget.stateChanged.connect(self.mark_node_dirty)
 
+    class Node(AiNode):
         icon = "ainodes_frontend/icons/base_nodes/v2/experimental.png"
-        help_text = "Data objects in aiNodes are simple dictionaries,\n" \
-                    "that can hold any values under any name.\n" \
-                    "In most cases, you'll find them drive parameters,\n" \
-                    "or hold sequences of images. For an example, the\n" \
-                    "OpenAI node emits it's prompt in a data line,\n" \
-                    "but you'll find this info in all relevant places."
-        op_code = class_code
-        op_title = node_name
-        content_label_objname = class_name.lower().replace(" ", "_")
-        # print("Comfy content_label_objname", content_label_objname)
-        category = f"{category_input}/{node_class.CATEGORY if hasattr(node_class, 'CATEGORY') else 'Diffusers'}"#"WAS NODES"
+        help_text = node_help
+        op_code = node_op_code
+        op_title = desc.title
+        content_label_objname = f"comfy_{desc.key.lower().replace(' ', '_')}"
+        category = desc.category
         NodeContent_class = Widget
         dim = (340, 180)
-        output_data_ports = outputs
-        exec_port = len(outputs)
-
         custom_input_socket_name = input_names
         custom_output_socket_name = output_names
 
-        make_dirty = False if 'loader' in node_name.lower() else True
+        comfy_key = desc.key
+        comfy_description = desc
+        comfy_js_widgets = js_extra
+
+        # Loaders are expensive and deterministic, so do not re-run them on
+        # every graph execution; everything else re-runs.
+        make_dirty = "loader" not in desc.title.lower()
 
         def __init__(self, scene):
-            super().__init__(scene, inputs=inputs, outputs=outputs)
-            self.fn = fn if fn else getattr(node_class, node_class.FUNCTION, None)
-            import inspect
-            # Dynamically extract and set parameters from the __init__ method
-            # init_signature = inspect.signature(node_class.__init__)
-            # init_params = init_signature.parameters
-            # print(init_signature)
-            try:
-                dumb_params = extract_init_params(node_class)
-            except:
-                dumb_params = {}
-            try:
-                init_params = instantiate_and_extract_attrs(node_class)
-            except:
-                init_params = {}
-            for param_name, param_value in dumb_params.items():
-                set_attribute(self, node_class.__name__, param_name, param_value)
-            for param_name, param_info in init_params.items():
-                # Skip 'self' parameter
-                #if param_name == 'self':
-                #    continue
-
-                # Get default value of the parameter
-                #default_value = param_info.default if param_info.default is not inspect.Parameter.empty else None
-                #print(param_name)
-                # Set the parameter in the Node instance
-                #set_attribute(self, node_class.__name__, param_name, param_info)
-                setattr(self, param_name, param_info)
-
-            self.output_names = output_names
-            self.output_types = outputs
-
+            super().__init__(scene, inputs=input_sockets, outputs=output_sockets)
             self.exec_port = len(self.outputs) - 1
+            self.device = gs.device
+            self.last_ui = None
 
-            modifier = len(inputs)
-            if len(outputs) > len(inputs):
-                modifier = len(outputs)
-
-            self.content.setGeometry(0, 15, self.content.geometry().width(), self.content.geometry().height())
-
+            modifier = max(len(input_sockets), len(output_sockets))
+            # start below the title bar instead of underneath it
+            title_height = getattr(self.grNode, "title_height", 24)
+            self.content.setGeometry(0, title_height + 4,
+                                     self.content.geometry().width(),
+                                     self.content.geometry().height())
             self.grNode.height = self.content.geometry().height() + (modifier * 30)
-
             self.update_all_sockets()
 
-            self.adapted_inputs = (input_names, ui_inputs)
-            self.adapted_outputs = output_names
+        # ------------------------------------------------------------------
+        def _gather_ports(self):
+            """Port values plus the names of required ports left unconnected."""
+            values = {}
+            missing = []
+            for index, spec in enumerate(desc.ports):
+                data = self.getInputData(index)
+                if data is None:
+                    if spec.required:
+                        missing.append(spec.name)
+                    continue
+                values[spec.name] = data
+            return values, missing
 
-            self.cache = {}
+        def _apply_seed_control(self):
+            for spec in widget_specs:
+                if not spec.wants_seed_control:
+                    continue
+                widget = getattr(self.content, spec.name, None)
+                control = getattr(self.content, f"{spec.name}_control", None)
+                if widget is None or control is None:
+                    continue
+                mode = control.currentText()
+                if mode == "randomize":
+                    widget.setValue(random.randint(0, INT_MAX))
+                elif mode == "increment":
+                    widget.setValue(min(widget.maximum(), widget.value() + 1))
+                elif mode == "decrement":
+                    widget.setValue(max(widget.minimum(), widget.value() - 1))
 
-            self.device = gs.device
-            self.loaded_lora = None
+        def _hidden_values(self):
+            hidden = {}
+            for name, type_name in desc.hidden.items():
+                if type_name == "PROMPT":
+                    hidden[name] = {}
+                elif type_name == "EXTRA_PNGINFO":
+                    hidden[name] = {"workflow": {}}
+                elif type_name == "UNIQUE_ID":
+                    hidden[name] = str(self.id)
+            return hidden
 
-        @torch.inference_mode()
         def evalImplementation_thread(self):
+            port_values, missing = self._gather_ports()
+            if missing:
+                # issue #21: a disconnected required input used to fail silently
+                self.markInvalid(True)
+                print(f"[{desc.title}] cannot run: required input(s) not "
+                      f"connected: {', '.join(missing)}")
+                self.content.finished.emit()
+                return False
 
-            data_inputs = {}
-            x = 0
+            kwargs = dict(port_values)
+            kwargs.update(self.content.read_comfy_values(widget_specs))
+            for extra in js_extra:
+                widget = getattr(self.content, extra["name"], None)
+                if widget is not None:
+                    kwargs[extra["name"]] = self.content.read_widget(widget)
+            kwargs.update(self._hidden_values())
 
-            for input in self.adapted_inputs[0]:
-                data = None
-                if input != "EXEC":
-                    data = self.getInputData(x)
-
-                    # print(data, input.lower())
-
-                if data is not None:
-                    data_inputs[input.lower()] = data
-                x += 1
-
-            for ui_input in self.adapted_inputs[1]:
-                input_type = ui_input[1][0]
-                input_name = ui_input[0]
-                widget = getattr(self.content, input_name)
-
-                if isinstance(input_type, str):
-                    if input_type in default_numeric.keys():
-                        data = widget.value()
-                        data_inputs[ui_input[0].lower()] = data
-                    else:
-                        multiline = False
-                        if "multiline" in ui_input[1][1]:
-                            multiline = ui_input[1][1]
-                        if isinstance(widget, QTextEdit):
-                            data = widget.toPlainText()
-                        elif isinstance(widget, QLineEdit):
-                            data = widget.text()
-                        if data != "":
-                            data_inputs[ui_input[0].lower()] = data
-                elif isinstance(input_type, list):
-                    data = widget.currentText()
-                    if data != "":
-                        data_inputs[ui_input[0].lower()] = data
-            all_ins = self.getAllInputs()
-            #print("COMFY ALL INPUTS", all_ins)
-            if "exec" in all_ins:
-                del all_ins["exec"]
-            data_inputs.update(all_ins)
-            # # Create a unique key for the current set of inputs
-            # cache_key = str(sorted(data_inputs.items()))
-            #
-            # # Check if the result is already in the cache
-            # if cache_key in self.cache:
-            #     result = self.cache[cache_key]
-            # else:
-            #     # If not in cache, compute the result and store it in the cache
-            #     result = self.fn(self, **data_inputs)
-            #     self.cache[cache_key] = result
-            # del data_inputs
-            if "seed" in data_inputs:
-                if data_inputs.get("seed", 0) == 0:
-                    data_inputs["seed"] = secrets.randbelow(2147483647)
-                    self.markDirty(True)
             if self.make_dirty:
                 self.markDirty(True)
-            if self.isDirty():
-                with torch.no_grad():
-                    result = self.fn(self, **data_inputs)
 
-                x = 0
+            if not self.isDirty():
+                self.content.update()
+                self.content.finished.emit()
+                return True
 
-                for i in list(self.adapted_outputs):
-                    if i != "EXEC":
-                        self.setOutput(x, result[x])
-                    x += 1
-                self.markDirty(False)
+            try:
+                values, ui = invoke(desc.node_class, kwargs,
+                                    function_name=desc.function_name,
+                                    expected_outputs=len(desc.outputs))
+            except NodeExecutionBlocked as blocked:
+                print(f"[{desc.title}] execution blocked: {blocked.message}")
+                self.markInvalid(True)
+                self.content.finished.emit()
+                return False
+            except Exception as exc:
+                from ainodes_frontend.base.settings import handle_ainodes_exception
+
+                handle_ainodes_exception()
+                print(f"[{desc.title}] failed: {exc}")
+                self.markInvalid(True)
+                self.content.finished.emit()
+                return False
+
+            for index in range(len(desc.outputs)):
+                self.setOutput(index, values[index] if index < len(values) else None)
+
+            self.last_ui = ui
+            self._apply_seed_control()
+            self.markDirty(False)
+            self.markInvalid(False)
             self.content.update()
             self.content.finished.emit()
-            #gc.collect()
-
             return True
 
         def onWorkerFinished(self, result, exec=True):
             self.busy = False
-            self.markDirty(False)
-            if exec:
-                if result:
+            if result:
+                self.markDirty(False)
+                if exec:
                     self.executeChild(self.exec_port)
 
         def can_run(self):
             if not self.inputs:
                 return True
-
-            def is_dirty_connected_node(edge, attribute):
-                socket = getattr(edge, attribute, None)
-                if socket and hasattr(socket, 'node') and socket.node != self:
-                    return socket.node.isDirty()
-                return False
-
             for socket in self.inputs:
                 for edge in socket.edges:
-                    if is_dirty_connected_node(edge, 'start_socket') or is_dirty_connected_node(edge, 'end_socket'):
-                        #print(f"Node {self} cannot run because connected node {socket.node} is dirty.")
-                        return False
-
+                    for attribute in ("start_socket", "end_socket"):
+                        other = getattr(edge, attribute, None)
+                        if other is not None and getattr(other, "node", None) not in (None, self):
+                            if other.node.isDirty():
+                                return False
             return True
 
         def onInputChanged(self, socket=None):
             self.markDirty(True)
 
         def remove(self):
-            # Delete attributes that were set during self.setOutput
             for index in range(len(self.outputs)):
                 object_name = self.getID(index)
-                if hasattr(self, object_name):
-                    # If the value is a torch tensor and is on the GPU, delete it
-                    value = getattr(self, object_name)
-                    if isinstance(value, torch.Tensor) and value.is_cuda:
-                        value.cpu()
-                        del value
-                        torch.cuda.empty_cache()
-                    else:
-                        try:
-                            value.cpu()
-                        except:
-                            try:
-                                value.to("cpu")
-                            except:
-                                pass
-                        del value
-                        gc.collect()
-                    # Delete the attribute itself
-                    delattr(self, object_name)
-
-            # Clear the cache dictionary
-            self.cache.clear()
+                value = self._output_values.pop(object_name, None)
+                if value is None:
+                    continue
+                try:
+                    value.cpu()
+                except Exception:
+                    pass
+                del value
+            device.empty_cache()
+            gc.collect()
             super().remove()
 
-    register_node_now(class_code, Node)
+    Node.__name__ = class_name
+    Node.__qualname__ = class_name
+    register_node_now(node_op_code, Node)
+    REGISTERED[desc.key] = desc
+    return Node
 
 
-
-def get_node_parameters(node_class):
-
-    ordered_inputs = []
-
-    for key, value in node_class.INPUT_TYPES().items():
-        for value_name, value_params in value.items():
-
-
-
-            ordered_inputs.append((value_name, value_params))
-
-    return ordered_inputs
-
-
-def parse_comfynode(node_name, node_class):
-    node_content_class = node_name.lower().replace(" ", "_")
-
-    # print(node_class.INPUT_TYPES())
+def adapt_node(key, node_class, display_name=None, category_prefix="",
+               js_extra=None):
+    """Describe and register one ComfyUI node.  Returns the class or ``None``."""
+    if key in REGISTERED:
+        return None
     try:
-        ordered_inputs = get_node_parameters(node_class)
-
-        # print("ORDERED INPUTS #1", ordered_inputs)
-
-        inputs = []
-        input_names = []
-        outputs = []
-        for i in ordered_inputs:
-            if i[1][0] == "LATENT":
-                inputs.append(2)
-            elif i[1][0] in ["IMAGE", "MASK"]:
-                inputs.append(5)
-            elif i[1][0] == "CONDITIONING":
-                inputs.append(3)
-            elif i[1][0] in ["EXTRA_PNGINFO", "EXTRA_SETTINGS", "DISCO_DIFFUSION_EXTRA_SETTINGS"]:
-                inputs.append(6)
-            elif i[1][0] in ["VAE", "CLIP", "MODEL", "GUIDED_DIFFUSION_MODEL", "GUIDED_CLIP"]:
-                inputs.append(4)
-            if i[1][0] in ["LATENT", "IMAGE", "MASK", "CONDITIONING", "EXTRA_PNGINFO", "VAE", "CLIP", "MODEL", "GUIDED_DIFFUSION_MODEL", "GUIDED_CLIP", "EXTRA_SETTINGS", "DISCO_DIFFUSION_EXTRA_SETTINGS"]:
-                input_names.append(i[1][0])
-        input_names.append("EXEC")
-        ordered_inputs.append(input_names)
-        # elif i[1][0] == "IMAGE_BOUNDS":
-        #     inputs.append(6)
-        # print("RESULT INPUTS", inputs)
-
-        fn = getattr(node_class, node_class.FUNCTION)
-        ordered_outputs = []
-        output_names = []
-        x = 0
-        for i in node_class.RETURN_TYPES:
-            data = {}
-            data['type'] = i
-            data['name'] = "DEFAULT"
-            if hasattr(node_class, "RETURN_NAMES"):
-                data['name'] = node_class.RETURN_NAMES[x]
-            if i in ["STRING", "NUMBER", "EXTRA_SETTINGS", "DISCO_DIFFUSION_EXTRA_SETTINGS"]:
-                outputs.append(6)
-            elif i == "LATENT":
-                outputs.append(2)
-            elif i in ["IMAGE", "MASK"]:
-                outputs.append(5)
-            elif i == "CONDITIONING":
-                outputs.append(3)
-            elif i in ["VAE", "CLIP", "MODEL", "GUIDED_DIFFUSION_MODEL", "GUIDED_CLIP"]:
-                outputs.append(4)
-            if i in ["LATENT", "IMAGE", "MASK", "MASKS", "CONDITIONING", "EXTRA_PNGINFO", "VAE", "CLIP", "MODEL", "GUIDED_DIFFUSION_MODEL", "GUIDED_CLIP",
-                     "STRING", "NUMBER", "EXTRA_SETTINGS", "DISCO_DIFFUSION_EXTRA_SETTINGS"]:
-                output_names.append(i)
-            ordered_outputs.append(data)
-        output_names.append('EXEC')
-
-        # print("CREATED OUTPUT NAMES", output_names)
-
-        ordered_outputs.append(output_names)
-        outputs.append(1)
-        inputs.append(1)
-        # Use the function
-        create_node(node_class, node_name, ordered_inputs, inputs, ordered_outputs, outputs, fn=fn)
-    except:
-        pass
+        desc = describe_node(key, node_class, display_name=display_name,
+                             category_prefix=category_prefix)
+    except Exception as exc:
+        FAILED[key] = f"schema: {exc}"
+        return None
+    if not desc.function_name:
+        FAILED[key] = "no FUNCTION attribute"
+        return None
+    try:
+        return create_node(desc, js_extra=js_extra)
+    except Exception as exc:
+        FAILED[key] = f"build: {exc}"
+        return None

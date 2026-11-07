@@ -82,12 +82,14 @@ class QDMGraphicsNode(QGraphicsItem):
 
     def initAssets(self):
         """Initialize ``QObjects`` like ``QColor``, ``QPen`` and ``QBrush``"""
-        self._title_color = Qt.white
+        from ainodes_frontend.base import theme
+
+        self._title_color = theme.color("node_title_text")
         self._title_font = QFont("Monospace", 10)
 
-        self._color = QColor("#7F000000")
-        self._color_selected = QColor("#FFFFA637")
-        self._color_hovered = QColor("#FF37A6FF")
+        self._color = theme.color("node_outline")
+        self._color_selected = theme.color("node_selected")
+        self._color_hovered = theme.color("node_hovered")
 
         self._pen_default = QPen(self._color)
         self._pen_default.setWidthF(2.0)
@@ -96,8 +98,8 @@ class QDMGraphicsNode(QGraphicsItem):
         self._pen_hovered = QPen(self._color_hovered)
         self._pen_hovered.setWidthF(3.0)
 
-        self._brush_title = QBrush(QColor("#FF313131"))
-        self._brush_background = QBrush(QColor("#E3212121"))
+        self._brush_title = QBrush(theme.color("node_title_bg"))
+        self._brush_background = QBrush(theme.color("node_bg"))
 
     def onSelected(self):
         """Our event handling when the node was selected"""
@@ -400,12 +402,14 @@ class QDMGraphicsBGNode(QGraphicsItem):
 
     def initAssets(self):
         """Initialize ``QObjects`` like ``QColor``, ``QPen`` and ``QBrush``"""
-        self._title_color = Qt.white
+        from ainodes_frontend.base import theme
+
+        self._title_color = theme.color("node_title_text")
         self._title_font = QFont("Monospace", 10)
 
-        self._color = QColor("#7F000000")
-        self._color_selected = QColor("#FFFFA637")
-        self._color_hovered = QColor("#FF37A6FF")
+        self._color = theme.color("node_outline")
+        self._color_selected = theme.color("node_selected")
+        self._color_hovered = theme.color("node_hovered")
 
         self._pen_default = QPen(self._color)
         self._pen_default.setWidthF(2.0)
@@ -414,8 +418,8 @@ class QDMGraphicsBGNode(QGraphicsItem):
         self._pen_hovered = QPen(self._color_hovered)
         self._pen_hovered.setWidthF(3.0)
 
-        self._brush_title = QBrush(QColor("#FF313131"))
-        self._brush_background = QBrush(QColor("#E3212121"))
+        self._brush_title = QBrush(theme.color("node_title_bg"))
+        self._brush_background = QBrush(theme.color("node_bg"))
 
     def onSelected(self):
         """Our event handling when the node was selected"""
@@ -667,12 +671,14 @@ class QDMGraphicsBGInfoNode(QGraphicsItem):
 
     def initAssets(self):
         """Initialize ``QObjects`` like ``QColor``, ``QPen`` and ``QBrush``"""
-        self._title_color = Qt.white
+        from ainodes_frontend.base import theme
+
+        self._title_color = theme.color("node_title_text")
         self._title_font = QFont("Monospace", 10)
 
-        self._color = QColor("#7F000000")
-        self._color_selected = QColor("#FFFFA637")
-        self._color_hovered = QColor("#FF37A6FF")
+        self._color = theme.color("node_outline")
+        self._color_selected = theme.color("node_selected")
+        self._color_hovered = theme.color("node_hovered")
 
         self._pen_default = QPen(self._color)
         self._pen_default.setWidthF(2.0)
@@ -681,8 +687,8 @@ class QDMGraphicsBGInfoNode(QGraphicsItem):
         self._pen_hovered = QPen(self._color_hovered)
         self._pen_hovered.setWidthF(3.0)
 
-        self._brush_title = QBrush(QColor("#FF313131"))
-        self._brush_background = QBrush(QColor("#E3212121"))
+        self._brush_title = QBrush(theme.color("node_title_bg"))
+        self._brush_background = QBrush(theme.color("node_bg"))
 
     def onSelected(self):
         """Our event handling when the node was selected"""

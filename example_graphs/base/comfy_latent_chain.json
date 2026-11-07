@@ -1,0 +1,113 @@
+{
+    "id": 140402216259936,
+    "scene_width": 64000,
+    "scene_height": 64000,
+    "nodes": [
+        {
+            "id": 140402216262288,
+            "title": "Empty Latent Image",
+            "pos_x": -500.0,
+            "pos_y": -100.0,
+            "inputs": [
+                {
+                    "id": 140402071733520,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 1,
+                    "name": "EXEC"
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 140402071733824,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 2,
+                    "name": "LATENT"
+                },
+                {
+                    "id": 140407412696432,
+                    "index": 1,
+                    "multi_edges": false,
+                    "position": 6,
+                    "socket_type": 1,
+                    "name": "EXEC"
+                }
+            ],
+            "content": {
+                "width": 512,
+                "width_visible": true,
+                "height": 512,
+                "height_visible": true,
+                "batch_size": 2,
+                "batch_size_visible": true
+            },
+            "op_code": 24,
+            "content_label_objname": "comfy_emptylatentimage"
+        },
+        {
+            "id": 140402216262960,
+            "title": "Upscale Latent",
+            "pos_x": 150.0,
+            "pos_y": -100.0,
+            "inputs": [
+                {
+                    "id": 140402071784816,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 2,
+                    "name": "SAMPLES"
+                },
+                {
+                    "id": 140402071785056,
+                    "index": 1,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 1,
+                    "name": "EXEC"
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 140407466825040,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 2,
+                    "name": "LATENT"
+                },
+                {
+                    "id": 140407466822800,
+                    "index": 1,
+                    "multi_edges": false,
+                    "position": 6,
+                    "socket_type": 1,
+                    "name": "EXEC"
+                }
+            ],
+            "content": {
+                "upscale_method": "nearest-exact",
+                "upscale_method_visible": true,
+                "width": 1024,
+                "width_visible": true,
+                "height": 1024,
+                "height_visible": true,
+                "crop": "disabled",
+                "crop_visible": true
+            },
+            "op_code": 41,
+            "content_label_objname": "comfy_latentupscale"
+        }
+    ],
+    "edges": [
+        {
+            "id": 140402216263296,
+            "edge_type": 2,
+            "start": 140402071733824,
+            "end": 140402071784816
+        }
+    ]
+}

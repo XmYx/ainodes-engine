@@ -4,17 +4,17 @@ import torch.nn as nn
 
 from enum import Enum
 
-from src.ComfyUI.comfy.ldm.modules.diffusionmodules.util import timestep_embedding
+from comfy.ldm.modules.diffusionmodules.util import timestep_embedding
 
 #from modules import devices, lowvram, shared, scripts
 
 #cond_cast_unet = getattr(devices, 'cond_cast_unet', lambda x: x)
 
 
-from src.ComfyUI.comfy.ldm.modules.diffusionmodules.openaimodel import UNetModel
+from comfy.ldm.modules.diffusionmodules.openaimodel import UNetModel
 
 
-from src.ComfyUI.comfy.ldm.modules.attention import BasicTransformerBlock
+from comfy.ldm.modules.attention import BasicTransformerBlock
 
 from ainodes_frontend import singleton as gs
 

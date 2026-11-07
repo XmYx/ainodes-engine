@@ -1,0 +1,439 @@
+/* aiNodes Engine - theme template.
+ *
+ * Rendered by ainodes_frontend/base/theme.py: every @token@ is replaced with
+ * the matching colour from the active palette, so dark and light stay in
+ * step.  Do not hardcode colours here; add a palette key instead.
+ */
+
+/* ---------- base ---------- */
+QWidget {
+    background-color: @window@;
+    color: @text@;
+    font-size: 12px;
+}
+QMainWindow, QDialog, QMdiArea {
+    background-color: @window@;
+}
+QFrame {
+    border: none;
+}
+QLabel {
+    background: transparent;
+    color: @text@;
+}
+QLabel:disabled {
+    color: @text_disabled@;
+}
+QToolTip {
+    background-color: @surface@;
+    color: @text@;
+    border: 1px solid @accent@;
+    padding: 4px 6px;
+}
+
+/* ---------- menus ---------- */
+QMenuBar {
+    background-color: @surface@;
+    color: @text@;
+    border-bottom: 1px solid @border@;
+}
+QMenuBar::item {
+    background: transparent;
+    padding: 5px 10px;
+}
+QMenuBar::item:selected, QMenuBar::item:pressed {
+    background-color: @accent@;
+    color: @accent_text@;
+    border-radius: 3px;
+}
+QMenu {
+    background-color: @surface@;
+    color: @text@;
+    border: 1px solid @border@;
+    padding: 4px;
+}
+QMenu::item {
+    padding: 5px 24px 5px 20px;
+    border-radius: 3px;
+}
+QMenu::item:selected {
+    background-color: @accent@;
+    color: @accent_text@;
+}
+QMenu::item:disabled {
+    color: @text_disabled@;
+}
+QMenu::separator {
+    height: 1px;
+    background: @border@;
+    margin: 4px 6px;
+}
+
+/* ---------- toolbars, docks, status ---------- */
+QToolBar {
+    background-color: @surface@;
+    border: none;
+    spacing: 3px;
+    padding: 2px;
+}
+QToolBar::separator {
+    background: @border@;
+    width: 1px;
+    margin: 4px 3px;
+}
+QToolButton {
+    background: transparent;
+    color: @text@;
+    border: 1px solid transparent;
+    border-radius: 3px;
+    padding: 3px;
+}
+QToolButton:hover {
+    background-color: @surface_hover@;
+    border-color: @border@;
+}
+QToolButton:pressed, QToolButton:checked {
+    background-color: @accent@;
+    color: @accent_text@;
+}
+QDockWidget {
+    color: @text@;
+    titlebar-close-icon: none;
+    titlebar-normal-icon: none;
+}
+QDockWidget::title {
+    background-color: @surface_alt@;
+    color: @text@;
+    padding: 5px 8px;
+    border-bottom: 1px solid @border@;
+}
+QStatusBar {
+    background-color: @surface@;
+    color: @text_dim@;
+    border-top: 1px solid @border@;
+}
+QStatusBar::item {
+    border: none;
+}
+
+/* ---------- tabs ---------- */
+QTabWidget::pane {
+    background-color: @surface@;
+    border: 1px solid @border@;
+}
+QTabBar::tab {
+    background-color: @surface_alt@;
+    color: @text_dim@;
+    border: 1px solid @border@;
+    border-bottom: none;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    padding: 5px 12px;
+    min-width: 8ex;
+}
+QTabBar::tab:selected {
+    background-color: @surface@;
+    color: @text@;
+    border-bottom: 2px solid @accent@;
+}
+QTabBar::tab:hover:!selected {
+    background-color: @surface_hover@;
+    color: @text@;
+}
+
+/* ---------- editable fields ----------
+ * These are the rules behind issue #28: node prompts were white-on-white
+ * because nothing set an explicit colour for the text inputs.
+ */
+QLineEdit, QTextEdit, QPlainTextEdit, QSpinBox, QDoubleSpinBox, QComboBox,
+QAbstractSpinBox, QDateTimeEdit {
+    background-color: @field@;
+    color: @field_text@;
+    border: 1px solid @field_border@;
+    border-radius: 3px;
+    padding: 3px 5px;
+    selection-background-color: @selection@;
+    selection-color: @selection_text@;
+}
+QLineEdit:focus, QTextEdit:focus, QPlainTextEdit:focus, QSpinBox:focus,
+QDoubleSpinBox:focus, QComboBox:focus {
+    border: 1px solid @accent@;
+}
+QLineEdit:disabled, QTextEdit:disabled, QPlainTextEdit:disabled,
+QSpinBox:disabled, QDoubleSpinBox:disabled, QComboBox:disabled {
+    color: @text_disabled@;
+    background-color: @surface_alt@;
+}
+QLineEdit[echoMode="2"] {
+    lineedit-password-character: 9679;
+}
+QComboBox::drop-down {
+    border: none;
+    width: 18px;
+}
+QComboBox::down-arrow {
+    image: none;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 5px solid @text_dim@;
+    width: 0;
+    height: 0;
+    margin-right: 6px;
+}
+QComboBox QAbstractItemView {
+    background-color: @surface@;
+    color: @text@;
+    border: 1px solid @border@;
+    selection-background-color: @accent@;
+    selection-color: @accent_text@;
+    outline: none;
+}
+QAbstractSpinBox::up-button, QAbstractSpinBox::down-button {
+    background-color: @surface_alt@;
+    border: 1px solid @field_border@;
+    width: 14px;
+}
+QAbstractSpinBox::up-button:hover, QAbstractSpinBox::down-button:hover {
+    background-color: @accent@;
+}
+QAbstractSpinBox::up-arrow {
+    image: none;
+    border-left: 3px solid transparent;
+    border-right: 3px solid transparent;
+    border-bottom: 4px solid @text@;
+}
+QAbstractSpinBox::down-arrow {
+    image: none;
+    border-left: 3px solid transparent;
+    border-right: 3px solid transparent;
+    border-top: 4px solid @text@;
+}
+
+/* ---------- buttons ---------- */
+QPushButton {
+    background-color: @surface_alt@;
+    color: @text@;
+    border: 1px solid @border@;
+    border-radius: 3px;
+    padding: 5px 12px;
+}
+QPushButton:hover {
+    background-color: @surface_hover@;
+}
+QPushButton:pressed {
+    background-color: @accent@;
+    color: @accent_text@;
+}
+QPushButton:default {
+    border: 1px solid @accent@;
+}
+QPushButton:disabled {
+    color: @text_disabled@;
+    border-color: @surface_alt@;
+}
+
+/* ---------- checkboxes / radios ---------- */
+QCheckBox, QRadioButton {
+    background: transparent;
+    color: @text@;
+    spacing: 6px;
+}
+QCheckBox::indicator, QRadioButton::indicator {
+    width: 14px;
+    height: 14px;
+    background-color: @field@;
+    border: 1px solid @field_border@;
+}
+QCheckBox::indicator {
+    border-radius: 3px;
+}
+QRadioButton::indicator {
+    border-radius: 7px;
+}
+QCheckBox::indicator:checked, QRadioButton::indicator:checked {
+    background-color: @accent@;
+    border-color: @accent@;
+}
+QCheckBox::indicator:hover, QRadioButton::indicator:hover {
+    border-color: @accent@;
+}
+
+/* ---------- lists / trees / tables ---------- */
+QListWidget, QListView, QTreeWidget, QTreeView, QTableWidget, QTableView {
+    background-color: @surface@;
+    alternate-background-color: @surface_alt@;
+    color: @text@;
+    border: 1px solid @border@;
+    outline: none;
+}
+QListWidget::item, QTreeWidget::item, QTreeView::item {
+    padding: 3px 4px;
+    border-radius: 2px;
+}
+QListWidget::item:hover, QTreeWidget::item:hover, QTreeView::item:hover {
+    background-color: @surface_hover@;
+}
+QListWidget::item:selected, QTreeWidget::item:selected, QTreeView::item:selected,
+QTableView::item:selected {
+    background-color: @accent@;
+    color: @accent_text@;
+}
+QHeaderView::section {
+    background-color: @surface_alt@;
+    color: @text@;
+    border: none;
+    border-right: 1px solid @border@;
+    border-bottom: 1px solid @border@;
+    padding: 4px 6px;
+}
+
+/* ---------- group boxes ---------- */
+QGroupBox {
+    background: transparent;
+    color: @text@;
+    border: 1px solid @border@;
+    border-radius: 4px;
+    margin-top: 10px;
+    padding-top: 8px;
+}
+QGroupBox::title {
+    subcontrol-origin: margin;
+    subcontrol-position: top left;
+    left: 8px;
+    padding: 0 4px;
+    color: @accent@;
+}
+
+/* ---------- scrollbars ---------- */
+QScrollBar:vertical {
+    background: @window@;
+    width: 11px;
+    margin: 0;
+}
+QScrollBar:horizontal {
+    background: @window@;
+    height: 11px;
+    margin: 0;
+}
+QScrollBar::handle:vertical, QScrollBar::handle:horizontal {
+    background: @border@;
+    border-radius: 5px;
+    min-height: 24px;
+    min-width: 24px;
+}
+QScrollBar::handle:hover {
+    background: @accent@;
+}
+QScrollBar::add-line, QScrollBar::sub-line {
+    height: 0;
+    width: 0;
+}
+QScrollBar::add-page, QScrollBar::sub-page {
+    background: transparent;
+}
+
+/* ---------- sliders, progress ---------- */
+QSlider::groove:horizontal {
+    background: @surface_alt@;
+    height: 4px;
+    border-radius: 2px;
+}
+QSlider::handle:horizontal {
+    background: @accent@;
+    width: 12px;
+    margin: -5px 0;
+    border-radius: 6px;
+}
+QProgressBar {
+    background-color: @surface_alt@;
+    border: 1px solid @border@;
+    border-radius: 4px;
+    text-align: center;
+    color: @text@;
+    height: 16px;
+}
+QProgressBar::chunk {
+    background-color: @accent@;
+    border-radius: 3px;
+}
+
+/* ---------- splitters / mdi ---------- */
+QSplitter::handle {
+    background-color: @border@;
+}
+QSplitter::handle:horizontal {
+    width: 4px;
+}
+QSplitter::handle:vertical {
+    height: 4px;
+}
+QSplitter::handle:hover {
+    background-color: @accent@;
+}
+QMdiSubWindow {
+    background-color: @surface@;
+    border: 1px solid @border@;
+}
+
+/* ---------- node content widgets ----------
+ * Painted on top of the node body drawn by the canvas, so these must stay
+ * readable against @node_bg@ in both themes.
+ */
+QDMNodeContentWidget {
+    background: transparent;
+}
+QDMNodeContentWidget QFrame,
+QDMNodeContentWidget QWidget {
+    background: transparent;
+}
+QDMNodeContentWidget QLabel {
+    color: @node_title_text@;
+    background: transparent;
+    font-size: 11px;
+}
+QDMNodeContentWidget QLineEdit,
+QDMNodeContentWidget QTextEdit,
+QDMNodeContentWidget QPlainTextEdit,
+QDMNodeContentWidget QSpinBox,
+QDMNodeContentWidget QDoubleSpinBox,
+QDMNodeContentWidget QComboBox {
+    background-color: @field@;
+    color: @field_text@;
+    border: 1px solid @field_border@;
+    border-radius: 3px;
+    padding: 2px 4px;
+    selection-background-color: @selection@;
+    selection-color: @selection_text@;
+}
+QDMNodeContentWidget QPushButton {
+    background-color: @surface_alt@;
+    color: @text@;
+    border: 1px solid @border@;
+    border-radius: 3px;
+    padding: 3px 8px;
+}
+QDMNodeContentWidget QPushButton:hover {
+    background-color: @accent@;
+    color: @accent_text@;
+}
+QDMNodeContentWidget QCheckBox {
+    color: @node_title_text@;
+}
+
+/* ---------- canvas + console ---------- */
+QGraphicsView {
+    background-color: @scene_bg@;
+    border: none;
+    selection-background-color: @selection@;
+}
+NodesConsole, NodesConsole QWidget {
+    background-color: @console_bg@;
+    color: @console_text@;
+}
+NodesConsole QPlainTextEdit, NodesConsole QTextEdit, NodesConsole QLineEdit,
+NodesConsole QListWidget {
+    background-color: @console_bg@;
+    color: @console_text@;
+    font-family: monospace;
+    border: 1px solid @border@;
+}

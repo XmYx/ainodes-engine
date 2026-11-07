@@ -3,7 +3,7 @@ import cv2
 import os
 import torch
 from einops import rearrange
-from basicsr.utils.download_util import load_file_from_url
+from backend_helpers.download_utils import load_file_from_url
 #from comfy_controlnet_preprocessors.util import annotator_ckpts_path
 
 

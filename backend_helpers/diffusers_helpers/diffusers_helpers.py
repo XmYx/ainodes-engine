@@ -6,7 +6,11 @@ from diffusers import DDIMScheduler, HeunDiscreteScheduler, KDPM2DiscreteSchedul
     LMSDiscreteScheduler, PNDMScheduler, EulerDiscreteScheduler, EulerAncestralDiscreteScheduler, \
     DPMSolverSinglestepScheduler, DPMSolverMultistepScheduler, UniPCMultistepScheduler, DEISMultistepScheduler
 
-from diffusers.models.controlnet import ControlNetOutput
+try:
+    # diffusers >= 0.32 moved this under models/controlnets/
+    from diffusers.models.controlnets.controlnet import ControlNetOutput
+except ImportError:  # diffusers < 0.32
+    from diffusers.models.controlnet import ControlNetOutput
 
 
 diffusers_models = [

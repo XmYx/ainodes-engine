@@ -1,0 +1,444 @@
+{
+    "id": 139922086285664,
+    "scene_width": 64000,
+    "scene_height": 64000,
+    "nodes": [
+        {
+            "id": 139922086288016,
+            "title": "Load Checkpoint",
+            "pos_x": -900.0,
+            "pos_y": -500.0,
+            "inputs": [
+                {
+                    "id": 139927701792400,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 1,
+                    "name": "EXEC"
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 139922941581232,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 4,
+                    "name": "MODEL"
+                },
+                {
+                    "id": 139922941582048,
+                    "index": 1,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 4,
+                    "name": "CLIP"
+                },
+                {
+                    "id": 139922941141584,
+                    "index": 2,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 4,
+                    "name": "VAE"
+                },
+                {
+                    "id": 139922941141840,
+                    "index": 3,
+                    "multi_edges": false,
+                    "position": 6,
+                    "socket_type": 1,
+                    "name": "EXEC"
+                }
+            ],
+            "content": {
+                "ckpt_name": "LTX23_audio_vae_bf16.safetensors",
+                "ckpt_name_visible": true
+            },
+            "op_code": 6,
+            "content_label_objname": "comfy_checkpointloadersimple"
+        },
+        {
+            "id": 139922086288688,
+            "title": "CLIP Text Encode (Prompt)",
+            "pos_x": -420.0,
+            "pos_y": -560.0,
+            "inputs": [
+                {
+                    "id": 139922081335200,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 4,
+                    "name": "CLIP"
+                },
+                {
+                    "id": 139922941529936,
+                    "index": 1,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 1,
+                    "name": "EXEC"
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 139922941529168,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 3,
+                    "name": "CONDITIONING"
+                },
+                {
+                    "id": 139922941530704,
+                    "index": 1,
+                    "multi_edges": false,
+                    "position": 6,
+                    "socket_type": 1,
+                    "name": "EXEC"
+                }
+            ],
+            "content": {
+                "text": "a cinematic photo of a lighthouse in a storm, 50mm",
+                "text_visible": true
+            },
+            "op_code": 2,
+            "content_label_objname": "comfy_cliptextencode"
+        },
+        {
+            "id": 139922085432528,
+            "title": "CLIP Text Encode (Prompt)",
+            "pos_x": -420.0,
+            "pos_y": -60.0,
+            "inputs": [
+                {
+                    "id": 139922941531664,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 4,
+                    "name": "CLIP"
+                },
+                {
+                    "id": 139922941531856,
+                    "index": 1,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 1,
+                    "name": "EXEC"
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 139922941532048,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 3,
+                    "name": "CONDITIONING"
+                },
+                {
+                    "id": 139922941532240,
+                    "index": 1,
+                    "multi_edges": false,
+                    "position": 6,
+                    "socket_type": 1,
+                    "name": "EXEC"
+                }
+            ],
+            "content": {
+                "text": "blurry, watermark",
+                "text_visible": true
+            },
+            "op_code": 2,
+            "content_label_objname": "comfy_cliptextencode"
+        },
+        {
+            "id": 139922086289024,
+            "title": "Empty Latent Image",
+            "pos_x": -900.0,
+            "pos_y": 120.0,
+            "inputs": [
+                {
+                    "id": 139922941533008,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 1,
+                    "name": "EXEC"
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 139922941533200,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 2,
+                    "name": "LATENT"
+                },
+                {
+                    "id": 139922941533392,
+                    "index": 1,
+                    "multi_edges": false,
+                    "position": 6,
+                    "socket_type": 1,
+                    "name": "EXEC"
+                }
+            ],
+            "content": {
+                "width": 1024,
+                "width_visible": true,
+                "height": 1024,
+                "height_visible": true,
+                "batch_size": 1,
+                "batch_size_visible": true
+            },
+            "op_code": 24,
+            "content_label_objname": "comfy_emptylatentimage"
+        },
+        {
+            "id": 139922086289360,
+            "title": "KSampler",
+            "pos_x": 60.0,
+            "pos_y": -480.0,
+            "inputs": [
+                {
+                    "id": 139922941534928,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 4,
+                    "name": "MODEL"
+                },
+                {
+                    "id": 139922941535120,
+                    "index": 1,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 3,
+                    "name": "POSITIVE"
+                },
+                {
+                    "id": 139922941535312,
+                    "index": 2,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 3,
+                    "name": "NEGATIVE"
+                },
+                {
+                    "id": 139922941535504,
+                    "index": 3,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 2,
+                    "name": "LATENT_IMAGE"
+                },
+                {
+                    "id": 139922941535696,
+                    "index": 4,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 1,
+                    "name": "EXEC"
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 139922941535888,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 2,
+                    "name": "LATENT"
+                },
+                {
+                    "id": 139922941536080,
+                    "index": 1,
+                    "multi_edges": false,
+                    "position": 6,
+                    "socket_type": 1,
+                    "name": "EXEC"
+                }
+            ],
+            "content": {
+                "seed": 0,
+                "seed_visible": true,
+                "seed control": "fixed",
+                "seed control_visible": true,
+                "steps": 20,
+                "steps_visible": true,
+                "cfg": 8.0,
+                "cfg_visible": true,
+                "sampler_name": "euler",
+                "sampler_name_visible": true,
+                "scheduler": "simple",
+                "scheduler_visible": true,
+                "denoise": 1.0,
+                "denoise_visible": true
+            },
+            "op_code": 33,
+            "content_label_objname": "comfy_ksampler"
+        },
+        {
+            "id": 139922086289696,
+            "title": "VAE Decode",
+            "pos_x": 560.0,
+            "pos_y": 100.0,
+            "inputs": [
+                {
+                    "id": 139922941537232,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 2,
+                    "name": "SAMPLES"
+                },
+                {
+                    "id": 139922941537424,
+                    "index": 1,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 4,
+                    "name": "VAE"
+                },
+                {
+                    "id": 139922941537616,
+                    "index": 2,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 1,
+                    "name": "EXEC"
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 139922941537808,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 5,
+                    "name": "IMAGE"
+                },
+                {
+                    "id": 139922941538000,
+                    "index": 1,
+                    "multi_edges": false,
+                    "position": 6,
+                    "socket_type": 1,
+                    "name": "EXEC"
+                }
+            ],
+            "content": {},
+            "op_code": 57,
+            "content_label_objname": "comfy_vaedecode"
+        },
+        {
+            "id": 139922086290032,
+            "title": "Save Image",
+            "pos_x": 900.0,
+            "pos_y": -200.0,
+            "inputs": [
+                {
+                    "id": 139922941538960,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 5,
+                    "name": "IMAGES"
+                },
+                {
+                    "id": 139922941539152,
+                    "index": 1,
+                    "multi_edges": false,
+                    "position": 3,
+                    "socket_type": 1,
+                    "name": "EXEC"
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 139922941539344,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 6,
+                    "socket_type": 5,
+                    "name": "IMAGE"
+                },
+                {
+                    "id": 139922941539536,
+                    "index": 1,
+                    "multi_edges": false,
+                    "position": 6,
+                    "socket_type": 1,
+                    "name": "EXEC"
+                }
+            ],
+            "content": {
+                "filename_prefix": "ComfyUI",
+                "filename_prefix_visible": true
+            },
+            "op_code": 51,
+            "content_label_objname": "comfy_saveimage"
+        }
+    ],
+    "edges": [
+        {
+            "id": 139922086290368,
+            "edge_type": 4,
+            "start": 139922941582048,
+            "end": 139922081335200
+        },
+        {
+            "id": 139922085432848,
+            "edge_type": 4,
+            "start": 139922941582048,
+            "end": 139922941531664
+        },
+        {
+            "id": 139922085433488,
+            "edge_type": 4,
+            "start": 139922941581232,
+            "end": 139922941534928
+        },
+        {
+            "id": 139922085414768,
+            "edge_type": 3,
+            "start": 139922941529168,
+            "end": 139922941535120
+        },
+        {
+            "id": 139922085415072,
+            "edge_type": 3,
+            "start": 139922941532048,
+            "end": 139922941535312
+        },
+        {
+            "id": 139927701796720,
+            "edge_type": 2,
+            "start": 139922941533200,
+            "end": 139922941535504
+        },
+        {
+            "id": 139922941582864,
+            "edge_type": 2,
+            "start": 139922941535888,
+            "end": 139922941537232
+        },
+        {
+            "id": 139922941583952,
+            "edge_type": 4,
+            "start": 139922941141584,
+            "end": 139922941537424
+        },
+        {
+            "id": 139922941142096,
+            "edge_type": 5,
+            "start": 139922941537808,
+            "end": 139922941538960
+        }
+    ]
+}

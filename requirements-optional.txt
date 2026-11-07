@@ -1,0 +1,20 @@
+# Optional extras for aiNodes Engine.
+#
+#   pip install -r requirements-optional.txt
+#
+# Nothing in here is required to start the app; every node that needs one of
+# these imports it lazily and is skipped with a message when it is missing.
+
+# Audio nodes (AudioCraft / MusicGen).  Heavy, and pins old torch versions on
+# some releases - install it in a separate environment if it fights with torch.
+librosa>=0.10
+# audiocraft
+
+# Memory-efficient attention.  CUDA only, and must match your torch build.
+# xformers
+
+# Deforum animation nodes
+# deforum @ git+https://github.com/XmYx/deforum-studio
+
+# NVIDIA-only inference compiler used by the Stable Fast node.
+# stable-fast

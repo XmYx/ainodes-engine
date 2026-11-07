@@ -10,7 +10,12 @@ from backend_helpers.cnet_preprocessors.midas import MidasDetector
 from backend_helpers.cnet_preprocessors import OpenposeDetector
 
 from backend_helpers.torch_helpers.semseg.semseg_inference import SemSegModel
-from deforum.utils.deforum_framewarp_utils import anim_frame_warp_3d
+try:
+    # Only the 3D frame-warp operation needs deforum; importing it eagerly used
+    # to make this whole node pack unavailable without deforum installed.
+    from deforum.utils.deforum_framewarp_utils import anim_frame_warp_3d
+except ImportError:
+    anim_frame_warp_3d = None
 from ...base.qimage_ops import pixmap_to_tensor, tensor_image_to_pixmap, pil2tensor, tensor2pil
 
 from ainodes_frontend.base import register_node, get_next_opcode
