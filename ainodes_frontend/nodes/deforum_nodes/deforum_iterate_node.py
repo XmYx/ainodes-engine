@@ -10,7 +10,7 @@ from deforum.pipeline_utils import next_seed
 from deforum.pipelines.deforum_animation.animation_params import RootArgs, DeforumArgs, DeforumAnimArgs, \
     DeforumOutputArgs, ParseqArgs, LoopArgs
 from deforum.utils.string_utils import split_weighted_subprompts
-from src.deforum.src.deforum.pipelines.deforum_animation.animation_helpers import DeforumAnimKeys
+from deforum.pipelines.deforum_animation.animation_helpers import DeforumAnimKeys
 #
 # DeformAnimKeys
 # RootArgs

@@ -412,74 +412,75 @@ from pyqtgraph.console import ConsoleWidget
 class NodesConsole(ConsoleWidget):
     def __init__(self):
         super().__init__()
-        stylesheet = '''
-        QWidget#Form {
-            background-color: black;
-        }
+        self.apply_theme()
 
-        QPlainTextEdit#output {
-            background-color: black;
-            color: white;
-            font-family: Monospace;
-        }
+    def apply_theme(self):
+        """Colour the pyqtgraph console from the active palette.
 
-        QLineEdit#input {
-            background-color: black;
-            color: white;
-            font-family: Monospace;
-            border: none;
-        }
+        pyqtgraph builds this widget from its own .ui file with fixed object
+        names, so the only way to theme it is to target those names.
+        """
+        from ainodes_frontend.base import theme
+
+        background = theme.color("console_bg").name()
+        text = theme.color("console_text").name()
+        border = theme.color("border").name()
+        accent = theme.color("accent").name()
+        accent_text = theme.color("accent_text").name()
+
+        stylesheet = f"""
+        QWidget#Form {{ background-color: {background}; }}
+
+        QPlainTextEdit#output, QTextEdit#output {{
+            background-color: {background};
+            color: {text};
+            font-family: monospace;
+            border: 1px solid {border};
+        }}
+
+        QLineEdit#input, QLineEdit#filterText {{
+            background-color: {background};
+            color: {text};
+            font-family: monospace;
+            border: 1px solid {border};
+        }}
 
         QPushButton#historyBtn,
         QPushButton#exceptionBtn,
         QPushButton#clearExceptionBtn,
         QPushButton#catchAllExceptionsBtn,
-        QPushButton#catchNextExceptionBtn {
-            background-color: black;
-            color: white;
-            border: none;
-        }
+        QPushButton#catchNextExceptionBtn {{
+            background-color: {background};
+            color: {text};
+            border: 1px solid {border};
+            padding: 3px 8px;
+        }}
+
+        QPushButton#historyBtn:hover,
+        QPushButton#exceptionBtn:hover {{
+            background-color: {accent};
+            color: {accent_text};
+        }}
 
         QCheckBox#onlyUncaughtCheck,
-        QCheckBox#runSelectedFrameCheck {
-            color: white;
-        }
+        QCheckBox#runSelectedFrameCheck {{ color: {text}; }}
 
         QListWidget#historyList,
-        QListWidget#exceptionStackList {
-            background-color: black;
-            color: white;
-            font-family: Monospace;
-            border: none;
-        }
+        QListWidget#exceptionStackList {{
+            background-color: {background};
+            color: {text};
+            font-family: monospace;
+            border: 1px solid {border};
+        }}
 
-        QGroupBox#exceptionGroup {
-            border: 1px solid white;
-        }
+        QGroupBox#exceptionGroup {{ border: 1px solid {border}; color: {text}; }}
 
-        QLabel#exceptionInfoLabel,
-        QLabel#label {
-            color: white;
-        }
+        QLabel#exceptionInfoLabel, QLabel#label {{ color: {text}; }}
 
-        QLineEdit#filterText {
-            background-color: black;
-            color: white;
-            border: none;
-        }
-
-        QSplitter::handle {
-            background-color: white;
-        }
-
-        QSplitter::handle:vertical {
-            height: 6px;
-        }
-
-        QSplitter::handle:pressed {
-            background-color: #888888;
-        }
-        '''
+        QSplitter::handle {{ background-color: {border}; }}
+        QSplitter::handle:vertical {{ height: 6px; }}
+        QSplitter::handle:pressed {{ background-color: {accent}; }}
+        """
 
         # Apply the stylesheet to the application
         self.setStyleSheet(stylesheet)
@@ -991,7 +992,16 @@ class CalculatorWindow(NodeEditorWindow):
         self.actNodePacks = QAction('&Node Packages', self, shortcut='Ctrl+K', statusTip="Download Nodes", triggered=self.show_github_repositories)
 
         self.actShowSettingsEditor = QAction('&Settings', self, shortcut='Ctrl+J', statusTip="Open Settings", triggered=self.showSettingsEditor)
-        self.actShowThemeEditor = QAction('&Themes', self, statusTip="Set Theme", triggered=self.showThemeEditor)
+        self.actShowThemeEditor = QAction('&Theme...', self, statusTip="Choose a colour theme", triggered=self.showThemeEditor)
+        self.actToggleTheme = QAction('Toggle &Light/Dark', self, shortcut='Ctrl+Shift+T',
+                                      statusTip="Switch between the dark and light themes",
+                                      triggered=self.toggleTheme)
+        self.actFrameGraph = QAction('&Frame Graph', self, shortcut='Ctrl+Shift+F',
+                                     statusTip="Zoom so the whole graph fits the view (F on the canvas)",
+                                     triggered=self.frameCurrentGraph)
+        self.actFrameSelection = QAction('Frame &Selection', self, shortcut='Ctrl+Alt+F',
+                                         statusTip="Zoom to the selected nodes (Shift+F on the canvas)",
+                                         triggered=lambda: self.frameCurrentGraph(True))
 
         self.actClose = QAction("Cl&ose", self, statusTip="Close the active window", triggered=self.mdiArea.closeActiveSubWindow)
         self.actCloseAll = QAction("Close &All", self, statusTip="Close all the windows", triggered=self.mdiArea.closeAllSubWindows)
@@ -1024,8 +1034,29 @@ class CalculatorWindow(NodeEditorWindow):
         self.yaml_editor.load_yaml(settings_path)
         self.yaml_editor.show()
 
+    def toggleTheme(self):
+        from ainodes_frontend.base.theme_settings import toggle_theme
+
+        name = toggle_theme(window=self)
+        self.statusBar().showMessage(f"{name.title()} theme", 3000)
+
+    def frameCurrentGraph(self, selection_only=False):
+        editor = self.getCurrentNodeEditorWidget()
+        if editor is None:
+            return
+        editor.scene.getView().fitToContents(selection_only=selection_only)
+
+    def restyle_for_theme(self, name=None):
+        """Re-colour the parts that are not reachable from the stylesheet."""
+        console = getattr(self, "node_console", None) or getattr(self, "console", None)
+        if console is not None and hasattr(console, "apply_theme"):
+            console.apply_theme()
+        for child in self.findChildren(NodesConsole):
+            child.apply_theme()
+        self.update()
+
     def showThemeEditor(self):
-        self.theme_editor = ThemePreferencesDialog()
+        self.theme_editor = ThemePreferencesDialog(self)
         self.theme_editor.show()
     def get_last_config(self):
         """
@@ -1160,11 +1191,28 @@ class CalculatorWindow(NodeEditorWindow):
                             subwnd.show()
                             # Install event filter on the subwnd object
                             subwnd.installEventFilter(self)
-
+                            self.frameGraph(nodeeditor)
 
                         else:
                             nodeeditor.close()
         except Exception as e: dumpException(e)
+
+    @staticmethod
+    def frameGraph(editor):
+        """Zoom a freshly opened graph so all of it is on screen.
+
+        Without this a saved graph opens at whatever zoom and scroll offset
+        the file happened to carry, which usually meant staring at the inside
+        of one node.
+        """
+        try:
+            view = editor.scene.getView()
+        except Exception:
+            return
+        from qtpy.QtCore import QTimer
+
+        QTimer.singleShot(0, lambda: view.fitToContents())
+
     # def onFileOpen_subgraph(self, graph):
     #     try:
     #         existing = self.findMdiChild(fname)
@@ -1204,6 +1252,7 @@ class CalculatorWindow(NodeEditorWindow):
                             subwnd.show()
                             # Install event filter on the subwnd object
                             subwnd.installEventFilter(self)
+                            self.frameGraph(nodeeditor)
 
                         else:
                             nodeeditor.close()
@@ -1238,6 +1287,7 @@ class CalculatorWindow(NodeEditorWindow):
         self.fileMenu.addAction(self.actNodePacks)
         self.fileMenu.addAction(self.actShowSettingsEditor)
         self.fileMenu.addAction(self.actShowThemeEditor)
+        self.fileMenu.addAction(self.actToggleTheme)
         # Get the index of the action in the fileMenu
         action_index = self.fileMenu.actions().index(self.actNode)
 
@@ -1287,6 +1337,12 @@ class CalculatorWindow(NodeEditorWindow):
 
     def updateWindowMenu(self):
         self.windowMenu.clear()
+
+        self.windowMenu.addAction(self.actFrameGraph)
+        self.windowMenu.addAction(self.actFrameSelection)
+        self.windowMenu.addSeparator()
+        self.windowMenu.addAction(self.actToggleTheme)
+        self.windowMenu.addSeparator()
 
         toolbar_nodes = self.windowMenu.addAction("Nodes Toolbar")
         toolbar_nodes.setCheckable(True)

@@ -138,7 +138,7 @@ class QDMDragListbox(QtWidgets.QWidget):  # subclassing from QWidget now
             else:
                 current_parent = QtWidgets.QTreeWidgetItem(parent)
 
-            current_parent.setText(0, category.capitalize())
+            current_parent.setText(0, display_category(category))
 
             if "_items" in items_or_subcategories:
                 items = items_or_subcategories["_items"]
@@ -220,3 +220,13 @@ def start_tree_widget_drag(self, *args, **kwargs):
         drag.exec_(Qt.MoveAction)
 
     except Exception as e: dumpException(e)
+
+
+def display_category(name):
+    """Keep a category's own capitalisation when it has any.
+
+    ``.capitalize()`` turned "ComfyUI" into "Comfyui" and "KSampler" into
+    "Ksampler"; only all-lowercase names need help.
+    """
+    text = str(name)
+    return text.capitalize() if text.islower() else text

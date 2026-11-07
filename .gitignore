@@ -194,3 +194,9 @@ config/cache.json
 
 web/
 
+
+# aiNodes runtime directories
+custom_nodes/
+subgraphs/
+config/comfy.yaml
+config/last_config.yaml

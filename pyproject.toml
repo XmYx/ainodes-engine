@@ -1,0 +1,27 @@
+[project]
+name = "ainodes-engine"
+version = "0.2.0"
+description = "A node based desktop UI for diffusion models, with ComfyUI node interop"
+readme = "README.md"
+requires-python = ">=3.11,<3.15"
+license = { file = "LICENSE" }
+authors = [{ name = "Miklos Nagy", email = "miklos.mnagy@gmail.com" }]
+keywords = ["stable-diffusion", "comfyui", "node-editor", "pyqt6", "deforum"]
+dynamic = ["dependencies"]
+
+[project.urls]
+Homepage = "https://github.com/XmYx/ainodes-engine"
+Issues = "https://github.com/XmYx/ainodes-engine/issues"
+
+[project.optional-dependencies]
+extras = ["librosa>=0.10"]
+
+[tool.setuptools.dynamic]
+dependencies = { file = ["requirements.txt"] }
+
+[tool.setuptools]
+packages = ["ainodes_frontend", "backend_helpers"]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"

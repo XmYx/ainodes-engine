@@ -31,6 +31,11 @@ class NodeRunner:
         self.process = True
         self.parent = parent
         self.running = False  # Add a flag to track if the runner is currently running
+        self.exec = True
+        self.loop = False
+        # Callbacks fired when a (non-looping) run drains its queue - this is
+        # what --headless waits on.
+        self.finished_callbacks = []
         #self.setup_api_connection()
         #self.nodeResultReceived.connect(self.process_node_message)
 
@@ -129,17 +134,50 @@ class NodeRunner:
 
         self.starting_nodes.sort(key=sorting_key)
 
+    def _report_unfinished(self):
+        """Name the nodes that never ran, and why (issue #21)."""
+        stuck = [node for node in self.parent.nodes
+                 if node not in self.processed_nodes
+                 and getattr(node, "content", None) is not None
+                 and node.content.isVisible()
+                 and node.isDirty()]
+        for node in stuck:
+            missing = []
+            for socket in node.inputs:
+                if socket.name == "EXEC":
+                    continue
+                if not socket.edges:
+                    missing.append(socket.name)
+            if missing:
+                node.markInvalid(True)
+                print(f"[run] {node.title}: did not run - no connection on "
+                      f"{', '.join(missing)}")
+            else:
+                print(f"[run] {node.title}: did not run - it is waiting on "
+                      "another node that has not produced a value")
+
+    def _notify_finished(self):
+        for callback in list(self.finished_callbacks):
+            try:
+                callback(self)
+            except Exception as exc:
+                print("node runner callback failed:", exc)
+
     def run_next(self):
         if not self.exec:  # Check if execution should stop
             self.running = False
+            self._notify_finished()
             return
 
         if not self.starting_nodes:
             # If there are no more nodes to process, check if we should loop or finish
-            # Handle looping or finishing here...
             if self.loop and gs.should_run:
                 self.running = False
                 self.start(loop=self.loop)
+            else:
+                self.running = False
+                self._report_unfinished()
+                self._notify_finished()
             return
 
 
@@ -227,6 +265,15 @@ class NodeRunner:
                         self.starting_nodes.append(node)
             # Reorder nodes to prioritize nodes that can run
             self.reorder_nodes()
+
+            if not self.starting_nodes:
+                # Issue #21: a graph that could not start used to produce no
+                # output at all, which looked identical to a graph that ran.
+                print("[run] nothing to run: no node is marked dirty. "
+                      "Change a value, or use Run Loop to keep re-running.")
+                self.running = False
+                self._notify_finished()
+                return
 
             # Start processing
             self.run_next()

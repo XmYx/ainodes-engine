@@ -53,10 +53,12 @@ class QDMGraphicsScene(QGraphicsScene):
 
     def initAssets(self):
         """Initialize ``QObjects`` like ``QColor``, ``QPen`` and ``QBrush``"""
-        self._color_background = QColor("#393939")
-        self._color_light = QColor("#2f2f2f")
-        self._color_dark = QColor("#292929")
-        self._color_state = QColor("#ccc")
+        from ainodes_frontend.base import theme
+
+        self._color_background = theme.color("scene_bg")
+        self._color_light = theme.color("grid_light")
+        self._color_dark = theme.color("grid_dark")
+        self._color_state = theme.color("scene_text")
 
         self._pen_light = QPen(self._color_light)
         self._pen_light.setWidth(1)

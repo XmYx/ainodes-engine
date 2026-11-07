@@ -14,6 +14,7 @@ from qtpy.QtGui import QIcon, QPixmap
 from qtpy.QtWidgets import QAction, QGraphicsProxyWidget, QMenu
 from qtpy.QtWidgets import QColorDialog
 
+from ainodes_frontend.base.ai_nodes_listbox import display_category
 from ainodes_frontend.base.node_config import CALC_NODES, get_class_from_opcode, LISTBOX_MIMETYPE, \
     node_categories, get_class_from_content_label_objname
 from ainodes_frontend.node_engine.node_edge import EDGE_TYPE_DIRECT, EDGE_TYPE_BEZIER, EDGE_TYPE_SQUARE
@@ -447,7 +448,7 @@ class CalculatorSubWindow(NodeEditorWidget):
                     action.setIcon(QIcon(pixmap))
                     parent_menu.addAction(action)
             else:
-                submenu = QMenu(category.capitalize(), parent_menu)
+                submenu = QMenu(display_category(category), parent_menu)
                 parent_menu.addMenu(submenu)
                 self.create_submenus(submenu, items_or_subcategories)
 
@@ -457,7 +458,7 @@ class CalculatorSubWindow(NodeEditorWidget):
         # create submenus for categories
         category_menus = {}
         for category in node_categories:
-            submenu = QMenu(category.capitalize(), menu)
+            submenu = QMenu(display_category(category), menu)
             category_menus[category] = submenu
 
         # sort the category menus by keys

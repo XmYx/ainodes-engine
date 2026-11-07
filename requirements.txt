@@ -1,33 +1,54 @@
---extra-index-url https://download.pytorch.org/whl/cu121
-torch==2.1.1+cu121
-pillow==10.0.1
-pyqt6==6.6.1
-pyqt6-webengine==6.6.0
-pyqt6-3d==6.6.0
-qtpy==2.4.1
-requests==2.31.0
-pyqtgraph==0.13.3
-pyyaml==6.0.1
-https://github.com/chengzeyi/stable-fast/releases/download/v1.0.1/stable_fast-1.0.1+torch211cu121-cp310-cp310-win_amd64.whl
-diffusers==0.25.0
-transformers==4.36.0
-xformers==0.0.23
-omegaconf
-opencv-contrib-python
-pandas
-numexpr
-timm==0.6.5
-basicsr
-matplotlib
-rich
-psutil
-PyQt6-QScintilla
-pyflakes
-aiohttp
-torchsde
-einops
-openai
-librosa
-audiocraft
-accelerate
-tabulate
+# aiNodes Engine - core requirements
+#
+# Supported Python: 3.11 - 3.14
+#
+# PyTorch is intentionally NOT pinned to a +cuXXX build here: the accelerator
+# build (CUDA / ROCm / XPU / CPU) is selected by install.py, which passes the
+# right --index-url for the detected hardware.  Installing this file on its own
+# gives you whatever default torch wheel your platform provides.
+
+# --- GUI -------------------------------------------------------------------
+PyQt6>=6.7
+PyQt6-WebEngine>=6.7
+PyQt6-QScintilla>=2.14
+qtpy>=2.4
+pyqtgraph>=0.13.7
+
+# --- torch -----------------------------------------------------------------
+torch>=2.4
+torchvision>=0.19
+torchsde>=0.2.6
+
+# --- numerics / imaging ----------------------------------------------------
+numpy>=1.26
+pillow>=10.3
+# headless build on purpose: the PyPI opencv-python wheels ship their own Qt
+# plugins, which shadow PyQt6's and break the xcb platform plugin on Linux.
+opencv-contrib-python-headless>=4.10
+scipy>=1.13
+scikit-image>=0.24
+imageio>=2.35
+imageio-ffmpeg>=0.5
+matplotlib>=3.9
+pandas>=2.2
+numexpr>=2.10
+
+# --- model stack -----------------------------------------------------------
+safetensors>=0.4.3
+transformers>=4.44
+diffusers>=0.30
+accelerate>=0.33
+timm>=1.0
+omegaconf>=2.3
+einops>=0.8
+
+# --- misc ------------------------------------------------------------------
+pyyaml>=6.0.1
+requests>=2.32
+tqdm>=4.66
+psutil>=6.0
+rich>=13.7
+tabulate>=0.9
+pyflakes>=3.2
+aiohttp>=3.10
+openai>=1.40

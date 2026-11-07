@@ -15,9 +15,9 @@ from ainodes_frontend.node_engine.node_content_widget import QDMNodeContentWidge
 from backend_helpers.cnet_preprocessors import poorman_wget
 from backend_helpers.torch_helpers.torch_gc import torch_gc
 from backend_helpers.torch_helpers.vram_management import offload_to_device
-from main import get_torch_device
+from ainodes_frontend.base.device import get_torch_device
 from ..image_nodes.image_preview_node import ImagePreviewNode
-from ...comfy_fns.adapter_nodes.was_adapter_node import latent_preview
+from ...comfy_fns.preview import latent_preview
 
 OP_NODE_K_SAMPLER = get_next_opcode()
 
